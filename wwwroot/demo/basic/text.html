@@ -15,6 +15,7 @@ Do target its `text` property to render your string bindings:
     <template id="demo0">
 
         <pacem-data id="timestamp0"></pacem-data>
+        <pacem-data id="items0" model="{{ Math.min(200, #count0.value) }}"></pacem-data>
         <pacem-timer interval="17" on-tick="#timestamp0.model = $pacem.date(Date.now(), 'iso')"></pacem-timer>
         <pacem-input-number step="10" value="10" id="count0" min="0" max="200"></pacem-input-number>
 
@@ -29,11 +30,12 @@ Do target its `text` property to render your string bindings:
         <pacem-data id="fps" model="{{ #fps0.data }}" debounce="1000" throttle="true"></pacem-data>
         <!-- /fps -->
 
-        <pacem-repeater datasource="{{ Array(Math.min(200, #count0.value)) }}" class="display-block pacem-margin margin-top">
+        <pacem-repeater datasource="{{ Array(#items0.model) }}" class="display-block pacem-margin margin-top">
             <template>
 
                 <!-- pacem-text -->
-                <pacem-text text="{{ #timestamp0.model }}" class="display-inline-block"></pacem-text> -
+                <pacem-text text="{{ #timestamp0.model }}" class="display-inline-block"></pacem-text>
+                <pacem-if match="{{ ^index < #items0.model - 1 }}">-</pacem-if>
 
             </template>
         </pacem-repeater>
