@@ -1,0 +1,47 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" style="background:rgba(0,0,0,.0)">
+    <defs>
+        <mask id="mask">
+            <rect x="40" y="0" width="20" height="45" fill="#fff" />
+            <circle cx="50" cy="21" r="2.5" />
+        </mask>
+        <mask id="mask1">
+            <rect x="40" y="45" width="20" height="30" fill="#fff" />
+            <ellipse cx="50" cy="48.5"
+                     rx="4" ry="6.5" transform="rotate(120,50,50)" />
+        </mask>
+        <mask id="mask2">
+            <rect x="40" y="45" width="20" height="30" fill="#fff" />
+            <ellipse cx="50" cy="45"
+                     rx="5" ry="10" transform="rotate(120,50,50)" />
+        </mask>
+
+        <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="50%" style="stop-color:#fff;stop-opacity:1" />
+            <stop offset="50%" style="stop-color:rgb(110,120,130);stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#fff;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="grad2" x1="100%" y1="0%" x2="0%" y2="0%">
+            <stop offset="50%" style="stop-color:#fff;stop-opacity:1" />
+            <stop offset="50%" style="stop-color:rgb(110,120,130);stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#fff;stop-opacity:1" />
+        </linearGradient>
+    </defs>
+
+    <g fill="#fff">
+        <path fill="url(#grad1)" d="M50,0 L60,5 V35 L55,40 H45 L40,35 V5 Z" mask="url(#mask)" />
+        <path fill="url(#grad2)" d="M50,0 L60,5 V35 L55,40 H45 L40,35 V5 Z" mask="url(#mask)" transform="rotate(120,50,50)" />
+        <path fill="url(#grad2)" d="M50,0 L60,5 V35 L55,40 H45 L40,35 V5 Z" mask="url(#mask)" transform="rotate(240,50,50)" />
+
+        <path fill="#262b3e" stroke-width=".0" stroke="#fff" transform="translate(-50,-50) scale(2)" d="M50,45 H58.667 L50,60 L41.333,45 Z" />
+
+        <path fill="#ff005a" mask="url(#mask1)" transform="translate(-10,-10) scale(1.2)" d="M50,45 H58.667 L50,60 L41.333,45 Z" />
+        <!--<path fill="#ff005a" transform="translate(10,10) scale(.8)" d="M50,45 H58.667 L50,60 L41.333,45" />-->
+
+        <g fill="rgba(255,0,0,0.0)">
+            <path d="M50,45 H60 L50,50 L40,45" />
+            <path d="M50,45 H60 L50,50 L40,45" transform="rotate(120,50,50)" />
+            <path d="M50,45 H60 L50,50 L40,45" transform="rotate(240,50,50)" />
+        </g>
+    </g>
+
+</svg>

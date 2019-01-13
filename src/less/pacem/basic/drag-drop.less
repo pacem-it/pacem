@@ -1,0 +1,52 @@
+﻿@import "../../shared";
+@import "../theme-dark";
+
+pacem-drag-drop {
+    .Inert();
+}
+
+.Dragging() {
+    opacity: .5;
+    cursor: move !important;
+}
+
+@keyframes drag-lock {
+    0% {
+        //transform: scale(1);
+        filter: brightness(2);
+    }
+
+    50% {
+        opacity: 0.25;
+        filter: brightness(1.5);
+    }
+
+    100% {
+        .Dragging();
+    }
+}
+
+body.pacem-dragging {
+    cursor: move;
+}
+
+.pacem-drag-lock:not(.pacem-dragging) {
+    animation: drag-lock .25s 1 @easing_in_out_sine normal both;
+}
+
+.pacem-dragging {
+    -ms-user-select: none !important;
+    -moz-user-select: none !important;
+    -webkit-user-select: none !important;
+    user-select: none !important;
+}
+
+.pacem-dragging:not(body) {
+    .Dragging();
+}
+
+.pacem-drag-floater {
+    opacity: .75;
+    pointer-events: none;
+    z-index: @hamburger-z-index - 1;
+}

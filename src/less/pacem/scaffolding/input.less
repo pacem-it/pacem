@@ -1,0 +1,29 @@
+﻿@import "shared";
+
+pacem-input-text,
+pacem-input-password,
+pacem-input-tel,
+pacem-input-url,
+pacem-input-email,
+pacem-input-search,
+pacem-suggest,
+pacem-checkbox,
+pacem-radio,
+pacem-textarea,
+pacem-textarea-markdown,
+pacem-input-number {
+    .FormFieldItemWrapper();
+
+    .pacem-input {
+        .FormFieldItem();
+        .FormFieldItemInline();
+    }
+
+    &:before {
+        color: @color_input_icon;
+    }
+
+    &.pacem-focus:before {
+        color: @field_forecolor;
+    }
+}

@@ -1,0 +1,109 @@
+﻿@import "../../shared";
+@import "../theme-dark";
+
+pacem-pie-chart, pacem-pie-slice {
+    .Inert();
+}
+
+@keyframes pie-anim {
+    0% {
+        opacity: 0;
+        transform: rotate(-90deg);
+    }
+
+    100% {
+        opacity: 1;
+        transform: rotate(0);
+    }
+}
+
+svg.pacem-pie-chart {
+    display: block;
+
+    defs mask circle {
+        transition: r @easing_out_sine .125s;
+    }
+
+    g {
+        pointer-events: none;
+
+        path {
+            pointer-events: fill;
+        }
+
+        transform-origin: 50%;
+    }
+}
+
+.pacem-chart-area > svg.pacem-pie-chart {
+    max-height: 30vh;
+}
+
+
+.PieSlice (@count, @index) when (@index > 0) {
+    &:nth-child(@{index}) {
+        animation-delay: 1.25s * @index / @count;
+    }
+    // next iteration
+    .PieSlice(@count, @index - 1);
+}
+
+.PieSlice (@count) {
+    .PieSlice(@count, @count);
+}
+
+.PieChartSeries(@clr) {
+    path {
+        fill: @clr;
+        stroke: none;
+    }
+
+    &.series-light {
+        path {
+            fill: fade(@clr, 50);
+        }
+    }
+}
+
+.pacem-animations {
+
+    svg.pacem-pie-chart {
+        //.Animatable(pop-anim, .4s, @easing_out_back);
+        g.pacem-pie-slice {
+            .Animatable(pie-anim, 0s, @easing_out_sine);
+            .PieSlice(20);
+
+            path {
+                transition: transform @easing_in_out_sine .2s;
+            }
+        }
+
+        g.chart-series {
+            .PieChartSeries(@color_default);
+
+            &.series-accent {
+                .PieChartSeries(@color_accent);
+            }
+
+            &.series-primary {
+                .PieChartSeries(@color_primary);
+            }
+
+            &.series-success {
+                .PieChartSeries(@color_success);
+            }
+
+            &.series-warning {
+                .PieChartSeries(@color_warning);
+            }
+
+            &.series-danger {
+                .PieChartSeries(@color_danger);
+            }
+        }
+    }
+
+    svg.pacem-pie-chart when (@shadows = true) {
+        filter: drop-shadow(0 @grid_spacing/6 @grid_spacing/12 rgba(0,0,0,0.5) );
+    }
+}

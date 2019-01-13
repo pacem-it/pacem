@@ -1,0 +1,50 @@
+﻿
+
+<pacem-markdown value="{{ #content0.textContent }}" root></pacem-markdown>
+
+<pre pacem hidden id="content0">
+# `&lt;pacem-binder>`
+
+`PacemBinderElement` visually connects two items with a beziér curve.  
+The connected items can be both **Elements** and **Points** (`Pacem.Point` has type `{x: number, y: number}`).
+
+Example:
+</pre>
+
+<template id="demo1">
+    <pacem-binder from="{{ #from1 }}" to="{{ #to1 }}" class="binder-thin"></pacem-binder>
+    <div style="position: relative; height: 90px;">
+
+        <span id="from1" class="bg-accent text-center" style="display: inline-block; width: 25%; padding: .5rem;">FROM</span>
+        <span id="to1" class="bg-success text-center" style="display: inline-block; width: 25%; position: absolute; right: 0; bottom: 0; padding: .5rem;">TO</span>
+
+    </div>
+</template>
+
+<pacem-tabs>
+    <pacem-tab label="demo">
+        <pacem-view url="#demo1"></pacem-view>
+    </pacem-tab>
+    <pacem-tab label="code">
+        <pacem-markdown value="{{ '```html\n\n'+   pacem.removeLeadingTabs(#demo1.innerHTML) +'\n```' }}" class="text-small"></pacem-markdown>
+    </pacem-tab>
+</pacem-tabs>
+
+<!-- -->
+<pacem-markdown value="{{ #content1.textContent }}" root></pacem-markdown>
+
+<pre pacem hidden id="content1">
+## Customizations
+
+Properties available allow to customize the aspect and the behavior of a binder:
+
+- `fromAnchor`: where to force the anchor on the `from` Element (ignored for points). Can be `top`, `right`, `bottom`, `left`, `auto` (default).
+- `toAnchor`: same as _fromAnchor_, but for the `to` element.
+
+**Custom styling** can be obtained both via `cssClass` and `color` property.
+
+</pre>
+
+
+<pacem-binder id="proto" hidden></pacem-binder>
+<pacemjs-descriptor target="{{ #proto }}"></pacemjs-descriptor>

@@ -300,3 +300,12 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+# local
+[Uu]ploads/
+*.local.json
+wwwroot/typedoc
+dist/
+wwwroot/docs
+wwwroot/assets/extra/
+src/pacem-*/

@@ -1,0 +1,65 @@
+﻿@import "../../src/less/pacem/theme-dark";
+@import "shared";
+
+pacemjs-descriptor {
+    font-family: @font_tech;
+    border: 1px solid fade(@color_default, 10);
+    display: block;
+    padding: @grid_spacing;
+    margin: @grid_spacing 0 0 0;
+    border-radius: @border_radius;
+
+    h2, h4 {
+        font-weight: bold;
+        font-size: 1rem;
+        margin: 0 0 .5rem 0;
+    }
+
+    h4 {
+        padding-left: @grid_spacing / 1.5;
+        position: relative;
+        color: fade(@color_default, 60);
+
+        &:before {
+            .Icon('keyboard_arrow_up', @grid_spacing/2);
+            color: @color_primary;
+            left: 0;
+        }
+    }
+
+    ul {
+        margin: 0 0 1em 1em;
+
+        > li .small {
+            opacity: 0.4;
+        }
+    }
+
+    .pull-right small {
+        vertical-align: top;
+        display: inline-block;
+        line-height: 28px;
+    }
+
+    .property,
+    .method{
+        list-style-type: none;
+        margin-left: -30px;
+
+        &::before{
+            display: inline-block;
+            margin-right: @grid_spacing/6;
+        }
+    }
+
+    .property {
+        .FaIconSolid('\f543');
+    }
+
+    .method {
+        .FaIconSolid('\f1b2');
+        &::before{
+            color: @color_teal;
+        }
+    }
+}

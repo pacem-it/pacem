@@ -1,0 +1,481 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
+    <RuntimeFrameworkVersion>2.2.0</RuntimeFrameworkVersion>
+    <UserSecretsId>93207634-5ac3-47fd-a1b2-8f8c638352d8</UserSecretsId>
+  </PropertyGroup>
+
+  <Import Project="../../../Shared.props" />
+
+  <ItemGroup>
+    <Compile Remove="src\pacem-core\src\ui\**" />
+    <Compile Remove="Uploads\**" />
+    <Compile Remove="wwwroot\assets\favicon\**" />
+    <Content Remove="src\pacem-core\src\ui\**" />
+    <Content Remove="Uploads\**" />
+    <Content Remove="wwwroot\assets\favicon\**" />
+    <EmbeddedResource Remove="src\pacem-core\src\ui\**" />
+    <EmbeddedResource Remove="Uploads\**" />
+    <EmbeddedResource Remove="wwwroot\assets\favicon\**" />
+    <None Remove="src\pacem-core\src\ui\**" />
+    <None Remove="Uploads\**" />
+    <None Remove="wwwroot\assets\favicon\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="server\Controllers\UploadController.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="wwwroot\assets\logo-dark.svg" />
+    <Content Remove="wwwroot\assets\logo-light.svg" />
+    <Content Remove="wwwroot\assets\logo-phousys.svg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="demo\components\snippet.ts" />
+    <None Remove="demo\less\docs.less" />
+    <None Remove="demo\less\docs_descriptor.less" />
+    <None Remove="demo\less\docs_snippet.less" />
+    <None Remove="demo\less\docs_splash.less" />
+    <None Remove="demo\less\docs_themeroller.less" />
+    <None Remove="index.d.ts" />
+    <None Remove="src\components\basic\html-proxy.ts" />
+    <None Remove="src\components\basic\style-proxy.ts" />
+    <None Remove="src\components\fx\fancy.ts" />
+    <None Remove="src\components\fx\hero.ts" />
+    <None Remove="src\components\scaffolding\tags.ts" />
+    <None Remove="src\components\ui\calendar.ts" />
+    <None Remove="src\components\ui\pager.ts" />
+    <None Remove="src\core\maths\gaussian.ts" />
+    <None Remove="demo\customelement-descriptor.ts" />
+    <None Remove="demo\themeroller.ts" />
+    <None Remove="src\less\pacem\layout\grids.less" />
+    <None Remove="src\components\3d\detector.ts" />
+    <None Remove="src\components\3d\three.ts" />
+    <None Remove="src\components\3d\types.ts" />
+    <None Remove="src\components\basic\adapter.ts" />
+    <None Remove="src\components\basic\annihilator.ts" />
+    <None Remove="src\components\basic\data.ts" />
+    <None Remove="src\components\basic\dock.ts" />
+    <None Remove="src\components\basic\fetcher.ts" />
+    <None Remove="src\components\basic\hubproxy.ts" />
+    <None Remove="src\components\basic\if.ts" />
+    <None Remove="src\components\basic\index.ts" />
+    <None Remove="src\components\basic\items-container.ts" />
+    <None Remove="src\components\basic\iterative.ts" />
+    <None Remove="src\components\basic\overlay.ts" />
+    <None Remove="src\components\basic\panel.ts" />
+    <None Remove="src\components\basic\position.ts" />
+    <None Remove="src\components\basic\repeater.ts" />
+    <None Remove="src\components\basic\resize.ts" />
+    <None Remove="src\components\basic\router.ts" />
+    <None Remove="src\components\basic\scroll-aware.ts" />
+    <None Remove="src\components\basic\span.ts" />
+    <None Remove="src\components\basic\text.ts" />
+    <None Remove="src\components\basic\timer.ts" />
+    <None Remove="src\components\basic\tweener.ts" />
+    <None Remove="src\components\basic\types.ts" />
+    <None Remove="src\components\basic\utils.ts" />
+    <None Remove="src\components\basic\viewport-aware.ts" />
+    <None Remove="src\components\behaviors\behavior.ts" />
+    <None Remove="src\components\behaviors\drag-drop.ts" />
+    <None Remove="src\components\behaviors\swipe.ts" />
+    <None Remove="src\components\charts\generic.ts" />
+    <None Remove="src\components\charts\pie.ts" />
+    <None Remove="src\components\logging\console.ts" />
+    <None Remove="src\components\logging\fps.ts" />
+    <None Remove="src\components\logging\types.ts" />
+    <None Remove="src\components\maps\azure.ts" />
+    <None Remove="src\components\maps\google.ts" />
+    <None Remove="src\components\maps\leaflet.ts" />
+    <None Remove="src\components\maps\types.ts" />
+    <None Remove="src\components\plus\carousel.ts" />
+    <None Remove="src\components\plus\edit.ts" />
+    <None Remove="src\components\plus\gallery.ts" />
+    <None Remove="src\components\plus\hierarchy.ts" />
+    <None Remove="src\components\plus\markdown-editor.ts" />
+    <None Remove="src\components\plus\modal-form.ts" />
+    <None Remove="src\components\plus\search.ts" />
+    <None Remove="src\components\scaffolding\char-counter.ts" />
+    <None Remove="src\components\scaffolding\checkbox-list.ts" />
+    <None Remove="src\components\scaffolding\checkbox.ts" />
+    <None Remove="src\components\scaffolding\contenteditable.ts" />
+    <None Remove="src\components\scaffolding\datetime-picker.ts" />
+    <None Remove="src\components\scaffolding\form.ts" />
+    <None Remove="src\components\scaffolding\formfield.ts" />
+    <None Remove="src\components\scaffolding\input-color.ts" />
+    <None Remove="src\components\scaffolding\input-email.ts" />
+    <None Remove="src\components\scaffolding\input-file.ts" />
+    <None Remove="src\components\scaffolding\input-hidden.ts" />
+    <None Remove="src\components\scaffolding\input-image.ts" />
+    <None Remove="src\components\scaffolding\input-number.ts" />
+    <None Remove="src\components\scaffolding\input-password.ts" />
+    <None Remove="src\components\scaffolding\input-search.ts" />
+    <None Remove="src\components\scaffolding\input-tel.ts" />
+    <None Remove="src\components\scaffolding\input-text.ts" />
+    <None Remove="src\components\scaffolding\input-url.ts" />
+    <None Remove="src\components\scaffolding\input.ts" />
+    <None Remove="src\components\scaffolding\latlng.ts" />
+    <None Remove="src\components\scaffolding\radio-list.ts" />
+    <None Remove="src\components\scaffolding\radio.ts" />
+    <None Remove="src\components\scaffolding\select.ts" />
+    <None Remove="src\components\scaffolding\suggest.ts" />
+    <None Remove="src\components\scaffolding\textarea-markdown.ts" />
+    <None Remove="src\components\scaffolding\textarea.ts" />
+    <None Remove="src\components\scaffolding\types.ts" />
+    <None Remove="src\components\scaffolding\validators.ts" />
+    <None Remove="src\components\ui\adapter.ts" />
+    <None Remove="src\components\ui\anchor.ts" />
+    <None Remove="src\components\ui\balloon.ts" />
+    <None Remove="src\components\ui\binder.ts" />
+    <None Remove="src\components\ui\body.ts" />
+    <None Remove="src\components\ui\button.ts" />
+    <None Remove="src\components\ui\buttonset.ts" />
+    <None Remove="src\components\ui\collapse.ts" />
+    <None Remove="src\components\ui\dialog.ts" />
+    <None Remove="src\components\ui\image.ts" />
+    <None Remove="src\components\ui\infinite-scroller.ts" />
+    <None Remove="src\components\ui\iterative.ts" />
+    <None Remove="src\components\ui\lightbox.ts" />
+    <None Remove="src\components\ui\loader.ts" />
+    <None Remove="src\components\ui\markdown-svc.ts" />
+    <None Remove="src\components\ui\markdown.ts" />
+    <None Remove="src\components\ui\marquee.ts" />
+    <None Remove="src\components\ui\menu.ts" />
+    <None Remove="src\components\ui\meta-proxy.ts" />
+    <None Remove="src\components\ui\progressbar.ts" />
+    <None Remove="src\components\ui\slideshow.ts" />
+    <None Remove="src\components\ui\snapshot.ts" />
+    <None Remove="src\components\ui\social-twitter.ts" />
+    <None Remove="src\components\ui\tabs.ts" />
+    <None Remove="src\components\ui\title-proxy.ts" />
+    <None Remove="src\components\ui\toast.ts" />
+    <None Remove="src\components\ui\toc.ts" />
+    <None Remove="src\components\ui\tuner.ts" />
+    <None Remove="src\components\ui\view.ts" />
+    <None Remove="src\core\adapter.ts" />
+    <None Remove="src\core\array_extensions.ts" />
+    <None Remove="src\core\command.ts" />
+    <None Remove="src\core\converters.ts" />
+    <None Remove="src\core\decorators.ts" />
+    <None Remove="src\core\defaults.ts" />
+    <None Remove="src\core\events.ts" />
+    <None Remove="src\core\eventtarget.ts" />
+    <None Remove="src\core\expression.ts" />
+    <None Remove="src\core\geom.ts" />
+    <None Remove="src\core\http.ts" />
+    <None Remove="src\core\logger.ts" />
+    <None Remove="src\core\promise.ts" />
+    <None Remove="src\core\regex.ts" />
+    <None Remove="src\core\router.ts" />
+    <None Remove="src\core\storage.ts" />
+    <None Remove="src\core\transforms.ts" />
+    <None Remove="src\core\types.ts" />
+    <None Remove="src\core\utils.ts" />
+    <None Remove="src\less\pacem\layout\visibility.less" />
+    <None Remove="src\pacem-core\adapter.ts" />
+    <None Remove="src\pacem-core\array_extensions.ts" />
+    <None Remove="src\pacem-core\command.ts" />
+    <None Remove="src\pacem-core\converters.ts" />
+    <None Remove="src\pacem-core\decorators.ts" />
+    <None Remove="src\pacem-core\defaults.ts" />
+    <None Remove="src\pacem-core\events.ts" />
+    <None Remove="src\pacem-core\eventtarget.ts" />
+    <None Remove="src\pacem-core\expression.ts" />
+    <None Remove="src\pacem-core\http.ts" />
+    <None Remove="src\pacem-core\logger.ts" />
+    <None Remove="src\pacem-core\src\components\basic\adapter.ts" />
+    <None Remove="src\pacem-core\src\components\basic\annihilator.ts" />
+    <None Remove="src\pacem-core\src\components\basic\data.ts" />
+    <None Remove="src\pacem-core\src\components\basic\dock.ts" />
+    <None Remove="src\pacem-core\src\components\basic\fetcher.ts" />
+    <None Remove="src\pacem-core\src\components\basic\html-proxy.ts" />
+    <None Remove="src\pacem-core\src\components\basic\if.ts" />
+    <None Remove="src\pacem-core\src\components\basic\index.ts" />
+    <None Remove="src\pacem-core\src\components\basic\items-container.ts" />
+    <None Remove="src\pacem-core\src\components\basic\iterative.ts" />
+    <None Remove="src\pacem-core\src\components\basic\meta-proxy.ts" />
+    <None Remove="src\pacem-core\src\components\basic\overlay.ts" />
+    <None Remove="src\pacem-core\src\components\basic\panel.ts" />
+    <None Remove="src\pacem-core\src\components\basic\position.ts" />
+    <None Remove="src\pacem-core\src\components\basic\repeater.ts" />
+    <None Remove="src\pacem-core\src\components\basic\resize.ts" />
+    <None Remove="src\pacem-core\src\components\basic\router.ts" />
+    <None Remove="src\pacem-core\src\components\basic\scroll-aware.ts" />
+    <None Remove="src\pacem-core\src\components\basic\span.ts" />
+    <None Remove="src\pacem-core\src\components\basic\text.ts" />
+    <None Remove="src\pacem-core\src\components\basic\timer.ts" />
+    <None Remove="src\pacem-core\src\components\basic\title-proxy.ts" />
+    <None Remove="src\pacem-core\src\components\basic\tweener.ts" />
+    <None Remove="src\pacem-core\src\components\basic\types.ts" />
+    <None Remove="src\pacem-core\src\components\basic\utils.ts" />
+    <None Remove="src\pacem-core\src\components\basic\viewport-aware.ts" />
+    <None Remove="src\pacem-core\src\components\behaviors\behavior.ts" />
+    <None Remove="src\pacem-core\src\components\behaviors\drag-drop.ts" />
+    <None Remove="src\pacem-core\src\components\behaviors\index.ts" />
+    <None Remove="src\pacem-core\src\components\behaviors\swipe.ts" />
+    <None Remove="src\pacem-core\src\core\animations\easings.ts" />
+    <None Remove="src\pacem-core\src\core\animations\events.ts" />
+    <None Remove="src\pacem-core\src\core\animations\index.ts" />
+    <None Remove="src\pacem-core\src\core\animations\tweenservice.ts" />
+    <None Remove="src\pacem-core\src\core\index.ts" />
+    <None Remove="src\pacem-core\src\core\maths\gaussian.ts" />
+    <None Remove="src\pacem-core\src\core\maths\geom.ts" />
+    <None Remove="src\pacem-core\promise.ts" />
+    <None Remove="src\pacem-core\regex.ts" />
+    <None Remove="src\pacem-core\src\core\net\fetcher.ts" />
+    <None Remove="src\pacem-core\src\core\net\index.ts" />
+    <None Remove="src\pacem-core\src\core\ui\index.ts" />
+    <None Remove="src\pacem-core\src\index.ts" />
+    <None Remove="src\pacem-core\storage.ts" />
+    <None Remove="src\pacem-core\transforms.ts" />
+    <None Remove="src\pacem-core\types.ts" />
+    <None Remove="src\pacem-core\utils.ts" />
+    <None Remove="test\core-tests.ts" />
+    <None Remove="test\geom-tests.ts" />
+    <None Remove="test\main.ts" />
+    <None Remove="test\markdown-tests.ts" />
+    <None Remove="test\math-tests.ts" />
+    <None Remove="test\transformer-tests.ts" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="demo\less\docs_splash.less">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="server\Controllers\TestController.cs" />
+    <Content Include="demo\less\docs.less">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="demo\less\docs_snippet.less">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="demo\less\docs_descriptor.less">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="demo\less\docs_themeroller.less">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="src\less\pacem\layout\visibility.less" />
+    <Content Include="src\less\pacem\layout\grids.less" />
+    <Content Include="src\less\pacem\layout\grid-system.less" />
+    <Content Include="src\less\pacem\layout\index.less" />
+    <Content Include="src\polyfills\documentfragment.edge.js">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Rewrite" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.1.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <TypeScriptCompile Include="demo\components\snippet.ts" />
+    <TypeScriptCompile Include="index.d.ts" />
+    <TypeScriptCompile Include="src\components\3d\detector.ts" />
+    <TypeScriptCompile Include="src\components\3d\three.ts" />
+    <TypeScriptCompile Include="src\components\3d\types.ts" />
+    <TypeScriptCompile Include="src\components\basic\adapter.ts" />
+    <TypeScriptCompile Include="src\components\basic\annihilator.ts" />
+    <TypeScriptCompile Include="src\components\basic\data.ts" />
+    <TypeScriptCompile Include="src\components\basic\dock.ts" />
+    <TypeScriptCompile Include="src\components\basic\fetcher.ts" />
+    <TypeScriptCompile Include="src\components\basic\hubproxy.ts" />
+    <TypeScriptCompile Include="src\components\basic\if.ts" />
+    <TypeScriptCompile Include="src\components\basic\index.ts" />
+    <TypeScriptCompile Include="src\components\basic\items-container.ts" />
+    <TypeScriptCompile Include="src\components\basic\iterative.ts" />
+    <TypeScriptCompile Include="src\components\basic\overlay.ts" />
+    <TypeScriptCompile Include="src\components\basic\panel.ts" />
+    <TypeScriptCompile Include="src\components\basic\position.ts" />
+    <TypeScriptCompile Include="src\components\basic\repeater.ts" />
+    <TypeScriptCompile Include="src\components\basic\resize.ts" />
+    <TypeScriptCompile Include="src\components\basic\scroll-aware.ts" />
+    <TypeScriptCompile Include="src\components\basic\span.ts" />
+    <TypeScriptCompile Include="src\components\basic\text.ts" />
+    <TypeScriptCompile Include="src\components\basic\timer.ts" />
+    <TypeScriptCompile Include="src\components\basic\html-proxy.ts" />
+    <TypeScriptCompile Include="src\components\basic\style-proxy.ts" />
+    <TypeScriptCompile Include="src\components\basic\tweener.ts" />
+    <TypeScriptCompile Include="src\components\basic\types.ts" />
+    <TypeScriptCompile Include="src\components\basic\utils.ts" />
+    <TypeScriptCompile Include="src\components\basic\viewport-aware.ts" />
+    <TypeScriptCompile Include="src\components\behaviors\behavior.ts" />
+    <TypeScriptCompile Include="src\components\behaviors\drag-drop.ts" />
+    <TypeScriptCompile Include="src\components\behaviors\swipe.ts" />
+    <TypeScriptCompile Include="src\components\charts\generic.ts" />
+    <TypeScriptCompile Include="src\components\charts\pie.ts" />
+    <TypeScriptCompile Include="src\components\fx\hero.ts" />
+    <TypeScriptCompile Include="src\components\fx\fancy.ts" />
+    <TypeScriptCompile Include="src\components\logging\console.ts" />
+    <TypeScriptCompile Include="src\components\logging\fps.ts" />
+    <TypeScriptCompile Include="src\components\logging\types.ts" />
+    <TypeScriptCompile Include="src\components\maps\azure.ts" />
+    <TypeScriptCompile Include="src\components\maps\google.ts" />
+    <TypeScriptCompile Include="src\components\maps\leaflet.ts" />
+    <TypeScriptCompile Include="src\components\maps\types.ts" />
+    <TypeScriptCompile Include="src\components\plus\carousel.ts" />
+    <TypeScriptCompile Include="src\components\plus\edit.ts" />
+    <TypeScriptCompile Include="src\components\plus\gallery.ts" />
+    <TypeScriptCompile Include="src\components\plus\hierarchy.ts" />
+    <TypeScriptCompile Include="src\components\plus\modal-form.ts" />
+    <TypeScriptCompile Include="src\components\plus\search.ts" />
+    <TypeScriptCompile Include="src\components\scaffolding\char-counter.ts" />
+    <TypeScriptCompile Include="src\components\scaffolding\checkbox-list.ts" />
+    <TypeScriptCompile Include="src\components\scaffolding\checkbox.ts" />
+    <TypeScriptCompile Include="src\components\scaffolding\contenteditable.ts" />
+    <TypeScriptCompile Include="src\components\scaffolding\datetime-picker.ts" />
+    <TypeScriptCompile Include="src\components\scaffolding\form.ts" />
+    <TypeScriptCompile Include="src\components\scaffolding\formfield.ts" />
+    <TypeScriptCompile Include="src\components\scaffolding\input-color.ts" />
+    <TypeScriptCompile Include="src\components\scaffolding\input-email.ts" />
+    <TypeScriptCompile Include="src\components\scaffolding\input-file.ts" />
+    <TypeScriptCompile Include="src\components\scaffolding\input-hidden.ts" />
+    <TypeScriptCompile Include="src\components\scaffolding\input-image.ts" />
+    <TypeScriptCompile Include="src\components\scaffolding\input-number.ts" />
+    <TypeScriptCompile Include="src\components\scaffolding\input-password.ts" />
+    <TypeScriptCompile Include="src\components\scaffolding\input-search.ts" />
+    <TypeScriptCompile Include="src\components\scaffolding\input-tel.ts" />
+    <TypeScriptCompile Include="src\components\scaffolding\input-text.ts" />
+    <TypeScriptCompile Include="src\components\scaffolding\input-url.ts" />
+    <TypeScriptCompile Include="src\components\scaffolding\input.ts" />
+    <TypeScriptCompile Include="src\components\scaffolding\latlng.ts" />
+    <TypeScriptCompile Include="src\components\scaffolding\radio-list.ts" />
+    <TypeScriptCompile Include="src\components\scaffolding\radio.ts" />
+    <TypeScriptCompile Include="src\components\scaffolding\select.ts" />
+    <TypeScriptCompile Include="src\components\scaffolding\suggest.ts" />
+    <TypeScriptCompile Include="src\components\scaffolding\tags.ts" />
+    <TypeScriptCompile Include="src\components\scaffolding\textarea-markdown.ts" />
+    <TypeScriptCompile Include="src\components\scaffolding\textarea.ts" />
+    <TypeScriptCompile Include="src\components\scaffolding\types.ts" />
+    <TypeScriptCompile Include="src\components\scaffolding\validators.ts" />
+    <TypeScriptCompile Include="src\components\ui\adapter.ts" />
+    <TypeScriptCompile Include="src\components\ui\anchor.ts" />
+    <TypeScriptCompile Include="src\components\ui\balloon.ts" />
+    <TypeScriptCompile Include="src\components\ui\binder.ts" />
+    <TypeScriptCompile Include="src\components\ui\button.ts" />
+    <TypeScriptCompile Include="src\components\ui\calendar.ts" />
+    <TypeScriptCompile Include="src\components\ui\collapse.ts" />
+    <TypeScriptCompile Include="src\components\ui\dialog.ts" />
+    <TypeScriptCompile Include="src\components\ui\image.ts" />
+    <TypeScriptCompile Include="src\components\ui\infinite-scroller.ts" />
+    <TypeScriptCompile Include="src\components\ui\iterative.ts" />
+    <TypeScriptCompile Include="src\components\ui\lightbox.ts" />
+    <TypeScriptCompile Include="src\components\ui\loader.ts" />
+    <TypeScriptCompile Include="src\components\ui\buttonset.ts" />
+    <TypeScriptCompile Include="src\components\ui\markdown-svc.ts" />
+    <TypeScriptCompile Include="src\components\ui\markdown.ts" />
+    <TypeScriptCompile Include="src\components\ui\marquee.ts" />
+    <TypeScriptCompile Include="src\components\ui\menu.ts" />
+    <TypeScriptCompile Include="src\components\basic\title-proxy.ts" />
+    <TypeScriptCompile Include="src\components\basic\meta-proxy.ts" />
+    <TypeScriptCompile Include="src\components\ui\pager.ts" />
+    <TypeScriptCompile Include="src\components\ui\progressbar.ts" />
+    <TypeScriptCompile Include="src\components\ui\slideshow.ts" />
+    <TypeScriptCompile Include="src\components\ui\snapshot.ts" />
+    <TypeScriptCompile Include="src\components\ui\social-twitter.ts" />
+    <TypeScriptCompile Include="src\components\ui\tabs.ts" />
+    <TypeScriptCompile Include="src\components\ui\toast.ts" />
+    <TypeScriptCompile Include="src\components\ui\toc.ts" />
+    <TypeScriptCompile Include="src\components\ui\tuner.ts" />
+    <TypeScriptCompile Include="src\components\ui\view.ts" />
+    <TypeScriptCompile Include="src\core\adapter.ts" />
+    <TypeScriptCompile Include="src\core\array_extensions.ts" />
+    <TypeScriptCompile Include="src\core\command.ts" />
+    <TypeScriptCompile Include="src\components\basic\router.ts" />
+    <TypeScriptCompile Include="src\core\converters.ts" />
+    <TypeScriptCompile Include="src\core\decorators.ts" />
+    <TypeScriptCompile Include="src\core\defaults.ts" />
+    <TypeScriptCompile Include="src\core\events.ts" />
+    <TypeScriptCompile Include="src\core\eventtarget.ts" />
+    <TypeScriptCompile Include="src\core\expression.ts" />
+    <TypeScriptCompile Include="src\core\maths\gaussian.ts" />
+    <TypeScriptCompile Include="src\core\maths\geom.ts" />
+    <TypeScriptCompile Include="src\core\http.ts" />
+    <TypeScriptCompile Include="src\core\logger.ts" />
+    <TypeScriptCompile Include="src\core\promise.ts" />
+    <TypeScriptCompile Include="src\core\regex.ts" />
+    <TypeScriptCompile Include="src\core\storage.ts" />
+    <TypeScriptCompile Include="src\core\transforms.ts" />
+    <TypeScriptCompile Include="src\core\types.ts" />
+    <TypeScriptCompile Include="src\core\utils.ts" />
+    <TypeScriptCompile Include="demo\components\customelement-descriptor.ts" />
+    <TypeScriptCompile Include="demo\components\themeroller.ts" />
+    <TypeScriptCompile Include="src\pacem-core\src\components\basic\adapter.ts" />
+    <TypeScriptCompile Include="src\pacem-core\src\components\basic\annihilator.ts" />
+    <TypeScriptCompile Include="src\pacem-core\src\components\basic\data.ts" />
+    <TypeScriptCompile Include="src\pacem-core\src\components\basic\dock.ts" />
+    <TypeScriptCompile Include="src\pacem-core\src\components\basic\fetcher.ts" />
+    <TypeScriptCompile Include="src\pacem-core\src\components\basic\html-proxy.ts" />
+    <TypeScriptCompile Include="src\pacem-core\src\components\basic\if.ts" />
+    <TypeScriptCompile Include="src\pacem-core\src\components\basic\index.ts" />
+    <TypeScriptCompile Include="src\pacem-core\src\components\basic\items-container.ts" />
+    <TypeScriptCompile Include="src\pacem-core\src\components\basic\iterative.ts" />
+    <TypeScriptCompile Include="src\pacem-core\src\components\basic\meta-proxy.ts" />
+    <TypeScriptCompile Include="src\pacem-core\src\components\basic\overlay.ts" />
+    <TypeScriptCompile Include="src\pacem-core\src\components\basic\panel.ts" />
+    <TypeScriptCompile Include="src\pacem-core\src\components\basic\position.ts" />
+    <TypeScriptCompile Include="src\pacem-core\src\components\basic\repeater.ts" />
+    <TypeScriptCompile Include="src\pacem-core\src\components\basic\resize.ts" />
+    <TypeScriptCompile Include="src\pacem-core\src\components\basic\router.ts" />
+    <TypeScriptCompile Include="src\pacem-core\src\components\basic\scroll-aware.ts" />
+    <TypeScriptCompile Include="src\pacem-core\src\components\basic\span.ts" />
+    <TypeScriptCompile Include="src\pacem-core\src\components\basic\text.ts" />
+    <TypeScriptCompile Include="src\pacem-core\src\components\basic\timer.ts" />
+    <TypeScriptCompile Include="src\pacem-core\src\components\basic\title-proxy.ts" />
+    <TypeScriptCompile Include="src\pacem-core\src\components\basic\tweener.ts" />
+    <TypeScriptCompile Include="src\pacem-core\src\components\basic\types.ts" />
+    <TypeScriptCompile Include="src\pacem-core\src\components\basic\utils.ts" />
+    <TypeScriptCompile Include="src\pacem-core\src\components\basic\viewport-aware.ts" />
+    <TypeScriptCompile Include="src\pacem-core\src\components\behaviors\behavior.ts" />
+    <TypeScriptCompile Include="src\pacem-core\src\components\behaviors\drag-drop.ts" />
+    <TypeScriptCompile Include="src\pacem-core\src\components\behaviors\index.ts" />
+    <TypeScriptCompile Include="src\pacem-core\src\components\behaviors\swipe.ts" />
+    <TypeScriptCompile Include="src\pacem-core\src\core\adapter.ts" />
+    <TypeScriptCompile Include="src\pacem-core\src\core\animations\easings.ts" />
+    <TypeScriptCompile Include="src\pacem-core\src\core\animations\events.ts" />
+    <TypeScriptCompile Include="src\pacem-core\src\core\animations\index.ts" />
+    <TypeScriptCompile Include="src\pacem-core\src\core\animations\tweenservice.ts" />
+    <TypeScriptCompile Include="src\pacem-core\src\core\array_extensions.ts" />
+    <TypeScriptCompile Include="src\pacem-core\src\core\command.ts" />
+    <TypeScriptCompile Include="src\pacem-core\src\core\converters.ts" />
+    <TypeScriptCompile Include="src\pacem-core\src\core\decorators.ts" />
+    <TypeScriptCompile Include="src\pacem-core\src\core\defaults.ts" />
+    <TypeScriptCompile Include="src\pacem-core\src\core\events.ts" />
+    <TypeScriptCompile Include="src\pacem-core\src\core\eventtarget.ts" />
+    <TypeScriptCompile Include="src\pacem-core\src\core\expression.ts" />
+    <TypeScriptCompile Include="src\pacem-core\src\core\index.ts" />
+    <TypeScriptCompile Include="src\pacem-core\src\core\net\http.ts" />
+    <TypeScriptCompile Include="src\pacem-core\src\core\logger.ts" />
+    <TypeScriptCompile Include="src\pacem-core\src\core\maths\gaussian.ts" />
+    <TypeScriptCompile Include="src\pacem-core\src\core\maths\geom.ts" />
+    <TypeScriptCompile Include="src\pacem-core\src\core\net\fetcher.ts" />
+    <TypeScriptCompile Include="src\pacem-core\src\core\net\index.ts" />
+    <TypeScriptCompile Include="src\pacem-core\src\core\promise.ts" />
+    <TypeScriptCompile Include="src\pacem-core\src\core\regex.ts" />
+    <TypeScriptCompile Include="src\pacem-core\src\core\storage.ts" />
+    <TypeScriptCompile Include="src\pacem-core\src\core\transforms.ts" />
+    <TypeScriptCompile Include="src\pacem-core\src\core\types.ts" />
+    <TypeScriptCompile Include="src\pacem-core\src\core\ui\index.ts" />
+    <TypeScriptCompile Include="src\pacem-core\src\core\utils.ts" />
+    <TypeScriptCompile Include="src\pacem-core\src\index.ts" />
+    <TypeScriptCompile Include="test\core-tests.ts" />
+    <TypeScriptCompile Include="test\geom-tests.ts" />
+    <TypeScriptCompile Include="test\main.ts" />
+    <TypeScriptCompile Include="test\markdown-tests.ts" />
+    <TypeScriptCompile Include="test\math-tests.ts" />
+    <TypeScriptCompile Include="test\transformer-tests.ts" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="wwwroot\assets\logo-light.svg" />
+    <None Include="wwwroot\assets\logo-phousys.svg" />
+    <None Include="wwwroot\assets\logo-dark.svg" />
+  </ItemGroup>
+
+</Project>

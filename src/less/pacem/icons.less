@@ -1,0 +1,37 @@
+﻿@import "../shared";
+@import "theme-dark";
+
+i.pacem-icon {
+    .IconCore();
+    .PacemIconCore();
+    /*&.icon-left {
+        .PacemIcon('keyboard_arrow_left');
+    }
+
+    &.icon-right {
+        .PacemIcon('keyboard_arrow_right');
+    }
+
+    &.icon-up {
+        .PacemIcon('keyboard_arrow_up');
+    }
+
+    &.icon-down {
+        .PacemIcon('keyboard_arrow_down');
+    }*/
+    &.space-left {
+        margin-left: @grid_spacing/2;
+
+        &.space-more {
+            margin-left: @grid_spacing;
+        }
+    }
+
+    &.space-right {
+        margin-right: @grid_spacing/2;
+
+        &.space-more {
+            margin-right: @grid_spacing;
+        }
+    }
+}

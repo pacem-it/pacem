@@ -1,0 +1,280 @@
+﻿/* #region RESET */
+/* reset.css */
+html, body, div, span, menu, menuitem, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, code, del, dfn, em, img, q, dl, dt, dd, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, figure, figcaption {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    -webkit-tap-highlight-color: none;
+}
+
+ol, ul {
+    margin-top: 0;
+    margin-bottom: 1em; //1rem * @font_rem_factor;
+    padding: 0 0 0 @grid_spacing * 1.25;
+
+    ol, ul {
+        margin-bottom: 0;
+    }
+}
+
+table {
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+caption, th, td {
+    text-align: left;
+    font-weight: normal;
+}
+
+table, td, th {
+    vertical-align: middle;
+}
+
+blockquote:before, blockquote:after, q:before, q:after {
+    content: "";
+}
+
+blockquote, q {
+    quotes: "" "";
+}
+
+a img {
+    border: none;
+}
+
+a {
+    text-decoration: none;
+}
+
+*:focus, *:active {
+    outline: none;
+}
+
+textarea {
+    overflow: auto;
+}
+
+:invalid {
+    box-shadow: none; /* Firefox invalid inputs decoration */
+}
+/*#endregion*/
+
+/* #region CUSTOM FONTS */
+
+@fonts: "fonts";
+@import "@{fonts}";
+
+/* #endregion */
+@import "../shared";
+@import "pacem-animations";
+
+@import "attributes";
+
+@theme: "theme-dark";
+@import "@{theme}";
+
+@import "basic/index";
+@import "transforms/index";
+
+@import "body";
+@import "icons";
+
+@import "layout/index";
+
+@import "logging/index";
+@import "ui/index";
+@import "scaffolding/index";
+@import "maps/index";
+@import "3d/index";
+@import "plus/index";
+@import "charts/index";
+@import "fx/index";
+
+
+.Gloss(@_clr) {
+    .GradientVertical(50%, 50%, 100%, fade(@_clr, 0), fade(@_clr, 40), fade(@_clr, 10));
+}
+
+.Gloss() {
+    .Gloss(#fff);
+}
+
+/* #region fancy extra */
+.pacem-gloss when (@gradients = true) {
+    .Gloss();
+}
+
+/* #region */
+
+/* #region background overrides */
+
+.Bg(@_clr, @_clr_inv) {
+
+    &.pacem-gloss when (@shadows = true) {
+        box-shadow: inset @grid_spacing/12 0 @grid_spacing/12 @_clr, inset -@grid_spacing/12 0 @grid_spacing/12 @_clr;
+        text-shadow: 0 1px 0 @_clr, 0 -1px 0 @_clr, -1px 0 0 @_clr, 1px 0 0 @_clr;
+    }
+
+    &.pacem-gloss when (@gradients = true) {
+        .Gloss(@_clr_inv);
+        background-color: @_clr;
+    }
+
+    background-color: @_clr;
+    color: @_clr_inv;
+}
+
+.bg-accent {
+    .Bg(@color_accent, @color_accent_inv);
+}
+
+.bg-primary {
+    .Bg( @color_primary, @color_primary_inv);
+}
+
+.bg-success {
+    .Bg( @color_success, @color_success_inv);
+}
+
+.bg-warning {
+    .Bg( @color_warning, @color_warning_inv);
+}
+
+.bg-danger {
+    background-color: @color_danger;
+    color: @color_danger_inv;
+}
+
+.bg-invert {
+    .Bg( @color_default, @color_background);
+}
+
+/*#endregion*/
+
+/* #region text overrides */
+.text-default {
+    color: @color_default !important;
+}
+
+.text-invert {
+    color: @color_background !important;
+}
+
+.text-danger {
+    color: @color_danger !important;
+}
+
+.text-accent {
+    color: @color_accent !important;
+}
+
+.text-primary {
+    color: @color_primary !important;
+}
+
+.text-success {
+    color: @color_success !important;
+}
+
+.text-warning {
+    color: @color_warning !important;
+}
+
+.text-disabled {
+    color: @color_watermark !important;
+}
+
+.text-small {
+    font-size: .9em !important; //0.9rem * @font_rem_factor;
+}
+
+.text-big {
+    font-size: 1.5em !important; // 1.5rem * @font_rem_factor;
+}
+
+.text-smaller {
+    font-size: 0.86667em !important; //0.86667rem * @font_rem_factor;
+}
+
+.text-tiny {
+    font-size: 0.75em !important; // 0.75rem * @font_rem_factor;
+}
+
+.text-bigger {
+    font-size: 2em !important; // 2rem * @font_rem_factor;
+}
+
+.text-left {
+    text-align: left !important;
+}
+
+.text-right {
+    text-align: right !important;
+}
+
+.text-center {
+    text-align: center !important;
+}
+
+.text-justify {
+    text-align: justify !important;
+}
+
+.text-nowrap {
+    white-space: nowrap !important;
+}
+
+.text-ellipsed {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.text-upper {
+    text-transform: uppercase !important;
+}
+
+.text-lower {
+    text-transform: lowercase !important;
+}
+
+.text-capital {
+    text-transform: capitalize !important;
+}
+
+.text-bold {
+    font-weight: 700 !important;
+}
+
+.text-tech {
+    font-family: @font_tech !important;
+}
+
+.text-normal {
+    text-transform: none !important;
+    font-style: normal !important;
+    font-weight: normal !important;
+}
+/* #endregion */
+
+:root {
+    --color-background: @color_background;
+    --color-default: @color_default;
+    --color-accent: @color_accent;
+    --color-accent-inverse: @color_accent_inv;
+    --color-primary: @color_primary;
+    --color-primary-inverse: @color_primary_inv;
+    --color-danger: @color_danger;
+    --color-danger-inverse: @color_danger_inv;
+    --color-highlight: @color_highlight;
+    --color-highlight-inverse: @color_highlight_fore;
+    --color-warning: @color_warning;
+    --color-warning-inverse: @color_warning_inv;
+    --color-success: @color_success;
+    --color-success-inverse: @color_success_inv;
+    --color-disabled: @color_disabled;
+    //
+    --grid-cell: @grid_cell;
+    --grid-spacing: @grid_spacing;
+}

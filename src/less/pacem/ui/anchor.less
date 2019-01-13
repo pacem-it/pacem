@@ -1,0 +1,32 @@
+﻿@import "../theme-dark";
+
+.IconA(@icon) {
+    .IconCore();
+    content: @icon;
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: .1em; //.1rem * @font_rem_factor;
+    line-height: 1;
+}
+
+pacem-a {
+    display: inline-block;
+    color: @color_link;
+    cursor: default;
+
+    &:hover {
+        color: lighten(@color_link, 10);
+    }
+
+    &.a-target::after {
+        .IconA('launch');
+    }
+
+    &.a-url {
+        cursor: pointer;
+    }
+
+    &.a-download::after {
+        .IconA('vertical_align_bottom');
+    }
+}

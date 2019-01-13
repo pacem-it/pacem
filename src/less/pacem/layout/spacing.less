@@ -1,0 +1,137 @@
+﻿@import "../theme-dark";
+
+hr.spacer {
+    margin-bottom: @grid_spacing;
+}
+
+.pacem-spacer {
+    margin-bottom: @grid_spacing;
+
+    &.spacer-2x {
+        margin-bottom: 2 * @grid_spacing;
+    }
+
+    &.spacer-3x {
+        margin-bottom: 3 * @grid_spacing;
+    }
+}
+
+@_spacing: @grid_spacing;
+@_spacing_xs: @_spacing / 4;
+@_spacing_sm: @_spacing / 2;
+@_spacing_lg: @_spacing * 1.5;
+@_spacing_xl: @_spacing * 2;
+
+.Spaced(@what, @prefix, @suffix) {
+    @{what}-@{suffix}: @_spacing;
+
+    &.@{prefix}-xs {
+        @{what}-@{suffix}: @_spacing_xs;
+    }
+
+    &.@{prefix}-sm {
+        @{what}-@{suffix}: @_spacing_sm;
+    }
+
+    &.@{prefix}-lg {
+        @{what}-@{suffix}: @_spacing_lg;
+    }
+
+    &.@{prefix}-xl {
+        @{what}-@{suffix}: @_spacing_xl;
+    }
+}
+
+.Pad(@suffix) {
+    .Spaced(padding, pad, @suffix);
+}
+
+.Margin(@suffix) {
+    .Spaced(margin, margin, @suffix);
+}
+
+.pacem-nomargin {
+    margin: 0 !important;
+}
+
+.pacem-margin {
+
+    &:not(.margin-right):not(.margin-bottom):not(margin-left):not(.margin-top) {
+        margin: @_spacing;
+
+        &.margin-xs {
+            margin: @_spacing_xs;
+        }
+
+        &.margin-sm {
+            margin: @_spacing_sm;
+        }
+
+        &.margin-lg {
+            margin: @_spacing_lg;
+        }
+
+        &.margin-xl {
+            margin: @_spacing_xl;
+        }
+    }
+
+    &.margin-top {
+        .Margin(top);
+    }
+
+    &.margin-bottom {
+        .Margin(bottom);
+    }
+
+    &.margin-right {
+        .Margin(right);
+    }
+
+    &.margin-left {
+        .Margin(left);
+    }
+}
+
+.pacem-nopad {
+    padding: 0 !important;
+}
+
+.pacem-pad {
+
+    &:not(.pad-right):not(.pad-bottom):not(pad-left):not(.pad-top) {
+        padding: @_spacing;
+
+        &.pad-xs {
+            padding: @_spacing_xs;
+        }
+
+        &.pad-sm {
+            padding: @_spacing_sm;
+        }
+
+        &.pad-lg {
+            padding: @_spacing_lg;
+        }
+
+        &.pad-xl {
+            padding: @_spacing_xl;
+        }
+    }
+
+    &.pad-top {
+        .Pad(top);
+    }
+
+    &.pad-bottom {
+        .Pad(bottom);
+    }
+
+    &.pad-right {
+        .Pad(right);
+    }
+
+    &.pad-left {
+        .Pad(left);
+    }
+}

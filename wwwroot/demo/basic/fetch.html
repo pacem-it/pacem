@@ -1,0 +1,41 @@
+﻿<pacem-markdown value="{{ #content0.textContent }}" root class="md-tech"></pacem-markdown>
+
+<pre pacem hidden id="content0">
+`PacemFetchElement` is the predefined custom element that handles the asynchronous __http__ communication with the server side of your application.
+
+It basically wraps the [fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API).
+
+## Requests
+`PacemFetchElement` sends a request as soon as:
+- A `url` property/attribute is provided **and**...
+- it is not `disabled`.
+
+Then, it will wait for one of the following properties to change in order to **trigger a new request**:  
+- `url`: the target url, 
+- `method`: the case-insensitive HTTP method, 
+- `parameters`: the key-value pairs to be sent in the body/querystring of the request, 
+- `headers`: the key-value pairs to be sent in the header of the request, 
+- `as`: the type of expected response (`"object"`/json, `"text"`/string, `"blob"`, `"image"`), 
+- `type`: possible values are `"json"` (default) or `"raw"` for _application/x-www-form-urlencoded_ content-types, 
+- `mode`: possible values are `"cors"` (default), `"no-cors"`/string, `"navigate"`, `"same-origin"`, 
+- `credentials`: possible values are `"same-origin"` (default), `"omit"`, `"include"`, 
+- `disabled` (in the case it changes to `true`).
+
+Calling the **method** `fetch()` **triggers a new request** as well (if not disabled, of course).
+
+While a response is awaited, the `fetching` flag is set to `true` (and emits relevant `propertychange` event).
+
+## Responses
+When a response is obtained, the `fetching` flag is set to `false` (and emits...).
+
+Once the response body has been parsed into the expected entity:
+- `result` property value is set consequently,
+- `fetchresult` custom event is fired (having the entity as _detail_).
+
+If anything went wrong:
+- `error` custom event is fired (having the response itself as _detail_).
+
+</pre>
+
+<pacem-fetch id="proto"></pacem-fetch>
+<pacemjs-descriptor target="{{ #proto }}"></pacemjs-descriptor>

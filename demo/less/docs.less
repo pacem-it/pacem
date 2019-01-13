@@ -1,0 +1,290 @@
+﻿@import "../../src/less/pacem/shared";
+@import "../../src/less/pacem/ui/shared";
+
+@border_color: @color_border;
+@_toc: @grid_spacing * 10;
+
+body.pacem-body {
+    //padding-top: 0; //@grid_cell;
+    min-height: 100vh;
+    box-sizing: border-box;
+    position: relative;
+    padding-bottom: 50vh;
+    //padding-right: @grid_spacing;
+}
+
+.pacem-markdown,
+pacem-markdown {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+
+    h1 {
+        /*line-height: @grid_cell;
+        height: @grid_cell;*/
+        box-sizing: border-box;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        color: @color_accent;
+        width: 100%;
+        z-index: 5;
+        margin: 0;
+        line-height: 1;
+        border: none;
+        .FontMainSize(2);
+        font-weight: @font_weight;
+        /*padding-left: 2 * @grid_spacing;
+        background-image: url(/assets/logo.svg);
+        background-repeat: no-repeat;
+        background-position: 0 @grid_spacing;*/
+    }
+
+    h1 > code {
+        color: @color_accent;
+        font-size: 2rem * @font_rem_factor;
+        background-color: @color_background;
+        text-transform: none;
+        padding: 0;
+        display: inline-block;
+        overflow: visible;
+        margin: 0;
+    }
+
+    p {
+        line-height: 2rem * @font_rem_factor;
+    }
+
+    h2 {
+        //font-weight: normal;
+        //background-color: fade(@color_default, 10);
+        color: @color_default;
+        //border-color: @color_border;
+        border: none;
+        padding-left: 0;
+        padding-right: @grid_spacing;
+        //text-decoration: underline;
+        position: relative;
+        margin: 0 0 1.5rem 0;
+        display: table;
+        .FontMainSize(1.75);
+
+        &:hover {
+            padding-left: @grid_spacing * 1.5;
+
+            &::before {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        > code {
+            /*background-color: @color_primary;
+            color: @color_primary_inv;*/
+            text-transform: none;
+        }
+    }
+    //h2:first-child,
+    * + h2 {
+        margin-top: 3rem * @font_rem_factor;
+    }
+
+    h1 + h2,
+    h1 + * {
+        margin-top: 1.5rem * @font_rem_factor;
+    }
+
+    code {
+        overflow: auto;
+
+        span {
+            display: inline-block;
+        }
+        /*&.pacem-code-block {
+            //.GradientVertical(0, 100%, transparent, @color_code_back);
+            background-color: #000;
+            color: #fff;
+            //font-size: @grid_spacing * .6;
+            font-size: 1rem * @font_rem_factor;
+        }*/
+    }
+
+    blockquote {
+        font-size: 1.25rem;
+    }
+}
+
+pacem-markdown ~ pacem-markdown {
+
+    h2:first-child {
+        margin-top: 3rem * @font_rem_factor;
+    }
+}
+
+pacem-view#view {
+    display: block;
+    margin-bottom: 10rem;
+    //max-width: 640px;
+}
+
+@media (min-width: @threshold_lg) {
+    pacem-view#view {
+        margin-right: @_toc;
+    }
+}
+
+h1#heading{
+    position: sticky;
+    top: @grid_cell; // 4.5 * @grid_spacing;
+    z-index: @header-z-index - 100;
+    background: @color_background;
+    .Background();
+    margin: -@grid_spacing 0 0 0;
+    padding: 0;
+    height: @grid_cell;
+    line-height: @grid_cell;
+    border: none;
+    .FontMainSize(2);
+    font-weight: 400;
+}
+
+.pacem-animations {
+    pacem-view.pacem-animatable {
+    }
+}
+
+footer {
+    position: absolute;
+    bottom: @grid_spacing * .5;
+}
+
+pacem-menu .collapsed .pacem-icon {
+    transform: rotate(-90deg);
+}
+
+.pacem-animations {
+
+    pacem-menu .pacem-icon.pacem-animatable {
+        animation: none;
+        transition: transform .22s ease-in-out;
+    }
+}
+
+/*#region menu*/
+.menu-group {
+    //margin: @grid_spacing 0 0 0;
+    .FontMainSize(1);
+}
+/*#endregion*/
+
+pacem-tabs {
+    margin-bottom: @grid_spacing;
+
+    pacem-tab {
+        .form-field {
+            margin: 1em 0;
+
+            label {
+                display: block;
+                font-weight: 700;
+                margin: 0 0 @grid_spacing/6 0;
+                position: relative;
+                padding-left: @grid_spacing/1.5;
+
+                &:before {
+                    .Icon('keyboard_arrow_down');
+                    font-size: @grid_spacing/2;
+                    top: @grid_spacing/4;
+                    left: 0;
+                    font-weight: 400;
+                }
+            }
+        }
+    }
+}
+
+dl {
+    dt {
+        display: block;
+        width: @grid_cell;
+        .Ellipsed();
+        text-align: right;
+        font-weight: bold;
+        float: left;
+        border-bottom: 1px solid @border_color;
+        padding-right: @grid_spacing/3;
+    }
+
+    dd {
+        margin-left: @grid_cell + @grid_spacing/3;
+        padding-left: @grid_spacing/3;
+        font-family: @font_tech;
+        clear: right;
+        border-left: 1px solid @border_color;
+        border-bottom: 1px solid @border_color;
+    }
+}
+
+.toc {
+    position: fixed;
+    top: 52px;
+    //margin-left: 664px;
+    right: 0;
+    width: @_toc;
+    z-index: @hamburger-z-index - 50;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+
+    > h3 {
+        line-height: 24px;
+        color: @color_primary;
+        font-weight: 400;
+        font-size: .8rem;
+        margin: 0;
+        padding: 0 8px 0 14px;
+        /*display: inline-block;*/
+    }
+
+    .pacem-toc > pacem-a {
+        line-height: 36px;
+    }
+}
+// sticky position adjust for schedules
+pacem-schedule {
+    display: block;
+
+    .pacem-schedule {
+        @_headr_height: 1.5 * @grid_spacing;
+
+        .schedule-header {
+            top: @grid_cell;
+            //background-color: @color_highlight;
+            //color: @color_highlight_fore;
+        }
+
+        pacem-agenda {
+            .agenda-allday,
+            .all-day {
+                top: @grid_cell + @_headr_height;
+            }
+        }
+    }
+}
+
+@media (max-width: @threshold_lg - 1){
+    pacem-schedule {
+        .pacem-schedule {
+            .schedule-header {
+                top: 2 * @grid_cell;
+            }
+        }
+    }
+}
+
+@import "docs_splash";
+@import "docs_snippet";
+@import "docs_descriptor";
+@import "docs_themeroller";
+
+@theme: "theme-dark";
+@import "../../src/less/pacem/@{theme}";

@@ -1,0 +1,173 @@
+﻿<pacem-markdown value="{{ #content0.textContent }}" root class="md-tech"></pacem-markdown>
+<pre pacem hidden id="content0">
+
+The `&lt;pacem-rescale>` behavioral element is meant to add resizing/rescaling capabilities to a `PacemElement` (mainly using a mouse device).  
+Cursor changes give hints about rescaling capabilities on decorated elements.
+
+## Basic rescaling
+In its raw fashion, the `PacemRescaleElement` scales freely the target custom element.
+
+Example:
+</pre>
+
+<pacemjs-snippet>
+    <template id="demo1">
+
+        <pacem-panel behaviors="{{ [#rescale1] }}" class="bg-primary pacem-pad pacem-borderbox">
+            <p class="text-nowrap text-ellipsed pacem-nomargin">Resize me, freely.</p>
+        </pacem-panel>
+        <pacem-rescale id="rescale1"></pacem-rescale>
+
+    </template>
+</pacemjs-snippet>
+
+<pacem-markdown value="{{ #content1.textContent }}" root class="md-tech"></pacem-markdown>
+<pre pacem hidden id="content1">
+## Constrained rescaling
+You can also tweak `&lt;pacem-rescale>` **properties** for more desirable results:
+
+- `handles`: defines the enabled handles for rescaling, you're supposed to provide a spaced combination of `top`,`right`,`bottom`,`left`, otherwise `all` (default).
+- `maxWidth`: the maximum width allowed when rescaling.
+- `minWidth`: the minimum width allowed when rescaling.
+- `maxHeight`: the maximum height allowed when rescaling.
+- `minHeight`: the minimum height allowed when rescaling.
+
+Example:
+</pre>
+
+<pacemjs-snippet>
+    <template id="demo2">
+
+        <pacem-panel behaviors="{{ [#rescale2] }}" class="bg-warning pacem-pad pacem-borderbox" id="paragraph2">
+            <p class="text-nowrap text-ellipsed pacem-nomargin">Resize me. <b>Constraints</b> are applied and only <b>bottom-right</b> handles are enabled.</p>
+        </pacem-panel>
+        <pacem-rescale id="rescale2" handles="right bottom" min-width="120" max-height="160"
+                       disabled="{{ #disabled.model }}"
+                       min-height="{{ Pacem.Utils.offset(#paragraph2).height, once }}"
+                       max-width="{{ Pacem.Utils.offset(#paragraph2).width, once }}"></pacem-rescale>
+
+    </template>
+</pacemjs-snippet>
+
+<pacem-markdown value="{{ #content2.textContent }}" root class="md-tech"></pacem-markdown>
+<pre pacem hidden id="content2">
+## Virtual rescaling
+Advanced use of `&lt;pacem-rescale>` might exploit its dispatched **events**:
+
+- `rescalestart`: fires when an available handle gets pressed.
+- `rescale`: fires when a pressed handle gets moved around (_cancelable_).
+- `rescaleend`: fires when the handle gets released.
+
+The popped up custom event carries the following detail structure:
+
+- `element`: the element being rescaled.
+- `targetRect`: the eventually rendered `Rect` (`{x: number, y: number, width: number, height: number}`).
+- `currentPosition`: the current handle position `Point` (`{x: number, y: number}`);
+
+Example:
+</pre>
+
+<pacemjs-snippet>
+    <template id="demo3">
+
+        <pacem-data id="data3"></pacem-data>
+        <pacem-panel behaviors="{{ [#rescale3] }}" class="bg-success pacem-pad pacem-borderbox" id="always-me">
+            <p class="text-nowrap text-ellipsed pacem-nomargin">
+                <pacem-if match="{{ Pacem.Utils.isNull(#data3.model) }}">Resize me.</pacem-if>
+                <pacem-if match="{{ !Pacem.Utils.isNull(#data3.model) }}">
+                    Resizing <pacem-text class="text-bold" text="{{ #data3.model.element.id }}"></pacem-text>,
+                    virtually to <pacem-text class="text-bold" text="{{ JSON.stringify(#data3.model.targetRect) }}"></pacem-text>
+                    (rendering prevented).
+                </pacem-if>
+            </p>
+        </pacem-panel>
+        <pacem-rescale id="rescale3" on-rescale="$event.preventDefault(); #data3.model = $event.detail"></pacem-rescale>
+
+    </template>
+</pacemjs-snippet>
+
+<pacem-markdown value="{{ #content3.textContent }}" root class="md-tech"></pacem-markdown>
+<pre pacem hidden id="content3">
+## The Alltogether!
+Feel free to play with the cofiguration:
+</pre>
+
+<pacemjs-snippet>
+    <template id="demo4">
+
+        <div class="pacem-grid grid-nogap grid-nospace">
+
+            <!-- rescalable -->
+            <div class="pacem-cell cols-lg-7 cols-12">
+                <pacem-panel behaviors="{{ [#rescale4] }}" class="bg-invert pacem-pad pacem-borderbox" id="paragraph4">
+                    <p class="text-nowrap text-ellipsed pacem-nomargin">Resize me. Tweak bolts if you will.</p>
+                </pacem-panel>
+            </div>
+
+            <!-- form -->
+            <div class="pacem-cell cols-lg-5 cols-12">
+
+                <!-- disable -->
+                <div class="pacem-grid pacem-field pacem-nopad pacem-margin margin-xs-bottom">
+                    <label class="pacem-cell cols-3 pacem-label text-ellipsed">rescaling</label>
+                    <pacem-checkbox class="pacem-cell cols-9" value="{{ #disabled.model, twoway }}" true-value="true" false-value="false" caption="disable"></pacem-checkbox>
+                </div>
+
+                <!-- handles -->
+                <div class="pacem-grid pacem-field pacem-nopad pacem-margin margin-xs-bottom">
+                    <label class="pacem-cell cols-3 pacem-label text-ellipsed">handles</label>
+                    <pacem-checkbox-list class="pacem-cell cols-9" value="{{ #handles.model, twoway }}">
+                        <pacem-data-item value="top"></pacem-data-item>
+                        <pacem-data-item value="right"></pacem-data-item>
+                        <pacem-data-item value="bottom"></pacem-data-item>
+                        <pacem-data-item value="left"></pacem-data-item>
+                    </pacem-checkbox-list>
+                </div>
+
+                <!-- min-width -->
+                <div class="pacem-grid pacem-field pacem-nopad pacem-margin margin-xs-bottom">
+                    <label class="pacem-cell cols-3 pacem-label text-ellipsed">min-width</label>
+                    <pacem-input-number class="pacem-cell cols-9" value="{{ #minWidth.model, twoway }}"></pacem-input-number>
+                </div>
+
+                <!-- max-width -->
+                <div class="pacem-grid pacem-field pacem-nopad pacem-margin margin-xs-bottom">
+                    <label class="pacem-cell cols-3 pacem-label text-ellipsed">max-width</label>
+                    <pacem-input-number class="pacem-cell cols-9" value="{{ #maxWidth.model, twoway }}"></pacem-input-number>
+                </div>
+
+                <!-- min-height -->
+                <div class="pacem-grid pacem-field pacem-nopad pacem-margin margin-xs-bottom">
+                    <label class="pacem-cell cols-3 pacem-label text-ellipsed">min-height</label>
+                    <pacem-input-number class="pacem-cell cols-9" value="{{ #minHeight.model, twoway }}"></pacem-input-number>
+                </div>
+
+                <!-- max-height -->
+                <div class="pacem-grid pacem-field pacem-nopad pacem-margin margin-xs-bottom">
+                    <label class="pacem-cell cols-3 pacem-label text-ellipsed">max-height</label>
+                    <pacem-input-number class="pacem-cell cols-9" value="{{ #maxHeight.model, twoway }}"></pacem-input-number>
+                </div>
+            </div>
+        </div>
+        <!-- data bridges -->
+        <pacem-data id="disabled" model="false"></pacem-data>
+        <pacem-data id="handles" model="['right', 'bottom']"></pacem-data>
+        <pacem-data id="minWidth" model="120"></pacem-data>
+        <pacem-data id="minHeight" model="{{ Pacem.Utils.offset(#paragraph4).height, once }}"></pacem-data>
+        <pacem-data id="maxWidth" model="{{ Pacem.Utils.offset(#paragraph4).width, once }}"></pacem-data>
+        <pacem-data id="maxHeight"></pacem-data>
+        <!-- rescale -->
+        <pacem-rescale id="rescale4" 
+                       handles="{{ #handles.model }}"
+                       disabled="{{ #disabled.model }}"
+                       min-width="{{ #minWidth.model }}"
+                       max-height="{{ #maxHeight.model }}"
+                       min-height="{{ #minHeight.model }}"
+                       max-width="{{ #maxWidth.model }}"></pacem-rescale>
+
+    </template>
+</pacemjs-snippet>
+
+<pacem-console id="console" configuration='{"log": true}'></pacem-console>
+<pacem-rescale id="proto"></pacem-rescale>
+<pacemjs-descriptor target="{{ #proto  }}"></pacemjs-descriptor>

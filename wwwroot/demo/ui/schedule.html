@@ -1,0 +1,112 @@
+﻿
+
+<pacem-markdown value="{{ #content0.textContent }}" root></pacem-markdown>
+
+<pre pacem hidden id="content0">
+# `&lt;pacem-schedule>`
+
+`PacemScheduleElement` is a comprehensive calendar component which wraps both calendar (date-based) and agenda (time-based) elements.
+ 
+## Demo
+In the following example you can test navigation possibilities triggered by events both external and internal to the schedule.  
+
+Example:
+</pre>
+
+<template id="demo1">
+    <pacem-data id="now" model="{{ Date.now() }}"></pacem-data>
+    <pacem-data id="viewDate" model="{{ Pacem.Utils.Dates.parse(#now.model) }}"></pacem-data>
+    <pacem-data id="zoom" model="{{ 'month' }}"></pacem-data>
+
+    <!-- heading stuff -->
+    <div class="pacem-grid">
+
+        <div class="pacem-cell cols-12 text-center">
+            <pacem-radio-list value="en-us" id="langs">
+                <pacem-data-item value="en-us"></pacem-data-item>
+                <pacem-data-item value="it-it"></pacem-data-item>
+                <pacem-data-item value="de-de"></pacem-data-item>
+                <pacem-data-item value="fr-fr"></pacem-data-item>
+                <pacem-data-item value="es-es"></pacem-data-item>
+            </pacem-radio-list>
+        </div>
+
+        <div class="pacem-cell cols-12 pacem-toolbar pacem-buttonset buttons">
+            <pacem-panel class="buttonset-left" hide="{{ #zoom.model != 'month' }}">
+                <pacem-button class="button" on-click="#viewDate.model = Pacem.Utils.Dates.addMonths(Pacem.Utils.parseDate(#viewDate.model), -1) ">&lt;</pacem-button>
+                <pacem-button class="button" on-click="#viewDate.model = Pacem.Utils.Dates.addMonths(Pacem.Utils.parseDate(#viewDate.model), 1) ">&gt;</pacem-button>
+            </pacem-panel>
+            <pacem-panel class="buttonset-left" hide="{{ #zoom.model != 'week' }}">
+                <pacem-button class="button" on-click="#viewDate.model = Pacem.Utils.Dates.addDays(Pacem.Utils.parseDate(#viewDate.model), -7) ">&lt;</pacem-button>
+                <pacem-button class="button" on-click="#viewDate.model = Pacem.Utils.Dates.addDays(Pacem.Utils.parseDate(#viewDate.model), 7) ">&gt;</pacem-button>
+            </pacem-panel>
+            <pacem-panel class="buttonset-left" hide="{{ #zoom.model != 'day' }}">
+                <pacem-button class="button" on-click="#viewDate.model = Pacem.Utils.Dates.addDays(Pacem.Utils.parseDate(#viewDate.model), -1) ">&lt;</pacem-button>
+                <pacem-button class="button" on-click="#viewDate.model = Pacem.Utils.Dates.addDays(Pacem.Utils.parseDate(#viewDate.model), 1) ">&gt;</pacem-button>
+            </pacem-panel>
+            <h4 class="toolbar-center">
+                <pacem-span hide="{{ #zoom.model == 'day' }}" text="{{ $pacem.date(#viewDate.model, { month: 'long', year: 'numeric' }, #langs.value) }}"></pacem-span>
+                <pacem-span hide="{{ #zoom.model != 'day' }}" text="{{ $pacem.date(#viewDate.model, { month: 'long', year: 'numeric', day: 'numeric' }, #langs.value) }}"></pacem-span>
+            </h4>
+            <div class="buttonset-right">
+                <pacem-button class="button" css-class="{{ {'button-primary': #zoom.model == 'month'} }}" on-click="#zoom.model = 'month'">month</pacem-button>
+                <pacem-button class="button" css-class="{{ {'button-primary': #zoom.model == 'week'} }}" on-click="#zoom.model = 'week'">week</pacem-button>
+                <pacem-button class="button" css-class="{{ {'button-primary': #zoom.model == 'day'} }}" on-click="#zoom.model = 'day'">day</pacem-button>
+            </div>
+        </div>
+
+        <!-- SCHEDULE -->
+        <pacem-schedule id="cal" class="pacem-animatable pacem-cell cols-12"
+                        on-dateselect="#viewDate.model = $event.detail; #zoom.model = 'day'"
+                        on-timeselect="#viewDate.model = $event.detail; #zoom.model = 'day'"
+                        culture="{{ #langs.value }}"
+                        view-date="{{ #viewDate.model }}"
+                        zoom="{{ #zoom.model }}">
+            <pacem-calendar-event start="{{ Pacem.Utils.Dates.parse(#now.model + (60000 * 60 * 24 * 2)) }}"
+                                  end="{{ Pacem.Utils.Dates.parse(#now.model + (60000 * 60 * 24 * 2.1)) }}"
+                                  caption="A"></pacem-calendar-event>
+            <pacem-calendar-event start="{{ Pacem.Utils.Dates.parse(#now.model) }}"
+                                  end="{{ Pacem.Utils.Dates.parse(#now.model + (60000 * 60 * 1.5)) }}"
+                                  caption="B"></pacem-calendar-event>
+            <pacem-calendar-event start="{{ Pacem.Utils.Dates.parse(#now.model + (60000 * 60 * 0.25)) }}"
+                                  end="{{ Pacem.Utils.Dates.parse(#now.model + (60000 * 60 * 1.5)) }}"
+                                  caption="C"></pacem-calendar-event>
+            <pacem-calendar-event start="{{ Pacem.Utils.Dates.parse(#now.model) }}"
+                                  end="{{ Pacem.Utils.Dates.parse(#now.model + (60000 * 60 * 24 * 7)) }}"
+                                  caption="D (week-long)"></pacem-calendar-event>
+            <!-- rules -->
+            <pacem-calendar-daysofweek-rule days="monday,tuesday,wednesday,thursday,friday"></pacem-calendar-daysofweek-rule>
+        </pacem-schedule>
+    </div>
+</template>
+
+<pacem-tabs>
+    <pacem-tab label="demo">
+        <pacem-view url="#demo1"></pacem-view>
+    </pacem-tab>
+    <pacem-tab label="code">
+        <pacem-markdown value="{{ '```html\n\n'+   pacem.removeLeadingTabs(#demo1.innerHTML) +'\n```' }}" class="text-small"></pacem-markdown>
+    </pacem-tab>
+</pacem-tabs>
+
+<pacem-markdown value="{{ #content1.textContent }}" root></pacem-markdown>
+
+<pre pacem hidden id="content1">
+## Rules
+
+The `&lt;pacem-schedule>` element in the above demo also contains a `&lt;pacem-calendar-daysofweek-rule>` which only enables work days.  
+Several rule constraint elements (hour-based, festivities-based, ...) will be rolled out in the forthcoming versions of **Pacem JS**.
+
+Disabled day- or time-slots can be set straight by assigning arrays (of type: `{ from?: Date, to?:Date }[]`) to the `disabledRanges` property of a schedule/agenda/calendar.
+
+## Events
+
+Calendar **Events** (in the sense of **appointments**) can be added in the form of `&lt;pacem-calendar-event>` child elements. They get seamlessly rendered onto the calendar/agenda grids.
+
+</pre>
+
+<pacem-schedule id="proto" hidden></pacem-schedule>
+<pacemjs-descriptor target="{{ #proto }}"></pacemjs-descriptor>
+
+<pacem-calendar-event id="proto1" hidden></pacem-calendar-event>
+<pacemjs-descriptor target="{{ #proto1 }}"></pacemjs-descriptor>

@@ -1,0 +1,46 @@
+﻿@import "../../shared";
+@import "../theme-dark";
+
+.ListItem (@count, @index) when (@index > 0) {
+    &:nth-child(@{index}) {
+        animation-delay: 2.5s * @index / @count;
+    }
+    // next iteration
+    .ListItem(@count, @index - 1);
+}
+
+.ListItem (@count) {
+    .ListItem(@count, @count);
+}
+
+.pacem-animations {
+
+    .pacem-animatable-list {
+
+        > * {
+            animation: list-item .25s @easing_out_sine both;
+            .ListItem(20);
+        }
+
+        &.pacem-list-right {
+
+            > * {
+                animation-name: list-item-right;
+            }
+        }
+
+        &.pacem-list-left {
+
+            > * {
+                animation-name: list-item-left;
+            }
+        }
+
+        &.pacem-list-bottom {
+
+            > * {
+                animation-name: list-item-bottom;
+            }
+        }
+    }
+}

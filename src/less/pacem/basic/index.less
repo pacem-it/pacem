@@ -1,0 +1,33 @@
+﻿@import "../../shared";
+
+pacem-data,
+pacem-fetch,
+pacem-hub-proxy,
+pacem-hub-listener,
+pacem-tween,
+pacem-html,
+pacem-title,
+pacem-meta {
+    .Inert();
+}
+
+pacem-panel {
+    display: block;
+}
+
+pacem-span {
+    display: inline;
+
+    &.label {
+        cursor: default;
+    }
+}
+
+@import "resize";
+@import "repeater";
+@import "dock";
+@import "scroll-aware";
+@import "viewport-aware";
+@import "drag-drop";
+@import "swipe";
+@import "rescale";

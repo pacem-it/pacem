@@ -1,0 +1,42 @@
+﻿@import "../../shared";
+@import "../theme-dark";
+
+@_color: fade(@color_primary, 60);
+@_hover_color: @color_highlight;
+
+pacem-edit {
+    display: block;
+}
+
+pacem-dialog {
+
+    pacem-textarea.pacem-edit-text {
+        display: block;
+        margin-bottom: @grid_spacing;
+    }
+}
+
+.pacem-editing {
+    border: 1px solid @_color;
+    min-height: @grid_spacing;
+    position: relative;
+
+    pacem-button.pacem-edit-button {
+        position: absolute;
+        background: @_color;
+        right: 0;
+        top: 0;
+        width: @grid_spacing;
+        height: @grid_spacing;
+        min-width: 0;
+        min-height: 0;
+        padding: 0;
+        margin: 0;
+        border: none;
+
+        &:before {
+            .Icon('edit');
+            color: @color_light;
+        }
+    }
+}

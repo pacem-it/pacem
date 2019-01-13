@@ -1,0 +1,19 @@
+﻿@import "../../shared";
+@import "../theme-dark";
+
+.pacem-validator {
+    display: inline-block;
+    background-color: @color_error;
+    color: @color_error_fore;
+    margin-left: @grid_spacing * .8;
+    padding-left: @grid_spacing;
+    padding-right: @grid_spacing/4;
+    position: relative;
+    box-sizing: border-box;
+
+    &:before {
+        .Icon('error', @grid_spacing * .8);
+        left: @grid_spacing/12;
+        top: 1px; // ugly to see
+    }
+}

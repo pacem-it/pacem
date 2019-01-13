@@ -1,0 +1,39 @@
+﻿@import "../theme-dark";
+
+.pacem-body {
+
+    &.pacem-animations {
+
+        header[pacem],
+        .pacem-header,
+        footer[pacem],
+        .pacem-footer {
+            transition: padding @easing_in_out_sine .3s;
+        }
+
+        &.pacem-menu-close {
+            header[pacem],
+            .pacem-header,
+            footer[pacem],
+            .pacem-footer {
+                transition-delay: .25s;
+            }
+        }
+
+        &.pacem-menu-open {
+        }
+    }
+}
+
+@media (min-width: 1200px) {
+
+    .pacem-body.pacem-menu-open {
+
+        header[pacem],
+        .pacem-header,
+        footer[pacem],
+        .pacem-footer {
+            padding-left: 11 * @grid_spacing;
+        }
+    }
+}

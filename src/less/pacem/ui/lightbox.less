@@ -1,0 +1,80 @@
+﻿@import "shared";
+@import "../theme-dark";
+
+/*#region LIGHTBOX*/
+
+@keyframes pacem-lightbox-anim {
+    0% {
+        transform: translateY(100vh);
+        opacity: 0;
+    }
+
+    100% {
+    }
+}
+
+/*pacem-lightbox{
+    display: block;
+    overflow: visible;
+}*/
+
+.pacem-lightbox-wrapper {
+    background: @color_lightbox_back;
+    z-index: @lightbox-z-index;
+    box-sizing: border-box;
+
+    &.pacem-shown {
+        animation: pacem-lightbox-anim .3s cubic-bezier(0.39, 0.575, 0.565, 1) forwards;
+    }
+
+    &.pacem-hidden {
+    }
+
+    .Btn() {
+        border: none;
+        position: absolute;
+        background: transparent;
+        box-shadow: none;
+        padding: 0;
+        margin: 0;
+        font-size: 0;
+        min-height: 0;
+        min-width: 0;
+        color: @color_primary;
+    }
+
+    pacem-button[pacem].pacem-close {
+        .Btn();
+        top: @grid_spacing;
+        right: @grid_spacing;
+
+        &:before {
+            .Icon('close', @grid_spacing);
+            right: 0;
+        }
+    }
+}
+
+.pacem-lightbox {
+    @_clr: @color_background;
+    @_fore_clr: @color_default;
+    background: @_clr;
+    color: @_fore_clr;
+    max-width: 80vw;
+    max-height: 80vh;
+    //box-sizing: border-box;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.25);
+    transition: transform .25s linear;
+    border-radius: @border_radius;
+
+    > .pacem-scrollable {
+        position: relative;
+        max-width: 80vw;
+        max-height: 80vh;
+        border: 1em solid @_clr;
+        border-top-left-radius: @border_radius;
+        border-top-right-radius: @border_radius;
+    }
+}
+
+/*#endregion*/

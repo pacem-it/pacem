@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "noImplicitAny": false,
+    "noEmitOnError": true,
+    "removeComments": false,
+    "sourceMap": false,
+    "moduleResolution": "node",
+    "target": "es6",
+    "module": "amd",
+    "outFile": "../../wwwroot/dist/js/demo/pacem-js.js",
+    "experimentalDecorators": true,
+    "lib": [ "es2015", "dom" ],
+    "types": [ "@aspnet/signalr", "@types/leaflet", "jasmine", "@types/less" ]
+  },
+  "compileOnSave": false
+}

@@ -1,0 +1,157 @@
+﻿@import "../../shared";
+@import "../theme-dark";
+
+@field_min_width: 199px;
+@field_min_width_wide: 417px;
+@field_forecolor: fade(@color_light, 80);
+@field_focus_forecolor: @color_light;
+
+@field_left: @grid_spacing * 5 / 6;
+@field_height: @grid_spacing * 1.25;
+@input_padding_horiz: @grid_spacing / 3;
+
+.Watermark() {
+    color: @color_watermark;
+    font-style: italic;
+    font-family: @font_std;
+    //font-size: .86em;
+}
+
+
+.FormFieldItemFocused() {
+    color: @field_focus_forecolor;
+
+    .pacem-input,
+    .pacem-viewfinder {
+        border-color: fade(@color_default, 40);
+    }
+}
+
+.FormFieldItemBorder() {
+    .FormFieldItemBorders();
+    border-color: fade(@color_default, 20);
+}
+
+.FormFieldItemInline() {
+    min-width: @field_min_width;
+    line-height: @field_height;
+}
+
+.FormFieldItemMultiline() {
+    min-width: @field_min_width_wide;
+
+    textarea {
+        line-height: 1;
+        display: block;
+    }
+}
+
+.FormFieldStretch() {
+    display: flex;
+    align-content: stretch;
+    align-items: stretch;
+
+    > [pacem] {
+        flex: 1 0 100%;
+    }
+}
+
+.FormFieldItem() {
+    .FormFieldItem(@field_height);
+}
+
+.FormFieldItem(@f_height) {
+    padding: 0 @input_padding_horiz;
+    .FormFieldItemSize(@f_height);
+    //background: none;
+    box-sizing: border-box;
+    color: @field_forecolor;
+
+    .Watermark() {
+        color: @color_watermark;
+        font-style: italic;
+        font-family: @font_std;
+        //font-size: .86em;
+    }
+
+    &::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+        .Watermark();
+    }
+
+    &::-moz-placeholder { /* Firefox 19+ */
+        .Watermark();
+    }
+
+    &:-ms-input-placeholder { /* IE 10+ */
+        .Watermark();
+    }
+
+    &:-moz-placeholder { /* Firefox 18- */
+        .Watermark();
+    }
+}
+
+.FormFieldItemSize(@f_height) {
+    .FontStd(1.1 * @f_height / @field_height);
+    min-height: @f_height;
+}
+
+.FormFieldItemWrapper() {
+    //
+    font-size: 1em;
+    position: relative;
+    display: inline-block;
+
+    .pacem-viewfinder,
+    .pacem-input {
+        .FormFieldItemBorder();
+        background-color: @color_input_back;
+        border-radius: @border_radius;
+    }
+
+    .pacem-viewfinder {
+        // nested .pacem-input ot .pacem-viewfinder don't show borders
+        .pacem-input,
+        .pacem-viewfinder {
+            border: none;
+            border-radius: 0;
+            background: none;
+        }
+
+        .pacem-input {
+            padding: 0;
+        }
+    }
+
+    &.pacem-focus {
+        .FormFieldItemFocused();
+    }
+
+    .pacem-readonly {
+        font-size: 1.1rem;
+        display: block;
+        line-height: @field_height;
+        margin-bottom: @border_field_size; // <- replaces the bottom border
+    }
+
+    *[hidden] {
+        display: none !important;
+    }
+}
+
+.FormFieldIcon(@icon) {
+    position: relative;
+    @_pad: @input_padding_horiz/2;
+
+    .pacem-input {
+        padding-left: @grid_spacing + @_pad;
+        box-sizing: border-box;
+    }
+
+    &:before {
+        .Icon(@icon, @field_left);
+        line-height: @field_height;
+        left: @_pad;
+        top: 0; // .5 * (@grid_spacing - @field_left);
+    }
+}

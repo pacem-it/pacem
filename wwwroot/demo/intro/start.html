@@ -1,0 +1,87 @@
+﻿<pacem-markdown value="{{ #content0.textContent }}" root class="md-tech"></pacem-markdown>
+
+<pre pacem hidden id="content0">
+## Introduction
+
+Pacem JS is a [CustomElements-v1](http://www.w3.org/TR/custom-elements/) based ecosystem for
+reusable web components.  
+It is meant to run in a web page inside a browser.
+More precisely, a **ES2015 compliant** browser (i.e. Chrome, Firefox, Opera, Edge, ...). No, 
+IE11 is not supported.  
+It follows the **MVVM Pattern** and has its own binding syntax.  
+It is built with [TypeScript](http://www.typescriptlang.org).  
+Furthermore, it does not need to be "fully componentized" 
+(i.e. no all-inclusive root node) in order to work:
+it comes with on-the-fly bindings and autonomous bootstrap.
+## Why another JS Framework?
+
+Many reasons.  
+First of all, I ([Cristian Merighi](https://pacem.it/blogs/polyhedric)) have no more time to spend switching from a technology trend to another, then to another other, and so on and so forth...  
+That's what happened to _Me vs JavaScript Frameworks_ in thet last 10 years:  
+definitely out of **jQuery**, and having learned to love the **MVVM pattern**
+years before (with **WPF** and **Silverlight**), I stumbled upon **[KnockoutJS](http://knockoutjs.com)**, which was good and I built a piece of my client-side "world" on top of that.  
+Then came **[AngularJS](http://angularjs.org)**, which was better and I rebuilt my previous world plus many others on top of that.  
+Then came **[Angular](https://angular.io)** (2+), which was even better and cool having **TypeScript** as a default programming language, and I rebuilt (took me 1 whole month to learn it and to migrate the code)
+my whole uninverse on top of that.
+
+> That's it!
+
+Furthermore, I (always me) couldn't find anything perfectly fitting my _desiderata_.  
+My main concerns are lately about the bloat of **dependencies** that JS frameworks usually rely on.  
+**Pacem JS** has `zero dependencies`.  
+Imperative bootstrapping imperatively was another discomfort I felt: I wanted it to be automatic.  
+I then needed something respectful of browsers' standards and close to their native capabilities.
+*Experimenting* was another big push and the discovery of [TypeScript](http://www.typescriptlang.org) helped a lot in taking the decision to start. 
+
+Please note that:  
+- **Pacem JS** is meant for **internal ([Pacem](https://pacem.it)) use** both in web and cross-platform apps.
+- **Pacem JS** won't obey semantic versioning until **v1** (i.e. breaking changes ahead).  
+
+Summarizing:
+
+> **Pacem JS** doesn't want to be adopted, it aims to demonstrate that you can build up your own.
+
+It is not perfect: current **v0** stands for that. Born as a prototype, it is still paying for that legacy.  
+Looks however promising to me, and worthy to play upon.
+
+This documentation site is itself a **SPA** built with **Pacem JS**.
+
+## Road-map to v1
+To-do (improvements):
+
+- **More robust markup and syntax**: 
+- differentiate between plain string attributes and complex `bind` attributes;<!--
+- remove all the dashes in the attribute names;
+- try to remove all the dashes after `&lt;pacem-...` in the tag names;
+- **Modules**: move to ES6 modules.-->
+- **CSP compliancy**. Mumblings:
+- try a binding syntax that may avoid `Function()`;
+- `inline-styles` (almost) impossible to avoid;
+- **Tests**: more, of course.
+
+## Getting Started
+Install pacem via **npm**
+
+```
+&gt; npm i pacem
+```
+
+Reference scripts <!--(no ES6 modules yet)-->
+```html
+
+&lt;!-- polyfills and fixings (Microsoft Edge) -->
+&lt;script src="https://github.com/webcomponents/custom-elements/blob/master/custom-elements.min.js">&lt;/script>
+&lt;script src="/node_modules/pacem/dist/js/polyfills/documentfragment.edge.js">&lt;/script>
+
+&lt;!-- scripts -->
+&lt;script src="/node_modules/pacem/dist/js/pacem-core.min.js">&lt;/script>
+&lt;script src="/node_modules/pacem/dist/js/pacem-ui.min.js">&lt;/script>
+&lt;script src="/node_modules/pacem/dist/js/pacem-scaffolding.min.js">&lt;/script>
+
+&lt;!-- styles -->
+&lt;style src="/node_modules/pacem/dist/css/pacem-light.min.css">&lt;/style >
+```
+
+Start creating...
+
+</pre>

@@ -1,0 +1,32 @@
+﻿@import "../theme-dark";
+
+pacem-dialog {
+
+    pacem-input-search {
+        display: block;
+
+        .pacem-input {
+            display: block;
+            width: 100%;
+            box-sizing: border-box;
+            //color: @color_lightblue;
+            //border-color: fade(@color_teal, 20);
+            //&:focus {
+            //    color: @color_blue;
+            //    border-color: @color_teal;
+            //}
+        }
+    }
+
+    pacem-contenteditable {
+        .pacem-contenteditable {
+            border-color: fade(@color_default, 10);
+        }
+
+        &.pacem-focus {
+            .pacem-contenteditable {
+                border-color: fade(@color_default, 40);
+            }
+        }
+    }
+}

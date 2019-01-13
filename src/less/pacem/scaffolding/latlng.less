@@ -1,0 +1,149 @@
+﻿@import "../../shared";
+@import "../theme-dark";
+@import "shared";
+
+pacem-latlng {
+    .FormFieldItemWrapper();
+    .FormFieldItemMultiline();
+
+    .pacem-map {
+        margin-top: @grid_spacing/2;
+    }
+
+    .pacem-latlng {
+        .pacem-latlng-fields {
+
+            pacem-input-number {
+                padding-left: @grid_spacing;
+                position: relative;
+                box-sizing: border-box;
+
+                .pacem-input {
+                    min-width: @field_min_width - @grid_spacing;
+                    padding-left: @grid_spacing/6;
+                    text-align: left;
+                }
+
+                &.pacem-lat:before {
+                    .Icon('swap_vert');
+                }
+
+                &.pacem-lng:before {
+                    .Icon('swap_horiz');
+                }
+
+                &.pacem-lat:before,
+                &.pacem-lng:before {
+                    left: 0;
+                    color: @color_default;
+                    line-height: @field_height;
+                }
+            }
+        }
+
+        dl {
+            @_h: ceil(@grid_spacing * 1.3333 * 1.5);
+            padding: @grid_spacing/6 0 @grid_spacing/2 0;
+            overflow: hidden;
+            height: @_h;
+
+            dt, dd {
+                line-height: @_h * .3333;
+                height: @_h * .3333;
+            }
+
+            dt {
+                float: left;
+                vertical-align: middle;
+                width: @grid_spacing / 1.5;
+                background: center center no-repeat;
+                background-size: contain;
+                font-size: 0;
+
+                &:nth-of-type(3):before {
+                    .Icon('language', @grid_spacing * 2 / 4);
+                }
+
+                &:nth-of-type(2):before {
+                    .Icon('location_on', @grid_spacing * 2 / 4);
+                }
+
+                &:nth-of-type(1):before {
+                    .Icon('short_text', @grid_spacing * 2 / 4);
+                }
+            }
+
+            dd {
+                clear: right;
+                margin-left: @grid_spacing;
+                .FontTech(.8);
+                .Ellipsed(@field_min_width_wide - @grid_spacing/1.5);
+
+                &:nth-of-type(3) {
+                    color: fade(@color_tech, 100);
+
+                    pacem-span {
+                        position: relative;
+                        padding-left: @grid_spacing;
+                        display: inline-block;
+
+                        &:before {
+                            color: @color_default;
+                            position: absolute;
+                            left: 0;
+                            top: 0;
+                        }
+                    }
+                }
+
+                pacem-span.pacem-lat-north:before {
+                    content: 'N';
+                }
+
+                pacem-span.pacem-lat-south:before {
+                    content: 'S';
+                }
+
+                pacem-span.pacem-lng-east:before {
+                    content: 'E';
+                }
+
+                pacem-span.pacem-lng-west:before {
+                    content: 'W';
+                }
+            }
+
+            &.pacem-hidden {
+                transition: all .3s;
+                transform: none;
+                height: 0;
+            }
+
+            &.pacem-shown {
+                transition: all .3s /*cubic-bezier(0.23, 1, 0.32, 1)*/ .1s;
+                transform: none;
+            }
+        }
+    }
+
+    .pacem-readonly {
+        padding-left: @grid_spacing;
+        .Ellipsed(@field_min_width_wide);
+
+        &:before {
+            .Icon('location_on', @field_left);
+            line-height: @field_height;
+            color: @color_primary;
+            left: 0;
+        }
+
+        small {
+            color: fade(@color_default, 60);
+            font-size: .8em;
+
+            &:before {
+                content: ' - ';
+            }
+        }
+    }
+}

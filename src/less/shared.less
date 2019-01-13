@@ -1,0 +1,97 @@
+﻿
+.Ellipsed(@max-width) {
+    white-space: nowrap;
+    overflow: hidden;
+    -ms-text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
+    text-overflow: ellipsis;
+    max-width: @max-width;
+}
+
+.Inert(){
+    pointer-events: none !important;
+    display: none !important;
+}
+
+.GradientBorderVertical(@size, @from, @to, @color1, @color2) {
+    border-image: linear-gradient(to bottom, @color1 @from,@color2 @to) @size;
+}
+
+.GradientVertical(@from, @to, @color1, @color2) {
+    background: @color2;
+    background: -moz-linear-gradient(top, @color1 @from, @color2 @to);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(@from,@color1), color-stop(@to,@color2));
+    background: -webkit-linear-gradient(top, @color1 @from,@color2 @to);
+    background: -o-linear-gradient(top, @color1 @from,@color2 @to);
+    background: -ms-linear-gradient(top, @color1 @from,@color2 @to);
+    background: linear-gradient(to bottom, @color1 @from,@color2 @to);
+}
+
+.GradientVertical(@color1, @color2, @img) {
+    background: @color2;
+    background-image: url(@img); /* fallback */
+    background-image: url(@img), -webkit-gradient(linear, left top, left bottom, from(@color1), to(@color2)); /* Saf4+, Chrome */
+    background-image: url(@img), -webkit-linear-gradient(top, @color1, @color2); /* Chrome 10+, Saf5.1+ */
+    background-image: url(@img), -moz-linear-gradient(top, @color1, @color2); /* FF3.6+ */
+    background-image: url(@img), -ms-linear-gradient(top, @color1, @color2); /* IE10 */
+    background-image: url(@img), -o-linear-gradient(top, @color1, @color2); /* Opera 11.10+ */
+    background-image: url(@img), linear-gradient(to bottom, @color1, @color2);
+}
+
+.GradientVertical(@step1, @step2, @step3, @color1, @color2, @color3) {
+    background: @color2;
+    background: -moz-linear-gradient(top, @color1 @step1, @color2 @step2, @color3 @step3);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(@step1,@color1), color-stop(@step2,@color2), color-stop(@step3,@color3));
+    background: -webkit-linear-gradient(top, @color1 @step1,@color2 @step2,@color3 @step3);
+    background: -o-linear-gradient(top, @color1 @step1,@color2 @step2,@color3 @step3);
+    background: -ms-linear-gradient(top, @color1 @step1,@color2 @step2,@color3 @step3);
+    background: linear-gradient(to bottom, @color1 @step1,@color2 @step2,@color3 @step3);
+}
+
+.GradientVertical(@step1, @step2, @step3, @step4, @color1, @color2, @color3, @color4) {
+    background: @color2;
+    background: -moz-linear-gradient(top, @color1 @step1, @color2 @step2, @color3 @step3, @color4 @step4);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(@step1,@color1), color-stop(@step2,@color2), color-stop(@step3,@color3), color-stop(@step4,@color4));
+    background: -webkit-linear-gradient(top, @color1 @step1,@color2 @step2,@color3 @step3,@color4 @step4);
+    background: -o-linear-gradient(top, @color1 @step1,@color2 @step2,@color3 @step3,@color4 @step4);
+    background: -ms-linear-gradient(top, @color1 @step1,@color2 @step2,@color3 @step3,@color4 @step4);
+    background: linear-gradient(to bottom, @color1 @step1,@color2 @step2,@color3 @step3,@color4 @step4);
+}
+
+.GradientVertical(@color1, @color2) {
+    .GradientVertical(0, 100%, @color1, @color2);
+}
+
+.GradientHorizontal(@step1, @step2, @step3, @step4, @color1, @color2, @color3, @color4) {
+    background: @color2;
+    background: -moz-linear-gradient(left, @color1 @step1, @color2 @step2, @color3 @step3, @color4 @step4);
+    background: -webkit-gradient(linear, left top, right top, color-stop(@step1,@color1), color-stop(@step2,@color2), color-stop(@step3,@color3), color-stop(@step4,@color4));
+    background: -webkit-linear-gradient(left, @color1 @step1,@color2 @step2,@color3 @step3,@color4 @step4);
+    background: -o-linear-gradient(left, @color1 @step1,@color2 @step2,@color3 @step3,@color4 @step4);
+    background: -ms-linear-gradient(left, @color1 @step1,@color2 @step2,@color3 @step3,@color4 @step4);
+    background: linear-gradient(to right, @color1 @step1,@color2 @step2,@color3 @step3,@color4 @step4);
+}
+
+.GradientRadial(@from, @to, @color1, @color2) {
+    background: @color1;
+    background: -moz-radial-gradient(center, ellipse cover, @color1 @from, @color2 @to);
+    background: -webkit-gradient(radial, center center, 0, center center, 100%, color-stop(@from,@color1), color-stop(@to,@color2));
+    background: -webkit-radial-gradient(center, ellipse cover, @color1 @from,@color2 @to);
+    background: -o-radial-gradient(center, ellipse cover, @color1 @from,@color2 @to);
+    background: -ms-radial-gradient(center, ellipse cover, @color1 @from,@color2 @to);
+    background: radial-gradient(ellipse at center, @color1 @from,@color2 @to);
+}
+
+.GradientRadial(@from, @to, @color1, @color2, @img) {
+    background-image: url(@img); /* fallback */
+    background-image: url(@img), -moz-radial-gradient(center, ellipse cover, @color1 @from, @color2 @to);
+    background-image: url(@img), -webkit-gradient(radial, center center, 0, center center, 100%, color-stop(@from,@color1), color-stop(@to,@color2));
+    background-image: url(@img), -webkit-radial-gradient(center, ellipse cover, @color1 @from,@color2 @to);
+    background-image: url(@img), -o-radial-gradient(center, ellipse cover, @color1 @from,@color2 @to);
+    background-image: url(@img), -ms-radial-gradient(center, ellipse cover, @color1 @from,@color2 @to);
+    background-image: url(@img), radial-gradient(ellipse at center, @color1 @from,@color2 @to);
+}
+
+.GradientRadialContain( @step1, @step2, @step3, @step4, @step5, @step6,@step7, @step8, @step9, @step10, @color1, @color2, @color3,@color4, @color5, @color6,@color7, @color8, @color9, @color10) {
+    background: radial-gradient(circle closest-side, @color1 @step1, @color2 @step2, @color3 @step3, @color4 @step4, @color5 @step5, @color6 @step6, @color7 @step7, @color8 @step8, @color9 @step9, @color10 @step10);
+}

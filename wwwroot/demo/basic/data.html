@@ -1,0 +1,108 @@
+﻿<pacem-markdown value="{{ #content0.textContent }}" class="md-tech" root></pacem-markdown>
+
+<pre pacem hidden id="content0">
+
+`PacemDataElement` is the core element to stand on for **data observing**.  
+Its most important property is `model`. Lean on it to orchestrate your **ViewModel**.
+
+## Plain properties
+Basic "_flat_" properties are easily made observable (i.e. _bindable_).  
+Remember, as a best practice, to
+
+> use a `PacemDataElement` and its `model` property as the most reliable observable: 
+> it will always be guaranteed to emit a `propertychange` event.
+
+Example:
+</pre>
+
+<pacemjs-snippet>
+    <template id="demo1">
+        <pacem-data id="myTicks" model="0"></pacem-data>
+        <pacem-timer interval="1000" on-tick="#myTicks.model++"></pacem-timer>
+        <p>timer:</p>
+        <i class="pacem-icon">timer</i>
+        <b><pacem-text text="{{ #myTicks.model }}"></pacem-text></b>
+        <div class="pacem-buttonset buttons">
+            <div class="buttonset-left">
+                <pacem-button class="button" on-click="#myTicks.model++">add extra ticks</pacem-button>
+                <pacem-button class="button" on-click="#myTicks.model = 0">reset</pacem-button>
+            </div>
+        </div>
+    </template>
+</pacemjs-snippet>
+
+
+<!-- #region nested properties -->
+
+<pacem-markdown value="{{ #content1.textContent }}" root></pacem-markdown>
+
+<pre pacem hidden id="content1">
+## Nested properties
+
+Nested properties don't always notify their change, they do if a **two-way binding** is set between the `PacemDataElement` and the data modifiers.  
+This is typical in a form scenario.
+
+Example:
+</pre>
+
+<pacemjs-snippet>
+    <template id="demo2">
+        <pacem-data id="myEntity" model="{{ { name: 'Bob', age: 40 } }}"></pacem-data>
+        <dl>
+            <dt>name:</dt>
+            <dd><pacem-text text="{{ #myEntity.model.name }}"></pacem-text></dd>
+            <dt>age:</dt>
+            <dd><pacem-text text="{{ #myEntity.model.age }}"></pacem-text></dd>
+        </dl>
+        <div class="form-field">
+            <label>edit name:</label>
+            <pacem-input-text value="{{ #myEntity.model.name, twoway }}"></pacem-input-text>
+        </div>
+        <div class="form-field">
+            <label>edit age:</label>
+            <pacem-input-number value="{{ #myEntity.model.age, twoway }}"></pacem-input-number>
+        </div>
+    </template>
+</pacemjs-snippet>
+
+<!-- #endregion -->
+
+<pacem-markdown value="{{ #content2.textContent }}" class="md-tech" root></pacem-markdown>
+
+<pre pacem hidden id="content2">
+## Persisted data
+
+Property `persistAs` lets the `model` of a `PacemDataElement` to persist in the _localStorage_.  
+Re-entering a page having persisted data permits to have resumed the last registered changes.
+
+Example:
+</pre>
+
+<pacemjs-snippet>
+    <template id="demo3">
+        <pacem-data id="myPersisted" model="0" persist-as="demo3"></pacem-data>
+        <p>last set:</p>
+        <i class="pacem-icon">timer</i>
+        <b><pacem-text text="{{ $pacem.date( #myPersisted.model, 'full') }}"></pacem-text></b>
+        <div class="pacem-buttonset buttons">
+            <div class="buttonset-left">
+                <pacem-button class="button" on-click="#myPersisted.model = Date.now()">set now</pacem-button>
+            </div>
+        </div>
+    </template>
+</pacemjs-snippet>
+
+<pacem-markdown value="{{ #content3.textContent }}" root></pacem-markdown>
+<pre pacem hidden id="content3">
+## Debounce and throttle
+
+Property change notifications can be debounced and throttled, in order to mitigate - for instance - eccessive DOM changes.  
+Here are the propeties:
+
+- `debounce`: can be a `number`, in that case it signifies "milliseconds", or a `boolean`, which means debounce at browser's frame rate.
+- `throttle`: is a `boolean` that specifies whether actual debounce algorithm should be used (when `false`) or throttle instead (when `true`).
+
+</pre>
+
+<pacem-data id="proto"></pacem-data>
+<pacemjs-descriptor target="{{ #proto }}"></pacemjs-descriptor>

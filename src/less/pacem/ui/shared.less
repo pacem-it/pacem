@@ -1,0 +1,62 @@
+﻿@import "../layout/shared";
+@import "../theme-dark.less";
+
+.HorizontalItemSet(@type) {
+    display: grid;
+    grid-gap: 0;
+    grid-template-columns: auto 1fr auto 1fr auto;
+    grid-template-areas: 'left . center . right';
+    white-space: nowrap;
+
+    .pacem-@{type}set-left, .@{type}set-left,
+    .pacem-@{type}set-center, .@{type}set-center,
+    .pacem-@{type}set-right, .@{type}set-right {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+    }
+
+    .pacem-@{type}set-left, .@{type}set-left {
+        grid-area: left;
+        align-content: flex-start;
+    }
+
+    .pacem-@{type}set-center, .@{type}set-center {
+        grid-area: center;
+        align-content: center;
+    }
+
+    .pacem-@{type}set-right, .@{type}set-right {
+        grid-area: right;
+        align-content: flex-end;
+    }
+}
+
+.HorizontalItem(@type) {
+    border-radius: 0;
+    display: block;
+
+    &.@{type}set-first when (@border_radius > 0) {
+        border-top-left-radius: @border_radius;
+        border-bottom-left-radius: @border_radius;
+    }
+
+    &:first-child when (@border_radius > 0) {
+        border-top-left-radius: @border_radius;
+        border-bottom-left-radius: @border_radius;
+    }
+
+    &.@{type}set-last when (@border_radius > 0) {
+        border-top-right-radius: @border_radius;
+        border-bottom-right-radius: @border_radius;
+    }
+
+    &:last-child when (@border_radius > 0) {
+        border-top-right-radius: @border_radius;
+        border-bottom-right-radius: @border_radius;
+    }
+
+    &:not(:last-child):not(.buttonset-last) {
+        border-right: none;
+    }
+}

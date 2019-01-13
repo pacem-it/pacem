@@ -1,0 +1,367 @@
+﻿@import "../theme-dark";
+@import "shared";
+@import "../ui/shared";
+
+@field_forecolor: fade(@color_default, 80);
+@field_backcolor: @color_field_back;
+@field_focus_forecolor: @color_default;
+@field_forecolor_invert: fade(@color_default_inv, 80);
+@field_focus_forecolor_invert: @color_default_inv;
+@field_border-width: 1px;
+
+@keyframes pacem-rotate-anim {
+    0% {
+        transform: rotate(0);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes pacem-autocomplete-anim {
+    0% {
+        opacity: 0;
+        transform: translateY(@grid_spacing);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@_left: @grid_spacing * 5 / 6;
+@_h: @_left;
+
+@keyframes pacem-label-anim {
+    0% {
+        //transform: translateY(@_h) scale(1.125) translateX(0) translateZ(0);
+    }
+
+    100% {
+        //transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes pacem-label-before-anim {
+    0% {
+        transform: rotate(-90deg);
+    }
+
+    100% {
+        transform: rotate(0);
+    }
+}
+
+@keyframes pacem-input-container-anim {
+    0% {
+        // DO NOT ANIMATE this, FireFox and IE will get the correct positioning of the auto-complete component broken.
+        //transform: /*translateX(0) translateY(0) translateZ(0)*/ scale(.1);
+        //opacity: .0; // opacity animation is EVIL!
+    }
+
+    100% {
+        //transform: /*translateX(0)*/ scale(1);
+        //opacity: 1;
+    }
+}
+
+.pacem-field {
+    margin-bottom: @grid_spacing / 3;
+    padding: @grid_spacing/3 0 5*@grid_spacing/6 0;
+    border-bottom: @field_border-width solid transparent;
+    z-index: 0;
+    border-radius: @border_radius;
+    transition: background linear .3s, border linear .3s;
+
+    @_thumb_border: @grid_spacing/12; // 2px
+    > label.pacem-label {
+        position: relative;
+        height: @_h;
+        line-height: @_h;
+        padding-left: @_h;
+        display: inline-block;
+        color: @color_field_label;
+        .FontMain();
+        animation: pacem-label-anim .25s ease-in-out both;
+    }
+
+    .pacem-input-container {
+        padding: @grid_spacing/3 @_left 0 @_left;
+        animation: pacem-input-container-anim .3s ease-in .2s both;
+    }
+
+    .pacem-validators {
+        list-style-type: none;
+        color: @color_danger;
+        margin-top: @border_field_size;
+
+        > * {
+            // display: list-item;
+            //min-height: @grid_spacing;
+            //line-height: @grid_spacing;
+        }
+    }
+
+    img.pacem-readonly {
+        padding: 0;
+        border: @_thumb_border solid @color_default;
+        margin: @grid_spacing/3 0 @grid_spacing/3 @_left;
+    }
+
+    .pacem-viewfinder,
+    .pacem-input {
+        transition: border-color .22s linear;
+    }
+
+    &.pacem-invalid {
+        .pacem-input-container {
+
+            .pacem-viewfinder,
+            .pacem-input {
+                border-color: fade(@color_danger, 20);
+            }
+        }
+
+        &.pacem-dirty {
+            .pacem-viewfinder,
+            .pacem-input {
+                border-color: @color_danger;
+            }
+        }
+    }
+
+    &.pacem-has-value {
+
+        &.pacem-valid {
+
+            &.pacem-dirty {
+                .pacem-input-container {
+
+                    .pacem-viewfinder,
+                    .pacem-input {
+                        border-color: fade( @color_success, 100);
+                    }
+                }
+            }
+
+            &.pacem-pristine {
+                .pacem-viewfinder,
+                .pacem-input {
+                    border-color: fade(fade( @color_success, 100), 40);
+                }
+            }
+        }
+    }
+
+    &.pacem-fetching {
+        label.pacem-label:before {
+            .Icon('refresh', @grid_spacing / 1.5);
+            animation: pacem-rotate-anim .67s linear infinite;
+        }
+    }
+}
+
+.pacem-field {
+
+    &:not(.pacem-has-value) {
+
+        select.pacem-select:not(:focus) /*,
+        input::-webkit-datetime-edit */ {
+            .Watermark();
+        }
+    }
+
+    div[contenteditable][pacem]:focus,
+    .pacem-input:focus,
+    .pacem-input:focus + label,
+    select.pacem-select:focus /*,
+        input::-webkit-datetime-edit */ {
+        color: @field_focus_forecolor;
+    }
+}
+
+.pacem-input-container .pacem-latlng {
+    .pacem-latlng-fields[hidden] {
+        display: none !important;
+    }
+}
+
+// EDITABLE VS READONLY
+.pacem-field.pacem-editable {
+    background-color: @field_backcolor;
+    border-color: transparent;
+
+    > label.pacem-label {
+
+        &:before {
+            .Icon('keyboard_arrow_down', @grid_spacing / 1.5);
+            position: absolute;
+            top: @_h * .1;
+            left: 0;
+            display: block;
+            width: @_h * .8;
+            height: @_h * .8;
+            animation: pacem-label-before-anim .3s ease-in .5s both;
+        }
+
+        &.pacem-tooltip:before {
+            .Icon('info', @grid_spacing / 1.5);
+            animation: none;
+        }
+
+        + .pacem-balloon {
+            margin-left: @_left * .7;
+        }
+
+        &.pacem-required:after {
+            content: '*';
+            .FontTech(1.1);
+        }
+    }
+}
+
+.pacem-field.pacem-editable when (@shadows = true) {
+    box-shadow: 0 2px @grid_spacing / 3 rgba(0,0,0,0.25);
+}
+
+.pacem-field.pacem-editable when (@shadows = false) {
+    box-shadow: 0 2px @grid_spacing / 8 rgba(0,0,0,0.05);
+}
+
+.pacem-field.pacem-readonly {
+    background-color: transparent;
+    box-shadow: none;
+    border-color: fade(@color_default, 5);
+}
+
+// FieldSet
+.pacem-fieldset {
+    .HorizontalItemSet(field);
+
+    .pacem-fieldset-left, .pacem-fieldset-center, .pacem-fieldset-right,
+    .fieldset-left, .fieldset-center, .fieldset-right {
+        background-color: @color_input_back;
+        border-radius: @border_radius;
+
+        .pacem-viewfinder,
+        .pacem-input {
+            background: none;
+            border-radius: 0;
+        }
+
+        > * {
+
+            &:first-child when (@border_radius > 0) {
+                .pacem-viewfinder, .pacem-input {
+                    border-top-left-radius: @border_radius;
+                    border-bottom-left-radius: @border_radius;
+                }
+            }
+
+            &:last-child when (@border_radius > 0) {
+                .pacem-viewfinder, .pacem-input {
+                    border-top-right-radius: @border_radius;
+                    border-bottom-right-radius: @border_radius;
+                }
+            }
+
+            &:not(:last-child):not(.fieldset-last)::after {
+                // content: '|';
+            }
+        }
+    }
+}
+
+.pacem-fieldgroup,
+input-group {
+    display: flex;
+    flex-direction: row;
+    //justify-content: flex-start;
+    align-content: flex-start;
+    align-items: flex-start;
+
+    > * {
+        min-height: @field_height;
+        flex: 0 0 auto;
+        order: 0;
+
+        &.fieldgroup-prepend,
+        &.input-group-prepend,
+        &.fieldgroup-append,
+        &.input-group-append {
+            display: inline-flex;
+            flex-direction: row;
+            align-items: flex-start;
+            .FormFieldItemBorder();
+            background-color: @color_input_back;
+            color: @field_forecolor;
+            min-width: @border_radius;
+
+            .pacem-icon {
+                font-size: @grid_spacing;
+                height: @field_height;
+                line-height: @field_height;
+            }
+        }
+
+        &.fieldgroup-prepend,
+        &.input-group-prepend {
+            order: -1;
+            border-top-left-radius: @border_radius;
+            border-bottom-left-radius: @border_radius;
+        }
+
+        &.fieldgroup-append,
+        &.input-group-append {
+            order: 1;
+            border-top-right-radius: @border_radius;
+            border-bottom-right-radius: @border_radius;
+        }
+
+        .pacem-viewfinder, .pacem-input {
+            border-radius: 0 !important;
+        }
+    }
+
+    .pacem-focus ~ .fieldgroup-prepend,
+    .pacem-focus ~ .input-group-prepend {
+        color: @field_focus_forecolor;
+        border-color: fade(@color_default, 40);
+    }
+
+    .pacem-focus ~ .fieldgroup-append,
+    .pacem-focus ~ .input-group-append {
+        color: @field_focus_forecolor;
+        border-color: fade(@color_default, 40);
+    }
+}
+
+// reset bg for groups nested inside sets
+.pacem-fieldset {
+    .pacem-fieldgroup,
+    input-group {
+
+        .fieldgroup-prepend,
+        .input-group-prepend,
+        .fieldgroup-append,
+        .input-group-append {
+            background: none;
+        }
+
+        &:not(:first-child) {
+            .fieldgroup-prepend,
+            .input-group-prepend {
+                border-radius: 0;
+            }
+        }
+
+        &:not(:last-child) {
+            .fieldgroup-append,
+            .input-group-append {
+                border-radius: 0;
+            }
+        }
+    }
+}

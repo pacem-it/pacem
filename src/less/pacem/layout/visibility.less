@@ -1,0 +1,147 @@
+﻿@import "../../shared";
+@import "shared";
+@import "../theme-dark";
+
+.pacem-hide {
+    display: none;
+}
+
+.pacem-invisibile {
+    visibility: hidden;
+}
+
+.pacem-show {
+    display: inherit;
+}
+
+.display-block {
+    display: block !important;
+}
+
+.display-inline {
+    display: inline !important;
+}
+
+.display-inline-block {
+    display: inline-block !important;
+}
+
+.HideWhenAtMost(@size) {
+    .hide-@{size} {
+        .Inert();
+    }
+}
+
+.HideWhenLessThan(@size){
+    .show-@{size}{
+        .Inert();
+    }
+}
+
+.ShowWhenAtLeast(@size) {
+
+    .show-@{size}-block {
+        display: block;
+    }
+
+    .show-@{size}-inline-block {
+        display: inline-block;
+    }
+
+    .show-@{size}-inline {
+        display: inline;
+    }
+}
+
+// hide when below 'small' width
+@media (max-width: @threshold_sm - 1) {
+    .HideWhenLessThan(sm);
+    .HideWhenAtMost(xs);
+    // exception (show-xs: show only when EXACTLY 'xs')
+    .ShowWhenAtLeast(xs);
+}
+
+// show when at least 'small' wide
+@media (min-width: @threshold_sm) {
+    .ShowWhenAtLeast(sm);
+}
+
+// hide when at most 'small' wide
+@media (max-width: @threshold_md - 1) {
+    .HideWhenLessThan(md);
+    .HideWhenAtMost(sm);
+}
+
+// show when at least 'medium' wide
+@media (min-width: @threshold_md) {
+    .ShowWhenAtLeast(md);
+}
+
+// hide when at most 'medium' wide
+@media (max-width: @threshold_lg - 1) {
+    .HideWhenLessThan(lg);
+    .HideWhenAtMost(md);
+}
+
+// show when at least 'lg' wide
+@media (min-width: @threshold_lg) {
+    .ShowWhenAtLeast(lg);
+}
+
+// hide when at most 'lg' wide
+@media (max-width: @threshold_xl - 1) {
+    .HideWhenLessThan(xl);
+    .HideWhenAtMost(lg);
+}
+
+// show when at least 'xl' wide
+@media (min-width: @threshold_xl) {
+    .ShowWhenAtLeast(xl);
+}
+
+// hide when at most 'xl' wide
+@media (max-width: @threshold_hd - 1) {
+    .HideWhenLessThan(hd);
+    .HideWhenAtMost(xl);
+}
+
+// show when at least 'hd' wide
+@media (min-width: @threshold_hd) {
+    .ShowWhenAtLeast(hd);
+}
+
+// hide when at most 'hd' wide
+@media (max-width: @threshold_uhd - 1) {
+    .HideWhenLessThan(uhd);
+    .HideWhenAtMost(hd);
+}
+
+// show when at least 'uhd' wide
+@media (min-width: @threshold_uhd) {
+    .ShowWhenAtLeast(uhd);
+}
+
+// hide when at most 'hd' wide
+@media (max-width: @threshold_4k - 1) {
+    .HideWhenLessThan(4k);
+    .HideWhenAtMost(uhd);
+}
+
+// show when at least '4k' wide
+@media (min-width: @threshold_4k) {
+    .ShowWhenAtLeast(4k);
+}
+
+// show/hide when portrait
+@media (orientation: portrait) {
+    .HideWhenLessThan(o);
+    .HideWhenAtMost(v);
+    .ShowWhenAtLeast(v);
+}
+
+// show/hide when landscape
+@media (orientation: landscape) {
+    .HideWhenLessThan(v);
+    .HideWhenAtMost(h);
+    .ShowWhenAtLeast(h);
+}

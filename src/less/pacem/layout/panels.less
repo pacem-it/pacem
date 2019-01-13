@@ -1,0 +1,132 @@
+﻿@import "../../shared";
+@import "../theme-dark";
+@import "mixins";
+
+// http://webapplayers.com/luna_admin-v1.3/panels.html
+
+.PanelColorize(@_clr) {
+    .PanelColorize(panel, @_clr);
+}
+
+.pacem-scrollable {
+    display: block;
+    overflow: hidden;
+    overflow-y: auto;
+    box-sizing: border-box;
+}
+
+.pacem-panel,
+.pacem-wrapper {
+    box-sizing: border-box;
+    margin: 0 @grid_spacing/2 @grid_spacing @grid_spacing/2;
+}
+
+.pacem-panel.panel-lonely {
+    margin: 0;
+}
+
+.pacem-panel {
+    .Panel(panel);
+    display: block;
+
+    .panel-heading {
+        padding-top: @grid_spacing/2;
+        padding-bottom: @grid_spacing/2;
+    }
+
+    .panel-body.pacem-flex,
+    .panel-body.pacem-row {
+        //margin: -@grid_spacing/2 -(@grid_spacing * 7/6) -7 * @grid_spacing/4 -(@grid_spacing * 7/6);
+        margin: -@grid_spacing/2 -(@grid_spacing * 7/6) 0 -(@grid_spacing * 7/6);
+    }
+
+    .panel-body.pacem-grid {
+        padding: 0;
+
+        .pacem-panel {
+            margin: 0;
+        }
+    }
+
+    .panel-heading.heading-separate,
+    .panel-heading.heading-sever {
+        border-bottom: 1px solid rgba(0,0,0,0.15);
+
+        + * {
+            border-top: 1px solid rgba(255,255,255,0.075);
+        }
+    }
+
+    &.panel-master {
+    }
+}
+/* #region MASTER PANEL */
+.pacem-wrapper {
+    @_brd_in_clr: #595a58;
+    @_brd_in_w: 2px;
+    border: @grid_spacing/3 solid #868584;
+    box-shadow: inset @_brd_in_w 0 0 @_brd_in_clr, inset 0 @_brd_in_w 0 @_brd_in_clr, inset 0 -@_brd_in_w 0 @_brd_in_clr, inset -@_brd_in_w 0 0 @_brd_in_clr;
+    padding: @_brd_in_w;
+    border-radius: @border_radius;
+
+    .pacem-row,
+    .pacem-flex {
+        margin: 0 @grid_spacing/3;
+    }
+
+    .pacem-grid {
+        @_gap: @grid_spacing/1.5;
+        margin: 0 @_gap @_gap @_gap;
+        grid-gap: @_gap;
+    }
+
+    .pacem-panel {
+        margin: 0 @grid_spacing/3 @grid_spacing/1.5 @grid_spacing/3;
+        padding-bottom: 0;
+
+        .panel-heading {
+            padding: @grid_spacing/2 @grid_spacing/1.5;
+        }
+
+        .panel-body /*:last-child*/,
+        .panel-footer /*:last-child*/ {
+            padding-bottom: @grid_spacing/1.5;
+        }
+
+        &.panel-master {
+            margin-left: 0;
+            margin-right: 0;
+            border-radius: 0;
+
+            &:last-child {
+                margin-bottom: 0;
+            }
+        }
+    }
+}
+
+.pacem-panel.panel-master {
+    .PanelColorize(@color_default_inv);
+    background-color: @color_default;
+
+    .panel-heading {
+        text-shadow: none;
+    }
+
+    .panel-body,
+    .panel-footer {
+        color: @color_default_inv;
+    }
+
+    a, a:hover {
+        color: @color_accent;
+    }
+
+    .tools {
+
+        pacem-button:before {
+            color: @color_default_inv;
+        }
+    }
+}
+/* #endregion */

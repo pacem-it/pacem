@@ -1,0 +1,239 @@
+[
+  {
+    "package": "intro",
+    "label": "Introduction",
+    "items": [
+      {
+        "label": "Welcome",
+        "view": "welcome"
+      },
+      {
+        "label": "Getting Started",
+        "view": "start"
+      },
+      {
+        "label": "Bindings",
+        "view": "bindings"
+      }
+    ]
+  },
+  {
+    "package": "basic",
+    "label": "Basic Elements",
+    "items": [
+      {
+        "label": "Data",
+        "view": "data",
+        "title": "<pacem-data>"
+      },
+      {
+        "label": "Fetch",
+        "view": "fetch",
+        "title": "<pacem-fetch>"
+      },
+      {
+        "label": "Hub Proxy",
+        "view": "hub-proxy",
+        "title": "<pacem-hub-proxy>"
+      },
+      {
+        "label": "Panel",
+        "view": "panel",
+        "title": "<pacem-panel>"
+      },
+      {
+        "label": "Repeater",
+        "view": "repeater",
+        "title": "<pacem-repeater>"
+      },
+      {
+        "label": "Text",
+        "view": "text",
+        "title": "<pacem-text>"
+      },
+      {
+        "label": "Router",
+        "view": "router",
+        "title": "<pacem-router>"
+      }
+    ]
+  },
+  {
+    "package": "behaviors",
+    "label": "Behavior Elements",
+    "items": [
+      {
+        "label": "Drag Drop",
+        "view": "drag-drop",
+        "title": "<pacem-drag-drop>"
+      },
+      {
+        "label": "Rescale",
+        "view": "rescale",
+        "title": "<pacem-rescale>"
+      },
+      {
+        "label": "Swipe",
+        "view": "swipe",
+        "title": "<pacem-swipe>"
+      }
+    ]
+  },
+  {
+    "package": "ui",
+    "label": "UI Elements",
+    "items": [
+      {
+        "label": "Agenda",
+        "view": "agenda",
+        "title": "<pacem-agenda>"
+      },
+      {
+        "label": "Anchor",
+        "view": "anchor",
+        "title": "<pacem-a>"
+      },
+      {
+        "label": "Balloon",
+        "view": "balloon",
+        "title": "<pacem-balloon>"
+      },
+      {
+        "label": "Binder",
+        "view": "binder",
+        "title": "<pacem-binder>"
+      },
+      {
+        "label": "Button",
+        "view": "button",
+        "title": "<pacem-button>"
+      },
+      {
+        "label": "Collapse",
+        "view": "collapse",
+        "title": "<pacem-collapse>"
+      },
+      {
+        "label": "Calendar",
+        "view": "calendar",
+        "title": "<pacem-calendar>"
+      },
+      {
+        "label": "Dialog",
+        "view": "dialog",
+        "title": "<pacem-dialog>"
+      },
+      {
+        "label": "Image",
+        "view": "image",
+        "title": "<pacem-img>"
+      },
+      {
+        "label": "Infinite Scroller",
+        "view": "infinite-scroller",
+        "title": "<pacem-infinite-scroller>"
+      },
+      {
+        "label": "Lightbox",
+        "view": "lightbox",
+        "title": "<pacem-lightbox>"
+      },
+      {
+        "label": "Loader",
+        "view": "loader",
+        "title": "<pacem-loader>"
+      },
+      {
+        "label": "Markdown",
+        "view": "markdown",
+        "title": "<pacem-markdown>"
+      },
+      {
+        "label": "Marquee",
+        "view": "marquee",
+        "title": "<pacem-marquee>"
+      },
+      {
+        "label": "Menu",
+        "view": "menu",
+        "title": "<pacem-menu>"
+      },
+      {
+        "label": "Progressbar",
+        "view": "progressbar"
+      },
+      {
+        "label": "Schedule",
+        "view": "schedule"
+      },
+      {
+        "label": "Snapshot",
+        "view": "snapshot"
+      },
+      {
+        "label": "Tabs",
+        "view": "tabs"
+      },
+      {
+        "label": "Toast",
+        "view": "toast",
+        "title": "<pacem-toast>"
+      },
+      {
+        "label": "Tuner",
+        "view": "tuner"
+      },
+      {
+        "label": "View",
+        "view": "view"
+      }
+    ]
+  },
+  {
+    "package": "maps",
+    "label": "Map Elements",
+    "items": [
+      {
+        "label": "Map",
+        "view": "map"
+      },
+      {
+        "label": "Adapters (Google, LeafletJS)",
+        "view": "adapters"
+      }
+    ]
+  },
+  {
+    "package": "charts",
+    "label": "Chart Elements",
+    "items": [
+      {
+        "label": "Generic",
+        "view": "generic"
+      },
+      {
+        "label": "Pie",
+        "view": "pie"
+      }
+    ]
+  },
+  {
+    "package": "scaffolding",
+    "label": "Scaffolding Elements",
+    "items": [
+      {
+        "label": "Form",
+        "view": "form"
+      },
+      {
+        "label": "Form Field",
+        "view": "form-field",
+        "title": "<pacem-form-field>"
+      },
+      {
+        "label": "Tags",
+        "view": "tags"
+      }
+    ]
+  }
+]

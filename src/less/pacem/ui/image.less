@@ -1,0 +1,32 @@
+﻿@import "../theme-dark";
+
+pacem-img {
+    background-position: center center;
+    background-repeat: no-repeat;
+    display: inline-block;
+    position: relative;
+}
+
+pacem-img::before {
+    display: block;
+    content: '';
+    width: @grid_cell;
+    height: @grid_cell;
+    border-radius: 50%;
+    border: @grid_spacing/6 solid @color_border;
+    border-top-color: @color_default;
+    animation: rotate_anim linear 1s infinite both;
+    top: 50%;
+    left: 50%;
+    margin-left: -@grid_cell * .5;
+    margin-top: -@grid_cell * .5;
+    position: absolute;
+    transition: transform .2s @easing_in_out_sine, opacity .2s linear;
+    pointer-events: none;
+}
+
+pacem-img.img-ready::before{
+    transform: scale(0);
+    opacity: 0;
+    animation: none;
+}

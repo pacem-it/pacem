@@ -1,0 +1,37 @@
+﻿@import "../theme-dark";
+
+address {
+    font-style: normal;
+    line-height: inherit;
+
+    @_icon_size: @grid_spacing / 6 * 5;
+
+    // for better results combine it with .pacem-panel class
+    .email,
+    .phone,
+    .place {
+        padding-left: @_icon_size * 1.2;
+        position: relative;
+    }
+
+    .place::before {
+        .Icon('place', @_icon_size);
+    }
+
+    .phone::before {
+        .Icon('phone', @_icon_size);
+    }
+
+    .email::before {
+        .Icon('email', @_icon_size);
+    }
+
+    .email,
+    .phone,
+    .place {
+        &::before {
+            left: 0;
+            top: 0;
+        }
+    }
+}

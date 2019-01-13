@@ -1,0 +1,20 @@
+﻿@import "shared";
+
+pacem-select {
+    .FormFieldItemWrapper();
+
+    .pacem-select {
+        .FormFieldItem();
+        .FormFieldItemInline();
+        box-sizing: content-box; // why the select behaves differently...
+
+        > option {
+            background-color: @color_lightblue;
+
+            &.pacem-watermark {
+                .Watermark();
+            }
+        }
+    }
+
+}

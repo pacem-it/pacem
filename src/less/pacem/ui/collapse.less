@@ -1,0 +1,15 @@
+﻿@import "../../shared";
+@import "../theme-dark";
+
+pacem-collapse {
+    display: block;
+
+    .pacem-collapse {
+        overflow: hidden !important;
+        transition: height .35s @easing_in_out_sine;
+
+        &.pacem-horizontal {
+            transition: width .4s @easing_in_out_sine;
+        }
+    }
+}

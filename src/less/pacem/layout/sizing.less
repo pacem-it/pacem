@@ -1,0 +1,25 @@
+﻿@import "../theme-dark";
+
+.pacem-size {
+    min-height: @grid_cell;
+
+    &.size-xl {
+        min-height: 2 * @grid_cell;
+    }
+
+    &.size-lg {
+        min-height: ceil( @grid_cell * 1.414);
+    }
+
+    &.size-sm {
+        min-height: 2 * @grid_spacing;
+    }
+
+    &.size-xs {
+        min-height: @grid_spacing;
+    }
+}
+
+.pacem-borderbox{
+    box-sizing: border-box;
+}

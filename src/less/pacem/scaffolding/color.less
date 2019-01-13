@@ -1,0 +1,75 @@
+﻿@import "shared";
+@import "../../shared";
+
+pacem-input-color {
+    .FormFieldItemWrapper();
+    display: block;
+
+    @_gap: @grid_spacing/6;
+    @_top: @input_padding_horiz / 2;
+    @_size: @field_height - @_gap - @_top;
+
+    @_rght: @grid_spacing * 2 - @input_padding_horiz;
+
+    .pacem-viewfinder {
+        max-width: @field_min_width;
+        display: flex;
+        justify-content: flex-start;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        position: relative;
+
+        &:before {
+            @_sz: @grid_spacing - @_top;
+            .Icon('opacity', @_sz);
+            left: @_rght + @_sz;
+            top: @_top;
+        }
+    }
+
+    input[type=number].pacem-input {
+        .FormFieldItem();
+        text-align: right;
+        width: 42px + 2 * @input_padding_horiz; // check all browsers
+        &:after {
+            content: ' ';
+        }
+    }
+
+    .pacem-input-color {
+        width: @_size;
+        height: @_size;
+        overflow: hidden;
+        border-radius: 50%;
+        margin-bottom: @_gap;
+        // space for opacity icon
+        margin-right: @_rght;
+        margin-left: @input_padding_horiz;
+        margin-top: @_top;
+
+        input.pacem-input[type=color] {
+            .FormFieldItemInline();
+            cursor: pointer;
+            padding: 0;
+            //.GradientVertical( rgba(0,0,0,0.25), rgba(0,0,0,0) );
+            height: @_size;
+            opacity: 0;
+            display: block;
+            width: @_size;
+        }
+    }
+
+    .pacem-input-color when (@shadows = true) {
+        box-shadow: inset 0 @_size/12 @_size/4 rgba(0,0,0,0.25);
+    }
+
+    .pacem-input-color when (@shadows = false) {
+        // also here, temporarily
+        box-shadow: inset 0 @_size/12 @_size/4 rgba(0,0,0,0.25);
+    }
+
+    .pacem-readonly {
+        height: @field_height;
+        width: @field_min_width;
+    }
+}
