@@ -3,7 +3,7 @@
 ![Pacem JS](https://pacem.azureedge.net/marketing/logojs.svg) Pacem JS
 ========
 
-Pacem JS is a [CustomElements-v1](http://www.w3.org/TR/custom-elements/) based ecosystem for 
+[Pacem JS](https://js.pacem.it) is a [CustomElements-v1](http://www.w3.org/TR/custom-elements/) based ecosystem for 
 reusable web components.
 
 It is meant to run in a web page inside a browser.
