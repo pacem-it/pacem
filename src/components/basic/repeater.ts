@@ -234,18 +234,13 @@ namespace Pacem.Components {
             var host: any;
             if (!Utils.isNull(host = GET_VAL(this._repeater, INSTANCE_HOST_VAR)))
                 CustomElementUtils.assignHostContext(host, clonedTmpl);
-            var dom = clonedTmpl.content.children;
+            var dom = clonedTmpl.content./*children*/childNodes;
             Array.prototype.push.apply(this._alterEgos, dom);
             tmplParent.appendChild(clonedTmpl.content);
-            //for (var j = dom.length - 1; j >= 0; j--) {
-            //    let item = dom.item(j);
-            //    this._alterEgos.push(tmplParent.insertBefore(item, next));
-            //    next = item;
-            //}
         }
 
         get dom(): Node[] {
-            return this._alterEgos.filter(n => !(n instanceof Comment));
+            return this._alterEgos.filter(n => !(n instanceof Comment || n instanceof Text));
         }
 
         get repeater(): PacemRepeaterElement {

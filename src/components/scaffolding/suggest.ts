@@ -214,7 +214,7 @@ namespace Pacem.Components.Scaffolding {
         }
 
         private _itemCreate(evt: RepeaterItemCreateEvent) {
-            const li = <HTMLLIElement>evt.detail.dom[0];
+            const li = <HTMLLIElement>evt.detail.dom.find(i => i instanceof HTMLLIElement);
             const item = evt.detail.item;
             const index = evt.detail.index;
             li.tabIndex = 0;
@@ -226,7 +226,7 @@ namespace Pacem.Components.Scaffolding {
         }
 
         private _itemRemove(evt: RepeaterItemCreateEvent) {
-            const li = <HTMLLIElement>evt.detail.dom[0];
+            const li = <HTMLLIElement>evt.detail.dom.find(i => i instanceof HTMLLIElement);
             li.removeEventListener('keydown', this._selectHandler, false);
             li.removeEventListener('keyup', this._afterSelectHandler, false);
             li.removeEventListener('click', this._selectHandler, false);

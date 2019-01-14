@@ -35,7 +35,7 @@ namespace Pacem.Components.Scaffolding {
 
         private manageDom(evt: RepeaterItemEvent) {
             const args = evt.detail;
-            let option = <HTMLOptionElement>args.dom[0];
+            let option = <HTMLOptionElement>args.dom.find(o => o instanceof HTMLOptionElement);
             option.value = args.item.value;
             option.textContent = args.item.viewValue;
             option.selected = this.isDataSourceItemSelected(args.item);

@@ -47,13 +47,15 @@ Default spawning position is assumed to be `top right`.
             <pacem-toast timeout="{{ #dur1.value }}" show="{{ #show2.model, twoway }}" class="toast-accent">Popped 2!</pacem-toast>
             <pacem-toast timeout="{{ #dur1.value }}" show="{{ #show3.model, twoway }}" class="toast-success">Popped 3!</pacem-toast>
         </pacem-panel>
-        <pacem-select id="pos1" class="display-block pacem-margin margin-bottom" value="top right" disabled="{{ #show1.model || #show2.model || #show3.model }}">
-            <pacem-data-item value="top left"></pacem-data-item>
-            <pacem-data-item value="top right"></pacem-data-item>
-            <pacem-data-item value="bottom right"></pacem-data-item>
-            <pacem-data-item value="bottom left"></pacem-data-item>
-        </pacem-select>
-        <div class="display-block pacem-margin margin-bottom form-field">
+        <div class="pacem-margin margin-bottom form-field">
+            <pacem-select id="pos1" value="top right" disabled="{{ #show1.model || #show2.model || #show3.model }}">
+                <pacem-data-item value="top left"></pacem-data-item>
+                <pacem-data-item value="top right"></pacem-data-item>
+                <pacem-data-item value="bottom right"></pacem-data-item>
+                <pacem-data-item value="bottom left"></pacem-data-item>
+            </pacem-select>
+        </div>
+        <div class="pacem-margin margin-bottom form-field">
             <label class="pacem-label">timeout:</label>
             <pacem-input-number id="dur1" value="3000" step="500" min="0"></pacem-input-number>
         </div>

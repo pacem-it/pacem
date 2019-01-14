@@ -1,7 +1,23 @@
-﻿<pacem-markdown value="{{ #content0.textContent }}" class="md-tech pos-sticky" root></pacem-markdown>
+﻿<pacem-markdown value="{{ #content0.textContent }}" class="md-tech" root></pacem-markdown>
 
 <pre pacem hidden id="content0">
-# `&lt;pacem-repeater>`
+`PacemRepeaterElement` is the element that allows to iterate through arrays, contextualizing data into portions of DOM.  
+All it needs is a `&lt;template>` descendant that represents the item DOM. For instance:
+
+```html
+&lt;pacem-repeater datasource="{{ ['apples', 'apricots', 'raspberries'] }}">
+    &lt;ul>
+        &lt;li>Fruit:&lt;/li>
+        &lt;template>
+            &lt;li>&lt;pacem-text text="{{ ^item }}">&lt;pacem-text>&lt;/li>
+        &lt;/template>
+    &lt;/ul>
+&lt;/pacem-repeater>
+```
+
+## Bindings
+
+`^item` and `^index` are the accessors respectively to the **data**-item and to the item-**index**.
 </pre>
 
 

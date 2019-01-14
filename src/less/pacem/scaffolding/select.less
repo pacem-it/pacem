@@ -3,10 +3,21 @@
 pacem-select {
     .FormFieldItemWrapper();
 
+    &::after {
+        .Icon('arrow_drop_down', @grid_spacing);
+        line-height: @field_height;
+        right: 0;
+        top: 0;
+        pointer-events: none;
+    }
+
     .pacem-select {
         .FormFieldItem();
         .FormFieldItemInline();
-        box-sizing: content-box; // why the select behaves differently...
+        box-sizing: border-box;
+        padding-right: @grid_spacing;
+        display: block;
+        width: 100%;
 
         > option {
             background-color: @color_lightblue;
@@ -15,6 +26,20 @@ pacem-select {
                 .Watermark();
             }
         }
-    }
 
+        // normalize toggle button:
+        -webkit-appearance: none;
+        -moz-appearance: none;
+
+        &:-moz-focusring {
+            color: transparent;
+            text-shadow: 0 0 0 #000;
+        }
+
+        &::-ms-expand {
+            display: none;
+        }
+    }
 }
+
+
