@@ -1,0 +1,63 @@
+﻿
+
+<pacem-markdown value="{{ #content0.textContent }}" class="md-tech" root></pacem-markdown>
+
+<pre pacem hidden id="content0">
+Autocomplete control.
+
+## Simple text
+Type to filter by a `hint`, then `tab`- or `arrow`- or `mouse`-selecting.  
+Set the `allowNew` property to `true` to allow extra values. 
+</pre>
+
+<pacemjs-snippet>
+    <template id="demo0">
+
+        <pacem-data id="foods" model="['Apples', 'Bread', 'Cheese', 'Cookies', 'Donuts', 'Eggs', 'French fries', 'Hamburgers', 'Ice creams', 'Jam', 'Meat', 'Omelette', 'Pizza', 'Quiche', 'Yougurt']">
+        </pacem-data>
+
+        <div class="pacem-margin margin-bottom">
+            <pacem-suggest id="food" placeholder="Fav food..." max-suggestions="5" datasource="{{ #foods.model }}"></pacem-suggest>
+        </div>
+        <div>
+            <pacem-checkbox value="{{ #food.allowNew, twoway }}" true-value="true" false-value="false" caption="allow new"></pacem-checkbox>
+            <span class="display-inline-block pacem-margin margin-left">picked: <b><pacem-text text="{{ #food.value }}"></pacem-text></b></span>
+        </div>
+
+    </template>
+</pacemjs-snippet>
+
+<pacem-markdown value="{{ #content1.textContent }}" class="md-tech" root></pacem-markdown>
+<pre pacem hidden id="content1">
+## Structured objects
+
+`PacemSuggestElement` might be useful to quicken dropdown selection of even complex objects.  
+Define a `textProperty` and eventually a `valueProperty` to teach the autocompleter what to show and what to save respectively.
+</pre>
+
+<pacemjs-snippet>
+    <template id="demo1">
+
+        <!-- server-side web api that needs a 'hint' or the actual 'value' -->
+        <pacem-fetch url="/api/test/autocomplete" parameters="{{ {'q': #region.hint, 'id': #region.value } }}" id="regions"></pacem-fetch>
+
+        <div class="pacem-margin margin-bottom">
+
+            <!-- pacem-suggest -->
+            <pacem-suggest id="region" 
+                           text-property="name" 
+                           value-property="id"
+                           placeholder="Pick an Italian region..." 
+                           max-suggestions="5" 
+                           datasource="{{ #regions.result }}"></pacem-suggest>
+        </div>
+        <div>
+            <!-- sample output -->
+            picked <pacem-text text="{{ #region.valueProperty }}"></pacem-text>: <b><pacem-text text="{{ JSON.stringify(#region.value) }}"></pacem-text></b>
+        </div>
+
+    </template>
+</pacemjs-snippet>
+
+<pacem-tags id="proto" hidden></pacem-tags>
+<pacemjs-descriptor target="#proto"></pacemjs-descriptor>

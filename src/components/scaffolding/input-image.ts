@@ -197,9 +197,7 @@ namespace Pacem.Components.Scaffolding {
         protected convertValueAttributeToProperty(attr: string) {
             return attr; // better assumptions anyone?
         }
-
-        @Watch({ converter: PropertyConverters.String }) placeholder: string;
-
+        
         private _editImage: Scaffolding.PacemEditImageElement;
         private _dialog: UI.PacemDialogElement;
         @ViewChild('pacem-img') private _image: UI.PacemImageElement;

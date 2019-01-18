@@ -464,16 +464,7 @@ namespace Pacem {
             }
             return { a: a, b: b, c: c, d: d, x: x, y: y };
         }
-
-        //static translateTransform2D(el: HTMLElement | SVGElement, x?: number, y?: number) {
-        //    const m = Utils.deserializeTransform(getComputedStyle(el));
-        //    if (Utils.isNull(x))
-        //        x = m.x;
-        //    if (Utils.isNull(y))
-        //        y = m.y;
-        //    el.style.transform = `matrix(${m.a},${m.b},${m.c},${m.d},${x},${y})`;
-        //}
-
+        
         static get scrollTop() {
             return window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
         }
@@ -496,13 +487,13 @@ namespace Pacem {
          * @param callback Then callback.
          * @param timeout Fallback timeout (ms) in case the animation/transitionend event won't fire.
          */
-        static addAnimationEndCallback(element: HTMLElement, callback: () => void, timeout: number = 500) {
+        static addAnimationEndCallback(element: HTMLElement, callback: (element?:HTMLElement) => void, timeout: number = 500) {
             const fn = (e?: Event) => {
                 if (!e || e.target == element) {
                     clearTimeout(handle);
                     element.removeEventListener('animationend', fn, false);
                     element.removeEventListener('transitionend', fn, false);
-                    callback();
+                    callback.apply(this, [element]);
                 }
             }
             element.addEventListener('animationend', fn, false);

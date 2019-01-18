@@ -8,6 +8,10 @@
         "view": "welcome"
       },
       {
+        "label": "Yet another JS Framework",
+        "view": "another_js"
+      },
+      {
         "label": "Getting Started",
         "view": "start"
       },
@@ -231,8 +235,14 @@
         "title": "<pacem-form-field>"
       },
       {
+        "label": "Suggest",
+        "view": "suggest",
+        "title": "<pacem-suggest>"
+      },
+      {
         "label": "Tags",
-        "view": "tags"
+        "view": "tags",
+        "title": "<pacem-tags>"
       }
     ]
   }

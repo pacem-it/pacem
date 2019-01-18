@@ -8,13 +8,32 @@
 
 pacem-tabs {
     display: block;
-    position: relative;
+    //position: relative;
 
     pacem-tab {
         display: none;
+        opacity: 0;
+        pointer-events: none;
 
-        &.pacem-tab-focus {
+        &.tab-out,
+        &.tab-in,
+        &.tab-focus {
             display: block;
+        }
+
+        &.tab-previous {
+            transform: translateX(-@grid_spacing);
+        }
+
+        &.tab-next {
+            transform: translateX(@grid_spacing);
+        }
+
+        &.tab-focus,
+        &.pacem-tab-focus {
+            pointer-events: auto;
+            opacity: 1;
+            transform: none; // translateX(0) translateY(0) translateZ(0);
         }
     }
 
@@ -24,6 +43,15 @@ pacem-tabs {
         border-radius: @border_radius;
         border: @_brd_tab solid @_clr_brd_tab;
         z-index: 0;
+        overflow: hidden;
+        display: grid;
+
+        > pacem-tab {
+            grid-column: 1;
+            grid-row: 1;
+            align-self: start;
+            overflow: auto;
+        }
 
         .tab-heading {
             padding: 0 0 @grid_spacing/2 0;
@@ -94,7 +122,7 @@ pacem-tabs {
     }
 }
 
-@_s_btn: @grid_spacing / 1.5;
+@_s_btn: @grid_spacing;
 
 // tabs (header)
 pacem-adapter.pacem-tabs-adapter {
@@ -104,7 +132,7 @@ pacem-adapter.pacem-tabs-adapter {
         display: flex;
         flex-direction: row;
         align-items: flex-start;
-        margin: 0 0 0 round(3.75 * @_s_btn);
+        margin: 0 0 0 round(2 * @_h_tab);
         padding: 0;
         clear: right;
 
@@ -161,18 +189,27 @@ pacem-adapter.pacem-tabs-adapter {
         height: @_h_tab;
         line-height: @_h_tab;
         display: block;
-        width: @_s_btn;
+        width: @_h_tab;
         background-color: transparent;
+        margin: 0;
     }
 
-    .pacem-adapter-next:before {
+    .pacem-adapter-next::before {
         .Icon('chevron_right', @_s_btn);
-        line-height: @_h_tab;
     }
 
-    .pacem-adapter-previous:before {
+    .pacem-adapter-previous::before {
         .Icon('chevron_left', @_s_btn);
-        line-height: @_h_tab;
+    }
+
+    .pacem-adapter-next,
+    .pacem-adapter-previous {
+
+        &::before {
+            left: 0;
+            width: 100%;
+            line-height: @_h_tab;
+        }
     }
 }
 
@@ -225,7 +262,7 @@ pacem-adapter.pacem-tabs-adapter {
             margin-bottom: 0;
             margin-right: 0;
 
-            &::before{
+            &::before {
                 position: static;
             }
         }
@@ -241,5 +278,14 @@ pacem-adapter.pacem-tabs-adapter {
 
     .pacem-tabs-content {
         flex-grow: 1;
+    }
+}
+
+// animations
+.pacem-animations {
+    pacem-tabs {
+        pacem-tab {
+            transition: opacity .2s, transform .2s @easing_out_sine;
+        }
     }
 }

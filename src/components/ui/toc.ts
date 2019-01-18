@@ -64,15 +64,19 @@ namespace Pacem.Components.UI {
             this._observer.observe(this.target || document.body, { subtree: true, childList: true });
         }
 
-        private _scrollToSelf = (evt:Event) => {
-            this._scrollTo('#'+(<Element>evt.target).id);
+        private _scrollToSelf = (evt: Event) => {
+            this._scrollTo('#' + (<Element>evt.target).id);
         };
+
+        private _getTop(dom: HTMLElement) {
+            return Utils.offset(dom).top;
+        }
 
         private _scrollTo(selector: string, tween = true) {
             const dom = document.querySelector(selector),
                 item = this._items.find(i => i.dom === dom);
             if (item != null) {
-                const tget = item.top - (this.offset || 0);
+                const tget = (item.top = this._getTop(item.dom)) - (this.offset || 0);
                 if (tween) {
                     let from = Utils.scrollTop;
                     window.location.hash = item.dom.id;
@@ -131,16 +135,26 @@ namespace Pacem.Components.UI {
                 return;
             }
             const items = (this.target || document).querySelectorAll(selector),
-                scrollTop = Utils.scrollTop,
                 elements: { top: number, dom: HTMLElement }[] = [];
             for (let j = 0; j < items.length; j++) {
                 const dom = <HTMLElement>items.item(j);
                 dom.addEventListener('click', this._scrollToSelf, false);
                 Utils.addClass(dom, 'pacem-toc-item');
-                elements.push({ dom: dom, top: Utils.offset(dom).top + scrollTop });
+                elements.push({ dom: dom, top: this._getTop(dom) });
             }
+
+            // bootstrap TOC
             this._items = elements;
-            this._update(scrollTop);
+            this._update(Utils.scrollTop);
+
+            // initial state
+            let initialTarget = window.location.hash;
+            if (!Utils.isNullOrEmpty(initialTarget)) {
+                // in case of hash
+                setTimeout(() => {
+                    this._scrollTo(initialTarget, true);
+                }, 1000);
+            } 
         }
     }
 

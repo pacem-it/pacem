@@ -156,8 +156,10 @@ namespace Pacem.Components.Scaffolding {
         @Watch({ converter: PropertyConverters.Boolean }) required: boolean;
         @Watch({ converter: PropertyConverters.Boolean }) autofocus: boolean;
         @Watch({ converter: PropertyConverters.Boolean }) readonly: boolean;
-        @Watch({ converter: PropertyConverters.Number }) tabindex: number; // < name conflict -> TODO: rename
         @Watch({ converter: PropertyConverters.String }) name: string;
+
+        @Watch({ converter: PropertyConverters.String })
+        placeholder: string;
 
         protected abstract get inputFields(): HTMLElement[];
 
@@ -181,14 +183,15 @@ namespace Pacem.Components.Scaffolding {
                 case 'required':
                 case 'disabled':
                 case 'autofocus':
+                case 'placeholder':
                 case 'readonly':
                     for (let inputField of this.inputFields)
-                        val ? inputField.setAttribute(name, '') : inputField.removeAttribute(name);
+                        val ? inputField.setAttribute(name, val) : inputField.removeAttribute(name);
                     break;
                 //case 'name':
-                case 'tabindex':
+                case 'tabOrder':
                     for (let inputField of this.inputFields)
-                        inputField.setAttribute(name, val);
+                        inputField.setAttribute('tabindex', val);
                     break;
                 case 'value':
                     this.acceptValue(val);
@@ -262,6 +265,22 @@ namespace Pacem.Components.Scaffolding {
             }
             super.disconnectedCallback();
         }
+
+        focus() {
+            const fields = this.inputFields;
+            if (fields && fields.length) {
+                fields[0].focus();
+            }
+        }
+
+        blur() {
+            const fields = this.inputFields;
+            if (!Utils.isNullOrEmpty(fields)) {
+                for (let field of fields) {
+                    field.blur();
+                }
+            }
+        }
     }
 
     export declare type DataSourceItem = { value: any, viewValue: string };
@@ -327,9 +346,6 @@ namespace Pacem.Components.Scaffolding {
 
         @Watch({ emit: false, converter: PropertyConverters.String })
         compareBy: string;
-
-        @Watch({ converter: PropertyConverters.String })
-        placeholder: string;
 
         @Watch({ converter: PropertyConverters.Json })
         protected adaptedDatasource: DataSource;

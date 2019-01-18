@@ -57,7 +57,7 @@ namespace Pacem.Components.Scaffolding {
             </li>
         </template>
         <li class="tag-new">
-            <pacem-suggest allow-new="true" class="pacem-tags" on-change=":host._tagAdd($this.value)" hint="{{ :host.hint, twoway }}"></pacem-suggest>
+            <pacem-suggest logger="{{ :host.logger }}" placeholder="{{ :host.placeholder }}" allow-new="{{ :host.allowNew }}" class="pacem-tags" on-change=":host._tagAdd($this.value)" hint="{{ :host.hint, twoway }}"></pacem-suggest>
         </li>
     </ul>
 </pacem-repeater>`
@@ -69,7 +69,8 @@ namespace Pacem.Components.Scaffolding {
         }
 
         @Watch({ converter: PropertyConverters.String }) hint: string;
-        @Watch({ converter: PropertyConverters.Boolean }) allowDuplicates: boolean;
+        @Watch({ emit: false, converter: PropertyConverters.Boolean }) allowDuplicates: boolean;
+        @Watch({ converter: PropertyConverters.Boolean }) allowNew: boolean;
         @Watch({ converter: PropertyConverters.Number }) private _justAddedIndex: number;
         @ViewChild('pacem-suggest') private _suggest: PacemSuggestElement;
         @ViewChild('pacem-repeater.pacem-tags') private _tags: PacemRepeaterElement;
@@ -93,17 +94,18 @@ namespace Pacem.Components.Scaffolding {
             // do nothing!
         }
 
-        focus() {
-            this._suggest.focus();
-        }
-
         propertyChangedCallback(name: string, old: any, val: any, first?: boolean) {
             super.propertyChangedCallback(name, old, val, first);
             switch (name) {
                 case 'datasource':
                 case 'textProperty':
-                case 'valueProperty':
                     this._suggest[name] = val;
+                    break;
+                case 'valueProperty':
+                    // DON't pass the value-property to the suggest
+                    if (!Utils.isNullOrEmpty(val)) {
+                        throw `Cannot set 'valueProperty' on ${this.constructor.name}s.`;
+                    }
                     break;
                 case 'value':
                     this._tags.datasource = val;
@@ -128,12 +130,11 @@ namespace Pacem.Components.Scaffolding {
                         ) {
                             let newvalue = (this.value || []).splice(0).concat([value]);
                             resolve(this.value = newvalue);
-                            this.hint = '';
+                            this._suggest.hint = '';
                             this._suggest.reset();
-                            this._suggest.focus();
-                            //   this._suggest.value = '';
                             this._justAddedIndex = this.value.length - 1;
                         }
+                        setTimeout(() => this._suggest.focus(), 250);
                         break;
                     default:
                         resolve(this.value);

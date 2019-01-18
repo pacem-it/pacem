@@ -1,13 +1,41 @@
 ﻿
 
-<pacem-markdown value="{{ #content0.textContent }}" root></pacem-markdown>
+<pacem-markdown value="{{ #content0.textContent }}" class="md-tech" root></pacem-markdown>
 
 <pre pacem hidden id="content0">
-# `&lt;pacem-tags>`
+Tagging control for **string array** values.
 
-typing docs...
-
+## Free text
+Just add tags by typing, then `tab`- or `arrow`- or `mouse`-selecting.  
+Set the `allowNew` property to `true` so that anything goes. 
 </pre>
+
+<pacemjs-snippet>
+    <template id="demo0">
+
+        <pacem-tags placeholder="Type anything..." allow-new="true"></pacem-tags>
+
+    </template>
+</pacemjs-snippet>
+
+<pacem-markdown value="{{ #content1.textContent }}" class="md-tech" root></pacem-markdown>
+
+<pre pacem hidden id="content1">
+## Constrained values
+
+Tags can be forced to be picked only from a specific `datasource` or set of data:
+</pre>
+
+
+<pacemjs-snippet>
+    <template id="demo1">
+
+        <pacem-tags placeholder="US state..." value="Florida,Alabama" datasource="{{ #states.model }}"></pacem-tags>
+        <pacem-data id="states" model="['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming']">
+        </pacem-data>
+
+    </template>
+</pacemjs-snippet>
 
 <pacem-tags id="proto" hidden></pacem-tags>
 <pacemjs-descriptor target="#proto"></pacemjs-descriptor>

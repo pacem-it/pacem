@@ -1,5 +1,6 @@
 ﻿/// <reference path="../../../dist/js/pacem-core.d.ts" />
 /// <reference path="../../../dist/js/pacem-ui.d.ts" />
+
 namespace Pacem.Components.Scaffolding {
 
     class SuggestionSelectEvent extends CustomTypedEvent<{ selectedValue: any }> {
@@ -10,7 +11,7 @@ namespace Pacem.Components.Scaffolding {
 
     @CustomElement({
         tagName: 'pacem-suggest', shadow: Defaults.USE_SHADOW_ROOT,
-        template: `<input type="text" class="pacem-input"/>
+        template: `<input type="text" class="pacem-input" />
 <span class="pacem-readonly"><pacem-text text="{{ :host.viewValue }}"></pacem-text></span>
 <pacem-repeater datasource="{{ :host._filter(:host.adaptedDatasource, :host.hint) }}"
     on-${ RepeaterItemCreateEventName}=":host._itemCreate($event)"
@@ -30,7 +31,7 @@ namespace Pacem.Components.Scaffolding {
         /*@ViewChild('pacem-balloon')*/ private _balloon: UI.PacemBalloonElement;
 
         protected get inputFields() {
-            return [];
+            return [this._input];
         }
 
         @Watch({ converter: PropertyConverters.String }) hint: string;
@@ -40,10 +41,20 @@ namespace Pacem.Components.Scaffolding {
         private _downOn: EventTarget;
 
         protected acceptValue(val: any) {
-            if (!this._isTyping() && !Utils.isNullOrEmpty(this.datasource)) {
+            if (!this._isTyping()
+                && (this.allowNew || !Utils.isNullOrEmpty(this.datasource))
+            ) {
                 this.hint = '';
                 this._input.value = this.getViewValue(this.value) || '';
             }
+        }
+
+        protected getViewValue(val) {
+            var superValue = super.getViewValue(val);
+            if (Utils.isNullOrEmpty(superValue) && this.allowNew && !Utils.isNullOrEmpty(val)) {
+                superValue = this.mapEntityToViewValue(val);
+            }
+            return superValue;
         }
 
         private _isTyping() {
@@ -53,7 +64,7 @@ namespace Pacem.Components.Scaffolding {
         protected onChange(evt?: Event) {
             var deferred = DeferPromise.defer<any>();
             // change triggered elsewhere... (see _afterSelectHandler)
-            if (CustomEventUtils.isInstanceOf(evt, SuggestionSelectEvent)) {
+            if (evt.type === 'suggestionselect') {
                 const val = (<SuggestionSelectEvent>evt).detail.selectedValue;
                 this.value = val;
                 if (val) {
@@ -86,15 +97,16 @@ namespace Pacem.Components.Scaffolding {
                 return;
             switch (name) {
                 case 'datasource':
-                    if (Utils.isNullOrEmpty(val)) {
-                        this._balloon.popout();
-                    } else if (this._isTyping()) {
-                        this._popup();
-                    } else {
+                    if (!Utils.isNullOrEmpty(val) && !this._isTyping()) {
                         this._input.value = this.getViewValue(this.value);
                     }
                     break;
-                case 'adaptedDatasource':
+                case 'hint':
+                    if (!this._isTyping()) {
+                        this._input.value = val;
+                    }
+                    break;
+                case 'disabled':
                 case 'readonly':
                     this._checkBalloon();
                     break;
@@ -112,17 +124,7 @@ namespace Pacem.Components.Scaffolding {
             }
             super.disconnectedCallback();
         }
-
-        focus() {
-            this._input.focus();
-        }
-
-        private _popup(evt?: Event) {
-            if (Utils.isNullOrEmpty(this.value) && !Utils.isNullOrEmpty(this.datasource)) {
-                this._balloon.popup();
-            }
-        }
-
+        
         private _focusHandler = (evt: Event) => {
             this.hint = this._input.value;
         };
@@ -166,19 +168,21 @@ namespace Pacem.Components.Scaffolding {
             if ((evt instanceof KeyboardEvent && (evt.keyCode === 9 /*tab*/
                 || evt.keyCode === 13 /*enter*/
                 || evt.keyCode === 32 /*space-bar*/))
-                || evt.type === 'click')
+                || evt.type === 'click') {
                 fn.apply(this, [evt]);
-            else if (evt instanceof KeyboardEvent) {
+            } else if (evt instanceof KeyboardEvent) {
                 this._downOn = evt.target;
                 var li = (<HTMLLIElement>evt.target),
                     target: HTMLElement;
                 switch (evt.keyCode) {
                     case 38 /*arrow up*/:
                         target = <HTMLElement>(li.previousElementSibling || this._input);
+                        Pacem.avoidHandler(evt);
                         break;
                     case 40 /*arrow down*/:
                         if (li.nextElementSibling && li.nextElementSibling.localName === 'li')
                             target = <HTMLElement>(li.nextElementSibling);
+                        Pacem.avoidHandler(evt);
                         break;
                 }
                 this._focus(target);
@@ -194,10 +198,10 @@ namespace Pacem.Components.Scaffolding {
         }
 
         private _filter(ds: DataSource, hint?: string): DataSource {
-            let datasource = ds;
+            let datasource = ds || [];
             if (!Utils.isNullOrEmpty(hint && hint.trim())) {
                 const lowerHints = hint.toLowerCase().split(' ');
-                let filtered = ds.filter(i => {
+                let filtered = datasource.filter(i => {
                     for (let lowerHint of lowerHints) {
                         if (i.viewValue.toLowerCase().indexOf(lowerHint) >= 0)
                             return true;
@@ -210,7 +214,15 @@ namespace Pacem.Components.Scaffolding {
                     && (Utils.isNullOrEmpty(filtered) || Utils.isNull(filtered.find(i => i.viewValue === hint)));
                 datasource = concatenate ? [{ value: hint, viewValue: hint }].concat(filtered) : filtered;
             }
-            return datasource.slice(0, this.maxSuggestions || 10)
+            let retval = datasource.slice(0, this.maxSuggestions || 10);
+            this._balloon.style.opacity = Utils.isNullOrEmpty(retval) ? '0' : '';
+            //if (this._isTyping && retval.length > 0) {
+            //    this._balloon.popup();
+            //} else {
+            //    this._balloon.popout();
+            //}
+            this.log(Logging.LogLevel.Log, `${retval.length} dropdown suggestion(s), given hint '${hint}' and ${(ds || []).length} datasource items`);
+            return retval;
         }
 
         private _itemCreate(evt: RepeaterItemCreateEvent) {
@@ -242,7 +254,7 @@ namespace Pacem.Components.Scaffolding {
         */
         private _checkBalloon(balloon: UI.PacemBalloonElement = this._balloon) {
             if (!Utils.isNull(balloon))
-                balloon.disabled = this.readonly || Pacem.Utils.isNullOrEmpty(this.adaptedDatasource);
+                balloon.disabled = this.readonly || this.disabled;// || Pacem.Utils.isNullOrEmpty(this.adaptedDatasource);
         }
 
         private _createBalloon(): UI.PacemBalloonElement {
@@ -256,7 +268,7 @@ disabled="{{ :host.readonly || Pacem.Utils.isNullOrEmpty(:host.adaptedDatasource
                 position: UI.BalloonPosition.Bottom,
                 align: UI.BalloonAlignment.Start,
                 behavior: UI.BalloonBehavior.Menu, // UI.BalloonBehavior.Inert,
-                hoverDelay: 0
+                hoverDelay: 0, hoverTimeout: 200
             };
             balloon.target = this._input;
             return balloon;

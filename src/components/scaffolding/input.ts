@@ -9,9 +9,7 @@ namespace Pacem.Components.Scaffolding {
     }
 
     export abstract class PacemBaseInputElement extends PacemBaseElement implements OnPropertyChanged, OnConnected, OnDisconnected {
-
-        @Watch({ converter: PropertyConverters.String }) placeholder: string;
-
+        
         @Watch({
             emit: false, converter: {
                 convert: (attr: string) => {
