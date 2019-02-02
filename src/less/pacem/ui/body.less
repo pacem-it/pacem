@@ -1,37 +1,37 @@
 ﻿@import "../theme-dark";
 
-.pacem-body {
+.@{PCSS}-body {
     display: block;
     min-height: 100vh;
     padding: @grid_spacing + @grid_cell @grid_spacing @grid_spacing @grid_spacing;
     box-sizing: border-box;
     z-index: 0;
 
-    &.pacem-menu-close {
+    &.@{PCSS}-menu-close {
     }
 
-    &.pacem-menu-open {
+    &.@{PCSS}-menu-open {
     }
 
-    &.pacem-animations.pacem-animatable {
+    &.@{PCSS}-animations.@{PCSS}-animatable {
         transition: padding @easing_in_out_sine .3s;
 
-        &.pacem-menu-close {
+        &.@{PCSS}-menu-close {
             transition-delay: .25s;
         }
 
-        &.pacem-menu-open {
+        &.@{PCSS}-menu-open {
         }
     }
 }
 
 @media (min-width: 1200px) {
 
-    .pacem-body {
+    .@{PCSS}-body {
         padding-left: @grid_cell;
         padding-right: @grid_cell;
 
-        &.pacem-menu-open {
+        &.@{PCSS}-menu-open {
             padding-left: 11 * @grid_spacing;
         }
     }

@@ -19,7 +19,7 @@ namespace Pacem.Components {
         }
     }
 
-    @CustomElement({ tagName: 'pacem-resize' })
+    @CustomElement({ tagName: P + '-resize' })
     export class PacemResizeElement extends PacemEventTarget implements OnConnected, OnDisconnected, OnPropertyChanged {
 
         constructor() {

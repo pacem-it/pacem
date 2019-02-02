@@ -3,7 +3,7 @@
 /// <reference path="input.ts" />
 namespace Pacem.Components.Scaffolding {
     
-    @CustomElement({ tagName: 'pacem-input-hidden', template: '<input type="hidden" />', shadow: Defaults.USE_SHADOW_ROOT })
+    @CustomElement({ tagName: P + '-input-hidden', template: '<input type="hidden" />', shadow: Defaults.USE_SHADOW_ROOT })
     export class PacemHiddenInputElement extends PacemTextualInputElement {
 
         constructor() {

@@ -4,44 +4,44 @@ namespace Pacem.Components.Js {
 
     @CustomElement({
         tagName: 'pacemjs-descriptor', shadow: false,
-        template: `<pacem-repeater>
+        template: `<${ P }-repeater>
     <template>
-        <pacem-if match="{{ ^index == 0 }}" class="clearfix">
+        <${ P }-if match="{{ ^index == 0 }}" class="clearfix">
             
-            <div class="pull-right"><pacem-checkbox value="{{ :host.showInherited, twoway }}" class="checkbox-toggle"
+            <div class="pull-right"><${ P }-checkbox value="{{ :host.showInherited, twoway }}" class="checkbox-toggle"
                                     true-value="true"
-                                    false-value="false"></pacem-checkbox> <small>inherited</small></div>
-            <h2><pacem-text text="{{ ^item.type }}"></pacem-text></h2>
+                                    false-value="false"></${ P }-checkbox> <small>inherited</small></div>
+            <h2><${ P }-text text="{{ ^item.type }}"></${ P }-text></h2>
             
-        </pacem-if>
-        <pacem-if match="{{ ^index != 0 }}">
-            <h4><pacem-text text="{{ ^item.type }}"></pacem-text></h4>
-        </pacem-if>
-        <pacem-repeater datasource="{{ pacem.filter( ^item.properties, i => i.own || :host.showInherited ) }}">
+        </${ P }-if>
+        <${ P }-if match="{{ ^index != 0 }}">
+            <h4><${ P }-text text="{{ ^item.type }}"></${ P }-text></h4>
+        </${ P }-if>
+        <${ P }-repeater datasource="{{ pacem.filter( ^item.properties, i => i.own || :host.showInherited ) }}">
             <ul>
                 <template>
-                    <li class="property"><pacem-span css-class="{{ {'small': !^item.own} }}" text="{{ ^item.name }}"></pacem-span> <pacem-span class="small" hide="{{ ^item.own }}">(inherited)</pacem-span></li>
+                    <li class="property"><${ P }-span css-class="{{ {'small': !^item.own} }}" text="{{ ^item.name }}"></${ P }-span> <${ P }-span class="small" hide="{{ ^item.own }}">(inherited)</${ P }-span></li>
                 </template>
             </ul>
-        </pacem-repeater>
+        </${ P }-repeater>
 
-        <pacem-repeater datasource="{{ ^item.methods }}">
+        <${ P }-repeater datasource="{{ ^item.methods }}">
             <ul>
                 <template>
-                    <li class="method"><pacem-text text="{{ ^item.name }}"></pacem-text></li>
+                    <li class="method"><${ P }-text text="{{ ^item.name }}"></${ P }-text></li>
                 </template>
             </ul>
-        </pacem-repeater>
+        </${ P }-repeater>
 
     </template>
-</pacem-repeater>`
+</${ P }-repeater>`
     })
     export class PacemCustomElementDescriptorElement extends PacemElement {
 
-        @Watch({ converter: Pacem.PropertyConverters.Element }) target: HTMLElement;
-        @Watch({ converter: Pacem.PropertyConverters.Boolean }) showInherited: boolean;
+        @Watch({ converter: PropertyConverters.Element }) target: HTMLElement;
+        @Watch({ converter: PropertyConverters.Boolean }) showInherited: boolean;
 
-        @ViewChild("pacem-repeater") private _repeater: PacemRepeaterElement;
+        @ViewChild(P +"-repeater") private _repeater: PacemRepeaterElement;
 
         propertyChangedCallback(name: string, old: any, val: any, first?: boolean) {
             super.propertyChangedCallback(name, old, val, first);

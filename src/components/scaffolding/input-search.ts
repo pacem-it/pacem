@@ -2,8 +2,8 @@
 /// <reference path="../../../dist/js/pacem-ui.d.ts" />
 /// <reference path="input.ts" />
 namespace Pacem.Components.Scaffolding {
-    
-    @CustomElement({ tagName: 'pacem-input-search', template: '<input type="search" class="pacem-input" />', shadow: Defaults.USE_SHADOW_ROOT })
+
+    @CustomElement({ tagName: P + '-input-search', template: '<input type="search" class="' + PCSS + '-input" />', shadow: Defaults.USE_SHADOW_ROOT })
     export class PacemSearchInputElement extends PacemTextualInputElement {
 
         constructor() {

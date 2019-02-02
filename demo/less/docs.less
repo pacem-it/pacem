@@ -4,7 +4,7 @@
 @border_color: @color_border;
 @_toc: @grid_spacing * 10;
 
-body.pacem-body {
+body.@{PCSS}-body {
     //padding-top: 0; //@grid_cell;
     min-height: 100vh;
     box-sizing: border-box;
@@ -13,8 +13,8 @@ body.pacem-body {
     //padding-right: @grid_spacing;
 }
 
-.pacem-markdown,
-pacem-markdown {
+.@{PCSS}-markdown,
+@{P}-markdown {
     font-size: 1.1rem;
     margin-bottom: 1rem;
 
@@ -99,7 +99,7 @@ pacem-markdown {
         span {
             display: inline-block;
         }
-        /*&.pacem-code-block {
+        /*&.@{PCSS}-code-block {
             //.GradientVertical(0, 100%, transparent, @color_code_back);
             background-color: #000;
             color: #fff;
@@ -113,27 +113,27 @@ pacem-markdown {
     }
 }
 
-pacem-tab{
-    pacem-markdown{
+@{P}-tab {
+    @{P}-markdown {
         margin-bottom: 0;
     }
 }
 
-pacem-markdown ~ pacem-markdown {
+@{P}-markdown ~ @{P}-markdown {
 
     h2:first-child {
         margin-top: 3rem * @font_rem_factor;
     }
 }
 
-pacem-view#view {
+@{P}-view#view {
     display: block;
     margin-bottom: 10rem;
     //max-width: 640px;
 }
 
 @media (min-width: @threshold_lg) {
-    pacem-view#view {
+    @{P}-view#view {
         margin-right: @_toc;
     }
 }
@@ -153,8 +153,8 @@ h1#heading{
     font-weight: 400;
 }
 
-.pacem-animations {
-    pacem-view.pacem-animatable {
+.@{PCSS}-animations {
+   @{P}-view.@{PCSS}-animatable {
     }
 }
 
@@ -163,13 +163,13 @@ footer {
     bottom: @grid_spacing * .5;
 }
 
-pacem-menu .collapsed .pacem-icon {
+@{P}-menu .collapsed .@{PCSS}-icon {
     transform: rotate(-90deg);
 }
 
-.pacem-animations {
+.@{PCSS}-animations {
 
-    pacem-menu .pacem-icon.pacem-animatable {
+    @{P}-menu .@{PCSS}-icon.@{PCSS}-animatable {
         animation: none;
         transition: transform .22s ease-in-out;
     }
@@ -182,10 +182,10 @@ pacem-menu .collapsed .pacem-icon {
 }
 /*#endregion*/
 
-pacem-tabs {
+@{P}-tabs {
     margin-bottom: @grid_spacing;
 
-    pacem-tab {
+    @{P}-tab {
         .form-field {
             margin: 1em 0;
 
@@ -251,15 +251,15 @@ dl {
         /*display: inline-block;*/
     }
 
-    .pacem-toc > pacem-a {
+    .@{PCSS}-toc >@{P}-a {
         line-height: 36px;
     }
 }
 // sticky position adjust for schedules
-pacem-schedule {
+@{P}-schedule {
     display: block;
 
-    .pacem-schedule {
+    .@{PCSS}-schedule {
         @_headr_height: 1.5 * @grid_spacing;
 
         .schedule-header {
@@ -268,7 +268,7 @@ pacem-schedule {
             //color: @color_highlight_fore;
         }
 
-        pacem-agenda {
+       @{P}-agenda {
             .agenda-allday,
             .all-day {
                 top: @grid_cell + @_headr_height;
@@ -278,8 +278,8 @@ pacem-schedule {
 }
 
 @media (max-width: @threshold_lg - 1){
-    pacem-schedule {
-        .pacem-schedule {
+   @{P}-schedule {
+        .@{PCSS}-schedule {
             .schedule-header {
                 top: 2 * @grid_cell;
             }

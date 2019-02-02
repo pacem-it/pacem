@@ -2,16 +2,16 @@
 namespace Pacem.Components.UI {
 
     @CustomElement({
-        tagName: 'pacem-lightbox',
+        tagName: P + '-lightbox',
         shadow: Defaults.USE_SHADOW_ROOT,
-        template: `<pacem-panel class="pacem-lightbox-wrapper" hide="{{ !:host.show }}" css-class="{{ {'pacem-hidden': !:host.show, 'pacem-shown': :host.show } }}">
-        <div class="pacem-lightbox pacem-relative">
-            <div class="pacem-scrollable"><pacem-content></pacem-content></div>
-        </div><pacem-resize on-resize=":host._resize($event)" enabled="{{ :host.show }}" target="{{ ::_container }}"></pacem-resize>
-    <pacem-button hide="{{ :host.modal }}" class="pacem-close" on-click=":host._close($event)">X</pacem-button>
-</pacem-panel>`
+        template: `<${P}-panel class="${PCSS}-lightbox-wrapper" css-class="{{ {'${PCSS}-shown': :host.show } }}" hidden>
+        <div class="${PCSS}-lightbox ${PCSS}-relative" style="transform: translateY(50vh)">
+            <div class="${PCSS}-scrollable"><${P}-content></${P}-content></div>
+        </div><${ P}-resize on-resize=":host._resize($event)" disabled="{{ !:host.show }}" target="{{ ::container }}"></${P}-resize>
+    <${ P}-button hide="{{ :host.modal }}" class="${PCSS}-close" on-click=":host._close($event)">X</${P}-button>
+</${ P}-panel>`
     })
-    export class PacemLightboxElement extends PacemEventTarget implements OnViewActivated, OnDisconnected, OnPropertyChanged {
+    export class PacemLightboxElement extends PacemEventTarget {
 
         private _resizeHandler = _ => {
             if (this.show)
@@ -27,8 +27,8 @@ namespace Pacem.Components.UI {
         @Watch({ converter: PropertyConverters.Boolean }) show: boolean;
         @Watch({ converter: PropertyConverters.Boolean }) modal: boolean;
 
-        @ViewChild('.pacem-lightbox-wrapper') private _wrapperElement: HTMLElement;
-        @ViewChild('.pacem-lightbox') container: HTMLElement;
+        @ViewChild('.' + PCSS + '-lightbox-wrapper') private _wrapperElement: HTMLElement;
+        @ViewChild('.' + PCSS + '-lightbox') container: HTMLElement;
 
         viewActivatedCallback() {
             super.viewActivatedCallback();
@@ -53,14 +53,19 @@ namespace Pacem.Components.UI {
             switch (name) {
                 case 'show':
                     if (!!val) {
+                        (<PacemElement>this._wrapperElement).hide = false;
                         document.body.style.overflow = 'hidden';
                         this._resize();
-                        var scroller = this.querySelector('.pacem-scrollable');
+                        var scroller = this.querySelector('.' + PCSS + '-scrollable');
                         if (scroller)
                             window.requestAnimationFrame(() => scroller.scrollTop = 0);
                     } else {
                         document.body.style.overflow = '';
                         this.dispatchEvent(new Event('close'));
+                        //
+                        Utils.addAnimationEndCallback(this._wrapperElement, (e) => {
+                            (<PacemElement>e).hide = true;
+                        }, 500);
                     }
                     break;
             }

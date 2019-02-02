@@ -7,7 +7,7 @@ namespace Pacem.Components {
     }
 
     @CustomElement({
-        tagName: 'pacem-dock'
+        tagName: P + '-dock'
     })
     export class PacemDockElement extends PacemEventTarget implements OnPropertyChanged {
 
@@ -77,15 +77,15 @@ namespace Pacem.Components {
                     return;
                 //
                 // adding the css classes first...
-                Utils.addClass(this, 'pacem-dock');
+                Utils.addClass(this, PCSS + '-dock');
                 switch (this.mode) {
                     case DockMode.Bottom:
-                        Utils.removeClass(this, 'pacem-dock-top');
-                        Utils.addClass(this, 'pacem-dock-bottom');
+                        Utils.removeClass(this, PCSS + '-dock-top');
+                        Utils.addClass(this, PCSS + '-dock-bottom');
                         break;
                     case DockMode.Top:
-                        Utils.removeClass(this, 'pacem-dock-bottom');
-                        Utils.addClass(this, 'pacem-dock-top');
+                        Utils.removeClass(this, PCSS + '-dock-bottom');
+                        Utils.addClass(this, PCSS + '-dock-top');
                         break;
                 }
                 // ...so have to flip `from` and `to` 
@@ -104,7 +104,7 @@ namespace Pacem.Components {
                 const to = 0;
                 this.log(Logging.LogLevel.Info, `animating back from ${from}px to ${to}px`);
 
-                Utils.removeClass(this, 'pacem-dock pacem-dock-top pacem-dock-bottom');
+                Utils.removeClass(this, `${PCSS}-dock ${PCSS}-dock-top ${PCSS}-dock-bottom`);
                 this._animate(from, to);
             }
         }

@@ -14,42 +14,42 @@ namespace Pacem.Components.Scaffolding {
     }
 
     @CustomElement({
-        tagName: 'pacem-datetime-picker', shadow: Defaults.USE_SHADOW_ROOT,
-        template: `<div class="pacem-datetime-picker">
-    <div class="pacem-datetime-picker-fields pacem-viewfinder">
+        tagName: P + '-datetime-picker', shadow: Defaults.USE_SHADOW_ROOT,
+        template: `<div class="${PCSS}-datetime-picker">
+    <div class="${PCSS}-datetime-picker-fields ${PCSS}-viewfinder">
 
-    <div class="pacem-datetime-picker-year">
-    <pacem-select value="{{ :host.year, twoway }}" placeholder="..." datasource="{{ :host._years }}">
-    </pacem-select></div>
+    <div class="${PCSS}-datetime-picker-year">
+    <${ P}-select value="{{ :host.year, twoway }}" placeholder="..." datasource="{{ :host._years }}">
+    </${ P}-select></div>
 
-    <div class="pacem-datetime-picker-month">
-    <pacem-select value="{{ :host.month, twoway }}" placeholder="..." value-property="value" text-property="label" datasource="{{ :host._months }}">
-    </pacem-select></div>
+    <div class="${PCSS}-datetime-picker-month">
+    <${ P}-select value="{{ :host.month, twoway }}" placeholder="..." value-property="value" text-property="label" datasource="{{ :host._months }}">
+    </${ P}-select></div>
 
-    <div class="pacem-datetime-picker-date">
-    <pacem-select value="{{ :host.date, twoway }}" placeholder="..." value-property="value" text-property="label" datasource="{{ :host._dates }}">
-    </pacem-select></div>
+    <div class="${PCSS}-datetime-picker-date">
+    <${ P}-select value="{{ :host.date, twoway }}" placeholder="..." value-property="value" text-property="label" datasource="{{ :host._dates }}">
+    </${ P}-select></div>
 
-    <pacem-panel class="pacem-datetime-picker-hours" hide="{{ :host.precision === 'day' }}">
-    <pacem-select value="{{ :host.hours, twoway }}" datasource="{{ :host._a24 }}">
-    </pacem-select></pacem-panel>
+    <${ P}-panel class="${PCSS}-datetime-picker-hours" hide="{{ :host.precision === 'day' }}">
+    <${ P}-select value="{{ :host.hours, twoway }}" datasource="{{ :host._a24 }}">
+    </${ P}-select></${P}-panel>
 
-    <pacem-panel class="pacem-datetime-picker-minutes" hide="{{ :host.precision === 'day' }}">
-    <pacem-select value="{{ :host.minutes, twoway }}" datasource="{{ :host._a60 }}">
-    </pacem-select></pacem-panel>
+    <${ P}-panel class="${PCSS}-datetime-picker-minutes" hide="{{ :host.precision === 'day' }}">
+    <${ P}-select value="{{ :host.minutes, twoway }}" datasource="{{ :host._a60 }}">
+    </${ P}-select></${P}-panel>
 
-    <pacem-panel class="pacem-datetime-picker-seconds" hide="{{ :host.precision !== 'second' }}">
-    <pacem-select value="{{ :host.seconds, twoway }}" datasource="{{ :host._a60 }}">
-    </pacem-select></pacem-panel>
+    <${ P}-panel class="${PCSS}-datetime-picker-seconds" hide="{{ :host.precision !== 'second' }}">
+    <${ P}-select value="{{ :host.seconds, twoway }}" datasource="{{ :host._a60 }}">
+    </${ P}-select></${P}-panel>
 
     </div>
-    <pacem-panel hide="{{ Pacem.Utils.isNullOrEmpty(:host.dateValue) || :host.precision === 'day' || :host.readonly }}">
-    <dl class="pacem-datetime-picker-preview">
-        <dt>local:</dt><dd><pacem-text text="{{ :host.viewValue }}"></pacem-text></dd>
-        <dt>iso:</dt><dd><pacem-text text="{{ (:host.dateValue && :host.dateValue.toISOString()) || '' }}"></pacem-text></dd>
+    <${ P}-panel hide="{{ Pacem.Utils.isNullOrEmpty(:host.dateValue) || :host.precision === 'day' || :host.readonly }}">
+    <dl class="${PCSS}-datetime-picker-preview">
+        <dt>local:</dt><dd><${ P}-text text="{{ :host.viewValue }}"></${P}-text></dd>
+        <dt>iso:</dt><dd><${ P}-text text="{{ (:host.dateValue && :host.dateValue.toISOString()) || '' }}"></${P}-text></dd>
     </dl>
-    </pacem-panel>
-    <pacem-span class="pacem-readonly" css-class="{{ { 'date': :host.precision === 'day', 'datetime': :host.precision !== 'day' } }}" content="{{ :host.viewValue }}" hide="{{ !:host.readonly }}"></pacem-span>
+    </${ P}-panel>
+    <${ P}-span class="${PCSS}-readonly" css-class="{{ { 'date': :host.precision === 'day', 'datetime': :host.precision !== 'day' } }}" content="{{ :host.viewValue }}" hide="{{ !:host.readonly }}"></${P}-span>
 </div>`
     })
     export class PacemDatetimePickerElement extends PacemBaseElement implements OnConnected, OnPropertyChanged {
@@ -58,18 +58,18 @@ namespace Pacem.Components.Scaffolding {
             super();
         }
 
-        @ViewChild('.pacem-datetime-picker-year > pacem-select') private _yearel: PacemSelectElement;
-        @ViewChild('.pacem-datetime-picker-month > pacem-select') private _monthel: PacemSelectElement;
-        @ViewChild('.pacem-datetime-picker-date > pacem-select') private _dateel: PacemSelectElement;
-        @ViewChild('.pacem-datetime-picker-hours > pacem-select') private _hourel: PacemSelectElement;
-        @ViewChild('.pacem-datetime-picker-minutes > pacem-select') private _minel: PacemSelectElement;
-        @ViewChild('.pacem-datetime-picker-seconds > pacem-select') private _secel: PacemSelectElement;
+        @ViewChild('.' + PCSS + '-datetime-picker-year >       ' + P + '-select') private _yearel: PacemSelectElement;
+        @ViewChild('.' + PCSS + '-datetime-picker-month >      ' + P + '-select') private _monthel: PacemSelectElement;
+        @ViewChild('.' + PCSS + '-datetime-picker-date >       ' + P + '-select') private _dateel: PacemSelectElement;
+        @ViewChild('.' + PCSS + '-datetime-picker-hours >      ' + P + '-select') private _hourel: PacemSelectElement;
+        @ViewChild('.' + PCSS + '-datetime-picker-minutes >    ' + P + '-select') private _minel: PacemSelectElement;
+        @ViewChild('.' + PCSS + '-datetime-picker-seconds >    ' + P + '-select') private _secel: PacemSelectElement;
 
         protected get inputFields() {
             return [this._yearel, this._monthel, this._dateel, this._hourel, this._minel, this._secel];
         }
 
-        @ViewChild('div.pacem-datetime-picker-fields') private _allFields: HTMLDivElement;
+        @ViewChild(`div.${PCSS}-datetime-picker-fields`) private _allFields: HTMLDivElement;
 
         protected toggleReadonlyView(readonly: boolean) {
             this._allFields.hidden = readonly;
@@ -254,7 +254,7 @@ namespace Pacem.Components.Scaffolding {
             const v =  /*this.dateValue ||*/ val;
             if (v) {
 
-                return Utils.core.date(v, this.precision != 'day' ? 'full' : 'short');                
+                return Utils.core.date(v, this.precision != 'day' ? 'full' : 'short', Utils.lang(this));
             }
             return '';
         }

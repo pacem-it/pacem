@@ -8,7 +8,7 @@
 @_pointer_h: 12px;
 @_scale_off: 0.6667;
 
-@keyframes pacem-balloon-right {
+/*@keyframes pacem-balloon-right {
 
     0% {
         pointer-events: none;
@@ -120,7 +120,7 @@
         opacity: 0;
         transform: translateY(-@_balloon_offset) scale(@_scale_off);
     }
-}
+}*/
 
 .BalloonColorize(@_clr) {
     .BalloonColorize(@_clr, @_clr, 80);
@@ -164,7 +164,7 @@
     }
 }
 
-pacem-balloon {
+@{P}-balloon {
     box-sizing: border-box;
     min-height: @grid_spacing * 2;
     min-width: @grid_spacing * 3;
@@ -283,16 +283,16 @@ pacem-balloon {
     }
 }
 
-pacem-balloon when (@balloon_shadows = true) and (@dark_theme = true) {
+@{P}-balloon when (@balloon_shadows = true) and (@dark_theme = true) {
     box-shadow: 0 2px 8px rgba(0,0,0,0.5);
 }
 
-pacem-balloon when (@balloon_shadows = true) and (@dark_theme = false) {
+@{P}-balloon when (@balloon_shadows = true) and (@dark_theme = false) {
     box-shadow: 0 4px 8px rgba(0,0,0,0.25);
 }
 
 /* colors */
-pacem-balloon {
+@{P}-balloon {
     // other panel styles
     &.balloon-accent {
         box-shadow: none;
@@ -331,7 +331,7 @@ pacem-balloon {
 }
 /* #endregion */
 /* #region INSIDE FORM FIELD */
-pacem-balloon.pacem-field-tooltip {
+@{P}-balloon.@{PCSS}-field-tooltip {
     background-color: @color_primary;
 
     &::after {
@@ -343,7 +343,7 @@ pacem-balloon.pacem-field-tooltip {
     color: @color_primary_inv;
 }
 /* #endregion */
-pacem-balloon.dropdown {
+@{P}-balloon.dropdown {
     padding: 0;
     border: none;
     background-color: @color_suggest_back;
@@ -371,7 +371,7 @@ pacem-balloon.dropdown {
     }
 }
 
-pacem-balloon.dropdown when (@balloon_shadows = true) and (@dark_theme = false) {
+@{P}-balloon.dropdown when (@balloon_shadows = true) and (@dark_theme = false) {
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
@@ -382,11 +382,11 @@ pacem-balloon.dropdown when (@balloon_shadows = true) and (@dark_theme = false) 
 /*#endregion*/
 
 
-.pacem-animations {
+.@{PCSS}-animations {
     @_d: .15s;
     @_d_out: .1s;
 
-    pacem-balloon {
+   @{P}-balloon {
         // default state
         opacity: 0;
         pointer-events: none;
@@ -417,12 +417,12 @@ pacem-balloon.dropdown when (@balloon_shadows = true) and (@dark_theme = false) 
             }
 
             &.balloon-in {
-                // animation: pacem-balloon-right @_d ease-out both;
+                // animation:@{P}-balloon-right @_d ease-out both;
                 transform: translateX(@_pointer_h);
             }
 
             &.balloon-out {
-                // animation: pacem-balloon-right-out @_d_out ease-in both;
+                // animation:@{P}-balloon-right-out @_d_out ease-in both;
             }
         }
 
@@ -442,12 +442,12 @@ pacem-balloon.dropdown when (@balloon_shadows = true) and (@dark_theme = false) 
             }
 
             &.balloon-in {
-                //animation: pacem-balloon-left @_d ease-out both;
+                //animation:@{P}-balloon-left @_d ease-out both;
                 transform: translateX(-@_pointer_h);
             }
 
             &.balloon-out {
-                //animation: pacem-balloon-left-out @_d_out ease-in both;
+                //animation:@{P}-balloon-left-out @_d_out ease-in both;
             }
         }
 
@@ -467,12 +467,12 @@ pacem-balloon.dropdown when (@balloon_shadows = true) and (@dark_theme = false) 
             }
 
             &.balloon-in {
-                // animation: pacem-balloon-top @_d ease-out both;
+                // animation:@{P}-balloon-top @_d ease-out both;
                 transform: translateY(-@_pointer_h);
             }
 
             &.balloon-out {
-                // animation: pacem-balloon-top-out @_d_out ease-in both;
+                // animation:@{P}-balloon-top-out @_d_out ease-in both;
             }
         }
 

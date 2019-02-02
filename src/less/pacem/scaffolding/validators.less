@@ -1,7 +1,7 @@
 ﻿@import "../../shared";
 @import "../theme-dark";
 
-.pacem-validator {
+.@{PCSS}-validator {
     display: inline-block;
     background-color: @color_error;
     color: @color_error_fore;
@@ -10,10 +10,14 @@
     padding-right: @grid_spacing/4;
     position: relative;
     box-sizing: border-box;
+    min-height: @grid_spacing;
+    line-height: @grid_spacing;
+    border-radius: @border_radius;
 
     &:before {
-        .Icon('error', @grid_spacing * .8);
-        left: @grid_spacing/12;
-        top: 1px; // ugly to see
+        @_sz: @grid_spacing /1.5;
+        .Icon('error', round(@_sz));
+        left: @grid_spacing *.125;
+        line-height: @grid_spacing;
     }
 }

@@ -2,7 +2,7 @@
 /// <reference path="types.ts" />
 namespace Pacem.Components.ThreeD {
 
-    @CustomElement({ tagName: 'pacem-3d-adapter-three' })
+    @CustomElement({ tagName: P + '-3d-adapter-three' })
     export class PacemThreeAdapterElement extends Pacem3DAdapterElement {
 
         project(point3D: Vector3D): Point {

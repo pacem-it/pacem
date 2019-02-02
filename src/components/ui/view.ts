@@ -4,7 +4,7 @@ namespace Pacem.Components.UI {
     const ANIM_TIMEOUT = 500;
 
     @CustomElement({
-        tagName: 'pacem-view'
+        tagName: P + '-view'
     })
     export class PacemViewElement extends PacemEventTarget implements OnPropertyChanged, OnViewActivated {
 

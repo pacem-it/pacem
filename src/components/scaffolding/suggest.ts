@@ -10,24 +10,24 @@ namespace Pacem.Components.Scaffolding {
     }
 
     @CustomElement({
-        tagName: 'pacem-suggest', shadow: Defaults.USE_SHADOW_ROOT,
-        template: `<input type="text" class="pacem-input" />
-<span class="pacem-readonly"><pacem-text text="{{ :host.viewValue }}"></pacem-text></span>
-<pacem-repeater datasource="{{ :host._filter(:host.adaptedDatasource, :host.hint) }}"
+        tagName: P + '-suggest', shadow: Defaults.USE_SHADOW_ROOT,
+        template: `<input type="text" class="${PCSS}-input" />
+<span class="${PCSS}-readonly"><${ P }-text text="{{ :host.viewValue }}"></${ P }-text></span>
+<${ P }-repeater datasource="{{ :host._filter(:host.adaptedDatasource, :host.hint) }}"
     on-${ RepeaterItemCreateEventName}=":host._itemCreate($event)"
     on-${ RepeaterItemRemoveEventName}=":host._itemRemove($event)">
     <ol>
         <template>
-            <li><pacem-span content="{{ $pacem.highlight(^item.viewValue, ::_input.value) }}"></pacem-span></li>
+            <li><${ P }-span content="{{ $pacem.highlight(^item.viewValue, ::_input.value) }}"></${ P }-span></li>
         </template>
     </ol>
-</pacem-repeater><pacem-content></pacem-content>`
+</${ P }-repeater><${ P }-content></${ P }-content>`
     })
     export class PacemSuggestElement extends PacemDataSourceElement {
 
         @ViewChild('input[type=text]') private _input: HTMLInputElement;
-        @ViewChild('pacem-repeater') private _repeater: PacemRepeaterElement;
-        @ViewChild('span.pacem-readonly') private span: HTMLSpanElement;
+        @ViewChild(P + '-repeater') private _repeater: PacemRepeaterElement;
+        @ViewChild(`span.${PCSS}-readonly`) private span: HTMLSpanElement;
         /*@ViewChild('pacem-balloon')*/ private _balloon: UI.PacemBalloonElement;
 
         protected get inputFields() {
@@ -258,7 +258,7 @@ namespace Pacem.Components.Scaffolding {
         }
 
         private _createBalloon(): UI.PacemBalloonElement {
-            /*<pacem-balloon target="{{ ::_input }}" options="{ position: 'bottom', align: 'left', behavior: 'inert', hoverDelay: 0 }"
+            /*<${ P }-balloon target="{{ ::_input }}" options="{ position: 'bottom', align: 'left', behavior: 'inert', hoverDelay: 0 }"
 disabled="{{ :host.readonly || Pacem.Utils.isNullOrEmpty(:host.adaptedDatasource) }}">*/
             const balloon = <UI.PacemBalloonElement>document.createElement('pacem-balloon');
             Utils.addClass(balloon, 'suggest dropdown');
@@ -266,6 +266,7 @@ disabled="{{ :host.readonly || Pacem.Utils.isNullOrEmpty(:host.adaptedDatasource
                 trackPosition: true,
                 trigger: UI.BalloonTrigger.Focus,
                 position: UI.BalloonPosition.Bottom,
+                size: UI.BalloonSizing.Match,
                 align: UI.BalloonAlignment.Start,
                 behavior: UI.BalloonBehavior.Menu, // UI.BalloonBehavior.Inert,
                 hoverDelay: 0, hoverTimeout: 200

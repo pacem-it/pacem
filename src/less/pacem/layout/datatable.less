@@ -20,7 +20,7 @@
     }
 }
 
-table.pacem-datatable {
+table.@{PCSS}-datatable {
     border-collapse: collapse;
     border-left: 1px solid @color_border;
     border-right: 1px solid @color_border;
@@ -124,7 +124,7 @@ table.pacem-datatable {
 .DataTableColorize2(@_clr) {
     border-color: fade(@_clr, 20);
 
-    .pacem-headcell, .pacem-datacell {
+    .@{PCSS}-headcell, .@{PCSS}-datacell {
         border-bottom-color: fade(@_clr, 20);
         .DataCellColorize2(@_clr)
     }
@@ -184,7 +184,7 @@ table.pacem-datatable {
     }
 }
 
-.pacem-datatable {
+.@{PCSS}-datatable {
     display: grid;
     grid-gap: 0;
     border-left: 1px solid @color_border;
@@ -192,17 +192,17 @@ table.pacem-datatable {
     border-top: 1px solid @color_border;
     position: relative;
 
-    .pacem-datarow {
+    .@{PCSS}-datarow {
         z-index: 0;
         pointer-events: none;
     }
 
-    .pacem-headcell {
+    .@{PCSS}-headcell {
         .DataCell(headcell);
         z-index: 2;
     }
 
-    .pacem-headcell {
+    .@{PCSS}-headcell {
         font-weight: bold;
 
         &.headcell-sticky {
@@ -212,10 +212,10 @@ table.pacem-datatable {
         }
     }
 
-    .pacem-datacell:hover ~ .pacem-datarow {
+    .@{PCSS}-datacell:hover ~ .@{PCSS}-datarow {
         background-color: fade(@color_border, 5);
 
-        + .pacem-datacell ~ .pacem-datarow {
+        + .@{PCSS}-datacell ~ .@{PCSS}-datarow {
             background-color: transparent;
         }
     }
@@ -244,13 +244,13 @@ table.pacem-datatable {
         .DataTableColorize2(@color_error);
     }
 
-    .pacem-datacell {
+    .@{PCSS}-datacell {
         .DataCell(datacell);
         z-index: 1;
     }
     // TODO: standard column templates
-    .pacem-datacell,
-    .pacem-datarow {
+    .@{PCSS}-datacell,
+    .@{PCSS}-datarow {
         // TODO: rows and columns
         &.disabled,
         &.datacell-disabled {

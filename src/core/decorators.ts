@@ -1,4 +1,5 @@
-﻿/// <reference path="utils.ts" />
+﻿/// <reference path="prefix.ts" />
+/// <reference path="utils.ts" />
 /// <reference path="converters.ts" />
 namespace Pacem {
 
@@ -233,7 +234,7 @@ namespace Pacem {
 
                                 currentContent.innerHTML = tmpl;
                                 // use pacem-content as a placeholder, then `insertBefore`, then remove.
-                                const placeholders = currentContent.content.querySelectorAll('pacem-content');
+                                const placeholders = currentContent.content.querySelectorAll(P + '-content');
 
                                 // assign host and create view activation promise
                                 CustomElementUtils.assignHostContext(_this, currentContent);

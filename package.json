@@ -1,5 +1,5 @@
 {
-  "version": "0.7.23",
+  "version": "0.8.0",
   "name": "pacem",
   "homepage": "https://js.pacem.it",
   "repository": {
@@ -85,9 +85,10 @@
     "build-css-phousys": "lessc --clean-css --modify-var=\"fonts=fonts-phousys\" --modify-var=\"theme=theme-phousys\" src/less/pacem/pacem.less dist/css/pacem-phousys.min.css",
     "build-css-light": "lessc --clean-css --modify-var=\"fonts=fonts-light\" --modify-var=\"theme=theme-light\" src/less/pacem/pacem.less dist/css/pacem-light.min.css",
     "build-demo": "tsc -p demo/components/tsconfig.json",
-    "build-css-demo-dark": "lessc --clean-css demo/less/docs.less wwwroot/dist/css/pacem-docs-dark.min.css",
-    "build-css-demo-light": "lessc --clean-css --modify-var=\"theme=theme-light\" demo/less/docs.less wwwroot/dist/css/pacem-docs-light.min.css",
-    "build-css-demo-phousys": "lessc --clean-css --modify-var=\"theme=theme-phousys\" demo/less/docs.less wwwroot/dist/css/pacem-docs-phousys.min.css",
+    "build-css-demo-dark": "lessc --clean-css demo/less/docs.less wwwroot/dist/css/pacem-docs-dark.min.css && lessc --clean-css --modify-var=\"tag_prefix=foo\" src/less/pacem/pacem.less wwwroot/dist/css/foo-dark.min.css && lessc --clean-css --modify-var=\"tag_prefix=foo\" demo/less/docs.less wwwroot/dist/css/foo-docs-dark.min.css",
+    "build-css-demo-light": "lessc --clean-css --modify-var=\"theme=theme-light\" demo/less/docs.less wwwroot/dist/css/pacem-docs-light.min.css && lessc --clean-css --modify-var=\"tag_prefix=foo\" --modify-var=\"fonts=fonts-light\" --modify-var=\"theme=theme-light\" src/less/pacem/pacem.less wwwroot/dist/css/foo-light.min.css && lessc --clean-css --modify-var=\"tag_prefix=foo\" --modify-var=\"theme=theme-light\" demo/less/docs.less wwwroot/dist/css/foo-docs-light.min.css",
+    "build-css-demo-phousys": "lessc --clean-css --modify-var=\"theme=theme-phousys\" demo/less/docs.less wwwroot/dist/css/pacem-docs-phousys.min.css && lessc --clean-css --modify-var=\"tag_prefix=foo\" --modify-var=\"fonts=fonts-phousys\" --modify-var=\"theme=theme-phousys\" src/less/pacem/pacem.less wwwroot/dist/css/foo-phousys.min.css && lessc --clean-css --modify-var=\"tag_prefix=foo\" --modify-var=\"theme=theme-phousys\" demo/less/docs.less wwwroot/dist/css/foo-docs-phousys.min.css",
+    "build-css-alldev": "npm run build-css-dark && npm run build-css-light && npm run build-css-phousys && npm run build-css-demo-dark && npm run build-css-demo-light && npm run build-css-demo-phousys && npm run copyfiles",
     "build-demo-prod": "npm run build-demo && npm run build-css-demo-dark && npm run build-css-demo-light && npm run build-css-demo-phousys",
     "build-test": "tsc -p test/tsconfig.json",
     "build-sw": "tsc -p src/serviceWorker/tsconfig.json",
@@ -98,9 +99,9 @@
   "devDependencies": {
     "@aspnet/signalr": "1.1.0",
     "@types/googlemaps": "^3.30.16",
-    "@types/jasmine": "3.3.5",
-    "@types/leaflet": "1.2.14",
-    "@types/three": "0.93.13",
+    "@types/jasmine": "3.3.8",
+    "@types/leaflet": "1.4.0",
+    "@types/three": "0.93.19",
     "@types/twitter-for-web": "0.0.0",
     "@types/less": "3.0.0",
     "copyfiles": "2.1.0",
@@ -110,7 +111,7 @@
     "module-header": "0.5.0",
     "rimraf": "2.6.2",
     "typedoc": "0.13.0",
-    "typescript": "3.1.6",
+    "typescript": "3.2.4",
     "uglify-es": "3.3.10"
   }
 }

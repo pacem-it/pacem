@@ -2,14 +2,14 @@
 @import "../theme-dark";
 @import "shared";
 
-//.pacem-field {
-//.pacem-input-container {
+//.@{PCSS}-field {
+//.@{PCSS}-input-container {
 
-.pacem-readonly.pacem-radio,
-label.pacem-label.pacem-radio,
-pacem-radio-list .pacem-readonly.pacem-radio {
+.@{PCSS}-readonly.@{PCSS}-radio,
+label.@{PCSS}-label.@{PCSS}-radio,
+@{P}-radio-list .@{PCSS}-readonly.@{PCSS}-radio {
 
-    &:before {
+    &::before {
         .Icon('radio_button_unchecked', 1.1rem * @font_rem_factor);
         left: @input_padding_horiz;
         line-height: @field_height;
@@ -17,27 +17,23 @@ pacem-radio-list .pacem-readonly.pacem-radio {
     }
 }
 
-pacem-radio {
+@{P}-radio {
 
-    &.pacem-selected label.pacem-label.pacem-radio:before {
+    &.@{PCSS}-selected label.@{PCSS}-label.@{PCSS}-radio:before {
         content: 'radio_button_checked';
     }
 }
 
-pacem-radio-list,
-pacem-radio {
+@{P}-radio-list,
+@{P}-radio {
 
-    .pacem-readonly.pacem-radio {
-        padding-left: @grid_spacing;
-
-        &:before {
-            content: 'check_box';
-        }
+    .@{PCSS}-readonly.@{PCSS}-radio {
+        .FormFieldLabelIcon('check_circle');
     }
 
-    &.pacem-disabled {
-        .pacem-readonly.pacem-radio,
-        label.pacem-label.pacem-radio{
+    &.@{PCSS}-disabled {
+        .@{PCSS}-readonly.@{PCSS}-radio,
+        label.@{PCSS}-label.@{PCSS}-radio {
 
             &:before {
                 color: @color_disabled;

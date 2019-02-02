@@ -3,31 +3,21 @@
 
 /*#region LIGHTBOX*/
 
-@keyframes pacem-lightbox-anim {
-    0% {
-        transform: translateY(100vh);
-        opacity: 0;
-    }
-
-    100% {
-    }
+@{P}-lightbox {
+    pointer-events: none;
 }
 
-/*pacem-lightbox{
-    display: block;
-    overflow: visible;
-}*/
-
-.pacem-lightbox-wrapper {
-    background: @color_lightbox_back;
+.@{PCSS}-lightbox-wrapper {
     z-index: @lightbox-z-index;
     box-sizing: border-box;
+    background-color: transparent;
 
-    &.pacem-shown {
-        animation: pacem-lightbox-anim .3s cubic-bezier(0.39, 0.575, 0.565, 1) forwards;
+    &.@{PCSS}-shown {
+        background-color: @color_lightbox_back;
+        pointer-events: auto;
     }
 
-    &.pacem-hidden {
+    &.@{PCSS}-hidden {
     }
 
     .Btn() {
@@ -43,7 +33,7 @@
         color: @color_primary;
     }
 
-    pacem-button[pacem].pacem-close {
+    @{P}-button[pacem].@{PCSS}-close {
         .Btn();
         top: @grid_spacing;
         right: @grid_spacing;
@@ -55,7 +45,7 @@
     }
 }
 
-.pacem-lightbox {
+.@{PCSS}-lightbox {
     @_clr: @color_background;
     @_fore_clr: @color_default;
     background: @_clr;
@@ -64,10 +54,9 @@
     max-height: 80vh;
     //box-sizing: border-box;
     box-shadow: 0 2px 4px rgba(0,0,0,0.25);
-    transition: transform .25s linear;
     border-radius: @border_radius;
 
-    > .pacem-scrollable {
+    > .@{PCSS}-scrollable {
         position: relative;
         max-width: 80vw;
         max-height: 80vh;
@@ -77,4 +66,29 @@
     }
 }
 
+.@{PCSS}-lightbox when (@dark_theme = false) {
+    box-shadow: 0 @grid_spacing/4 3 * @grid_spacing/4 rgba(0,0,0,0.2);
+}
+
 /*#endregion*/
+
+.@{PCSS}-animations {
+    .@{PCSS}-lightbox-wrapper {
+        transition: background-color .2s, transform .2s @easing_out_sine .2s;
+        transform: translateY(@grid_spacing);
+
+        .@{PCSS}-lightbox {
+            opacity: 0;
+            transition: opacity .15s, transform .35s @easing_out_sine;
+        }
+
+        &.@{PCSS}-shown {
+            transition: background-color .4s .1s, transform .2s @easing_out_sine;
+            transform: none;
+
+            .@{PCSS}-lightbox {
+                opacity: 1;
+            }
+        }
+    }
+}

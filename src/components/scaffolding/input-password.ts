@@ -4,7 +4,7 @@
 /// <reference path="input.ts" />
 namespace Pacem.Components.Scaffolding {
     
-    @CustomElement({ tagName: 'pacem-input-password', template: `<input type="password" class="pacem-input pacem-viewfinder" />${ CHAR_COUNTER_CHILD }<span class="pacem-readonly"><pacem-text text="{{ :host.viewValue }}"></pacem-text></span>`, shadow: Defaults.USE_SHADOW_ROOT })
+    @CustomElement({ tagName: P + '-input-password', template: `<input type="password" class="${PCSS}-input ${PCSS}-viewfinder" />${ CHAR_COUNTER_CHILD }<span class="${PCSS}-readonly"><${ P }-text text="{{ :host.viewValue }}"></${ P }-text></span>`, shadow: Defaults.USE_SHADOW_ROOT })
     export class PacemPasswordInputElement extends PacemTextualInputElement {
 
         constructor() {
@@ -12,7 +12,7 @@ namespace Pacem.Components.Scaffolding {
         }
 
         @ViewChild('input[type=password]') input: HTMLInputElement;
-        @ViewChild('span.pacem-readonly') span: HTMLSpanElement;
+        @ViewChild(`span.${PCSS}-readonly`) span: HTMLSpanElement;
 
         protected get inputFields(): HTMLInputElement[] {
             return [this.input];

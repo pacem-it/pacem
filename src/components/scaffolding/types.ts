@@ -1,11 +1,17 @@
 ﻿/// <reference path="../../../dist/js/pacem-core.d.ts" />
 /// <reference path="../../../dist/js/pacem-ui.d.ts" />
 namespace Pacem.Scaffolding {
-
+    
     export declare type PropertyMetadata = {
         prop: string,
         type: string,
-        display?: { name: string, description: string, short: string, watermark: string, null?: string, ui: string, format: string },
+        display?: {
+            name: string, description?: string, short?: string, watermark?: string, null?: string, ui?: string, format?: string,
+            // css styles
+            css?: { [name: string]: string },
+            // css class
+            cssClass?: string[],
+        },
         extra?: any,
         isReadOnly?: boolean,
         dataType?: string,
@@ -13,6 +19,14 @@ namespace Pacem.Scaffolding {
         isNullable?: boolean,
         validators?: { type: string, errorMessage: string, params?: any }[]
     };
+
+    export declare type EntityMetadata = {
+        // css styles
+        css?: { [name: string]: string },
+        // css class
+        cssClass?: string[],
+        props: PropertyMetadata[]
+    }
 
 }
 
@@ -58,7 +72,7 @@ namespace Pacem.Components.Scaffolding {
         }
     }
 
-    export abstract class PacemModelElement extends PacemFormRelevantElement implements PacemModel, OnViewActivated, OnPropertyChanged, OnDisconnected {
+    export abstract class PacemModelElement extends PacemFormRelevantElement {
 
         viewActivatedCallback() {
             super.viewActivatedCallback();
@@ -73,16 +87,16 @@ namespace Pacem.Components.Scaffolding {
                     break;
                 case 'valid':
                     if (!val) {
-                        Utils.addClass(this, 'pacem-invalid');
+                        Utils.addClass(this, PCSS + '-invalid');
                     } else {
-                        Utils.removeClass(this, 'pacem-invalid');
+                        Utils.removeClass(this, PCSS + '-invalid');
                     }
                     break;
                 case 'dirty':
                     if (val) {
-                        Utils.addClass(this, 'pacem-dirty');
+                        Utils.addClass(this, PCSS + '-dirty');
                     } else {
-                        Utils.removeClass(this, 'pacem-dirty');
+                        Utils.removeClass(this, PCSS + '-dirty');
                     }
                     break;
                 case 'name':
@@ -148,10 +162,10 @@ namespace Pacem.Components.Scaffolding {
         @Watch({ converter: PropertyConverters.Boolean }) dirty: boolean;
         @Watch({ converter: PropertyConverters.Boolean }) valid: boolean;
         @Watch({ converter: PropertyConverters.String }) name: string;
-        metadata: PropertyMetadata;
+        metadata: Pacem.Scaffolding.PropertyMetadata;
     }
 
-    export abstract class PacemBaseElement extends PacemModelElement implements OnPropertyChanged, OnViewActivated, OnDisconnected {
+    export abstract class PacemBaseElement extends PacemModelElement {
 
         @Watch({ converter: PropertyConverters.Boolean }) required: boolean;
         @Watch({ converter: PropertyConverters.Boolean }) autofocus: boolean;
@@ -200,7 +214,7 @@ namespace Pacem.Components.Scaffolding {
             if (name === 'required'
                 || name === 'disabled'
                 || name === 'readonly') {
-                let className = `pacem-${name}`;
+                let className = `${PCSS}-${name}`;
                 val ? Utils.addClass(this, className) : Utils.removeClass(this, className);
             }
             if (name === 'readonly')
@@ -213,10 +227,10 @@ namespace Pacem.Components.Scaffolding {
             //this._focusHandle = requestAnimationFrame(() => {
             switch (evt.type) {
                 case 'focus':
-                    Utils.addClass(this, 'pacem-focus');
+                    Utils.addClass(this, PCSS + '-focus');
                     break;
                 case 'blur':
-                    Utils.removeClass(this, 'pacem-focus');
+                    Utils.removeClass(this, PCSS + '-focus');
                     break;
             }
             if (evt.bubbles)
@@ -286,7 +300,7 @@ namespace Pacem.Components.Scaffolding {
     export declare type DataSourceItem = { value: any, viewValue: string };
     export declare type DataSource = DataSourceItem[];
 
-    @CustomElement({ tagName: 'pacem-data-item' })
+    @CustomElement({ tagName: P + '-data-item' })
     export class PacemDataItemElement extends HTMLElement {
 
         @Watch({
@@ -411,10 +425,10 @@ namespace Pacem.Components.Scaffolding {
             if (this.multipleChoice && Utils.isArray(value))
                 return !Utils.isNull((<any[]>value).find(j =>
                     // caution: numbers and strings might be compared, ease the comparison by loosing equality constraints: `===` to `==`.
-                    j /* value item */ ==/*=*/ v /* datasource item */ || (!Utils.isNullOrEmpty(c) && c in v && c in j && v[c] ==/*=*/ j[c]))
+                    j /* value item */ ==/*=*/ v /* datasource item */ || (typeof j === 'object' && !Utils.isNullOrEmpty(c) && c in v && c in j && v[c] ==/*=*/ j[c]))
                 );
             else if (!this.multipleChoice)
-                return value ==/*=*/ v || (!Utils.isNullOrEmpty(c) && c in v && c in value && v[c] ==/*=*/ value[c]);
+                return value ==/*=*/ v || (typeof value === 'object' && !Utils.isNullOrEmpty(c) && c in v && c in value && v[c] ==/*=*/ value[c]);
             else
                 return false;
         }
@@ -430,10 +444,10 @@ namespace Pacem.Components.Scaffolding {
             const c = this.compareBy;
             if (this.multipleChoice && Utils.isArray(value)) {
                 // caution: numbers and strings might be compared, ease the comparison by loosing equality constraints: `===` to `==`.
-                let found = (<any[]>value).find(j => j ==/*=*/ item.value || (!Utils.isNullOrEmpty(c) && c in j && c in item.value && j[c] ==/*=*/ item.value[c]));
+                let found = (<any[]>value).find(j => j ==/*=*/ item.value || (typeof j === 'object' && !Utils.isNullOrEmpty(c) && c in j && c in item.value && j[c] ==/*=*/ item.value[c]));
                 return !Utils.isNull(found);
             } else if (!this.multipleChoice)
-                return value ==/*=*/ item.value || (!Utils.isNullOrEmpty(c) && c in value && c in item.value && value[c] ==/*=*/ item.value[c]);
+                return value ==/*=*/ item.value || (typeof value === 'object' && !Utils.isNullOrEmpty(c) && c in value && c in item.value && value[c] ==/*=*/ item.value[c]);
             else
                 return false;
         }

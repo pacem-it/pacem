@@ -11,7 +11,7 @@ namespace Pacem {
 
 namespace Pacem.Components {
 
-    @CustomElement({ tagName: 'pacem-router' })
+    @CustomElement({ tagName: P + '-router' })
     export class PacemRouterElement extends PacemEventTarget implements OnPropertyChanged {
 
         @Watch({ converter: PropertyConverters.String }) template: string; // something like /{controller}/{action}/{id?}

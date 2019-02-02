@@ -101,7 +101,7 @@ textarea {
 }
 
 /* #region fancy extra */
-.pacem-gloss when (@gradients = true) {
+.@{PCSS}-gloss when (@gradients = true) {
     .Gloss();
 }
 
@@ -111,12 +111,12 @@ textarea {
 
 .Bg(@_clr, @_clr_inv) {
 
-    &.pacem-gloss when (@shadows = true) {
+    &.@{PCSS}-gloss when (@shadows = true) {
         box-shadow: inset @grid_spacing/12 0 @grid_spacing/12 @_clr, inset -@grid_spacing/12 0 @grid_spacing/12 @_clr;
         text-shadow: 0 1px 0 @_clr, 0 -1px 0 @_clr, -1px 0 0 @_clr, 1px 0 0 @_clr;
     }
 
-    &.pacem-gloss when (@gradients = true) {
+    &.@{PCSS}-gloss when (@gradients = true) {
         .Gloss(@_clr_inv);
         background-color: @_clr;
     }

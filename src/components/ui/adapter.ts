@@ -7,28 +7,28 @@ namespace Pacem.Components.UI {
     }
 
     @CustomElement({
-        tagName: 'pacem-adapter', shadow: Defaults.USE_SHADOW_ROOT,
-        template: `<pacem-button class="pacem-adapter-previous" on-click=":host._previous($event)">&lt;</pacem-button>
-    <pacem-button class="pacem-adapter-next" on-click=":host._next($event)">&gt;</pacem-button>
-    <pacem-swipe on-swipeleft=":host._next($event)" on-swiperight=":host._previous($event)"></pacem-swipe>
-    <pacem-panel tabindex="0">
-    <pacem-repeater>
-    <ol class="pacem-adapter-dashboard">
+        tagName: P + '-adapter', shadow: Defaults.USE_SHADOW_ROOT,
+        template: `<${P}-button class="${PCSS}-adapter-previous" on-click=":host._previous($event)">&lt;</${P}-button>
+    <${ P}-button class="${PCSS}-adapter-next" on-click=":host._next($event)">&gt;</${P}-button>
+    <${ P}-swipe on-swipeleft=":host._next($event)" on-swiperight=":host._previous($event)"></${P}-swipe>
+    <${ P}-panel tabindex="0">
+    <${ P}-repeater>
+    <ol class="${PCSS}-adapter-dashboard">
         <li pacem hidden>
-            <pacem-button class="pacem-play-pause"
+            <${ P}-button class="${PCSS}-play-pause"
                           css-class="{{ {'paused' : :host._paused, 'playing': !:host._paused } }}" 
-                          disabled="{{ !:host.pausable }}" on-click=":host._toggle($event)"></pacem-button>
+                          disabled="{{ !:host.pausable }}" on-click=":host._toggle($event)"></${ P}-button>
         </li>
         <template>
         <li>
-            <pacem-button on-click=":host._select(^index, $event)" 
+            <${ P}-button on-click=":host._select(^index, $event)" 
                     disabled="{{ :host._isDisabled(^item, ^index, ^item.disabled, :host._v) }}" hide="{{ :host._isHidden(^item, ^index, ^item.hide, :host._v) }}"
-                    class="pacem-adapter-page" css-class="{{ { 'pacem-adapter-active': ^index === :host._index } }}">
-                <pacem-span content="{{ :host._labelCallback(^item, ^index, :host._v) }}"></pacem-span>
-            </pacem-button>
+                    class="${PCSS}-adapter-page" css-class="{{ { '${PCSS}-adapter-active': ^index === :host._index } }}">
+                <${ P}-span content="{{ :host._labelCallback(^item, ^index, :host._v) }}"></${P}-span>
+            </${ P}-button>
         </li>
         </template>
-    </ol></pacem-repeater></pacem-panel>`
+    </ol></${ P}-repeater></${P}-panel>`
     })
     export class PacemAdapterElement extends PacemAdapter<PacemIterativeElement<any>, any> {
 
@@ -36,12 +36,12 @@ namespace Pacem.Components.UI {
             super();
         }
 
-        @ViewChild('pacem-repeater') private _repeater: PacemRepeaterElement;
-        @ViewChild('pacem-button.pacem-adapter-previous') private _prevBtn: PacemButtonElement;
-        @ViewChild('pacem-button.pacem-adapter-next') private _nextBtn: PacemButtonElement;
-        @ViewChild('pacem-panel') private _panel: PacemPanelElement;
-        @ViewChild('pacem-swipe') private _swiper: PacemSwipeElement;
-        @ViewChild('.pacem-adapter-dashboard > li[pacem]') private _liPause: HTMLLIElement;
+        @ViewChild(P + '-repeater') private _repeater: PacemRepeaterElement;
+        @ViewChild(P + '-button.' + PCSS + '-adapter-previous') private _prevBtn: PacemButtonElement;
+        @ViewChild(P + '-button.' + PCSS + '-adapter-next') private _nextBtn: PacemButtonElement;
+        @ViewChild(P + '-panel') private _panel: PacemPanelElement;
+        @ViewChild(P + '-swipe') private _swiper: PacemSwipeElement;
+        @ViewChild('.' + PCSS + '-adapter-dashboard > li[pacem]') private _liPause: HTMLLIElement;
 
         masterPropertyChangedCallback(name: string, old: any, val: any, first?: boolean) {
             super.masterPropertyChangedCallback(name, old, val, first);
@@ -115,8 +115,8 @@ namespace Pacem.Components.UI {
                     this._resetTimer(val);
                     break;
                 case 'interactive':
-                    this.hidden = 
-                    this._swiper.disabled = !val;
+                    this.hidden =
+                        this._swiper.disabled = !val;
                     break;
                 case 'pausable':
                     if (val == true)

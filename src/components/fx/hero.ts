@@ -2,7 +2,7 @@
 /// <reference path="../../../dist/js/pacem-ui.d.ts" />
 namespace Pacem.Components.Fx {
 
-    const HERO_CSS = "pacem-hero";
+    const HERO_CSS = PCSS + "-hero";
     const TRANSITION = 200;
     const HEROING_IN = "entering";
     const HEROING_OUT = "exiting";
@@ -17,7 +17,7 @@ namespace Pacem.Components.Fx {
         }
     };
 
-    @CustomElement({ tagName: 'pacem-fx-hero' })
+    @CustomElement({ tagName: P + '-fx-hero' })
     export class PacemHeroElement extends PacemEventTarget {
 
         @Watch({ converter: Pacem.PropertyConverters.Element }) target: HTMLElement;

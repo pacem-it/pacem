@@ -5,8 +5,8 @@
 namespace Pacem.Components.Scaffolding {
 
     @CustomElement({
-        tagName: 'pacem-input-text',
-        template: `<input type="text" class="pacem-input" />${ CHAR_COUNTER_CHILD }<span class="pacem-readonly"><pacem-text text="{{ :host.viewValue }}"></pacem-text></span>`,
+        tagName: P + '-input-text',
+        template: `<input type="text" class="${PCSS}-input" />${CHAR_COUNTER_CHILD}<span class="${PCSS}-readonly"><${P}-text text="{{ :host.viewValue }}"></${P}-text></span>`,
         shadow: Defaults.USE_SHADOW_ROOT
     })
     export class PacemTextInputElement extends PacemTextualInputElement {
@@ -16,7 +16,7 @@ namespace Pacem.Components.Scaffolding {
         }
 
         @ViewChild('input[type=text]') private _input: HTMLInputElement;
-        @ViewChild('span.pacem-readonly') private _span: HTMLSpanElement;
+        @ViewChild('span.' + PCSS + '-readonly') private _span: HTMLSpanElement;
 
         protected toggleReadonlyView(readonly: boolean) {
             this._span.hidden = !readonly;

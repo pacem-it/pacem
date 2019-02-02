@@ -6,6 +6,11 @@
     string img = "https://pacem.azureedge.net/marketing/logojs_800x800.png";
     string title = "Pacem JS";
     string desc = "Pacem JS is a CustomElements-v1 based ecosystem for reusable web components.";
+
+    if (!Context.Request.Query.TryGetValue("prefix", out var P))
+    {
+        P = "pacem";
+    }
 }
 <!DOCTYPE html>
 <html>
@@ -31,6 +36,11 @@
     <meta name="twitter:creator" content="@@pacem_it">
     <meta name="og:locale" content="en_us" />
     <meta name="og:type" content="website" />
+    <script>
+        (function (global) {
+            global.Pacem = Object.assign(global.Pacem || {}, { Configuration: { prefix: "pacem" }});
+        })(window);
+    </script>
     <environment include="Development">
         <script src="~/polyfills/documentfragment.edge.js"></script>
         <script src="~/polyfills/custom-elements.min.js"></script>
@@ -77,9 +87,11 @@
     <pacem-data id="route" model="{{ #menu.result && #menu.result.find(_ => _.package === #router.state.package).items.find(_ => _.view === #router.state.view) }}"></pacem-data>
     <pacem-data id="routetitle" model="{{ (#route.model && (#route.model.title || #route.model.label)) || #router.state.view }}"></pacem-data>
 
-    <pacem-title value="{{ #routetitle.model + ' | Pacem JS' }}"></pacem-title>
-    <pacem-style src="{{ '/dist/css/pacem-'+ #themename.model +'.min.css?v=@(version)' }}"></pacem-style>
-    <pacem-style src="{{ '/dist/css/pacem-docs-'+ #themename.model +'.min.css?v=@(version)' }}"></pacem-style>
+    <pacem-title-proxy value="{{ #routetitle.model + ' | Pacem JS' }}"></pacem-title-proxy>
+    <pacem-meta-proxy content="{{ #routetitle.model }}" name="og:title"></pacem-meta-proxy>
+    <pacem-meta-proxy content="{{ #routetitle.model }}" name="twitter:title"></pacem-meta-proxy>
+    <pacem-style-proxy src="{{ '/dist/css/pacem-'+ #themename.model +'.min.css?v=@(version)' }}"></pacem-style-proxy>
+    <pacem-style-proxy src="{{ '/dist/css/pacem-docs-'+ #themename.model +'.min.css?v=@(version)' }}"></pacem-style-proxy>
 
     <header class="header-border" pacem>
         <div class="pacem-breadcrumbs">
@@ -93,7 +105,7 @@
                 <span class="breadcrumb-extra">Pacem JS</span>
                 <pacem-text class="breadcrumb-detail text-capital" text="{{ #router.state.package }}"></pacem-text>
                 <pacem-span class="breadcrumb-main text-accent" css-class="{{ {'text-tech': #routetitle.model && #routetitle.model.startsWith('<') } }}"
-                            text="{{ #routetitle.model }}"></pacem-span>
+                           text="{{ #routetitle.model }}"></pacem-span>
             </pacem-panel>
         </div>
     </header>
@@ -101,9 +113,9 @@
     <!-- dropdown balloon and adapter -->
     <pacem-adapter id="adapter" hide="true" orientation="vertical"></pacem-adapter>
     <pacem-balloon options="{{ { trigger:'click', align: 'start', trackPosition: true, size: 'match' } }}" target="#selector" id="ddl"
-                   on-popup="#buttonset.index = -1; #buttonset.focus(); #collapse.collapse = false"
-                   on-popout="#collapse.collapse = true"
-                   class="balloon-border balloon-corners">
+                  on-popup="#buttonset.index = -1; #buttonset.focus(); #collapse.collapse = false"
+                  on-popout="#collapse.collapse = true"
+                  class="balloon-border balloon-corners">
         <div class="pacem-panel balloon-panel panel-primary">
             <div class="panel-heading heading-sever pacem-grid">
 
@@ -122,9 +134,9 @@
                     </div>
                     <div class="pacem-cell cols-8 text-nowrap">
                         <pacem-radio-list datasource="{{ #themes.model }}"
-                                          value="{{ #theme.model }}"
-                                          on-change="#themename.model = $this.value.value; #ddl.popout()"
-                                          text-property="label"></pacem-radio-list>
+                                         value="{{ #theme.model }}"
+                                         on-change="#themename.model = $this.value.value; #ddl.popout()"
+                                         text-property="label"></pacem-radio-list>
                     </div>
                 </div>
             </div>
@@ -149,8 +161,8 @@
                         <template>
                             <div class="pacem-menu-item">
                                 <pacem-a href="{{ '/'+ ^^item.package +'/'+ ^item.view }}"
-                                         router="{{ #router }}"
-                                         css-class="{{ {'item-active': #router.state.package === ^^item.package && #router.state.view === ^item.view } }}">
+                                        router="{{ #router }}"
+                                        css-class="{{ {'item-active': #router.state.package === ^^item.package && #router.state.view === ^item.view } }}">
                                     <pacem-text text="{{ ^item.label }}"></pacem-text>
                                 </pacem-a>
                             </div>
@@ -162,26 +174,24 @@
         </pacem-menu>
     </pacem-repeater>
 
-    <pacem-title id="title" value="Pacem JS"></pacem-title>
-    <pacem-meta content="{{ #title.value }}" name="og:title"></pacem-meta>
     <pacem-router template="/{package}/{view}" path="/@(Model.Package ?? "intro")/@(Model.View ?? "start")" id="router"></pacem-router>
 
     <h1 class="text-accent show-v" id="heading">
         <pacem-span css-class="{{ {'text-tech': #routetitle.model && #routetitle.model.startsWith('<') } }}"
-                    text="{{ #routetitle.model }}">Pacem JS -@Model.Title</pacem-span>
-                </h1>
-                <pacem-view id="view" url="{{ '/demo/'+ #router.state.package + '/'+ #router.state.view +'.html?v=@(version)' }}" class="pacem-animatable"></pacem-view>
+                   text="{{ #routetitle.model }}">Pacem JS -@Model.Title</pacem-span>
+            </h1>
+            <pacem-view id="view" url="{{ '/demo/'+ #router.state.package + '/'+ #router.state.view +'.html?v=@(version)' }}" class="pacem-animatable"></pacem-view>
 
-                <div class="toc hide-v hide-md">
-                    <h3>TOC <i class="pacem-icon">keyboard_arrow_down</i></h3>
-                    <pacem-toc id="toc" selector="h2" target="{{ #view }}" offset="108"></pacem-toc>
-                </div>
+            <div class="toc hide-v hide-md">
+                <h3>TOC <i class="pacem-icon">keyboard_arrow_down</i></h3>
+                <pacem-toc id="toc" selector="h2" target="{{ #view }}" offset="108"></pacem-toc>
+            </div>
 
-                <footer class="footer-border" pacem>
-                    <span>Copyright @(DateTime.UtcNow.Year) - <a href="https://pacem.it" target="_blank">Pacem</a></span>
-                </footer>
+            <footer class="footer-border" pacem>
+                <span>Copyright @(DateTime.UtcNow.Year) - <a href="https://pacem.it" target="_blank">Pacem</a></span>
+            </footer>
 
-                <script>
+            <script>
         var pacemdocs = window['pacemdocs'] = window['pacemdocs'] || {};
         // Service Worker registration
         if ('serviceWorker' in navigator) {
@@ -191,9 +201,9 @@
                     console.log("Service Worker v@(version) registered.");
                 });
         }
-                </script>
+            </script>
 
-                <pacem-fetch url="/menu.json?v=@(version)" id="menu" on-fetchresult="pacemdocs.menu = $event.detail"></pacem-fetch>
+            <pacem-fetch url="/menu.json?v=@(version)" id="menu" on-fetchresult="pacemdocs.menu = $event.detail"></pacem-fetch>
 
-            </body>
-        </html>
+        </body>
+    </html>

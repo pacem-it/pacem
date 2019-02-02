@@ -19,7 +19,7 @@ namespace Pacem {
         // #region embed links
         // *tweet-embed
         {
-            regex: /\[tweet\]\(([^\)]+)\)/g, fn: (inp: string, r: RegExp) => inp.replace(r, `<!-- twitter embed $1 -->\n<pacem-tweetembed tweetid="$1"></pacem-tweetembed>`)
+            regex: /\[tweet\]\(([^\)]+)\)/g, fn: (inp: string, r: RegExp) => inp.replace(r, `<!-- twitter embed $1 -->\n<${ P }-tweetembed tweetid="$1"></${ P }-tweetembed>`)
         },
         // *youtube-embed
         {
@@ -78,7 +78,7 @@ namespace Pacem {
                     retval.push(t.value.replace(code_block_regex, function (m, m0, m1) {
                         const lang = (m0 || 'unknown').replace('#', '-sharp').toLowerCase(),
                             code = _this._parseCode(m1, lang);
-                        return `\n<code class="pacem-code-block ${lang}">${code}</code>`;
+                        return `\n<code class="${PCSS}-code-block ${lang}">${code}</code>`;
                     }));
 
                 } else {
@@ -117,28 +117,28 @@ namespace Pacem {
                         keywords.regex = /\b(abstract|arguments|async|await|boolean|break|byte|case|catch|char|class|const|continue|debugger|default|delete|do|double|else|enum|eval|export|extends|false|final|finally|float|for|function|goto|if|implements|import|in|instanceof|int|interface|let|long|native|new|null|package|private|protected|public|return|short|static|super|switch|synchronized|this|throw|throws|transient|true|try|typeof|var|void|volatile|while|with|yield)\b/g;
                         strings.regex = /'(\\'|[^'])*[^\\]?'|"(\\"|[^"])*[^\\]?"|`(\\`|[^`])*[^\\]?`/g;
                     }
-                    keywords.fn = '<span class="pacem-keyword">$1</span>';
-                    strings.fn = (m) => `<span class="pacem-string">${m}</span>`;
+                    keywords.fn = '<span class="'+ PCSS +'-keyword">$1</span>';
+                    strings.fn = (m) => `<span class="${PCSS}-string">${m}</span>`;
                     numbers.regex = /\b((0x[0-9a-fA-F]|[\d])*\.?[\d]+)\b/g;
-                    numbers.fn = '<span class="pacem-number">$1</span>';
+                    numbers.fn = '<span class="'+ PCSS +'-number">$1</span>';
                     comments.regex = /(\/\/.*|\/\*(?:(?!(\*\/))[\s\S])*\*\/)/g;
-                    comments.fn = `<span class="pacem-comment">$1</span>`;
+                    comments.fn = `<span class="${PCSS}-comment">$1</span>`;
                     break;
                 case 'xml':
                 case 'html':
                     tags.regex = /(&lt;\/?)([\w-]+)|(\/?&gt;)/g;
                     tags.fn = (m, m1, m2, m3) => {
                         if (Utils.isNullOrEmpty(m3))
-                            return `<span class="pacem-tag">${m1}</span><span class="pacem-tag-name">${m2}</span>`;
-                        return `<span class="pacem-tag">${m3}</span>`;
+                            return `<span class="${PCSS}-tag">${m1}</span><span class="${PCSS}-tag-name">${m2}</span>`;
+                        return `<span class="${PCSS}-tag">${m3}</span>`;
                     }
                     strings.regex = /(=')(\\'|[^'])*[^\\]?(')|(=")(\\"|[^"])*[^\\]?(")/g;
-                    strings.fn = (m) => `<span class="pacem-string">${m}</span>`;
+                    strings.fn = (m) => `<span class="${PCSS}-string">${m}</span>`;
                     // isn't this ugly?:
                     attrs.regex = /(\s[\w-]+)$/g;
-                    attrs.fn = `<span class="pacem-attribute">$1</span>`;
+                    attrs.fn = `<span class="${PCSS}-attribute">$1</span>`;
                     comments.regex = /((<|&lt;)!--(?:(?!(--(>|&gt;)))[\s\S])*--(>|&gt;))/g;
-                    comments.fn = `<span class="pacem-comment">$1</span>`;
+                    comments.fn = `<span class="${PCSS}-comment">$1</span>`;
             }
 
             var split = REGEX.split(code, comments.regex);

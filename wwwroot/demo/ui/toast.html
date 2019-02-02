@@ -11,7 +11,9 @@ Default appearance:
     <template id="demo0">
 
         <pacem-data id="show0"></pacem-data>
-        <pacem-toast show="{{ #show0.model, twoway }}" css-class="{{ ['toast-' + #style0.value] }}">Popped!</pacem-toast>
+        <pacem-body-proxy>
+            <pacem-toast show="{{ #show0.model, twoway }}" css-class="{{ ['toast-' + #style0.value] }}">Popped!</pacem-toast>
+        </pacem-body-proxy>
         <pacem-radio-list id="style0" class="display-block pacem-margin margin-bottom" value="default" disabled="{{ #show0.model }}">
             <pacem-data-item value="default"></pacem-data-item>
             <pacem-data-item value="primary"></pacem-data-item>
@@ -42,11 +44,13 @@ Default spawning position is assumed to be `top right`.
         <pacem-data id="show1"></pacem-data>
         <pacem-data id="show2"></pacem-data>
         <pacem-data id="show3"></pacem-data>
-        <pacem-panel class="pacem-toaster" css-class="{{ (#pos1.value && #pos1.value).split(' ').map(p => 'toaster-'+p) }}">
-            <pacem-toast timeout="{{ #dur1.value }}" show="{{ #show1.model, twoway }}" class="toast-primary">Popped 1!</pacem-toast>
-            <pacem-toast timeout="{{ #dur1.value }}" show="{{ #show2.model, twoway }}" class="toast-accent">Popped 2!</pacem-toast>
-            <pacem-toast timeout="{{ #dur1.value }}" show="{{ #show3.model, twoway }}" class="toast-success">Popped 3!</pacem-toast>
-        </pacem-panel>
+        <pacem-body-proxy>
+            <pacem-panel class="pacem-toaster" css-class="{{ (#pos1.value && #pos1.value).split(' ').map(p => 'toaster-'+p) }}">
+                <pacem-toast timeout="{{ #dur1.value }}" show="{{ #show1.model, twoway }}" class="toast-primary">Popped 1!</pacem-toast>
+                <pacem-toast timeout="{{ #dur1.value }}" show="{{ #show2.model, twoway }}" class="toast-accent">Popped 2!</pacem-toast>
+                <pacem-toast timeout="{{ #dur1.value }}" show="{{ #show3.model, twoway }}" class="toast-success">Popped 3!</pacem-toast>
+            </pacem-panel>
+        </pacem-body-proxy>
         <div class="pacem-margin margin-bottom form-field">
             <pacem-select id="pos1" value="top right" disabled="{{ #show1.model || #show2.model || #show3.model }}">
                 <pacem-data-item value="top left"></pacem-data-item>
@@ -79,14 +83,16 @@ To make the toast to be persistent, force the user to dismiss it:
     <template id="demo2">
 
         <pacem-data id="show4"></pacem-data>
-        <div class="pacem-toaster">
-            <pacem-toast show="{{ #show4.model, twoway }}" autohide="false" class="toast-danger">
-                <p>
-                    <i class="pacem-icon">announcement</i>
-                    Click me to dismiss.
-                </p>
-            </pacem-toast>
-        </div>
+        <pacem-body-proxy>
+            <div class="pacem-toaster">
+                <pacem-toast show="{{ #show4.model, twoway }}" autohide="false" class="toast-danger">
+                    <p>
+                        <i class="pacem-icon">announcement</i>
+                        Click me to dismiss.
+                    </p>
+                </pacem-toast>
+            </div>
+        </pacem-body-proxy>
         <pacem-button class="button" disabled="{{ #show4.model }}" on-click="#show4.model = true">pop!</pacem-button>
 
     </template>

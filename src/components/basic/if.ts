@@ -2,8 +2,8 @@
 
 namespace Pacem.Components {
 
-    @CustomElement({ tagName: 'pacem-if' })
-    export class PacemIfElement extends HTMLElement implements OnPropertyChanged {
+    @CustomElement({ tagName: P + '-if' })
+    export class PacemIfElement extends HTMLElement {
 
         private _innerHTML: string;
 

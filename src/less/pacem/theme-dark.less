@@ -1,4 +1,14 @@
-﻿@color_lightblue: #262b3e; //#429bbb;
+﻿// tag prefix
+@tag_prefix: pacem;
+@P: @tag_prefix;
+@class_prefix: @tag_prefix;
+@PCSS: @class_prefix;
+
+// NEXT: class prefix
+// @css_prefix: pacem;
+// @CP: @css_prefix;
+
+@color_lightblue: #262b3e; //#429bbb;
 @color_blue: #1e2336; //#0e456e;
 @color_red: #ff005a; // #af0843;
 @color_teal: #429bbb; // #8fbbcc; //#73c8e9;
@@ -208,9 +218,14 @@
 @color_field_back: @color_lightblue;
 @color_field_label: @color_teal;
 @border_field_size: 2px;
+@border_field_underline: true;
 @color_input_toggle: @color_primary;
 @color_input_icon: @color_primary;
 @color_input_back: rgba(255,255,255,0.05);
+@color_input_fore: fade(@color_default, 80);
+@color_input_fore_focus: @color_default;
+@color_field_fore: @color_input_fore;
+@color_field_fore_focus: @color_input_fore_focus;
 
 /*#endregion*/
 
@@ -248,8 +263,8 @@
 
 .Animatable(@anim, @delay, @easing) {
 
-    &:not(.pacem-viewport-aware),
-    &.pacem-viewport-aware.pacem-in-viewport {
+    &:not(.@{PCSS}-viewport-aware),
+    &.@{PCSS}-viewport-aware.@{PCSS}-in-viewport {
         .AnimatableCore(@anim, @delay, @easing);
     }
 }
@@ -509,8 +524,11 @@
 /*#endregion*/
 
 /*#region MIXINS FORM*/
-.FormFieldItemBorders() {
+.FormFieldItemBorders() when (@border_field_underline = true) {
     border: 0;
     border-bottom: @border_field_size solid;
+}
+.FormFieldItemBorders() when (@border_field_underline = false) {
+    border: @border_field_size solid;
 }
 /*#endregion*/

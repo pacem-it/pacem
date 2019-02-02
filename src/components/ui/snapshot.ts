@@ -10,33 +10,33 @@ namespace Pacem.Components.UI {
     }
 
     @CustomElement({
-        tagName: 'pacem-snapshot',
+        tagName: P + '-snapshot',
         shadow: Defaults.USE_SHADOW_ROOT,
-        template: `<pacem-panel class="pacem-snapshot" 
+        template: `<${P}-panel class="${PCSS}-snapshot" 
 css-class="{{ { 
-'pacem-steady': :host.step === '${ SnapshotStep.Start}',
-'pacem-ongoing': :host.step != '${ SnapshotStep.Start}', 
-'pacem-taking': :host.step != '${ SnapshotStep.Start}', 
-'pacem-video': :host._canUseWebcam && :host.step === '${ SnapshotStep.Taking}', 
-'pacem-countdown': :host._countdown > 0, 
-'pacem-preview': :host.step == '${ SnapshotStep.Confirm}' } }}">
+'${PCSS}-steady': :host.step === '${SnapshotStep.Start}',
+'${PCSS}-ongoing': :host.step != '${SnapshotStep.Start}', 
+'${PCSS}-taking': :host.step != '${SnapshotStep.Start}', 
+'${PCSS}-video': :host._canUseWebcam && :host.step === '${SnapshotStep.Taking}', 
+'${PCSS}-countdown': :host._countdown > 0, 
+'${PCSS}-preview': :host.step == '${SnapshotStep.Confirm}' } }}">
     
-    <pacem-button on-click=":host.take($event)" class="pacem-camera" hide="{{ :host.step != '${ SnapshotStep.Start}' }}"></pacem-button>
+    <${ P}-button on-click=":host.take($event)" class="${PCSS}-camera" hide="{{ :host.step != '${SnapshotStep.Start}' }}"></${P}-button>
     
-    <canvas class="pacem-preview"></canvas>
+    <canvas class="${PCSS}-preview"></canvas>
 
     <input type="file" accept="image/*" capture="camera" hidden />
 
-    <video class="pacem-player" autoplay="autoplay"></video>
-    <pacem-button class="pacem-countdown"><pacem-text text="{{ :host._countdown }}"></pacem-text></pacem-button>
-    <pacem-button class="pacem-undo" hide="{{ :host.step == '${ SnapshotStep.Start}' || :host._countdown > 0 }}" on-click=":host.back($event)"></pacem-button>
-    <pacem-button class="pacem-confirm" hide="{{ :host.step != '${ SnapshotStep.Confirm}' }}" on-click=":host.confirm($event)"></pacem-button>
-    <pacem-span hide="{{ :host._canUseWebcam }}"><pacem-content></pacem-content></pacem-span>
-</pacem-panel>`
+    <video class="${PCSS}-player" autoplay="autoplay"></video>
+    <${ P}-button class="${PCSS}-countdown"><${P}-text text="{{ :host._countdown }}"></${P}-text></${P}-button>
+    <${ P}-button class="${PCSS}-undo" hide="{{ :host.step == '${SnapshotStep.Start}' || :host._countdown > 0 }}" on-click=":host.back($event)"></${P}-button>
+    <${ P}-button class="${PCSS}-confirm" hide="{{ :host.step != '${SnapshotStep.Confirm}' }}" on-click=":host.confirm($event)"></${P}-button>
+    <${ P}-span hide="{{ :host._canUseWebcam }}"><${P}-content></${P}-content></${P}-span>
+</${ P}-panel>`
     })
     export class PacemSnapshotElement extends PacemElement implements OnPropertyChanged, OnViewActivated {
 
-        @ViewChild('.pacem-snapshot') private _root: HTMLElement;
+        @ViewChild('.' + PCSS + '-snapshot') private _root: HTMLElement;
         @ViewChild('canvas') private _stage: HTMLCanvasElement;
         @ViewChild('input[type=file]') private _grabber: HTMLInputElement;
         @ViewChild('video') private _player: HTMLVideoElement;
@@ -150,7 +150,7 @@ css-class="{{ {
                             cnv.style.position = 'absolute';
                             let root = me._root;
                             root.insertBefore(cnv, video);
-                            cnv.className = 'pacem-brightout pacem-preview';
+                            cnv.className = PCSS + '-brightout ' + PCSS + '-preview';
                             setTimeout(function () {
                                 root.removeChild(cnv);
                             }, 2000);

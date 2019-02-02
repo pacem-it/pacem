@@ -1,7 +1,7 @@
 ﻿/// <reference path="types.ts" />
 namespace Pacem.Components {
 
-    @CustomElement({ tagName: 'pacem-span' })
+    @CustomElement({ tagName: P + '-span' })
     export class PacemSpanElement extends PacemSafeContentElement implements OnPropertyChanged {
 
         constructor() {

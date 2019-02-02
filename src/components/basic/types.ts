@@ -186,12 +186,8 @@ namespace Pacem.Components {
                     break;
                 case "hide":
                     if (val) {
-                        //Utils.removeClass(this, 'pacem-shown');
-                        //Utils.addClass(this, 'pacem-hidden');
                         this.setAttribute('hidden', '');
                     } else {
-                        //Utils.removeClass(this, 'pacem-hidden');
-                        //Utils.addClass(this, 'pacem-shown');
                         this.removeAttribute('hidden');
                     }
                     break;
@@ -217,11 +213,14 @@ namespace Pacem.Components {
                     }
                     break;
                 case 'disabled':
+                    let cssDis = PCSS + '-'+ name;
                     if (!!val) {
                         this._tabIndex = this.tabIndex;
                         this.tabIndex = -1;
+                        Utils.addClass(this, cssDis);
                     } else {
                         this.tabIndex = this._tabIndex;
+                        Utils.removeClass(this, cssDis);
                     }
                     break;
                 case 'culture':

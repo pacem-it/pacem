@@ -12,14 +12,14 @@ body {
     line-height: 1.5;
     font-weight: @font_weight;
 
-    &.pacem-animations {
+    &.@{PCSS}-animations {
 
-        .pacem-animatable {
+        .@{PCSS}-animatable {
             .Animatable(.4s);
         }
 
         h1 {
-            &.pacem-animatable {
+            &.@{PCSS}-animatable {
                 .Animatable('header-anim', .2s);
             }
         }

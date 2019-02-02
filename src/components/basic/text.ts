@@ -1,7 +1,7 @@
 ﻿/// <reference path="types.ts" />
 namespace Pacem.Components {
 
-    @CustomElement({ tagName: 'pacem-text' })
+    @CustomElement({ tagName: P + '-text' })
     export class PacemTextElement extends HTMLElement implements OnPropertyChanged, OnConnected {
 
         constructor() {

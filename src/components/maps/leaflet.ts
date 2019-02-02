@@ -134,7 +134,7 @@ namespace Pacem.Components.Maps {
 
     }
 
-    @CustomElement({ tagName: 'pacem-map-adapter-leaflet' })
+    @CustomElement({ tagName: P + '-map-adapter-leaflet' })
     export class PacemLeafletMapAdapterElement extends PacemMapAdapterElement {
 
         constructor() {

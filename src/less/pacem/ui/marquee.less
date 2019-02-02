@@ -1,7 +1,7 @@
 ﻿@import "../../shared";
 @import "../theme-dark";
 
-pacem-marquee {
+@{P}-marquee {
     font-size: 1.05em; // 1.05rem * @font_rem_factor;
     color: @color_marquee_fore;
     background-color: @color_marquee_back;
@@ -11,21 +11,21 @@ pacem-marquee {
     line-height: @grid_spacing;
     position: relative;
 
-    .pacem-marquee,
-    .pacem-marquee-overlap {
+    .@{PCSS}-marquee,
+    .@{PCSS}-marquee-overlap {
         position: absolute;
         top: 0;
         left: 0;
         height: 100%;
     }
 
-    .pacem-marquee-overlap {
+    .@{PCSS}-marquee-overlap {
         min-width: 100%;
         pointer-events: none;
         z-index: 1;
     }
 
-    .pacem-marquee {
+    .@{PCSS}-marquee {
         white-space: nowrap;
         z-index: 0;
         //animation: full-offset-rtl-anim 10s linear infinite;
@@ -33,18 +33,18 @@ pacem-marquee {
 
 
     &:hover {
-        .pacem-marquee {
+        .@{PCSS}-marquee {
             animation-play-state: paused;
         }
     }
 }
 
-pacem-marquee when (@gradients = true) {
+@{P}-marquee when (@gradients = true) {
     .GradientVertical(@color_marquee_back, @color_marquee_back2);
 }
 
-pacem-marquee when (@shadows = true) {
-    .pacem-marquee-overlap {
+@{P}-marquee when (@shadows = true) {
+    .@{PCSS}-marquee-overlap {
         box-shadow: inset @grid_spacing/2 0 @grid_spacing/2 rgba(0,0,0,0.5), inset -@grid_spacing/2 0 @grid_spacing/2 rgba(0,0,0,0.5);
     }
 }

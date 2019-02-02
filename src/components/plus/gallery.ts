@@ -7,29 +7,29 @@ namespace Pacem.Components.Plus {
     };
 
     @CustomElement({
-        tagName: 'pacem-gallery', shadow: Defaults.USE_SHADOW_ROOT,
-        template: `<pacem-lightbox class="pacem-gallery">
-    <pacem-repeater datasource="{{ :host.datasource }}">
-        <pacem-slideshow adapter="{{ ::_adapter }}" index="{{ :host.index, twoway }}">
+        tagName: P + '-gallery', shadow: Defaults.USE_SHADOW_ROOT,
+        template: `<${ P }-lightbox class="${PCSS}-gallery">
+    <${ P }-repeater datasource="{{ :host.datasource }}">
+        <${ P }-slideshow adapter="{{ ::_adapter }}" index="{{ :host.index, twoway }}">
         <template>
-            <pacem-slide class="pacem-gallery-item"
-css-class="{{ { 'pacem-gallery-previous': :host.isPrevious(^index, ::_slideshow.index), 'pacem-gallery-next': :host.isNext(^index, ::_slideshow.index), 'pacem-gallery-focus': ^index === ::_slideshow.index } }}"
+            <${ P }-slide class="${PCSS}-gallery-item"
+css-class="{{ { '${PCSS}-gallery-previous': :host.isPrevious(^index, ::_slideshow.index), '${PCSS}-gallery-next': :host.isNext(^index, ::_slideshow.index), '${PCSS}-gallery-focus': ^index === ::_slideshow.index } }}"
 >
-            <pacem-img src="{{ ^item.image }}" disabled="{{ !(:host.isCloseTo(^index, ::_slideshow.index) || ^index === ::_slideshow.index) }}" 
-css="{{ {'visibility': (:host._poppingUp ? 'hidden' : '')} }}" class="pacem-gallery-splash" adapt="contain"></pacem-img>
-            </pacem-slide>
+            <${ P }-img src="{{ ^item.image }}" disabled="{{ !(:host.isCloseTo(^index, ::_slideshow.index) || ^index === ::_slideshow.index) }}" 
+css="{{ {'visibility': (:host._poppingUp ? 'hidden' : '')} }}" class="${PCSS}-gallery-splash" adapt="contain"></${ P }-img>
+            </${ P }-slide>
         </template>
-        </pacem-slideshow>
-    </pacem-repeater>
-<pacem-adapter class="pacem-gallery-adapter"></pacem-adapter>
-</pacem-lightbox><div class="pacem-gallery-hero-target"></div>`
+        </${ P }-slideshow>
+    </${ P }-repeater>
+<${ P }-adapter class="${PCSS}-gallery-adapter"></${ P }-adapter>
+</${ P }-lightbox><div class="${PCSS}-gallery-hero-target"></div>`
     })
     export class PacemGalleryElement extends UI.PacemAdaptedIterativeElement<GalleryDataItem> {
 
-        @ViewChild('pacem-adapter') private _adapter: UI.PacemAdapterElement;
-        @ViewChild('pacem-lightbox') private _lightbox: UI.PacemLightboxElement;
-        @ViewChild('pacem-slideshow') private _slideshow: UI.PacemSlideshowElement;
-        @ViewChild('.pacem-gallery-hero-target') private _heroPlaceholder: HTMLElement;
+        @ViewChild(P + '-adapter') private _adapter: UI.PacemAdapterElement;
+        @ViewChild(P + '-lightbox') private _lightbox: UI.PacemLightboxElement;
+        @ViewChild(P + '-slideshow') private _slideshow: UI.PacemSlideshowElement;
+        @ViewChild(`.${PCSS}-gallery-hero-target`) private _heroPlaceholder: HTMLElement;
 
         @Watch() private _poppingUp: boolean;
 
@@ -43,7 +43,7 @@ css="{{ {'visibility': (:host._poppingUp ? 'hidden' : '')} }}" class="pacem-gall
                 deferred.resolve();
             } else {
 
-                let pImg = <UI.PacemImageElement>document.createElement('pacem-img');
+                let pImg = <UI.PacemImageElement>document.createElement(P + '-img');
                 let goalEl = this._heroPlaceholder;
                 const TRANSITION = 300;
 

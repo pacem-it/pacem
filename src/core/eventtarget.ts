@@ -83,12 +83,6 @@ namespace Pacem.Components {
                 this.log(Logging.LogLevel.Log, `Property "${name}" changed at start-up`);
             else
                 this.log(Logging.LogLevel.Log, `Property "${name}" changed from ${old} to ${val}`);
-            //
-            if (name === 'disabled') {
-                const css = `pacem-${name}`,
-                    fn = val ? Utils.addClass : Utils.removeClass;
-                fn(this, css);
-            }
         }
 
         /**

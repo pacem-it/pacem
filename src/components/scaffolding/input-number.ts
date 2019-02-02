@@ -3,7 +3,7 @@
 /// <reference path="input.ts" />
 namespace Pacem.Components.Scaffolding {
     
-    @CustomElement({ tagName: 'pacem-input-number', template: '<input type="number" class="pacem-input pacem-viewfinder" /><span class="pacem-readonly"><pacem-text text="{{ :host.viewValue }}"></pacem-text></span>', shadow: Defaults.USE_SHADOW_ROOT })
+    @CustomElement({ tagName: P + '-input-number', template: `<input type="number" class="${PCSS}-input ${PCSS}-viewfinder" /><span class="${PCSS}-readonly"><${ P }-text text="{{ :host.viewValue }}"></${ P }-text></span>`, shadow: Defaults.USE_SHADOW_ROOT })
     export class PacemNumberInputElement extends PacemOrdinalInputElement {
 
         constructor() {
@@ -11,7 +11,7 @@ namespace Pacem.Components.Scaffolding {
         }
 
         @ViewChild('input[type=number]') input: HTMLInputElement;
-        @ViewChild('span.pacem-readonly') span: HTMLSpanElement;
+        @ViewChild(`span.${PCSS}-readonly`) span: HTMLSpanElement;
 
         protected toggleReadonlyView(readonly: boolean) {
             this.span.hidden = !readonly;

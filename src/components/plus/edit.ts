@@ -11,7 +11,7 @@ namespace Pacem.Components.Plus {
     }
 
     @CustomElement({
-        tagName: 'pacem-edit'
+        tagName: P + '-edit'
     })
     export class PacemEditElement extends PacemElement implements OnPropertyChanged, OnConnected, OnViewActivated, OnDisconnected {
 
@@ -39,8 +39,8 @@ namespace Pacem.Components.Plus {
             if (!Utils.isNull(this._button))
                 return;
             //
-            var btn = <UI.PacemButtonElement>document.createElement('pacem-button');
-            btn.className = 'pacem-edit-button';
+            var btn = <UI.PacemButtonElement>document.createElement(P + '-button');
+            btn.className = PCSS + '-edit-button';
             btn.addEventListener('click', this._editHandler, false);
             this._target.appendChild(btn);
             //
@@ -60,7 +60,7 @@ namespace Pacem.Components.Plus {
 
         private _addDialog() {
             /* <pacem-dialog buttons="'${ UI.DialogButtons.OkCancel}'" on-${PropertyChangeEventName}=":host._dialogPropertyChangedCallback($event)"> */
-            var dialog = <UI.PacemDialogElement>document.createElement('pacem-dialog');
+            var dialog = <UI.PacemDialogElement>document.createElement(P + '-dialog');
             dialog.buttons = UI.DialogButtons.OkCancel;
             dialog.addEventListener(PropertyChangeEventName, this._dialogPropertyChangedHandler, false);
             dialog.appendChild(this._addTextarea());
@@ -85,8 +85,8 @@ namespace Pacem.Components.Plus {
 
         private _addTextarea() {
             /*<pacem-textarea hide="{{ :host.type === '${ EditMode.Html}' || :host.type === '${EditMode.Image}' }}" value="{{ ::_dialog.state, twoway }}"></pacem-textarea>*/
-            var textarea = <Scaffolding.PacemTextAreaElement>document.createElement('pacem-textarea');
-            textarea.className = 'pacem-edit-text';
+            var textarea = <Scaffolding.PacemTextAreaElement>document.createElement(P + '-textarea');
+            textarea.className = PCSS + '-edit-text';
             textarea.addEventListener(PropertyChangeEventName, this._innerValueChangedHandler, false);
             const type = this.type || EditMode.Text;
             textarea.hide = type !== EditMode.Text && type !== EditMode.Markdown;
@@ -104,8 +104,8 @@ namespace Pacem.Components.Plus {
 
         private _addContenteditable() {
             /*<pacem-contenteditable hide="{{ :host.type != '${ EditMode.Html}' }}" value="{{ ::_dialog.state, twoway  }}"></pacem-contenteditable> */
-            var contenteditable = <Scaffolding.PacemContenteditableElement>document.createElement('pacem-contenteditable');
-            contenteditable.className = 'pacem-edit-content';
+            var contenteditable = <Scaffolding.PacemContenteditableElement>document.createElement(P + '-contenteditable');
+            contenteditable.className = PCSS + '-edit-content';
             contenteditable.addEventListener(PropertyChangeEventName, this._innerValueChangedHandler, false);
             const type = this.type || EditMode.Text;
             contenteditable.hide = type !== EditMode.Html;
@@ -135,7 +135,7 @@ namespace Pacem.Components.Plus {
         </pacem-repeater>
         <pacem-progressbar></pacem-progressbar>
     </pacem-panel>*/
-            var editImage = <Scaffolding.PacemEditImageElement>document.createElement('pacem-edit-image');
+            var editImage = <Scaffolding.PacemEditImageElement>document.createElement(P + '-edit-image');
             editImage.disabled = true;
             editImage.addEventListener(PropertyChangeEventName, this._innerValueChangedHandler, false);
             editImage.addEventListener(Scaffolding.ImageFetchRequestEventName, this._broadcastFetchRequestEventName, false);
@@ -184,7 +184,7 @@ namespace Pacem.Components.Plus {
                     break;
                 case EditMode.Markdown:
                     switch (cnt.localName) {
-                        case 'pacem-markdown':
+                        case P + '-markdown':
                             (<UI.PacemMarkdownElement>cnt).value = val;
                             break;
                         default:
@@ -196,7 +196,7 @@ namespace Pacem.Components.Plus {
 
                     switch (cnt.localName) {
                         case 'img':
-                        case 'pacem-img':
+                        case P + '-img':
                             cnt['src'] = val;
                             break;
                         default:
@@ -218,7 +218,7 @@ namespace Pacem.Components.Plus {
                     return cnt.innerHTML;
                 case EditMode.Image:
                     switch (cnt.localName) {
-                        case 'pacem-img':
+                        case P + '-img':
                         case 'img':
                             return cnt['src'];
                         default:
@@ -236,10 +236,10 @@ namespace Pacem.Components.Plus {
         private _setup() {
             const val: boolean = this.disabled;
             if (val) {
-                Utils.removeClass(this._target, 'pacem-editing');
+                Utils.removeClass(this._target, PCSS + '-editing');
                 this._removeButton();
             } else {
-                Utils.addClass(this._target, 'pacem-editing');
+                Utils.addClass(this._target, PCSS + '-editing');
                 this._addButton();
             }
         }

@@ -12,24 +12,24 @@
     width: @_outer_radius;
     height: @_outer_radius;
 
-    canvas.pacem-tuner {
+    canvas.@{PCSS}-tuner {
         stroke-width: @_thickness;
     }
 
-    .pacem-content {
+    .@{PCSS}-content {
         width: @_outer_radius;
         height: @_outer_radius;
         font-size: round(@size/3.2);
     }
 }
 
-pacem-tuner {
+@{P}-tuner {
     .Tuner(ceil(@grid_cell * 1.414));
     //@_padding: @grid_spacing / 6;
     display: block;
     position: relative;
 
-    canvas.pacem-tuner {
+    canvas.@{PCSS}-tuner {
         width: 100%;
         height: 100%;
         position: absolute;
@@ -38,12 +38,12 @@ pacem-tuner {
         border-color: fade(@color_default, 10);
         stroke: @color_default;
 
-        &.pacem-interactive {
+        &.@{PCSS}-interactive {
             cursor: pointer;
         }
     }
 
-    .pacem-content {
+    .@{PCSS}-content {
         position: absolute;
         display: flex;
         align-items: center;
@@ -72,37 +72,37 @@ pacem-tuner {
     }
     // coloring
     &.tuner-accent {
-        canvas.pacem-tuner {
+        canvas.@{PCSS}-tuner {
             stroke: @color_accent;
         }
     }
 
     &.tuner-warning {
-        canvas.pacem-tuner {
+        canvas.@{PCSS}-tuner {
             stroke: @color_warning;
         }
     }
 
     &.tuner-success {
-        canvas.pacem-tuner {
+        canvas.@{PCSS}-tuner {
             stroke: @color_success;
         }
     }
 
     &.tuner-danger {
-        canvas.pacem-tuner {
+        canvas.@{PCSS}-tuner {
             stroke: @color_danger;
         }
     }
 
     &.tuner-primary {
-        canvas.pacem-tuner {
+        canvas.@{PCSS}-tuner {
             stroke: @color_primary;
         }
     }
 
     &.tuner-thin {
-        canvas.pacem-tuner {
+        canvas.@{PCSS}-tuner {
             stroke-width: 3px;
         }
     }
@@ -114,13 +114,13 @@ pacem-tuner {
     background-repeat: no-repeat;
     background-size: 100%;
 
-    pacem-tuner canvas.pacem-tuner {
+   @{P}-tuner canvas.@{PCSS}-tuner {
         stroke-width: 3px !important;
         border-color: fade(@clr, 10);
     }
 }
 
-.pacem-tuner-wrapper {
+.@{PCSS}-tuner-wrapper {
     background-position: center center;
     background-repeat: no-repeat;
     background-size: 100%;
@@ -152,10 +152,10 @@ pacem-tuner {
     }
 }
 
-.pacem-animations {
+.@{PCSS}-animations {
 
-    .pacem-tuner-wrapper,
-    pacem-tuner {
+    .@{PCSS}-tuner-wrapper,
+   @{P}-tuner {
         .Animatable(pop-anim, .4s, @easing_out_back);
     }
 }

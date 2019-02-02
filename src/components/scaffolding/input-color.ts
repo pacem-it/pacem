@@ -4,11 +4,11 @@
 namespace Pacem.Components.Scaffolding {
     
     @CustomElement({
-        tagName: 'pacem-input-color', template: `<div class="pacem-viewfinder">
-<pacem-panel class="pacem-input-color" css="{{ { \'background-color\': :host.viewValue } }}"><input type="color" class="pacem-input" /></pacem-panel>
-<input class="pacem-input" type="number" min="0" max="100" step="1" value="100" />
+        tagName: P + '-input-color', template: `<div class="${PCSS}-viewfinder">
+<${ P }-panel class="${PCSS}-input-color" css="{{ { \'background-color\': :host.viewValue } }}"><input type="color" class="${PCSS}-input" /></${ P }-panel>
+<input class="${PCSS}-input" type="number" min="0" max="100" step="1" value="100" />
 </div>
-<pacem-span class="pacem-readonly" css="{{ { \'background-color\': :host.viewValue } }}"></pacem-span>`,
+<${ P }-span class="${PCSS}-readonly" css="{{ { \'background-color\': :host.viewValue } }}"></${ P }-span>`,
         shadow: Defaults.USE_SHADOW_ROOT
     })
     export class PacemColorInputElement extends PacemBaseElement {
@@ -39,8 +39,8 @@ namespace Pacem.Components.Scaffolding {
 
         @ViewChild('input[type=color]') _tint: HTMLInputElement;
         @ViewChild('input[type=number]') _alpha: HTMLInputElement;
-        @ViewChild('.pacem-viewfinder') _wrapper: HTMLElement;
-        @ViewChild('.pacem-readonly') _span: PacemSpanElement;
+        @ViewChild(`.${PCSS}-viewfinder`) _wrapper: HTMLElement;
+        @ViewChild(`.${PCSS}-readonly`) _span: PacemSpanElement;
 
         protected toggleReadonlyView(readonly: boolean) {
             this._wrapper.hidden = readonly;

@@ -4,7 +4,7 @@ namespace Pacem {
     class Transforms {
 
         @Transformer()
-        static highlight(src: any, query: any, css: string = 'pacem-highlight') {
+        static highlight(src: any, query: any, css: string = PCSS + '-highlight') {
             if (!query || !src) return src;
             let output = src.substr(0);
             var trunks = query.substr(0).split(' ');
@@ -46,25 +46,42 @@ namespace Pacem {
 
         @Transformer()
         static date(src: string | Date | number, format: 'short' | 'full' | 'iso' | 'isodate' | Intl.DateTimeFormatOptions, culture?: string) {
-            var date = Utils.parseDate(src);
+            var date = Utils.parseDate(src),
+                lang = culture || navigator.language;
             if (Utils.isNull(format) || typeof format === 'string') {
                 switch (format) {
                     case 'iso':
                         return date.toISOString();
                     case 'isodate':
-                        return `${date.getFullYear()}-${(date.getMonth() + 1)}-${date.getDate()}`;
+                        return date.toISOString().substr(0, 10);
                     case 'full':
                         const offset = -(date.getTimezoneOffset() / 60);
                         var utc = '';
                         if (offset != 0)
                             utc = ' (UTC' + ((offset > 0 ? '+' : '-') + Math.abs(offset).toLocaleString()) + ')';
-                        return date.toLocaleString(culture) + utc;
+                        return date.toLocaleString(lang) + utc;
                     default:
-                        return date.toLocaleDateString(culture);
+                        return date.toLocaleDateString(lang);
                 }
             } else {
                 return date.toLocaleString(culture, format);
             }
+        }
+
+        @Transformer()
+        static timespan(start: string | Date | number, end: string | Date | number, culture?: string):string {
+            const startDate = Utils.parseDate(start),
+                endDate = Utils.parseDate(end),
+                span = endDate.valueOf() - startDate.valueOf(),
+                msecsPerDay = 86400000,
+                msecsPerHr = 3600000,
+                msecsPerMin = 60000,
+                days = Math.floor(span / msecsPerDay),
+                hrs = Math.floor((span % msecsPerDay) / msecsPerHr),
+                mins = Math.floor((span % msecsPerHr) / msecsPerMin),
+                secs = Math.floor((span % msecsPerMin) / 1000),
+                msecs = Math.floor(span % 1000);
+            return `${days}d ${hrs}h ${mins}m ${secs}s ${msecs}ms`;
         }
 
         @Transformer()

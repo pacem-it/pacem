@@ -1,7 +1,7 @@
 ﻿@import "shared";
 @import "../../shared";
 
-pacem-input-color {
+@{P}-input-color {
     .FormFieldItemWrapper();
     display: block;
 
@@ -11,7 +11,7 @@ pacem-input-color {
 
     @_rght: @grid_spacing * 2 - @input_padding_horiz;
 
-    .pacem-viewfinder {
+    .@{PCSS}-viewfinder {
         max-width: @field_min_width;
         display: flex;
         justify-content: flex-start;
@@ -27,7 +27,7 @@ pacem-input-color {
         }
     }
 
-    input[type=number].pacem-input {
+    input[type=number].@{PCSS}-input {
         .FormFieldItem();
         text-align: right;
         width: 42px + 2 * @input_padding_horiz; // check all browsers
@@ -36,7 +36,7 @@ pacem-input-color {
         }
     }
 
-    .pacem-input-color {
+    .@{PCSS}-input-color {
         width: @_size;
         height: @_size;
         overflow: hidden;
@@ -47,7 +47,7 @@ pacem-input-color {
         margin-left: @input_padding_horiz;
         margin-top: @_top;
 
-        input.pacem-input[type=color] {
+        input.@{PCSS}-input[type=color] {
             .FormFieldItemInline();
             cursor: pointer;
             padding: 0;
@@ -59,16 +59,16 @@ pacem-input-color {
         }
     }
 
-    .pacem-input-color when (@shadows = true) {
+    .@{PCSS}-input-color when (@shadows = true) {
         box-shadow: inset 0 @_size/12 @_size/4 rgba(0,0,0,0.25);
     }
 
-    .pacem-input-color when (@shadows = false) {
+    .@{PCSS}-input-color when (@shadows = false) {
         // also here, temporarily
         box-shadow: inset 0 @_size/12 @_size/4 rgba(0,0,0,0.25);
     }
 
-    .pacem-readonly {
+    .@{PCSS}-readonly {
         height: @field_height;
         width: @field_min_width;
     }

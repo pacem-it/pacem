@@ -1,13 +1,11 @@
 ﻿@import "../theme-dark";
-
-pacem-img {
+@{P}-img {
     background-position: center center;
     background-repeat: no-repeat;
     display: inline-block;
     position: relative;
 }
-
-pacem-img::before {
+@{P}-img::before {
     display: block;
     content: '';
     width: @grid_cell;
@@ -24,8 +22,7 @@ pacem-img::before {
     transition: transform .2s @easing_in_out_sine, opacity .2s linear;
     pointer-events: none;
 }
-
-pacem-img.img-ready::before{
+@{P}-img.img-ready::before{
     transform: scale(0);
     opacity: 0;
     animation: none;

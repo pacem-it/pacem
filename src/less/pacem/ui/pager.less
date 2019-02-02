@@ -1,14 +1,14 @@
 ﻿@import "../theme-dark";
 
-pacem-pager {
+@{P}-pager {
     display: block;
 
-    pacem-repeater.pacem-pager {
+   @{P}-repeater.@{PCSS}-pager {
         display: block;
 
-        .pacem-buttonset {
+        .@{PCSS}-buttonset {
 
-            pacem-button.pacem-page {
+           @{P}-button.@{PCSS}-page {
                 min-width: @grid_spacing * 1.25;
                 height: @grid_spacing;
                 line-height: @grid_spacing;
@@ -16,7 +16,7 @@ pacem-pager {
                 transition: all @easing_in_out_sine .125s;
                 border-radius: 0;
 
-                &.currentpage:not(.pacem-disabled) {
+                &.currentpage:not(.@{PCSS}-disabled) {
                     @_clr: @color_teal;
                     @_clr_fore: #fff;
 
@@ -69,7 +69,7 @@ pacem-pager {
         }
     }
 
-    .pacem-buttonset {
+    .@{PCSS}-buttonset {
         padding: 0;
 
         .pager-buttons {
@@ -80,19 +80,19 @@ pacem-pager {
         }
     }
 
-    .pacem-buttonset .pager-buttons when (@shadows = true) {
+    .@{PCSS}-buttonset .pager-buttons when (@shadows = true) {
         box-shadow: 0 2px @grid_spacing / 3 rgba(0,0,0,0.5);
     }
     // see button.less
-    &.pager-left .pacem-buttonset .pager-buttons {
+    &.pager-left .@{PCSS}-buttonset .pager-buttons {
         grid-area: left;
     }
 
-    &.pager-center .pacem-buttonset .pager-buttons {
+    &.pager-center .@{PCSS}-buttonset .pager-buttons {
         grid-area: center;
     }
 
-    &.pager-right .pacem-buttonset .pager-buttons {
+    &.pager-right .@{PCSS}-buttonset .pager-buttons {
         grid-area: right;
     }
 }

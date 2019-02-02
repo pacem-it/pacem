@@ -97,7 +97,7 @@ namespace Pacem.Components {
             //
             this._originalTransform = Utils.deserializeTransform(getComputedStyle(_element));
             // body
-            Utils.addClass(document.body, 'pacem-rescaling rescale-' + _type);
+            Utils.addClass(document.body, PCSS + '-rescaling rescale-' + _type);
         }
 
         private _rect: Rect;
@@ -192,7 +192,7 @@ namespace Pacem.Components {
                 handle: handle, startTime: this._startTime, currentPosition: this._position, targetRect: this._targetRect
             }));
             // body
-            Utils.removeClass(document.body, 'pacem-rescaling rescale-' + handle);
+            Utils.removeClass(document.body, PCSS + '-rescaling rescale-' + handle);
             this._rescaler.dispatchEvent(evt);
             DEL_VAL(this._element, DELEGATE);
             window.removeEventListener('mouseup', this._endHandler, false);
@@ -211,19 +211,19 @@ namespace Pacem.Components {
     const MOUSE_DOWN = 'pacem:rescale:origin';
     const DELEGATE = 'pacem:rescale:delegate';
 
-    @CustomElement({ tagName: 'pacem-rescale' })
+    @CustomElement({ tagName: P + '-rescale' })
     export class PacemRescaleElement extends Pacem.Behaviors.PacemBehavior implements Pacem.UI.Rescaler {
 
         protected decorate(element: Element) {
             const el = <HTMLElement>element,
                 css = getComputedStyle(el);
-            Utils.addClass(el, 'pacem-rescalable');
+            Utils.addClass(el, PCSS + '-rescalable');
             this._setFrame(el);
         }
 
         protected undecorate(element: Element) {
             const el = <HTMLElement>element
-            Utils.removeClass(el, 'pacem-rescalable');
+            Utils.removeClass(el, PCSS + '-rescalable');
             //
             this._removeFrame(el);
         }
@@ -263,7 +263,7 @@ namespace Pacem.Components {
             let frame: { [name: string]: HTMLElement } = {};
             for (let type of HANDLES) {
                 const handle = frame[type] = document.createElement('div');
-                Utils.addClass(handle, 'pacem-rescale rescale-' + type);
+                Utils.addClass(handle, PCSS + '-rescale rescale-' + type);
                 el.setAttribute('pacem', '');
                 el.appendChild(handle);
                 handle.addEventListener('mousedown', this._startHandler, false);

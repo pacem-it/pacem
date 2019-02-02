@@ -2,10 +2,10 @@
 namespace Pacem.Components.UI {
 
     @CustomElement({
-        tagName: 'pacem-progressbar', shadow: Defaults.USE_SHADOW_ROOT,
-        template: `<div class="pacem-progressbar">
-    <div class="pacem-bar"></div>
-    <span class="pacem-caption"></span>
+        tagName: P + '-progressbar', shadow: Defaults.USE_SHADOW_ROOT,
+        template: `<div class="${PCSS}-progressbar">
+    <div class="${PCSS}-bar"></div>
+    <span class="${PCSS}-caption"></span>
 </div>`
     })
     export class PacemProgressbarElement extends PacemElement implements OnPropertyChanged {
@@ -14,8 +14,8 @@ namespace Pacem.Components.UI {
             super('progressbar');
         }
 
-        @ViewChild('.pacem-bar') private _bar: HTMLDivElement;
-        @ViewChild('.pacem-caption') private _caption: HTMLSpanElement;
+        @ViewChild('.'+ PCSS +'-bar') private _bar: HTMLDivElement;
+        @ViewChild('.'+ PCSS +'-caption') private _caption: HTMLSpanElement;
         @Watch({ emit: false, converter: PropertyConverters.String }) caption: string;
         @Watch({ converter: PropertyConverters.Number }) percentage: number;
 

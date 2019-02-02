@@ -2,10 +2,10 @@
 @import "../theme-dark";
 
 @_brd_clr: @color_border;
-@_dis_clr: @color_calendarday_hover ;
+@_dis_clr: @color_calendarday_hover;
 @_pad: 2px;
 
-pacem-calendar-event {
+@{P}-calendar-event {
     .Inert();
 }
 
@@ -45,8 +45,8 @@ pacem-calendar-event {
         background-color: @color_calendarday_hover;
     }
 
-    &.pacem-disabled,
-    &.pacem-disabled:hover {
+    &.@{PCSS}-disabled,
+    &.@{PCSS}-disabled:hover {
         background-color: @_dis_clr;
         opacity: 0.5;
     }
@@ -105,10 +105,10 @@ pacem-calendar-event {
     .Week(@count, @count);
 }
 
-pacem-calendar {
+@{P}-calendar {
     display: block;
 
-    .pacem-calendar {
+    .@{PCSS}-calendar {
 
         &.calendar-grid {
             display: grid;
@@ -295,17 +295,17 @@ pacem-calendar {
     .HourEnd(49, 49);
 }
 
-pacem-clock {
+@{P}-clock {
     display: block;
 }
 
-pacem-agenda {
+@{P}-agenda {
     font-size: .76em;
     display: block;
 
     @_slot_size: @_agenda_slot_size;
 
-    .pacem-agenda {
+    .@{PCSS}-agenda {
         &.agenda-grid {
             display: grid;
             grid-template-columns: @_slot_size repeat(7, 1fr);
@@ -349,7 +349,7 @@ pacem-agenda {
                 background-color: @color_calendarday_today;
             }
 
-            pacem-clock {
+            @{P}-clock {
                 pointer-events: none;
                 border-top: 2px dotted @color_agenda_clock;
                 grid-column: ~"2/9";
@@ -450,10 +450,10 @@ pacem-agenda {
 */
 @_headr_height: 1.5 * @grid_spacing;
 
-pacem-schedule {
+@{P}-schedule {
     display: block;
 
-    .pacem-schedule {
+    .@{PCSS}-schedule {
 
         .schedule-header {
             background-color: @color_schedule_header;
@@ -479,7 +479,7 @@ pacem-schedule {
             z-index: 2;
         }
 
-        pacem-agenda {
+        @{P}-agenda {
             .agenda-allday,
             .all-day {
                 position: sticky;
@@ -494,7 +494,7 @@ pacem-schedule {
         }
 
         &.schedule-month {
-            pacem-agenda {
+            @{P}-agenda {
                 display: none;
             }
 
@@ -504,16 +504,16 @@ pacem-schedule {
         }
 
         &:not(.schedule-month) {
-            pacem-calendar {
+            @{P}-calendar {
                 display: none;
             }
         }
 
         &.schedule-day {
 
-            pacem-agenda {
+            @{P}-agenda {
 
-                .pacem-agenda.agenda-grid {
+                .@{PCSS}-agenda.agenda-grid {
                     grid-template-columns: @grid_spacing * 1.5 1fr;
 
                     .agenda-slot {
@@ -528,7 +528,7 @@ pacem-schedule {
                         grid-template-columns: 1fr;
                     }
 
-                    pacem-clock {
+                    @{P}-clock {
                         grid-column-end: 3;
                     }
                 }
@@ -597,10 +597,10 @@ pacem-schedule {
     }
 }
 
-.pacem-animations {
-    pacem-schedule.pacem-animatable {
+.@{PCSS}-animations {
+    @{P}-schedule.@{PCSS}-animatable {
 
-        pacem-calendar, pacem-agenda {
+        @{P}-calendar, @{P}-agenda {
             animation: default-anim .2s @easing_in_out_sine both;
 
             .agenda-day,
@@ -610,15 +610,15 @@ pacem-schedule {
             }
         }
 
-        .schedule-month pacem-calendar {
+        .schedule-month @{P}-calendar {
             animation-name: schedule-month;
         }
 
-        .schedule-week pacem-agenda {
+        .schedule-week @{P}-agenda {
             animation-name: schedule-week;
         }
 
-        .schedule-day pacem-agenda {
+        .schedule-day @{P}-agenda {
             animation-name: schedule-day;
 
             .agenda-day,
@@ -628,19 +628,19 @@ pacem-schedule {
             }
         }
 
-        pacem-calendar.viewdate-next,
-        pacem-agenda.viewdate-next {
+        @{P}-calendar.viewdate-next,
+        @{P}-agenda.viewdate-next {
             animation-name: list-item-right;
         }
 
-        pacem-calendar.viewdate-previous,
-        pacem-agenda.viewdate-previous {
+        @{P}-calendar.viewdate-previous,
+        @{P}-agenda.viewdate-previous {
             animation-name: list-item-left;
         }
     }
 
-    pacem-calendar.pacem-animatable,
-    pacem-agenda.pacem-animatable {
+    @{P}-calendar.@{PCSS}-animatable,
+    @{P}-agenda.@{PCSS}-animatable {
         &.viewdate-next {
             animation: list-item-right .2s @easing_out_sine both;
         }

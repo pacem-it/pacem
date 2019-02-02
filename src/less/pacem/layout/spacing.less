@@ -4,7 +4,7 @@ hr.spacer {
     margin-bottom: @grid_spacing;
 }
 
-.pacem-spacer {
+.@{PCSS}-spacer {
     margin-bottom: @grid_spacing;
 
     &.spacer-2x {
@@ -50,11 +50,11 @@ hr.spacer {
     .Spaced(margin, margin, @suffix);
 }
 
-.pacem-nomargin {
+.@{PCSS}-nomargin {
     margin: 0 !important;
 }
 
-.pacem-margin {
+.@{PCSS}-margin {
 
     &:not(.margin-right):not(.margin-bottom):not(.margin-left):not(.margin-top) {
         margin: @_spacing;
@@ -93,13 +93,13 @@ hr.spacer {
     }
 }
 
-.pacem-nopad {
+.@{PCSS}-nopad {
     padding: 0 !important;
 }
 
-.pacem-pad {
+.@{PCSS}-pad {
 
-    &:not(.pad-right):not(.pad-bottom):not(pad-left):not(.pad-top) {
+    &:not(.pad-right):not(.pad-bottom):not(.pad-left):not(.pad-top) {
         padding: @_spacing;
 
         &.pad-xs {

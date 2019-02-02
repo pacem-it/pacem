@@ -1,7 +1,7 @@
 ﻿/// <reference path="../../../dist/js/pacem-core.d.ts" />
 namespace Pacem.Components.Charts {
 
-    @CustomElement({ tagName: 'pacem-pie-slice' })
+    @CustomElement({ tagName: P + '-pie-slice' })
     export class PacemPieSliceElement extends PacemItemElement {
 
         protected findContainer() {
@@ -46,7 +46,7 @@ namespace Pacem.Components.Charts {
     const TWO_PI = Math.PI * 2;
     const PI1_2 = Math.PI * .5;
 
-    @CustomElement({ tagName: 'pacem-pie-chart' })
+    @CustomElement({ tagName: P + '-pie-chart' })
     export class PacemPieChartElement extends PacemItemsContainerElement<PacemPieSliceElement> {
 
         constructor() {
@@ -70,7 +70,7 @@ namespace Pacem.Components.Charts {
                 this._div && this._div.remove();
                 const eold = <HTMLElement>old;
                 if (eold) {
-                    eold.classList.remove('pacem-chart-area');
+                    eold.classList.remove(PCSS + '-chart-area');
                     eold.innerHTML = '';
                 }
                 this.draw();
@@ -103,7 +103,7 @@ namespace Pacem.Components.Charts {
             if (Utils.isNull(this._g)) {
 
                 let div = this.target || (this._div = document.createElement('div'));
-                div.classList.add('pacem-chart-area');
+                div.classList.add(PCSS + '-chart-area');
 
                 let svg = this._svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
                 svg.setAttribute('pacem', '');
@@ -111,7 +111,7 @@ namespace Pacem.Components.Charts {
                 svg.setAttribute('viewBox', '0 0 100 100');
                 //svg.style.height =
                 //    svg.style.width = '100%';
-                svg.classList.add('pacem-pie-chart');
+                svg.classList.add(PCSS + '-pie-chart');
 
                 let defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
                 let mask = document.createElementNS('http://www.w3.org/2000/svg', 'mask');

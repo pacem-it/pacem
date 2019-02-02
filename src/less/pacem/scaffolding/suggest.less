@@ -1,7 +1,7 @@
 ﻿@import "../theme-dark";
 @import "shared";
 
-pacem-balloon.suggest {
+@{P}-balloon.suggest {
     /*border: none;
     background: none;
     padding: 0;
@@ -23,7 +23,7 @@ pacem-balloon.suggest {
             padding: @grid_spacing/3 @grid_spacing*.5;
             font-size: 1.1em;
 
-            span.pacem-highlight {
+            span.@{PCSS}-highlight {
                 background-color: transparent;
                 color: @color_suggest_highlight;
                 font-weight: bold;
@@ -34,7 +34,7 @@ pacem-balloon.suggest {
                 background-color: @color_suggest_focus_back;
                 color: @color_suggest_focus_fore;
 
-                span.pacem-highlight {
+                span.@{PCSS}-highlight {
                     color: @color_suggest_focus_highlight;
                 }
             }

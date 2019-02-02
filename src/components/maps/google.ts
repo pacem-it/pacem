@@ -132,7 +132,7 @@ namespace Pacem.Components.Maps {
 
     }
 
-    @CustomElement({ tagName: 'pacem-map-adapter-google' })
+    @CustomElement({ tagName: P + '-map-adapter-google' })
     export class PacemGoogleMapAdapterElement extends PacemMapAdapterElement {
 
         constructor() {
@@ -153,15 +153,6 @@ namespace Pacem.Components.Maps {
         propertyChangedCallback(name: string, old: any, val: any, first?: boolean) {
             super.propertyChangedCallback(name, old, val, first);
             switch (name) {
-                //case 'apiKey':
-                //    let script = document.createElement('script');
-                //    let uid = 'gmaps_' + Utils.uniqueCode();
-                //    window[uid] = { callback: this._initialize }; 
-                //    script.setAttribute('src', consts.API_URI + '?key=' + val +'&callback='+ uid +'.callback');
-                //    script.setAttribute('defer', 'defer');
-                //    script.setAttribute('async', 'async');
-                //    document.body.appendChild(script);
-                //    break;
                 default:
                     this.invalidateSize();
                     break;

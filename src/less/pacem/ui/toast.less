@@ -14,7 +14,7 @@
 
 
 /*#region TOAST*/
-pacem-toast {
+@{P}-toast {
 
     @_brdt: 1px;
     @_ht: @grid_cell - @_brdt;
@@ -81,12 +81,12 @@ pacem-toast {
     }
 }
 
-pacem-toast when (@shadows = true) {
+@{P}-toast when (@shadows = true) {
     box-shadow: 0 2px 4px rgba(0,0,0,0.5);
 }
 /*#endregion*/
 
-.pacem-toaster {
+.@{PCSS}-toaster {
     // container for toasts
     pointer-events: none;
     position: fixed;
@@ -106,7 +106,7 @@ pacem-toast when (@shadows = true) {
     @_w: @grid_spacing * 10;
     @_m: @grid_cell;
 
-    pacem-toast {
+   @{P}-toast {
         position: static;
         z-index: 0;
         //flex: 0 1 auto;
@@ -137,7 +137,7 @@ pacem-toast when (@shadows = true) {
         right: auto;
         left: 0;
 
-        pacem-toast {
+       @{P}-toast {
             transform: translateX(-@_w + @_m) translateY(0) translateZ(0) scale(0.25);
             transform-origin: left center;
 
@@ -153,7 +153,7 @@ pacem-toast when (@shadows = true) {
     &.toaster-bottom {
         flex-direction: column-reverse;
 
-        pacem-toast {
+       @{P}-toast {
             margin: @grid_spacing 0 0 0;
         }
     }

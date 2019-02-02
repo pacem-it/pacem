@@ -1,11 +1,11 @@
 ﻿@import "../theme-dark";
 
-pacem-dialog {
+@{P}-dialog {
 
-    pacem-input-search {
+   @{P}-input-search {
         display: block;
 
-        .pacem-input {
+        .@{PCSS}-input {
             display: block;
             width: 100%;
             box-sizing: border-box;
@@ -18,13 +18,13 @@ pacem-dialog {
         }
     }
 
-    pacem-contenteditable {
-        .pacem-contenteditable {
+   @{P}-contenteditable {
+        .@{PCSS}-contenteditable {
             border-color: fade(@color_default, 10);
         }
 
-        &.pacem-focus {
-            .pacem-contenteditable {
+        &.@{PCSS}-focus {
+            .@{PCSS}-contenteditable {
                 border-color: fade(@color_default, 40);
             }
         }

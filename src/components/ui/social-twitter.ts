@@ -1,7 +1,7 @@
 ﻿/// <reference path="../../../dist/js/pacem-core.d.ts" />
 namespace Pacem.Components.UI.Social {
     
-    @CustomElement({ tagName: 'pacem-tweetembed' })
+    @CustomElement({ tagName: P + '-tweetembed' })
     export class PacemTweetEmbedElement extends PacemElement {
 
         @Watch({ emit: false, converter: PropertyConverters.String }) tweetid: string;

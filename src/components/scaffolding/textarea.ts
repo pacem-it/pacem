@@ -4,7 +4,7 @@
 /// <reference path="char-counter.ts" />
 namespace Pacem.Components.Scaffolding {
 
-    @CustomElement({ tagName: 'pacem-textarea', template: `<textarea class="pacem-input" pacem></textarea>${ CHAR_COUNTER_CHILD }<span class="pacem-readonly"><pacem-text text="{{ :host.viewValue }}"></pacem-text></span>`, shadow: Defaults.USE_SHADOW_ROOT })
+    @CustomElement({ tagName: P + '-textarea', template: `<textarea class="${PCSS}-input" pacem></textarea>${ CHAR_COUNTER_CHILD }<span class="${PCSS}-readonly"><${ P }-text text="{{ :host.viewValue }}"></${ P }-text></span>`, shadow: Defaults.USE_SHADOW_ROOT })
     export class PacemTextAreaElement extends PacemTextualInputElement implements OnPropertyChanged {
 
         @Watch({ emit: false, converter: PropertyConverters.Number }) rows = 5;
@@ -12,7 +12,7 @@ namespace Pacem.Components.Scaffolding {
 
 
         @ViewChild('textarea') private _input: HTMLTextAreaElement;
-        @ViewChild('span.pacem-readonly') private _span: HTMLSpanElement;
+        @ViewChild(`span.${PCSS}-readonly`) private _span: HTMLSpanElement;
 
         protected toggleReadonlyView(readonly: boolean) {
             this._span.hidden = !readonly;

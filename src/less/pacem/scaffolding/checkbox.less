@@ -2,43 +2,62 @@
 @import "../theme-dark";
 @import "shared";
 
-//.pacem-field {
-//.pacem-input-container {
-pacem-checkbox {
+//.@{PCSS}-field {
+//.@{PCSS}-input-container {
+@{P}-checkbox {
 
     @_checkbox_size: 1.1rem * @font_rem_factor;
 
-    .pacem-readonly.pacem-checkbox,
-    label.pacem-label.pacem-checkbox {
-
+    .@{PCSS}-readonly.@{PCSS}-checkbox,
+    label.@{PCSS}-label.@{PCSS}-checkbox {
         &::before {
             .Icon('check_box_outline_blank', @_checkbox_size);
             left: @input_padding_horiz;
             line-height: @field_height;
             color: @color_input_toggle;
         }
-    }
-
-    &.pacem-selected label.pacem-label.pacem-checkbox:before {
-        content: 'check_box';
-    }
-
-    .pacem-readonly.pacem-checkbox {
 
         &::before {
-            content: 'check_box_outline_blank';
+            color: @color_input_toggle;
         }
     }
 
-    &.pacem-selected .pacem-readonly.pacem-checkbox:before {
+    &.@{PCSS}-selected label.@{PCSS}-label.@{PCSS}-checkbox:before {
         content: 'check_box';
     }
 
+    .@{PCSS}-readonly.@{PCSS}-checkbox {
+        .FormFieldLabelIcon('check_box_outline');
+    }
+
+    &.@{PCSS}-selected .@{PCSS}-readonly.@{PCSS}-checkbox::before {
+        content: 'check_box';
+    }
+    // just the checkbox
+    &.checkbox-naked {
+
+        label.@{PCSS}-checkbox {
+            border: 0;
+            padding: 0;
+            background: none;
+            position: static;
+            line-height: 1.5;
+            min-width: 0;
+            min-height: 0;
+            vertical-align: middle;
+
+            &::before {
+                position: static;
+                //line-height: 1;
+            }
+        }
+    }
+    // switcher
     &.checkbox-toggle {
         @_pad: @grid_spacing / 6;
         @_h: @field_height - @_pad;
 
-        label.pacem-label.pacem-checkbox {
+        label.@{PCSS}-label.@{PCSS}-checkbox {
             min-width: 0;
             min-height: 0;
             font-size: 0;
@@ -64,7 +83,8 @@ pacem-checkbox {
                 transition: transform @easing_in_out_sine .2s, opacity linear .1s;
             }
 
-            @_brd: 2px;
+            @_brd: @border_field_size;
+            @_switch_margin: 2px;
 
             &::after {
                 @_c: @_h / 2;
@@ -73,8 +93,8 @@ pacem-checkbox {
                 position: absolute;
                 left: @_brd;
                 top: @_brd;
-                height: @_h - 2* @_brd;
-                width: @_h - 2* @_brd;
+                height: @_h - 2* @_switch_margin;
+                width: @_h - 2* @_switch_margin;
                 transition: transform @easing_in_out_sine .2s;
                 background-color: #fff;
                 border-radius: 50%;
@@ -85,12 +105,12 @@ pacem-checkbox {
             }
         }
 
-        label.pacem-label.pacem-checkbox when (@shadows = true) {
+        label.@{PCSS}-label.@{PCSS}-checkbox when (@shadows = true) {
             box-shadow: inset 0 2px 2px rgba(0,0,0,0.3333);
         }
 
-        &.pacem-selected {
-            label.pacem-label.pacem-checkbox {
+        &.@{PCSS}-selected {
+            label.@{PCSS}-label.@{PCSS}-checkbox {
                 background: @color_success;
 
                 &::before {
@@ -104,27 +124,73 @@ pacem-checkbox {
             }
         }
 
-        &.pacem-selected when (@glows = true) {
-            label.pacem-label.pacem-checkbox {
+        &.@{PCSS}-selected when (@glows = true) {
+            label.@{PCSS}-label.@{PCSS}-checkbox {
                 box-shadow: 0 0 8px fade(@color_success, 100);
             }
         }
     }
+    // coloring
+    .CheckboxColoring(@clr) {
+        .CheckboxColoring(@clr, #fff);
+    }
 
-    &.pacem-disabled {
-        .pacem-readonly.pacem-checkbox,
-        label.pacem-label.pacem-checkbox {
+    .CheckboxColoring(@clr, @clr_inv) {
+        .@{PCSS}-readonly.@{PCSS}-checkbox,
+        label.@{PCSS}-label.@{PCSS}-checkbox {
 
             &::before {
-                color: @color_disabled;
+                color: @clr;
             }
         }
 
-        &.checkbox-toggle.pacem-selected {
-            label.pacem-label.pacem-checkbox {
-                background: @color_disabled;
+        &.checkbox-toggle.@{PCSS}-selected {
+            label.@{PCSS}-label.@{PCSS}-checkbox {
+                background: @clr;
+
+                &::before {
+                    color: @clr_inv
+                }
             }
         }
+
+        &.checkbox-toggle.@{PCSS}-selected when (@glows = true) {
+            label.@{PCSS}-label.@{PCSS}-checkbox {
+                box-shadow: 0 0 8px @clr;
+            }
+        }
+    }
+
+    &.checkbox-default {
+        .CheckboxColoring(@color_default);
+    }
+
+    &.checkbox-primary {
+        .CheckboxColoring(@color_primary);
+    }
+
+    &.checkbox-warning {
+        .CheckboxColoring(@color_warning);
+    }
+
+    &.checkbox-success {
+        .CheckboxColoring(@color_success);
+    }
+
+    &.checkbox-danger {
+        .CheckboxColoring(@color_danger);
+    }
+
+    &.checkbox-error {
+        .CheckboxColoring(@color_error);
+    }
+
+    &.checkbox-accent {
+        .CheckboxColoring(@color_accent);
+    }
+
+    &.@{PCSS}-disabled {
+        .CheckboxColoring(@color_disabled);
     }
 }
 //}

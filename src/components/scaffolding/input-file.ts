@@ -40,20 +40,20 @@ namespace Pacem.Components.Scaffolding {
      * PacemUploader Component
      */
     @CustomElement({
-        tagName: 'pacem-upload', shadow: Defaults.USE_SHADOW_ROOT
-        , template: `<pacem-panel class="pacem-upload" css-class="{{ {'pacem-progress': :host.showProgress} }}">
-    <pacem-panel class="pacem-upload-filewrapper" 
-         hide="{{ :host.uploading || :host.failed }}"><input type="file" /></pacem-panel>
-    <pacem-button class="pacem-upload-retry flat" 
+        tagName: P + '-upload', shadow: Defaults.USE_SHADOW_ROOT
+        , template: `<${ P }-panel class="${PCSS}-upload" css-class="{{ {'${PCSS}-progress': :host.showProgress} }}">
+    <${ P }-panel class="${PCSS}-upload-filewrapper" 
+         hide="{{ :host.uploading || :host.failed }}"><input type="file" /></${ P }-panel>
+    <${ P }-button class="${PCSS}-upload-retry flat" 
             tooltip="{{ :host.retryCaption }}" 
             hide="{{ !:host.failed }}" 
-            on-click=":host.retry($event)"><pacem-text text="{{ :host.retryCaption }}"></pacem-text></pacem-button>
-    <pacem-button class="pacem-upload-undo flat" 
+            on-click=":host.retry($event)"><${ P }-text text="{{ :host.retryCaption }}"></${ P }-text></${ P }-button>
+    <${ P }-button class="${PCSS}-upload-undo flat" 
             tooltip="{{ :host.undoCaption }}" 
             on-click=":host.undo($event)" 
-            hide="{{ !:host.uploading }}"><pacem-text text="{{ :host.undoCaption }}"></pacem-text></pacem-button>
-    <pacem-tuner hide="{{ !:host.showProgress }}" value="{{ :host.percentage }}" interactive="false"></pacem-tuner>
-</pacem-panel>`
+            hide="{{ !:host.uploading }}"><${ P }-text text="{{ :host.undoCaption }}"></${ P }-text></${ P }-button>
+    <${ P }-tuner hide="{{ !:host.showProgress }}" value="{{ :host.percentage }}" interactive="false"></${ P }-tuner>
+</${ P }-panel>`
     })
     export class PacemUploadElement extends PacemBaseElement {
 
@@ -66,7 +66,7 @@ namespace Pacem.Components.Scaffolding {
         }
 
         @ViewChild('input[type=file]') fileupload: HTMLInputElement;
-        @ViewChild('div.pacem-upload') container: HTMLDivElement;
+        @ViewChild(`div.${PCSS}-upload`) container: HTMLDivElement;
 
         @Watch({ emit: false, converter: PropertyConverters.String }) undoCaption: string = 'undo';
         @Watch({ emit: false, converter: PropertyConverters.String }) retryCaption: string = 'retry';

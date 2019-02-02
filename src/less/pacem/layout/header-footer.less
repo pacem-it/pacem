@@ -2,9 +2,9 @@
 @import "shared";
 
 header[pacem],
-.pacem-header,
+.@{PCSS}-header,
 footer[pacem],
-.pacem-footer {
+.@{PCSS}-footer {
     position: fixed;
     width: 100vw;
     left: 0;
@@ -15,7 +15,7 @@ footer[pacem],
 }
 
 header[pacem],
-.pacem-header {
+.@{PCSS}-header {
     height: @grid_cell;
     padding-left: @grid_cell;
     top: 0;
@@ -30,7 +30,7 @@ header[pacem],
 }
 
 footer[pacem],
-.pacem-footer {
+.@{PCSS}-footer {
     bottom: 0;
     height: @grid_cell - @grid_spacing;
     padding-left: @grid_spacing;
@@ -51,7 +51,7 @@ footer[pacem],
 @media (min-width: 1200px) {
 
     footer[pacem],
-    .pacem-footer {
+    .@{PCSS}-footer {
         padding-left: @grid_cell;
     }
 }

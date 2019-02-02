@@ -177,25 +177,52 @@ namespace Pacem.Tests {
             });
         }
     },
-        {
-            name: 'Utils', test: function () {
+    {
+        name: 'Utils', test: function () {
 
-                it('Cookie parsing', function () {
-                    const cookie = "_ga=GA1.2.679931875.1534678768; _gid=GA1.2.2024408861.1534678768; _gat_gtag_UA_9595229_8=1";
-                    const cookie2 = "_ga=GA1.2.679931875.1534678768; _gid=GA1.2.2024408861.1534678768; .pacem.cookieconsent=ARRAffinity%2C.pacem.auth%2CGoogleAnalytics%2C.pacem.culture";
+            it('Cookie parsing', function () {
+                const cookie = "_ga=GA1.2.679931875.1534678768; _gid=GA1.2.2024408861.1534678768; _gat_gtag_UA_9595229_8=1";
+                const cookie2 = "_ga=GA1.2.679931875.1534678768; _gid=GA1.2.2024408861.1534678768; .pacem.cookieconsent=ARRAffinity%2C.pacem.auth%2CGoogleAnalytics%2C.pacem.culture";
 
-                    const cookies = Pacem.Utils.cookies(cookie),
-                        cookies2 = Pacem.Utils.cookies(cookie2);
+                const cookies = Pacem.Utils.cookies(cookie),
+                    cookies2 = Pacem.Utils.cookies(cookie2);
 
-                    expect(cookies['_gat_gtag_UA_9595229_8']).toEqual('1');
+                expect(cookies['_gat_gtag_UA_9595229_8']).toEqual('1');
 
-                    const commaSeparated = cookies2['.pacem.cookieconsent'].split(',');
-                    expect(commaSeparated.length).toEqual(4);
-                    expect(commaSeparated.indexOf('GoogleAnalytics')).toEqual(2);
-                })
+                const commaSeparated = cookies2['.pacem.cookieconsent'].split(',');
+                expect(commaSeparated.length).toEqual(4);
+                expect(commaSeparated.indexOf('GoogleAnalytics')).toEqual(2);
+            });
 
-            }
-        },
+            it('JSON stringification equality', function () {
+                var obj1 = { a: 1, b: 2 },
+                    obj2 = { b: 2, a: 1 };
+                expect(JSON.stringify(obj1)).not.toEqual(JSON.stringify(obj2));
+                expect(JSON.stringify(obj1, Object.keys(obj1).sort())).toEqual(JSON.stringify(obj2, Object.keys(obj2).sort()));
+            });
+
+            it('Strange innerHTML behavior', function () {
+                var obj = document.createElement('div');
+                obj.setAttribute('hidden', '');
+                document.body.appendChild(obj);
+                const html = `<form id="frm__RFzKYbi" class="p-form" pacem novalidate>
+<p-repeater class="p-animatable-list p-list-bottom" datasource="{{ #_RFzKYbi.metadata && (#_RFzKYbi.metadata.props || #_RFzKYbi.metadata) }}">  
+<p-panel css="{{ #_RFzKYbi.metadata.css }}" css-class="{{ #_RFzKYbi.metadata.cssClass }}">      
+<template>            
+<p-form-field css-class="{{ ^item.display && ^item.display.cssClass }}" css="{{ ^item.display && ^item.display.css }}" 
+logger="{{ #_RFzKYbi.logger }}" entity="{{ #_RFzKYbi.entity, twoway }}" metadata="{{ ^item }}" readonly="{{ #_RFzKYbi.readonly }}"></p-form-field>
+</template>
+</p-panel>
+</p-repeater>
+<p-fetch logger="{{ #_RFzKYbi.logger }}" id="fetch_RFzKYbi" method="POST"></p-fetch>
+<p-button logger="{{ #_RFzKYbi.logger }}" on-click="#_RFzKYbi._submit(#fetch_RFzKYbi, $event)" type="submit" hide="{{ #_RFzKYbi.readonly || Pacem.Utils.isNullOrEmpty(#_RFzKYbi.action) }}" class="button primary" disabled="{{ !(#_RFzKYbi.valid && #_RFzKYbi.dirty) || #fetch_RFzKYbi.fetching }}">Ok</p-button>
+<p-button logger="{{ #_RFzKYbi.logger }}" on-click="#_RFzKYbi._reset($event)" type="reset" class="button" hide="{{ #_RFzKYbi.readonly || !#_RFzKYbi.dirty }}" disabled="{{ #fetch_RFzKYbi.fetching }}">Reset</p-button>
+</form>`;
+                obj.innerHTML = html;
+                expect(document.getElementById('frm__RFzKYbi')).not.toBeNull();
+            });
+        }
+    },
     {
         name: 'CustomElements', test: function () {
 
@@ -422,6 +449,63 @@ namespace Pacem.Tests {
                 expect(parsed.dependencies).not.toBeNull();
                 expect(parsed.dependencies.length).toEqual(1);
                 expect(parsed.dependencies[0].mode).not.toEqual('twoway');
+
+            });
+
+            it('Dodgy method recognition', function () {
+
+                let id = '_' + Utils.uniqueCode();
+
+                var div = document.createElement('div');
+                div.setAttribute('id', id);
+                div['prop'] = 'foo';
+                document.body.appendChild(div);
+
+                //{ binding this[^myel.prop] == 'ciao' && this['myprop'] == 'bye'}
+                var expr = `{{ #${id}.prop.toString() }}`;
+
+                var parsed = CustomElementUtils.parseBindingAttribute(expr, div);
+
+                expect(parsed.dependencies).not.toBeNull();
+                expect(parsed.dependencies.length).toEqual(1);
+                expect(parsed.dependencies[0].twowayAllowed).toBeFalsy();
+
+            });
+
+            it('Repeater item twoway', function (done) {
+
+                let id = '_' + Utils.uniqueCode();
+
+                var div = document.createElement('div');
+                div.setAttribute('id', id);
+                div.innerHTML = `<pacem-repeater datasource="['apples','apricots','bananas']">
+    <template>
+        <pacem-text text="{{ ^item.split('').join('-') }}"></text>
+    </template>
+</pacem-repeater>`;
+                document.body.appendChild(div);
+                var repeater = div.firstElementChild;
+                repeater.addEventListener(Pacem.Components.RepeaterItemCreateEventName, (evt: Pacem.Components.RepeaterItemCreateEvent) => {
+                    var txt = <Pacem.Components.PacemTextElement>evt.detail.dom[0];
+                    var parsed = CustomElementUtils.parseBindingAttribute(txt.getAttribute('text'), txt);
+
+                    expect(parsed.dependencies).not.toBeNull();
+                    expect(parsed.dependencies.length).toEqual(1);
+                    expect(parsed.dependencies[0].twowayAllowed).toBeFalsy();
+                    switch (evt.detail.index) {
+                        case 0:
+                            expect(parsed.evaluate()).toEqual('a-p-p-l-e-s');
+                            break;
+                        case 1:
+                            expect(parsed.evaluate()).toEqual('a-p-r-i-c-o-t-s');
+                            break;
+                        case 2:
+                            expect(parsed.evaluate()).toEqual('b-a-n-a-n-a-s');
+                            done();
+                            break;
+                    }
+
+                }, false);
 
             });
 

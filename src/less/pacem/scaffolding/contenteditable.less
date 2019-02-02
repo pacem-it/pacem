@@ -2,7 +2,7 @@
 @import "../theme-dark";
 @import "shared";
 
-pacem-contenteditable {
+@{P}-contenteditable {
     .FormFieldItemWrapper();
 
     div[contenteditable] {
@@ -27,11 +27,15 @@ pacem-contenteditable {
         }
     }
 
-    &.pacem-readonly {
+    &.@{PCSS}-readonly {
 
-        .pacem-contenteditable {
+        .@{PCSS}-contenteditable {
             border: none;
             margin-bottom: @border_field_size;
+
+            & when (@border_field_underline = false) {
+                margin-top: @border_field_size;
+            }
         }
 
         div[pacem][readonly] {
@@ -40,18 +44,18 @@ pacem-contenteditable {
         }
     }
 
-    &.pacem-stretch {
+    &.@{PCSS}-stretch {
 
-        .pacem-contenteditable {
+        .@{PCSS}-contenteditable {
             .FormFieldStretch();
         }
     }
 
-    .pacem-commands {
+    .@{PCSS}-commands {
         display: inline-block;
         margin-top: @grid_spacing/1.5;
 
-        pacem-button.pacem-command {
+        @{P}-button.@{PCSS}-command {
             @_brd: 2px;
             @_sz: round(@grid_spacing * 1.333333) - 2 * @_brd;
             width: @_sz;
@@ -82,31 +86,31 @@ pacem-contenteditable {
                 }
             }
 
-            &.pacem-bold {
+            &.@{PCSS}-bold {
                 .CmdIcon('format_bold');
             }
 
-            &.pacem-italic {
+            &.@{PCSS}-italic {
                 .CmdIcon('format_italic');
             }
 
-            &.pacem-underline {
+            &.@{PCSS}-underline {
                 .CmdIcon('format_underlined');
             }
 
-            &.pacem-unorderedlist {
+            &.@{PCSS}-unorderedlist {
                 .CmdIcon('format_list_bulleted');
             }
 
-            &.pacem-orderedlist {
+            &.@{PCSS}-orderedlist {
                 .CmdIcon('format_list_numbered');
             }
 
-            &.pacem-hyperlink {
+            &.@{PCSS}-hyperlink {
                 .CmdIcon('insert_link');
             }
 
-            + pacem-button {
+            + @{P}-button {
                 margin-left: 2 * @_brd;
             }
         }

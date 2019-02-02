@@ -2,7 +2,7 @@
 namespace Pacem.Components.UI {
 
     @CustomElement({
-        tagName: 'pacem-img'
+        tagName: P + '-img'
     })
     export class PacemImageElement extends PacemElement implements OnPropertyChanged {
 

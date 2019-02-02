@@ -3,12 +3,12 @@
 namespace Pacem.Components {
 
     @CustomElement({
-        tagName: 'pacem-html'
+        tagName: P + '-html-proxy'
     })
-    export class PacemHtmlElement extends PacemEventTarget {
+    export class PacemHtmlProxyElement extends PacemEventTarget {
 
-        @Watch({ converter: PropertyConverters.String }) attr: string;
-        @Watch({ converter: PropertyConverters.String }) value: string;
+        @Watch({emit: false, converter: PropertyConverters.String }) attr: string;
+        @Watch({emit: false, converter: PropertyConverters.String }) value: string;
 
         propertyChangedCallback(name: string, old: any, val: any, first?: boolean) {
             super.propertyChangedCallback(name, old, val, first);

@@ -1,12 +1,12 @@
 ﻿@import "../theme-dark";
 
 .DialogWithFixedButtons() {
-    .pacem-lightbox {
+    .@{PCSS}-lightbox {
         padding-bottom: @grid_cell;
         transform: translateZ(0);
     }
 
-    .pacem-dialog-buttons {
+    .@{PCSS}-dialog-buttons {
         //min-height: @grid_cell;
         padding: @grid_spacing / 2 1em 1em 1em;
         bottom: 0;
@@ -20,6 +20,6 @@
         border-bottom-right-radius: @border_radius;
     }
 
-    pacem-button {
+   @{P}-button {
     }
 }

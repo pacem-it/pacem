@@ -1,29 +1,29 @@
 ﻿@import "shared";
 
-pacem-input-text,
-pacem-input-password,
-pacem-input-tel,
-pacem-input-url,
-pacem-input-email,
-pacem-input-search,
-pacem-suggest,
-pacem-checkbox,
-pacem-radio,
-pacem-textarea,
-pacem-textarea-markdown,
-pacem-input-number {
+@{P}-input-text,
+@{P}-input-password,
+@{P}-input-tel,
+@{P}-input-url,
+@{P}-input-email,
+@{P}-input-search,
+@{P}-suggest,
+@{P}-checkbox,
+@{P}-radio,
+@{P}-textarea,
+@{P}-textarea-markdown,
+@{P}-input-number {
     .FormFieldItemWrapper();
 
-    .pacem-input {
+    .@{PCSS}-input {
         .FormFieldItem();
         .FormFieldItemInline();
     }
 
-    &:before {
+    &::before {
         color: @color_input_icon;
     }
 
-    &.pacem-focus:before {
+    &.@{PCSS}-focus::before {
         color: @field_forecolor;
     }
 }

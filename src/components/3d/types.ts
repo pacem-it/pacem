@@ -4,10 +4,10 @@ namespace Pacem.Components.ThreeD {
     export declare type Vector3D = { x: number, y: number, z: number };
 
     const ThreeDConsts = {
-        OBJECT_SELECTOR: 'pacem-3d-object',
-        LIGHT_SELECTOR: 'pacem-3d-light',
-        CAMERA_SELECTOR: 'pacem-3d-camera',
-        SCENE_SELECTOR: 'pacem-3d',
+        OBJECT_SELECTOR: P + '-3d-object',
+        LIGHT_SELECTOR: P + '-3d-light',
+        CAMERA_SELECTOR: P + '-3d-camera',
+        SCENE_SELECTOR: P + '-3d',
         DEFAULT_COORDS: { x: 0, y: 0, z: 0 }
     }
 
@@ -190,10 +190,10 @@ namespace Pacem.Components.ThreeD {
             super.viewActivatedCallback();
             // stage
             const container = this._container = document.createElement('div');
-            Utils.addClass(container, 'pacem-3d-stage');
+            Utils.addClass(container, PCSS + '-3d-stage');
             this.insertAdjacentElement('afterend', container);
             // resizer
-            const resizer = this._resizer = <PacemResizeElement>document.createElement('pacem-resize');
+            const resizer = this._resizer = <PacemResizeElement>document.createElement(P + '-resize');
             resizer.addEventListener('resize', this._resizeHandler, false);
             resizer.target = container;
             container.insertAdjacentElement('afterend', resizer);

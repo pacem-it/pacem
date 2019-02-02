@@ -4,7 +4,7 @@ namespace Pacem.Components.UI {
     const PACEM_TAB_FOCUS_CSS = 'tab-focus';
 
     @CustomElement({
-        tagName: 'pacem-tab'
+        tagName: P + '-tab'
     })
     export class PacemTabElement extends PacemIterableElement {
 
@@ -18,11 +18,11 @@ namespace Pacem.Components.UI {
     }
 
     @CustomElement({
-        tagName: 'pacem-tabs', shadow: Defaults.USE_SHADOW_ROOT,
-        template: `<div class="pacem-tabs">
-    <pacem-adapter class="pacem-tabs-adapter" hide="{{ !:host._isUsingDefaultTabAdapter }}" label-callback="{{ :host._labelCallback }}"></pacem-adapter>
-    <div class="pacem-tabs-content">
-        <pacem-content></pacem-content>
+        tagName: P + '-tabs', shadow: Defaults.USE_SHADOW_ROOT,
+        template: `<div class="${PCSS}-tabs">
+    <${ P}-adapter class="${PCSS}-tabs-adapter" hide="{{ !:host._isUsingDefaultTabAdapter }}" label-callback="{{ :host._labelCallback }}"></${P}-adapter>
+    <div class="${PCSS}-tabs-content">
+        <${ P}-content></${P}-content>
     </div>
 </div>`
     })
@@ -32,9 +32,9 @@ namespace Pacem.Components.UI {
             super();
         }
 
-        @ViewChild('pacem-adapter') private _defaultTabAdapter: PacemAdapterElement;
-        @ViewChild('.pacem-tabs') private _tabs: HTMLElement;
-        @ViewChild('.pacem-tabs-content') private _container: HTMLElement;
+        @ViewChild(P + '-adapter') private _defaultTabAdapter: PacemAdapterElement;
+        @ViewChild('.' + PCSS + '-tabs') private _tabs: HTMLElement;
+        @ViewChild('.' + PCSS + '-tabs-content') private _container: HTMLElement;
 
         @Watch() private _isUsingDefaultTabAdapter: boolean;
         /** Gets or sets the orientation of the default tabs adapter. */

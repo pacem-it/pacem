@@ -3,8 +3,8 @@
 namespace Pacem.Components.Scaffolding {
 
     @CustomElement({
-        tagName: 'pacem-radio',
-        template: `<pacem-span class="pacem-readonly pacem-radio" text="{{ :host.caption }}"></pacem-span><input type="radio" class="pacem-input" /><label class="pacem-label pacem-radio pacem-viewfinder"><pacem-text text="{{ :host.caption }}"></pacem-text></label>`,
+        tagName: P + '-radio',
+        template: `<${ P }-span class="${PCSS}-readonly ${PCSS}-radio" text="{{ :host.caption }}"></${ P }-span><input type="radio" class="${PCSS}-input" /><label class="${PCSS}-label ${PCSS}-radio ${PCSS}-viewfinder"><${ P }-text text="{{ :host.caption }}"></${ P }-text></label>`,
         shadow: Defaults.USE_SHADOW_ROOT
     })
     export class PacemRadioElement extends PacemBaseElement implements OnPropertyChanged, OnViewActivated {
@@ -20,8 +20,8 @@ namespace Pacem.Components.Scaffolding {
         private _key: string;
 
         @ViewChild("input[type=radio]") private _radio: HTMLInputElement;
-        @ViewChild("label") label: HTMLLabelElement;
-        @ViewChild(".pacem-readonly") span: HTMLElement;
+        @ViewChild("label") private _label: HTMLLabelElement;
+        @ViewChild(`.${PCSS}-readonly`) span: HTMLElement;
 
         @Watch({ converter: PropertyConverters.String }) caption: string;
         @Watch({ converter: PropertyConverters.Boolean }) selected: boolean;
@@ -43,7 +43,7 @@ namespace Pacem.Components.Scaffolding {
 
         viewActivatedCallback() {
             super.viewActivatedCallback();
-            this._radio.id = this.label.htmlFor = this._key;
+            this._radio.id = this._label.htmlFor = this._key;
         }
 
         propertyChangedCallback(name: string, old: any, val: any, first?: boolean) {
@@ -54,9 +54,9 @@ namespace Pacem.Components.Scaffolding {
                     break;
                 case 'selected':
                     (this._radio.checked = val) ?
-                        Utils.addClass(this, 'pacem-selected')
+                        Utils.addClass(this, PCSS + '-selected')
                         :
-                        Utils.removeClass(this, 'pacem-selected');
+                        Utils.removeClass(this, PCSS + '-selected');
                     break;
             }
         }

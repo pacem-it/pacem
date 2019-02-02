@@ -3,11 +3,11 @@
 namespace Pacem.Components {
 
     @CustomElement({
-        tagName: 'pacem-title'
+        tagName: P + '-title-proxy'
     })
-    export class PacemTitleElement extends PacemEventTarget {
+    export class PacemTitleProxyElement extends PacemEventTarget {
 
-        @Watch({ converter: PropertyConverters.String }) value: string; 
+        @Watch({ emit: false, converter: PropertyConverters.String }) value: string; 
 
         propertyChangedCallback(name: string, old: any, val: any, first?: boolean) {
             super.propertyChangedCallback(name, old, val, first);

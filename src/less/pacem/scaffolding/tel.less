@@ -1,8 +1,11 @@
 ﻿@import "shared";
 
-pacem-input-tel {
+@{P}-input-tel {
     .FormFieldIcon('dialpad');
-    .pacem-readonly {
+    /*.@{PCSS}-readonly {
         margin-left: @grid_spacing;
+    }*/
+    &.@{PCSS}-readonly {
+        .FormFieldLabelIcon('dialpad');
     }
 }

@@ -2,7 +2,7 @@
 namespace Pacem.Components.UI {
 
     @CustomElement({
-        tagName: 'pacem-a'
+        tagName: P + '-a'
     })
     export class PacemAnchorElement extends PacemElement {
 
@@ -53,22 +53,22 @@ namespace Pacem.Components.UI {
             super.emit(evt);
             switch (evt.type) {
                 case 'mousedown':
-                    Utils.addClass(this, 'pacem-active');
+                    Utils.addClass(this, PCSS + '-active');
                     break;
                 case 'keydown':
                     if ((<KeyboardEvent>evt).keyCode === 13) {
                         evt.preventDefault();
-                        Utils.addClass(this, 'pacem-active');
+                        Utils.addClass(this, PCSS + '-active');
                     }
                     break;
                 case 'blur':
                 case 'mouseup':
-                    Utils.removeClass(this, 'pacem-active');
+                    Utils.removeClass(this, PCSS + '-active');
                     break;
                 case 'keyup':
                     if ((<KeyboardEvent>evt).keyCode === 13) {
                         this.click();
-                        Utils.removeClass(this, 'pacem-active');
+                        Utils.removeClass(this, PCSS + '-active');
                     }
                     break;
             }

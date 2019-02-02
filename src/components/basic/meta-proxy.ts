@@ -3,13 +3,13 @@
 namespace Pacem.Components {
 
     @CustomElement({
-        tagName: 'pacem-meta'
+        tagName: P + '-meta-proxy'
     })
-    export class PacemMetaElement extends PacemEventTarget {
+    export class PacemMetaProxyElement extends PacemEventTarget {
 
-        @Watch({ converter: PropertyConverters.String }) name: string; 
-        @Watch({ converter: PropertyConverters.String }) itemprop: string; 
-        @Watch({ converter: PropertyConverters.String }) content: string; 
+        @Watch({emit: false, converter: PropertyConverters.String }) name: string; 
+        @Watch({emit: false, converter: PropertyConverters.String }) itemprop: string; 
+        @Watch({emit: false, converter: PropertyConverters.String }) content: string; 
 
         propertyChangedCallback(name: string, old: any, val: any, first?: boolean) {
             super.propertyChangedCallback(name, old, val, first);
@@ -31,7 +31,7 @@ namespace Pacem.Components {
                 return;
             }
             const escapedKey = Utils.cssEscape(key);
-            const query = nameBased ? `meta[name=${escapedKey}]` : `meta[itemprop=${escapedKey}]`;
+            const query = nameBased ? `meta[name='${escapedKey}']` : `meta[itemprop='${escapedKey}']`;
             var meta = document.head.querySelector(query);
             if (Utils.isNull(meta)) {
                 meta = document.createElement('meta');

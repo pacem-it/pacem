@@ -3,18 +3,18 @@ namespace Pacem.Components.UI {
 
 
     @CustomElement({
-        tagName: 'pacem-tuner', shadow: Defaults.USE_SHADOW_ROOT,
-        template: `<canvas class="pacem-tuner"></canvas><div class="pacem-content"><pacem-content></pacem-content></div>
-<pacem-tween on-step=":host._draw($event.detail.value)" on-end="this.disabled = true" duration="500" to="{{ :host.value }}" from="{{ :host.min }}"></pacem-tween>`
+        tagName: P + '-tuner', shadow: Defaults.USE_SHADOW_ROOT,
+        template: `<canvas class="${PCSS}-tuner"></canvas><div class="${PCSS}-content"><${ P }-content></${ P }-content></div>
+<${ P }-tween on-step=":host._draw($event.detail.value)" on-end="this.disabled = true" duration="500" to="{{ :host.value }}" from="{{ :host.min }}"></${ P }-tween>`
     })
-    export class PacemTunerElement extends PacemElement implements OnViewActivated, OnPropertyChanged, OnDisconnected {
+    export class PacemTunerElement extends PacemElement {
 
         constructor() {
             super();
         }
 
         @ViewChild('canvas') private _canvas: HTMLCanvasElement;
-        @ViewChild('pacem-tween') private _tween: PacemTweenElement;
+        @ViewChild(P + '-tween') private _tween: PacemTweenElement;
         private _context2D: CanvasRenderingContext2D;
 
         viewActivatedCallback() {
@@ -44,8 +44,8 @@ namespace Pacem.Components.UI {
             super.propertyChangedCallback(name, old, val, first);
             switch (name) {
                 case 'interactive':
-                    if (!val) Utils.removeClass(this._canvas, 'pacem-interactive');
-                    else Utils.addClass(this._canvas, 'pacem-interactive');
+                    if (!val) Utils.removeClass(this._canvas, PCSS + '-interactive');
+                    else Utils.addClass(this._canvas, PCSS + '-interactive');
                     break;
                 case 'round':
                     if (Math.round(val) != val || val < 0)

@@ -14,12 +14,12 @@ h1, h2, h3, h4, h5, h6 {
     font-family: @font_main;
     line-height: 1.1;
 
-    &.pacem-title {
+    &.@{PCSS}-title {
         color: @color_title;
         background-color: @color_title_inv;
     }
 
-    &.pacem-title when (@uppercase_titles = true) {
+    &.@{PCSS}-title when (@uppercase_titles = true) {
         text-transform: uppercase;
     }
 }
@@ -78,7 +78,7 @@ kbd {
     border-radius: @grid_spacing/12;
 }
 
-mark, .pacem-highlight {
+mark, .@{PCSS}-highlight {
     background-color: @color_primary;
     color: @color_light;
 }
@@ -95,7 +95,7 @@ hr {
 }
 
 ol, ul {
-    &.pacem-list {
+    &.@{PCSS}-list {
         margin-bottom: 0;
 
         > li {

@@ -8,13 +8,13 @@ namespace Pacem.Components.UI {
     };
 
     @CustomElement({
-        tagName: 'pacem-loader', shadow: Defaults.USE_SHADOW_ROOT,
-        template: `<div class="pacem-loader" pacem>
-            <div class="pacem-spinner" pacem>
+        tagName: P + '-loader', shadow: Defaults.USE_SHADOW_ROOT,
+        template: `<div class="${PCSS}-loader" pacem>
+            <div class="${PCSS}-spinner" pacem>
                 <div></div>
                 <div></div>
             </div>
-            <svg class="pacem-spinner" pacem hidden xmlns="http://www.w3.org/2000/svg" 
+            <svg class="${PCSS}-spinner" pacem hidden xmlns="http://www.w3.org/2000/svg" 
                  xmlns:xlink="http://www.w3.org/1999/xlink"
                  viewBox="-18,-18,108,108" preserveAspectRatio="yes">
             </svg>
@@ -22,8 +22,8 @@ namespace Pacem.Components.UI {
     })
     export class PacemLoaderElement extends PacemElement {
 
-        @ViewChild('div.pacem-spinner') private _spinner: HTMLElement;
-        @ViewChild('div.pacem-loader') private _container: HTMLElement;
+        @ViewChild('div.' + PCSS + '-spinner') private _spinner: HTMLElement;
+        @ViewChild('div.' + PCSS + '-loader') private _container: HTMLElement;
         @ViewChild('svg') private _svgSpinner: SVGSVGElement;
 
         @Watch({ converter: PropertyConverters.Boolean }) active: boolean;

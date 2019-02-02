@@ -2,13 +2,15 @@
 @import "../theme-dark";
 @import "shared";
 
-pacem-dialog {
+@_tools_margin: round(@grid_spacing * 1.3333);
 
-    pacem-edit-image {
+@{P}-dialog {
+
+    @{P}-edit-image {
         overflow: hidden;
         display: block;
 
-        pacem-img {
+        @{P}-img {
             display: inline-block;
             font-size: 0;
             border: solid @grid_spacing / 3 transparent;
@@ -16,12 +18,12 @@ pacem-dialog {
             box-sizing: border-box;
             min-height: 90px;
 
-            &.pacem-selected {
+            &.@{PCSS}-selected {
                 border-color: @color_highlight;
             }
         }
 
-        .pacem-edit-image {
+        .@{PCSS}-edit-image {
             transition: transform @easing_default .3s;
             display: flex;
             flex-direction: row;
@@ -36,25 +38,25 @@ pacem-dialog {
                 }
             }
 
-            &.pacem-snapshot-enabled,
-            &.pacem-upload-enabled {
-                pacem-input-search {
-                    margin-right: @grid_spacing * 2;
+            &.@{PCSS}-snapshot-enabled,
+            &.@{PCSS}-upload-enabled {
+                @{P}-input-search {
+                    margin-right: @_tools_margin;
                 }
             }
 
-            pacem-upload {
+            @{P}-upload {
                 position: absolute;
                 top: 0;
                 right: 0;
 
-                .pacem-upload-filewrapper:before {
+                .@{PCSS}-upload-filewrapper:before {
                     .Icon('file_upload');
                     cursor: pointer;
                 }
             }
 
-            pacem-button.pacem-snapshot {
+            @{P}-button.@{PCSS}-snapshot {
                 position: absolute;
                 top: 0;
                 right: 0;
@@ -66,28 +68,28 @@ pacem-dialog {
                 }
             }
 
-            pacem-snapshot {
+            @{P}-snapshot {
             }
 
-            &.pacem-snapshot-enabled.pacem-upload-enabled {
-                pacem-input-search {
+            &.@{PCSS}-snapshot-enabled.@{PCSS}-upload-enabled {
+                @{P}-input-search {
                     margin-right: @grid_spacing * 4;
                 }
 
-                pacem-upload {
+                @{P}-upload {
                     right: @grid_spacing * 2;
                 }
             }
 
-            &.pacem-snapshot {
+            &.@{PCSS}-snapshot {
                 transform: translateX(-100%);
             }
         }
 
-        pacem-progressbar {
+        @{P}-progressbar {
             margin: 2 * @grid_spacing 0;
 
-            .pacem-progressbar {
+            .@{PCSS}-progressbar {
                 @_thickness: 10px;
                 @_overall: 32px;
                 .GradientVertical(0, @_overall - @_thickness, @_overall - @_thickness, @_overall, transparent, transparent, rgba(0,0,0,0.1), rgba(0,0,0,0.1));
@@ -96,16 +98,16 @@ pacem-dialog {
     }
 }
 
-pacem-input-image {
+@{P}-input-image {
     display: inline-block;
 
-    .pacem-input-image {
+    .@{PCSS}-input-image {
         position: relative;
         min-height: 2 * @grid_spacing;
         .FormFieldItemMultiline();
-        padding-right: 2 * @grid_spacing;
+        padding-right: @_tools_margin;
 
-        pacem-img {
+        @{P}-img {
             //min-width: @grid_spacing * 5;
             min-height: @grid_spacing * 5;
             width: 100%;
@@ -113,35 +115,40 @@ pacem-input-image {
             background-color: fade(@color_default, 10);
         }
 
-        .pacem-input-image-dashboard {
+        .@{PCSS}-input-image-dashboard {
             position: absolute;
             right: 0;
             top: 0;
             width: @grid_spacing;
             height: 100%;
 
-            pacem-button {
+            @{P}-button {
                 display: block;
                 font-size: 0;
                 width: @grid_spacing;
                 height: @grid_spacing;
                 background: transparent;
 
-                &.pacem-edit:before {
+                &.@{PCSS}-edit:before {
                     .Icon('edit');
                 }
 
-                &.pacem-clear:before {
+                &.@{PCSS}-clear:before {
                     .Icon('clear');
+                }
+
+                &::before {
+                    left: 0;
+                    top: 0;
                 }
             }
         }
 
-        pacem-input-url {
+        @{P}-input-url {
             display: block;
             margin-top: @grid_spacing/4;
 
-            .pacem-input {
+            .@{PCSS}-input {
                 min-width: @field_min_width_wide;
             }
         }

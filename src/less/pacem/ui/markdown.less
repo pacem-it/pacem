@@ -3,8 +3,8 @@
 
 @_clr_txt: @color_default;
 
-.pacem-markdown,
-pacem-markdown {
+.@{PCSS}-markdown,
+@{P}-markdown {
     display: block;
     //font-size: 20px;
     color: fade(@_clr_txt, 80);
@@ -60,7 +60,7 @@ pacem-markdown {
         margin: 0 0 1em 0;
         .FontTechSize(1);
 
-        &.pacem-code-block {
+        &.@{PCSS}-code-block {
             display: block;
             padding: 1em;
             background-color: @color_codeblock_back;
@@ -152,10 +152,10 @@ pacem-markdown {
     }
 }
 
-.pacem-markdown,
-pacem-markdown {
+.@{PCSS}-markdown,
+@{P}-markdown {
 
-    code.pacem-code-block {
+    code.@{PCSS}-code-block {
         color: @color_default;
         .FontTechSize(.9);
         line-height: 1.5rem * @font_rem_factor;
@@ -165,21 +165,21 @@ pacem-markdown {
         &.typescript,
         &.c-sharp {
 
-            .pacem-keyword {
+            .@{PCSS}-keyword {
                 color: #00f;
                 font-weight: bold;
             }
 
-            .pacem-number {
+            .@{PCSS}-number {
                 color: #f00;
             }
 
-            .pacem-string-char,
-            .pacem-string {
+            .@{PCSS}-string-char,
+            .@{PCSS}-string {
                 color: #0088ff;
             }
 
-            .pacem-comment {
+            .@{PCSS}-comment {
                 color: #373;
             }
         }
@@ -187,33 +187,33 @@ pacem-markdown {
 
         &.xml,
         &.html {
-            .pacem-tag,
-            .pacem-tag {
+            .@{PCSS}-tag,
+            .@{PCSS}-tag {
                 color: #00f;
             }
 
-            .pacem-tag-name {
+            .@{PCSS}-tag-name {
                 color: #853233;
             }
 
-            .pacem-attribute {
+            .@{PCSS}-attribute {
                 color: #f00;
             }
 
-            .pacem-comment {
+            .@{PCSS}-comment {
                 color: #aaa;
             }
 
-            .pacem-string-char,
-            .pacem-string {
+            .@{PCSS}-string-char,
+            .@{PCSS}-string {
                 color: #00f;
             }
         }
     }
 }
 
-.pacem-markdown,
-pacem-markdown {
+.@{PCSS}-markdown,
+@{P}-markdown {
 
     > :last-child {
         margin-bottom: 0;

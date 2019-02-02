@@ -94,7 +94,7 @@ namespace Pacem.Components.Charts {
 
     export declare type ChartDataItem = { label: any, value: number };
 
-    @CustomElement({ tagName: 'pacem-chart-series' })
+    @CustomElement({ tagName: P + '-chart-series' })
     export class PacemChartSeriesElement extends PacemItemElement {
 
         /** Gets or sets the - already sorted - set of chart data items. */
@@ -113,7 +113,7 @@ namespace Pacem.Components.Charts {
     const SERIES_MAGNITUDE = 'pacem:chart-series:area';
     const SVG_NS = "http://www.w3.org/2000/svg";
 
-    @CustomElement({ tagName: 'pacem-chart' })
+    @CustomElement({ tagName: P + '-chart' })
     export class PacemChartElement extends PacemItemsContainerElement<PacemChartSeriesElement> {
 
         constructor() {
@@ -169,7 +169,7 @@ namespace Pacem.Components.Charts {
 
                 const eold = <HTMLElement>old;
                 if (eold) {
-                    eold.classList.remove('pacem-chart-area');
+                    eold.classList.remove(PCSS + '-chart-area');
                     eold.innerHTML = '';
                 }
 
@@ -201,7 +201,7 @@ namespace Pacem.Components.Charts {
             if (Utils.isNull(this._div)) {
 
                 let div = this._div = this.target || document.createElement('div');
-                div.classList.add('pacem-chart-area');
+                div.classList.add(PCSS + '-chart-area');
 
                 if (div != this.target)
                     this.parentElement.insertBefore(div, this);
@@ -215,7 +215,7 @@ namespace Pacem.Components.Charts {
 
                 let svg = this._body = document.createElementNS(SVG_NS, 'svg');
                 svg.setAttribute('pacem', '');
-                svg.setAttribute('class', 'pacem-category-chart');
+                svg.setAttribute('class', PCSS + '-category-chart');
                 svg.setAttribute('preserveAspectRatio', 'xMinYMax slice');
 
                 const g = this._grid = document.createElementNS(SVG_NS, 'svg');

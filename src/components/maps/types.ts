@@ -8,11 +8,11 @@ namespace Pacem.Components.Maps {
     };
 
     export const MapConsts = {
-        MAP_SELECTOR: 'pacem-map',
-        LINK_SELECTOR: 'pacem-map-link',
-        MARKER_SELECTOR: 'pacem-map-marker',
-        POLYLINE_SELECTOR: 'pacem-map-polyline',
-        CIRCLE_SELECTOR: 'pacem-map-circle',
+        MAP_SELECTOR: P + '-map',
+        LINK_SELECTOR: P + '-map-link',
+        MARKER_SELECTOR: P + '-map-marker',
+        POLYLINE_SELECTOR: P + '-map-polyline',
+        CIRCLE_SELECTOR: P + '-map-circle',
         DEFAULT_COORDS: { lat: 44.714188025077984, lng: 10.296516444873811 }
     };
 
@@ -200,9 +200,9 @@ namespace Pacem.Components.Maps {
         viewActivatedCallback() {
             super.viewActivatedCallback();
             const container = this._container = document.createElement('div');
-            Utils.addClass(container, 'pacem-map');
+            Utils.addClass(container, PCSS + '-map');
             this.insertAdjacentElement('afterend', container);
-            const resizer = this._resizer = <PacemResizeElement>document.createElement('pacem-resize');
+            const resizer = this._resizer = <PacemResizeElement>document.createElement(P + '-resize');
             resizer.addEventListener('resize', this._resizeHandler, false);
             resizer.target = container;
             container.insertAdjacentElement('afterend', resizer);

@@ -2,7 +2,7 @@
 /// <reference path="markdown-svc.ts" />
 namespace Pacem.Components.UI {
 
-    @CustomElement({ tagName: 'pacem-markdown' })
+    @CustomElement({ tagName: P + '-markdown' })
     export class PacemMarkdownElement extends PacemElement implements OnPropertyChanged {
 
         constructor(private _md = new MarkdownService()) {

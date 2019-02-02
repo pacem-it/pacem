@@ -3,11 +3,11 @@
 namespace Pacem.Components {
 
     @CustomElement({
-        tagName: 'pacem-style'
+        tagName: P + '-style-proxy'
     })
-    export class PacemStyleElement extends PacemEventTarget {
+    export class PacemStyleProxyElement extends PacemEventTarget {
 
-        @Watch({ converter: PropertyConverters.String }) src: string;
+        @Watch({ emit: false, converter: PropertyConverters.String }) src: string;
 
         private _style: HTMLStyleElement;
 

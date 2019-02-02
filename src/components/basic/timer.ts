@@ -2,7 +2,7 @@
 /// <reference path="../../core/eventtarget.ts" />
 namespace Pacem.Components {
 
-    @CustomElement({ tagName: 'pacem-timer' })
+    @CustomElement({ tagName: P + '-timer' })
     export class PacemTimerElement extends PacemEventTarget {
 
         constructor() {

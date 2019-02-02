@@ -1,7 +1,7 @@
 ﻿/// <reference path="../../core/decorators.ts" />
 namespace Pacem.Components {
 
-    @CustomElement({ tagName: 'pacem-data' })
+    @CustomElement({ tagName: P + '-data' })
     export class PacemDataElement extends PacemEventTarget implements OnPropertyChanged {
 
         constructor(private storage = new Pacem.Storage()) {

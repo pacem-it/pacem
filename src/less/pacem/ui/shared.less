@@ -8,25 +8,25 @@
     grid-template-areas: 'left . center . right';
     white-space: nowrap;
 
-    .pacem-@{type}set-left, .@{type}set-left,
-    .pacem-@{type}set-center, .@{type}set-center,
-    .pacem-@{type}set-right, .@{type}set-right {
+    .@{PCSS}-@{type}set-left, .@{type}set-left,
+    .@{PCSS}-@{type}set-center, .@{type}set-center,
+    .@{PCSS}-@{type}set-right, .@{type}set-right {
         display: flex;
         flex-direction: row;
         align-items: flex-start;
     }
 
-    .pacem-@{type}set-left, .@{type}set-left {
+    .@{PCSS}-@{type}set-left, .@{type}set-left {
         grid-area: left;
         align-content: flex-start;
     }
 
-    .pacem-@{type}set-center, .@{type}set-center {
+    .@{PCSS}-@{type}set-center, .@{type}set-center {
         grid-area: center;
         align-content: center;
     }
 
-    .pacem-@{type}set-right, .@{type}set-right {
+    .@{PCSS}-@{type}set-right, .@{type}set-right {
         grid-area: right;
         align-content: flex-end;
     }

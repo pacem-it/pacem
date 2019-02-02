@@ -3,18 +3,18 @@
 namespace Pacem.Components.UI {
 
     @CustomElement({
-        tagName: 'pacem-menu', template: `<pacem-panel class="pacem-hamburger-menu" css-class="{{ {'menu-close': !:host.open, 'menu-open': :host.open} }}" on-click=":host._toggle($event)">    
-    <nav><pacem-content></pacem-content></nav>
-</pacem-panel>
-<pacem-button class="pacem-back flat" css-class="{{ {'menu-close': !:host.open, 'menu-open': :host.open} }}" on-click=":host._toggle($event)">BACK</pacem-button>
-<pacem-button class="pacem-hamburger flat" css-class="{{ {'menu-close': :host.open, 'menu-open': !:host.open} }}" on-click=":host._toggle($event)">MENU</pacem-button>`,
+        tagName: P + '-menu', template: `<${ P }-panel class="${PCSS}-hamburger-menu" css-class="{{ {'menu-close': !:host.open, 'menu-open': :host.open} }}" on-click=":host._toggle($event)">    
+    <nav><${ P }-content></${ P }-content></nav>
+</${ P }-panel>
+<${ P }-button class="${PCSS}-back flat" css-class="{{ {'menu-close': !:host.open, 'menu-open': :host.open} }}" on-click=":host._toggle($event)">BACK</${ P }-button>
+<${ P }-button class="${PCSS}-hamburger flat" css-class="{{ {'menu-close': :host.open, 'menu-open': !:host.open} }}" on-click=":host._toggle($event)">MENU</${ P }-button>`,
         shadow: Defaults.USE_SHADOW_ROOT
     })
     export class PacemMenuElement extends PacemElement {
 
         @Watch({ converter: PropertyConverters.Boolean }) open: boolean;
         @ViewChild('nav') private _container: HTMLElement;
-        @ViewChild('.pacem-hamburger-menu') private _base: HTMLElement;
+        @ViewChild(`.${PCSS}-hamburger-menu`) private _base: HTMLElement;
 
         private _stopPropagationHandlerConditional = (evt: RouterNavigateEvent) => {
             if (!Utils.isNull(this._container) && !Utils.isNull(this._base)) {
@@ -57,8 +57,8 @@ namespace Pacem.Components.UI {
         private _body: HTMLElement;
 
         private _sync(val = this.open) {
-            Utils.addClass(this._body, (val === true ? 'pacem-menu-open' : 'pacem-menu-close'));
-            Utils.removeClass(this._body, val === true ? 'pacem-menu-close' : 'pacem-menu-open');
+            Utils.addClass(this._body, PCSS + (val === true ? '-menu-open' : '-menu-close'));
+            Utils.removeClass(this._body, PCSS +(val === true ? '-menu-close' : '-menu-open'));
         }
 
         propertyChangedCallback(name: string, old: any, val: any, first?: boolean) {
@@ -70,7 +70,7 @@ namespace Pacem.Components.UI {
     }
 
     @CustomElement({
-        tagName: 'pacem-menu-cursor'
+        tagName: P + '-menu-cursor'
     })
     export class PacemMenuCursorElement extends PacemElement {
 
@@ -100,8 +100,8 @@ namespace Pacem.Components.UI {
                 this.log(Logging.LogLevel.Warn, `Couldn't find a ${PacemMenuElement} ancestor for this ${PacemMenuCursorElement}.`);
                 return;
             }
-            // 1. try to find a matching <pacem-a>
-            var anchors = menu.querySelectorAll('pacem-a');
+            // 1. try to find a matching PacemAnchorElement
+            var anchors = menu.querySelectorAll(P + '-a');
             var tget: HTMLElement = null;
             for (let j = 0; j < anchors.length; j++) {
                 let a = <PacemAnchorElement>anchors.item(j);

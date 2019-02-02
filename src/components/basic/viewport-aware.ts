@@ -62,8 +62,8 @@ namespace Pacem.Components {
                 const newviz = this.isElementVisible(tget, el.ignoreHorizontal);
                 if (newviz !== el.visible) {
                     var visible = el.visible = newviz;
-                    if (visible) Utils.addClass(tget, 'pacem-in-viewport');
-                    else Utils.removeClass(tget, 'pacem-in-viewport');
+                    if (visible) Utils.addClass(tget, PCSS + '-in-viewport');
+                    else Utils.removeClass(tget, PCSS + '-in-viewport');
                 }
             }
         }
@@ -71,7 +71,7 @@ namespace Pacem.Components {
 
     const ORCHESTRATOR = new PacemViewportOrchestrator(window);
 
-    @CustomElement({ tagName: 'pacem-viewport-aware' })
+    @CustomElement({ tagName: P + '-viewport-aware' })
     export class PacemViewportAwareElement extends PacemEventTarget implements OnViewActivated, OnDisconnected {
 
         constructor() {

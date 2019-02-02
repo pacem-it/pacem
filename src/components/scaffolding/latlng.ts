@@ -9,28 +9,28 @@ namespace Pacem.Components.Scaffolding {
     const REVERSE_GEOCODE_URL = 'https://nominatim.openstreetmap.org/reverse';
 
     @CustomElement({
-        tagName: 'pacem-latlng', shadow: Defaults.USE_SHADOW_ROOT,
-        template: `<div class="pacem-latlng">
-    <div class="pacem-latlng-fields pacem-viewfinder">
-        <pacem-input-number class="pacem-lat" value="{{ :host._lat, twoway }}" min="-90" max="90" step="{{ 'any' }}"></pacem-input-number>
-        <pacem-input-number class="pacem-lng" value="{{ :host._lng, twoway }}" min="-180" max="180" step="{{ 'any' }}"></pacem-input-number>
+        tagName: P + '-latlng', shadow: Defaults.USE_SHADOW_ROOT,
+        template: `<div class="${PCSS}-latlng">
+    <div class="${PCSS}-latlng-fields ${PCSS}-viewfinder">
+        <${ P }-input-number class="${PCSS}-lat" value="{{ :host._lat, twoway }}" min="-90" max="90" step="{{ 'any' }}"></${ P }-input-number>
+        <${ P }-input-number class="${PCSS}-lng" value="{{ :host._lng, twoway }}" min="-180" max="180" step="{{ 'any' }}"></${ P }-input-number>
     </div>
-    <pacem-panel hide="{{ Pacem.Utils.isNull(:host.value) || :host.readonly }}">
-    <dl class="pacem-latlng-preview">
-        <dt>decimals:</dt><dd><pacem-text text="{{ :host._getViewValue(:host.value, 12) }}"></pacem-text></dd>
-        <dt>address:</dt><dd><pacem-text text="{{ ::_fetcher.result.display_name || '?' }}"></pacem-text></dd>
-        <dt>degrees:</dt><dd><pacem-span css-class="{{ {'pacem-lat-north': :host._lat > 0, 'pacem-lat-south': :host._lat < 0} }}" content="{{ $pacem.decToDeg(Math.abs(:host._lat)) }}"></pacem-span>,
-        <pacem-span css-class="{{ {'pacem-lng-east': :host._lng > 0, 'pacem-lng-west': :host._lng < 0} }}" content="{{ $pacem.decToDeg(Math.abs(:host._lng)) }}"></pacem-span></dd>
+    <${ P }-panel hide="{{ Pacem.Utils.isNull(:host.value) || :host.readonly }}">
+    <dl class="${PCSS}-latlng-preview">
+        <dt>decimals:</dt><dd><${ P }-text text="{{ :host._getViewValue(:host.value, 12) }}"></${ P }-text></dd>
+        <dt>address:</dt><dd><${ P }-text text="{{ ::_fetcher.result.display_name || '?' }}"></${ P }-text></dd>
+        <dt>degrees:</dt><dd><${ P }-span css-class="{{ {'${PCSS}-lat-north': :host._lat > 0, '${PCSS}-lat-south': :host._lat < 0} }}" content="{{ $pacem.decToDeg(Math.abs(:host._lat)) }}"></${ P }-span>,
+        <${ P }-span css-class="{{ {'${PCSS}-lng-east': :host._lng > 0, '${PCSS}-lng-west': :host._lng < 0} }}" content="{{ $pacem.decToDeg(Math.abs(:host._lng)) }}"></${ P }-span></dd>
     </dl>
-    </pacem-panel>
-    <pacem-span class="pacem-readonly" hide="{{ !:host.readonly }}" content="{{ :host.viewValue + (Pacem.Utils.isNullOrEmpty(::_fetcher.result.display_name) ? '' : (' <small>'+ ::_fetcher.result.display_name +'</small>')) }}"></pacem-span>
-    <pacem-map-adapter-leaflet
-    tiles="{{ :host._tiles }}" attribution="{{ :host._attribution }}"></pacem-map-adapter-leaflet>
-    <pacem-map adapter="{{ ::_adapter }}" mousewheel="false">
-        <pacem-map-marker position="{{ :host.value || Pacem.Components.Maps.MapConsts.DEFAULT_COORDS }}" on-dragend=":host.changeHandler($event)" draggable="{{ !:host.readonly }}">
-        </pacem-map-marker>
-    </pacem-map>
-    <pacem-fetch disabled="{{ Pacem.Utils.isNull(:host.value) }}" parameters="{{ { format: 'json', lat: :host._lat, lon: :host._lng } }}" url="${ REVERSE_GEOCODE_URL}"></pacem-fetch>
+    </${ P }-panel>
+    <${ P }-span class="${PCSS}-readonly" hide="{{ !:host.readonly }}" content="{{ :host.viewValue + (Pacem.Utils.isNullOrEmpty(::_fetcher.result.display_name) ? '' : (' <small>'+ ::_fetcher.result.display_name +'</small>')) }}"></${ P }-span>
+    <${ P }-map-adapter-leaflet
+    tiles="{{ :host._tiles }}" attribution="{{ :host._attribution }}"></${ P }-map-adapter-leaflet>
+    <${ P }-map adapter="{{ ::_adapter }}" mousewheel="false">
+        <${ P }-map-marker position="{{ :host.value || Pacem.Components.Maps.MapConsts.DEFAULT_COORDS }}" on-dragend=":host.changeHandler($event)" draggable="{{ !:host.readonly }}">
+        </${ P }-map-marker>
+    </${ P }-map>
+    <${ P }-fetch disabled="{{ Pacem.Utils.isNull(:host.value) }}" parameters="{{ { format: 'json', lat: :host._lat, lon: :host._lng } }}" url="${ REVERSE_GEOCODE_URL}"></${ P }-fetch>
 </div>`
     })
     export class PacemLatLngElement extends PacemBaseElement implements OnPropertyChanged {
@@ -80,11 +80,11 @@ namespace Pacem.Components.Scaffolding {
             return Utils.fromResult(this.value = { lat: lat, lng: lng });
         }
 
-        @ViewChild('pacem-map-adapter-leaflet') private _adapter;
-        @ViewChild('pacem-input-number:nth-child(1)') private _latInput: PacemNumberInputElement;
-        @ViewChild('pacem-input-number:nth-child(2)') private _lngInput: PacemNumberInputElement;
-        @ViewChild('.pacem-latlng-fields') private _inputContainer: HTMLElement;
-        @ViewChild('pacem-fetch') private _fetcher: PacemFetchElement;
+        @ViewChild(P + '-map-adapter-leaflet') private _adapter;
+        @ViewChild(P + '-input-number:nth-child(1)') private _latInput: PacemNumberInputElement;
+        @ViewChild(P + '-input-number:nth-child(2)') private _lngInput: PacemNumberInputElement;
+        @ViewChild(`.${PCSS}-latlng-fields`) private _inputContainer: HTMLElement;
+        @ViewChild(P + '-fetch') private _fetcher: PacemFetchElement;
 
         @Watch() private _tiles = TILES;
         @Watch() private _attribution = ATTRIBUTION;

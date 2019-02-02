@@ -1,18 +1,13 @@
 ﻿@import "shared";
 
-pacem-textarea-markdown {
+@{P}-textarea-markdown {
     .FormFieldItemMultiline();
 
-    /*textarea.pacem-input {
-        //display: block;
-        line-height: 1;
-    }*/
-
-    .pacem-readonly {
+    .@{PCSS}-readonly {
         line-height: 1;
     }
 
-    &.pacem-readonly .pacem-readonly {
+    &.@{PCSS}-readonly .@{PCSS}-readonly {
 
         > *:first-child {
             margin-top: 0;

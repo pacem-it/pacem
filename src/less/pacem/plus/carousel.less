@@ -13,13 +13,13 @@
 @duration2: @delay;
 @delay2: @duration2 * .4;
 
-.pacem-carousel {
+.@{PCSS}-carousel {
     background-color: @bg_color;
     min-height: @height_block;
 
-    .pacem-carousel-item {
+    .@{PCSS}-carousel-item {
 
-        .pacem-carousel-splash {
+        .@{PCSS}-carousel-splash {
             border: solid fade(@color_background, 25);
             border-width: round(@padding / 3) 0 0 0;
             min-height: @height_block;
@@ -68,7 +68,7 @@
             box-shadow: inset 0 0 @padding #000;
         }
 
-        > pacem-a {
+        >@{P}-a {
             display: block;
             /*> div {
                 flex-grow: 1;
@@ -109,19 +109,19 @@
         }
     }
 
-    .pacem-carousel-item {
+    .@{PCSS}-carousel-item {
         position: absolute;
         z-index: 1;
         width: @width_splash;
         top: 0;
         left: 0;
 
-        .pacem-carousel-content {
+        .@{PCSS}-carousel-content {
             position: relative;
             width: @width_content;
             margin: auto;
 
-            .pacem-carousel-caption {
+            .@{PCSS}-carousel-caption {
                 /*@_clr: rgb(0,113,188); // inherit
                 @_bg_clr: rgb(214,226,215); //@color_primary;
                 @_bdr_clr: rgba(86,151,149,.25); //fade(@color_background, 25);
@@ -148,7 +148,7 @@
                 .FontMain(1.5);
             }
 
-            .pacem-carousel-caption when (@uppercase_carousels = true) {
+            .@{PCSS}-carousel-caption when (@uppercase_carousels = true) {
                 text-transform: uppercase;
             }
         }
@@ -156,12 +156,12 @@
 }
 
 // animations
-.pacem-carousel {
+.@{PCSS}-carousel {
     position: relative;
     //min-height: 360px + 2 * (round(@padding / 3) + @padding);
-    > .pacem-carousel-item {
+    > .@{PCSS}-carousel-item {
 
-        .pacem-carousel-splash {
+        .@{PCSS}-carousel-splash {
             transition: transform cubic-bezier(0.785, 0.135, 0.15, 0.86), opacity linear;
             transition-delay: @delay;
             transition-duration: @duration;
@@ -169,7 +169,7 @@
             opacity: 0;
         }
 
-        .pacem-carousel-caption {
+        .@{PCSS}-carousel-caption {
             transition: transform ease-in, opacity linear;
             transition-duration: @duration;
             transition-delay: @delay;
@@ -189,26 +189,26 @@
             }
         }
 
-        &.pacem-carousel-previous {
+        &.@{PCSS}-carousel-previous {
 
-            .pacem-carousel-splash {
+            .@{PCSS}-carousel-splash {
                 transform: translateX(-100%) translateZ(0);
             }
 
-            .pacem-carousel-caption {
+            .@{PCSS}-carousel-caption {
                 transform: translateX(0) translateZ(0);
             }
         }
 
-        &.pacem-carousel-focus {
+        &.@{PCSS}-carousel-focus {
             z-index: 2;
 
-            .pacem-carousel-splash {
+            .@{PCSS}-carousel-splash {
                 transform: translateX(0) translateZ(0);
                 opacity: 1;
             }
 
-            .pacem-carousel-caption {
+            .@{PCSS}-carousel-caption {
                 transform: translateX(0) translateZ(0);
                 opacity: 1;
 
@@ -226,20 +226,20 @@
     }
 }
 
-pacem-carousel {
+@{P}-carousel {
     position: relative;
     display: block;
 }
 
 // adapter
-.pacem-carousel-adapter {
+.@{PCSS}-carousel-adapter {
     position: absolute;
     z-index: 2;
     width: @width_splash;
     bottom: 0;
     left: 0;
 
-    pacem-button[pacem] {
+   @{P}-button[pacem] {
         border: none;
         position: absolute;
         background: transparent;
@@ -253,7 +253,7 @@ pacem-carousel {
 
         @_prev_next_size: @size_grid / 1.414;
 
-        &.pacem-adapter-next, &.pacem-adapter-previous {
+        &.@{PCSS}-adapter-next, &.@{PCSS}-adapter-previous {
             > button {
                 border: none;
             }
@@ -265,7 +265,7 @@ pacem-carousel {
             text-shadow: 0 4px @bg_color;
         }
 
-        &.pacem-adapter-previous {
+        &.@{PCSS}-adapter-previous {
             left: @padding/3;
 
             &:before {
@@ -273,7 +273,7 @@ pacem-carousel {
             }
         }
 
-        &.pacem-adapter-next {
+        &.@{PCSS}-adapter-next {
             right: @padding/3;
 
             &:before {
@@ -282,7 +282,7 @@ pacem-carousel {
         }
     }
 
-    .pacem-adapter-dashboard {
+    .@{PCSS}-adapter-dashboard {
         @_height: @grid_spacing * .75;
         transform: translateY(@grid_spacing / 3);
         display: flex;
@@ -306,8 +306,8 @@ pacem-carousel {
         @_brd: 2px;
         @_size: @_height - 2 * @_brd;
 
-        .pacem-adapter-page,
-        .pacem-play-pause {
+        .@{PCSS}-adapter-page,
+        .@{PCSS}-play-pause {
             cursor: pointer;
             display: block;
             margin: 0 auto;
@@ -324,7 +324,7 @@ pacem-carousel {
             box-sizing: content-box;
         }
 
-        .pacem-play-pause {
+        .@{PCSS}-play-pause {
 
             &.playing:before {
                 @_pad: 1px;
@@ -343,7 +343,7 @@ pacem-carousel {
             }
         }
 
-        .pacem-adapter-page {
+        .@{PCSS}-adapter-page {
 
             &:before {
                 @_pad: 1px;
@@ -363,7 +363,7 @@ pacem-carousel {
                 z-index: -3;
             }
 
-            &.pacem-adapter-active:before {
+            &.@{PCSS}-adapter-active:before {
                 transform: scale(1);
             }
         }

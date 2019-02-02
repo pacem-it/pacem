@@ -14,7 +14,7 @@ namespace Pacem.Components {
         }
     }
 
-    @CustomElement({ tagName: 'pacem-overlay' })
+    @CustomElement({ tagName: P + '-overlay' })
     export class PacemOverlayElement extends PacemEventTarget {
 
         constructor() {

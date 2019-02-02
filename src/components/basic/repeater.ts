@@ -46,7 +46,7 @@ namespace Pacem.Components {
      * </ol>
      * </pacem-repeater>
      */
-    @CustomElement({ tagName: 'pacem-repeater' })
+    @CustomElement({ tagName: P + '-repeater' })
     export class PacemRepeaterElement extends PacemEventTarget implements OnPropertyChanged, OnViewActivated, OnDisconnected {
 
         constructor() {
@@ -104,11 +104,14 @@ namespace Pacem.Components {
                 throw `Missing template element in ${PacemRepeaterElement.name}.`;
             // fill up
             let items = this._childItems,
-                index = 0
-                ;
-            for (var entity of this.datasource || []) {
-                this._setItem(entity, index, this._fragment);
-                index++;
+                index = 0;
+            try {
+                for (var entity of this.datasource || []) {
+                    this._setItem(entity, index, this._fragment);
+                    index++;
+                }
+            } catch (e) {
+                this.log(Logging.LogLevel.Error, e);
             }
             if (index < items.length) {
                 this._removeItems(index, items.length - 1);

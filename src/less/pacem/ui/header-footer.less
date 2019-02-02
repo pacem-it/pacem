@@ -1,38 +1,38 @@
 ﻿@import "../theme-dark";
 
-.pacem-body {
+.@{PCSS}-body {
 
-    &.pacem-animations {
+    &.@{PCSS}-animations {
 
         header[pacem],
-        .pacem-header,
+        .@{PCSS}-header,
         footer[pacem],
-        .pacem-footer {
+        .@{PCSS}-footer {
             transition: padding @easing_in_out_sine .3s;
         }
 
-        &.pacem-menu-close {
+        &.@{PCSS}-menu-close {
             header[pacem],
-            .pacem-header,
+            .@{PCSS}-header,
             footer[pacem],
-            .pacem-footer {
+            .@{PCSS}-footer {
                 transition-delay: .25s;
             }
         }
 
-        &.pacem-menu-open {
+        &.@{PCSS}-menu-open {
         }
     }
 }
 
 @media (min-width: 1200px) {
 
-    .pacem-body.pacem-menu-open {
+    .@{PCSS}-body.@{PCSS}-menu-open {
 
         header[pacem],
-        .pacem-header,
+        .@{PCSS}-header,
         footer[pacem],
-        .pacem-footer {
+        .@{PCSS}-footer {
             padding-left: 11 * @grid_spacing;
         }
     }

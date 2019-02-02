@@ -6,11 +6,11 @@ namespace Pacem.Components.Scaffolding {
     export interface Validator {
 
         invalid: boolean;
-        evaluate: (val: any) => PromiseLike<boolean>;
+        validate: (val: any) => PromiseLike<boolean>;
 
     }
 
-    export abstract class PacemBaseValidatorElement extends PacemFormRelevantElement implements OnViewActivated, OnPropertyChanged, Validator {
+    export abstract class PacemBaseValidatorElement extends PacemFormRelevantElement implements Validator {
 
         constructor() {
             super();
@@ -22,7 +22,7 @@ namespace Pacem.Components.Scaffolding {
 
         viewActivatedCallback() {
             super.viewActivatedCallback();
-            Utils.addClass(this, 'pacem-validator');
+            Utils.addClass(this, PCSS + '-validator');
         }
 
         propertyChangedCallback(name: string, old: any, val: any, first: boolean) {
@@ -42,13 +42,23 @@ namespace Pacem.Components.Scaffolding {
                         if (val != null) val.registerValidator(n, this);
                     }
                     break;
+                case 'disabled':
+                    (val ? form.unregisterValidator : form.registerValidator).apply(form, [this.watch, this]);
+                    break;
             }
         }
 
-        abstract evaluate(val: any): PromiseLike<boolean>;
+        validate(val: any): PromiseLike<boolean> {
+            if (this.disabled) {
+                return Utils.fromResult(true);
+            }
+            return this.evaluate(val);
+        }
+
+        protected abstract evaluate(val: any): PromiseLike<boolean>;
     }
 
-    const BASIC_VALIDATOR_TEMPLATE = `<pacem-span hide="{{ !:host.invalid  }}" text="{{ :host.errorMessage }}"></pacem-span>`;
+    const BASIC_VALIDATOR_TEMPLATE = `<${P}-span hide="{{ !:host.invalid  }}" text="{{ :host.errorMessage }}"></${P}-span>`;
 
     // #region TEXTUAL
 
@@ -56,7 +66,7 @@ namespace Pacem.Components.Scaffolding {
         return Utils.isNullOrEmpty(val);
     }
 
-    @CustomElement({ tagName: 'pacem-required-validator', template: BASIC_VALIDATOR_TEMPLATE, shadow: Defaults.USE_SHADOW_ROOT })
+    @CustomElement({ tagName: P + '-required-validator', template: BASIC_VALIDATOR_TEMPLATE, shadow: Defaults.USE_SHADOW_ROOT })
     export class PacemRequiredValidatorElement extends PacemBaseValidatorElement {
 
         evaluate(val: any) {
@@ -65,7 +75,7 @@ namespace Pacem.Components.Scaffolding {
         }
     }
 
-    @CustomElement({ tagName: 'pacem-regex-validator', template: BASIC_VALIDATOR_TEMPLATE, shadow: Defaults.USE_SHADOW_ROOT })
+    @CustomElement({ tagName: P + '-regex-validator', template: BASIC_VALIDATOR_TEMPLATE, shadow: Defaults.USE_SHADOW_ROOT })
     export class PacemRegexValidatorElement extends PacemBaseValidatorElement {
 
         @Watch({ converter: PropertyConverters.String }) pattern: string | RegExp;
@@ -85,7 +95,7 @@ namespace Pacem.Components.Scaffolding {
 
     }
 
-    @CustomElement({ tagName: 'pacem-length-validator', template: BASIC_VALIDATOR_TEMPLATE, shadow: Defaults.USE_SHADOW_ROOT })
+    @CustomElement({ tagName: P + '-length-validator', template: BASIC_VALIDATOR_TEMPLATE, shadow: Defaults.USE_SHADOW_ROOT })
     export class PacemLengthValidatorElement extends PacemBaseValidatorElement {
 
         @Watch({ converter: PropertyConverters.Number }) min: number;
@@ -105,7 +115,7 @@ namespace Pacem.Components.Scaffolding {
 
     // #region NUMERIC/ORDINAL
 
-    @CustomElement({ tagName: 'pacem-range-validator', template: BASIC_VALIDATOR_TEMPLATE, shadow: Defaults.USE_SHADOW_ROOT })
+    @CustomElement({ tagName: P + '-range-validator', template: BASIC_VALIDATOR_TEMPLATE, shadow: Defaults.USE_SHADOW_ROOT })
     export class PacemRangeValidatorElement extends PacemBaseValidatorElement {
 
         @Watch({ converter: PropertyConverters.Number }) min: any;
@@ -143,7 +153,7 @@ namespace Pacem.Components.Scaffolding {
 
     // #region COMPLEX
 
-    @CustomElement({ tagName: 'pacem-compare-validator', template: BASIC_VALIDATOR_TEMPLATE, shadow: Defaults.USE_SHADOW_ROOT })
+    @CustomElement({ tagName: P + '-compare-validator', template: BASIC_VALIDATOR_TEMPLATE, shadow: Defaults.USE_SHADOW_ROOT })
     export class PacemCompareValidatorElement extends PacemBaseValidatorElement {
 
         @Watch({ converter: PropertyConverters.String }) operator: 'equal' | 'lessOrEqual' | 'less' | 'greater' | 'greaterOrEqual' | 'notEqual';
@@ -182,8 +192,8 @@ namespace Pacem.Components.Scaffolding {
     // #endregion
 
     @CustomElement({
-        tagName: 'pacem-async-validator',
-        template: BASIC_VALIDATOR_TEMPLATE + `<pacem-fetch></pacem-fetch>`, shadow: Defaults.USE_SHADOW_ROOT
+        tagName: P + '-async-validator',
+        template: BASIC_VALIDATOR_TEMPLATE + `<${P}-fetch></${P}-fetch>`, shadow: Defaults.USE_SHADOW_ROOT
     })
     export class PacemAsyncValidatorElement extends PacemBaseValidatorElement {
 
@@ -216,7 +226,7 @@ namespace Pacem.Components.Scaffolding {
         }
 
         @Watch({ emit: false, converter: PropertyConverters.String }) url: string;
-        @ViewChild('pacem-fetch') _fetcher: Net.Fetcher;
+        @ViewChild(P + '-fetch') _fetcher: Net.Fetcher;
 
     }
 }

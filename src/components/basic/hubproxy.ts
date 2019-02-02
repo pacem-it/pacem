@@ -3,7 +3,7 @@
 
 namespace Pacem.Components {
 
-    @CustomElement({ tagName: 'pacem-hub-listener' })
+    @CustomElement({ tagName: P + '-hub-listener' })
     export class PacemHubListener extends PacemItemElement {
 
         @Watch({ emit: false, converter: PropertyConverters.String }) method: string;
@@ -36,7 +36,7 @@ namespace Pacem.Components {
 
     export declare type HubMethodCallback = (...args) => void;
 
-    @CustomElement({ tagName: 'pacem-hub-proxy' })
+    @CustomElement({ tagName: P + '-hub-proxy' })
     export class PacemHubProxy extends PacemItemsContainerElement<PacemHubListener> {
 
         validate(item: PacemHubListener): boolean {

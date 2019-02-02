@@ -1,7 +1,7 @@
 ﻿@import "../../shared";
 @import "../theme-dark";
 
-pacem-drag-drop {
+@{P}-drag-drop {
     .Inert();
 }
 
@@ -26,26 +26,26 @@ pacem-drag-drop {
     }
 }
 
-body.pacem-dragging {
+body.@{PCSS}-dragging {
     cursor: move;
 }
 
-.pacem-drag-lock:not(.pacem-dragging) {
+.@{PCSS}-drag-lock:not(.@{PCSS}-dragging) {
     animation: drag-lock .25s 1 @easing_in_out_sine normal both;
 }
 
-.pacem-dragging {
+.@{PCSS}-dragging {
     -ms-user-select: none !important;
     -moz-user-select: none !important;
     -webkit-user-select: none !important;
     user-select: none !important;
 }
 
-.pacem-dragging:not(body) {
+.@{PCSS}-dragging:not(body) {
     .Dragging();
 }
 
-.pacem-drag-floater {
+.@{PCSS}-drag-floater {
     opacity: .75;
     pointer-events: none;
     z-index: @hamburger-z-index - 1;

@@ -31,11 +31,12 @@ namespace Pacem.Js.CustomElements.Controllers
                 .FirstOrDefault();
         }
 
-        public IActionResult Index(string package, string view)
+        public IActionResult Index(string package, string view, string prefix)
         {
             MenuItem menuItem = FindMenuEntry(package, view);
             string title = menuItem?.Title ?? menuItem?.Label;
-            return View("/server/Views/Home/Index.cshtml", new ViewModel
+            string master = string.IsNullOrEmpty(prefix) ? "/server/Views/Home/Index.cshtml" : "/server/Views/Home/CustomPrefix.cshtml";
+            return View(master, new ViewModel
             {
                 Package = package,
                 View = view,

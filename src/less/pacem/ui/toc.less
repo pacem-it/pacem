@@ -1,13 +1,13 @@
 ﻿@import "../theme-dark";
 @import "shared";
 
-pacem-toc {
+@{P}-toc {
     display: block;
 }
 
-.pacem-toc {
+.@{PCSS}-toc {
 
-    > pacem-a {
+    >@{P}-a {
         display: block;
         border-left: 2px solid transparent;
         padding: 0 @grid_spacing / 2;
@@ -21,7 +21,7 @@ pacem-toc {
 }
 
 .toc-item,
-.pacem-toc-item {
+.@{PCSS}-toc-item {
     transition: padding @easing_out_sine .15s;
     cursor: pointer;
 

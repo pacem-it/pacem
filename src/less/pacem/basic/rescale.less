@@ -1,11 +1,11 @@
 ﻿@import "../../shared";
 @import "../theme-dark";
 
-pacem-rescale {
+@{P}-rescale {
     .Inert();
 }
 
-body.pacem-rescaling {
+body.@{PCSS}-rescaling {
     &.rescale-topleft {
         cursor: nw-resize !important;
     }
@@ -44,8 +44,8 @@ body.pacem-rescaling {
     user-select: none !important;
 }
 
-body:not(.pacem-rescaling) {
-    .pacem-rescale {
+body:not(.@{PCSS}-rescaling) {
+    .@{PCSS}-rescale {
 
         &.rescale-topleft {
             cursor: nw-resize;
@@ -86,10 +86,10 @@ body:not(.pacem-rescaling) {
     }
 }
 
-.pacem-rescalable {
+.@{PCSS}-rescalable {
     position: relative;
 
-    .pacem-rescale {
+    .@{PCSS}-rescale {
         position: absolute;
         @_sz: @grid_spacing / 4;
 

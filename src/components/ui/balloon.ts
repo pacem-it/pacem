@@ -63,13 +63,13 @@ namespace Pacem.Components.UI {
         'align'?: BalloonAlignment
     };
 
-    const allStyles = 'pacem-balloon balloon-right balloon-left balloon-bottom balloon-top balloon-start balloon-center balloon-end balloon-out balloon-in balloon-on';
+    const allStyles = PCSS + '-balloon balloon-right balloon-left balloon-bottom balloon-top balloon-start balloon-center balloon-end balloon-out balloon-in balloon-on';
 
     @CustomElement({
-        tagName: 'pacem-balloon',
+        tagName: P + '-balloon',
         shadow: Defaults.USE_SHADOW_ROOT,
-        template: `<pacem-position target="{{ :host.target }}" on-${PositionChangeEventName}=":host._onLayoutChange($event)"></pacem-position>
-<div class="pacem-balloon"><pacem-resize on-${ResizeEventName}=":host._onLayoutChange($event)"><pacem-content></pacem-content></pacem-resize></div>
+        template: `<${ P }-position target="{{ :host.target }}" on-${PositionChangeEventName}=":host._onLayoutChange($event)"></${ P }-position>
+<div class="${PCSS}-balloon"><${ P }-resize on-${ResizeEventName}=":host._onLayoutChange($event)"><${ P }-content></${ P }-content></${ P }-resize></div>
 <div class="corner top-left"></div><div class="corner bottom-left"></div><div class="corner top-right"></div><div class="corner bottom-right"></div>`
     })
     export class PacemBalloonElement extends PacemElement implements OnPropertyChanged, OnViewActivated {
@@ -83,9 +83,9 @@ namespace Pacem.Components.UI {
         private _options = balloonConsts.defaults;
         private _originalNeighborhood: { parent: Element, nextSibling?: Element } = null;
 
-        @ViewChild('.pacem-balloon') private container: HTMLElement;
-        @ViewChild('pacem-resize') private _resize: PacemResizeElement;
-        @ViewChild('pacem-position') private _position: PacemPositionElement;
+        @ViewChild(`.${PCSS}-balloon`) private container: HTMLElement;
+        @ViewChild(P +'-resize') private _resize: PacemResizeElement;
+        @ViewChild(P +'-position') private _position: PacemPositionElement;
 
         @Watch({ converter: PropertyConverters.Element }) target: HTMLElement;
         @Watch({ emit: false, converter: PropertyConverters.Json }) options: BalloonOptions;
@@ -156,8 +156,8 @@ namespace Pacem.Components.UI {
             const popup = this,
                 container = popup.container;
             //
-            if (popup && container && !Utils.hasClass(popup, 'pacem-balloon')) {
-                Utils.addClass(popup, 'pacem-balloon');
+            if (popup && container && !Utils.hasClass(popup, PCSS + '-balloon')) {
+                Utils.addClass(popup, PCSS + '-balloon');
                 popup.style.position = 'absolute';
                 container.style.position = 'relative';
                 container.style.zIndex = '1';

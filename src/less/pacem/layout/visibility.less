@@ -2,20 +2,31 @@
 @import "shared";
 @import "../theme-dark";
 
-.pacem-hide {
+.@{PCSS}-hide {
     display: none;
 }
 
-.pacem-invisibile {
+.@{PCSS}-invisibile {
     visibility: hidden;
 }
 
-.pacem-show {
+.@{PCSS}-show {
     display: inherit;
 }
 
 .display-block {
     display: block !important;
+}
+
+.display-grid {
+    display: grid !important;
+}
+
+.display-flex {
+    display: flex !important;
+    flex-flow: row wrap;
+    align-content: stretch;
+    align-items: flex-start;
 }
 
 .display-inline {

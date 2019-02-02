@@ -13,30 +13,30 @@
     .ListItem(@count, @count);
 }
 
-.pacem-animations {
+.@{PCSS}-animations {
 
-    .pacem-animatable-list {
+    .@{PCSS}-animatable-list {
 
         > * {
             animation: list-item .25s @easing_out_sine both;
             .ListItem(20);
         }
 
-        &.pacem-list-right {
+        &.@{PCSS}-list-right {
 
             > * {
                 animation-name: list-item-right;
             }
         }
 
-        &.pacem-list-left {
+        &.@{PCSS}-list-left {
 
             > * {
                 animation-name: list-item-left;
             }
         }
 
-        &.pacem-list-bottom {
+        &.@{PCSS}-list-bottom {
 
             > * {
                 animation-name: list-item-bottom;

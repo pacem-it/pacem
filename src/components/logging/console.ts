@@ -14,7 +14,7 @@ namespace Pacem.Components.Logging {
         error: true, info: true, warn: true
     };
 
-    @CustomElement({ tagName: 'pacem-console' })
+    @CustomElement({ tagName: P + '-console' })
     export class PacemConsoleElement extends PacemEventTarget implements Pacem.Logging.Logger, OnPropertyChanged {
 
         private _category: string;

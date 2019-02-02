@@ -4,7 +4,7 @@
 /// <reference path="input.ts" />
 namespace Pacem.Components.Scaffolding {
 
-    @CustomElement({ tagName: 'pacem-textarea-markdown', template: `<textarea class="pacem-input" pacem></textarea>${ CHAR_COUNTER_CHILD }<div class="pacem-readonly pacem-markdown"></div>`, shadow: Defaults.USE_SHADOW_ROOT })
+    @CustomElement({ tagName: P + '-textarea-markdown', template: `<textarea class="${PCSS}-input" pacem></textarea>${ CHAR_COUNTER_CHILD }<div class="${PCSS}-readonly ${PCSS}-markdown"></div>`, shadow: Defaults.USE_SHADOW_ROOT })
     export class PacemMarkdownTextAreaElement extends PacemTextualInputElement
         implements OnPropertyChanged, OnViewActivated, OnDisconnected {
 
@@ -17,7 +17,7 @@ namespace Pacem.Components.Scaffolding {
 
 
         @ViewChild('textarea') input: HTMLTextAreaElement;
-        @ViewChild('div.pacem-readonly') private _markdown: HTMLDivElement;
+        @ViewChild(`div.${PCSS}-readonly`) private _markdown: HTMLDivElement;
 
         protected toggleReadonlyView(readonly: boolean) {
             this.input.hidden = readonly;

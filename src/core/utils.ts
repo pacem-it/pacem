@@ -384,6 +384,13 @@ namespace Pacem {
             return el.lang || document.documentElement.lang || navigator.language;
         }
 
+        static jsonSortStringify(obj: {}): string {
+            if (Utils.isNull(obj)) {
+                return <any>obj;
+            }
+            return JSON.stringify(obj, Object.keys(obj).sort());
+        }
+
         static cookies(cookie = document.cookie) {
             const cookies = (cookie || '').split(';'),
                 retval: { [name: string]: string } = {};

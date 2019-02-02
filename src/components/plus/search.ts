@@ -4,16 +4,16 @@
 namespace Pacem.Components.Plus {
 
     @CustomElement({
-        tagName: 'pacem-search', shadow: Defaults.USE_SHADOW_ROOT,
-        template: `<pacem-fetch debounce="800" url="{{ :host.url }}" method="{{ :host.method }}">
-</pacem-fetch><pacem-input-search value="{{ :host.hint, twoway }}"></pacem-input-search>
-<pacem-repeater datasource="{{ ::_fetch.result }}">
-    <pacem-content></pacem-content>
-</pacem-repeater>`
+        tagName: P + '-search', shadow: Defaults.USE_SHADOW_ROOT,
+        template: `<${ P }-fetch debounce="800" url="{{ :host.url }}" method="{{ :host.method }}">
+</${ P }-fetch><${ P }-input-search value="{{ :host.hint, twoway }}"></${ P }-input-search>
+<${ P }-repeater datasource="{{ ::_fetch.result }}">
+    <${ P }-content></${ P }-content>
+</${ P }-repeater>`
     })
     export class PacemSearchElement extends PacemElement implements OnPropertyChanged{
 
-        @ViewChild('pacem-fetch') private _fetcher: Pacem.Components.PacemFetchElement;
+        @ViewChild(P + '-fetch') private _fetcher: Pacem.Components.PacemFetchElement;
 
         @Watch() datasource: any[];
         @Watch({ converter: PropertyConverters.String }) hint: string;

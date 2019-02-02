@@ -3,28 +3,28 @@
 namespace Pacem.Components.Scaffolding {
 
     @CustomElement({
-        tagName: 'pacem-select', template: `<pacem-repeater datasource="{{ :host.adaptedDatasource }}" on-${RepeaterItemCreateEventName}=":host.manageDom($event)">
-    <select class="pacem-select pacem-viewfinder">
-        <option value="" class="pacem-watermark"></option>
+        tagName: P + '-select', template: `<${ P }-repeater datasource="{{ :host.adaptedDatasource }}" on-${RepeaterItemCreateEventName}=":host._manageDom($event)">
+    <select class="${PCSS}-select ${PCSS}-viewfinder">
+        <option value="" class="${PCSS}-watermark"></option>
         <template>
             <option></option>
         </template>
     </select>
-</pacem-repeater><span class="pacem-readonly"><pacem-text text="{{ :host.viewValue }}"></pacem-text></span><pacem-content></pacem-content>`, shadow: Defaults.USE_SHADOW_ROOT
+</${ P }-repeater><span class="${PCSS}-readonly"><${ P }-text text="{{ :host.viewValue }}"></${ P }-text></span><${ P }-content></${ P }-content>`, shadow: Defaults.USE_SHADOW_ROOT
     })
-    export class PacemSelectElement extends PacemDataSourceElement implements OnViewActivated, OnPropertyChanged, OnDisconnected {
+    export class PacemSelectElement extends PacemDataSourceElement {
 
         constructor() {
             super();
         }
 
         @ViewChild('select') private _select: HTMLSelectElement;
-        @ViewChild('pacem-repeater') private repeater: PacemRepeaterElement;
-        @ViewChild('span.pacem-readonly') private span: HTMLSpanElement;
+        @ViewChild(P + '-repeater') private _repeater: PacemRepeaterElement;
+        @ViewChild(`span.${PCSS}-readonly`) private _span: HTMLSpanElement;
 
         protected toggleReadonlyView(readonly: boolean) {
-            this.repeater.hidden = readonly;
-            this.span.hidden = !readonly;
+            this._repeater.hidden = readonly;
+            this._span.hidden = !readonly;
         }
 
         // no actual need to be idem-potent...
@@ -33,7 +33,7 @@ namespace Pacem.Components.Scaffolding {
             return [this._select];
         }
 
-        private manageDom(evt: RepeaterItemEvent) {
+        private _manageDom(evt: RepeaterItemEvent) {
             const args = evt.detail;
             let option = <HTMLOptionElement>args.dom.find(o => o instanceof HTMLOptionElement);
             option.value = args.item.value;

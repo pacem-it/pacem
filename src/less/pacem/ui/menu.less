@@ -13,7 +13,7 @@
 @_brd_a: 3px;
 
 /*#region OVERLAPPING MENU*/
-pacem-menu {
+@{P}-menu {
     display: block;
     position: fixed;
     z-index: @hamburger-z-index;
@@ -23,7 +23,7 @@ pacem-menu {
     overflow: visible;
 }
 
-.pacem-hamburger-menu {
+.@{PCSS}-hamburger-menu {
     display: grid;
     grid-template-rows: @grid_cell // header 1
     1fr // main 2
@@ -52,49 +52,49 @@ pacem-menu {
             border-bottom: 1px solid @color_border_dark;
         }
 
-        .pacem-menu-item when (@menuitem_borders = true) {
+        .@{PCSS}-menu-item when (@menuitem_borders = true) {
             border-top: 1px solid @color_border_light;
             border-bottom: 1px solid @color_border_dark;
         }
 
-        .pacem-menu-group, .menu-group {
+        .@{PCSS}-menu-group, .menu-group {
             padding-left: @grid_spacing;
         }
 
-        .pacem-menu-group, .menu-group {
+        .@{PCSS}-menu-group, .menu-group {
             margin-bottom: @grid_spacing/3;
 
-            pacem-button, .pacem-button {
+           @{P}-button, .@{PCSS}-button {
                 margin: 0;
             }
 
             &.group-active{
-                .pacem-icon{
+                .@{PCSS}-icon{
                     color: @_clr_a_active;
                 }
             }
         }
 
-        .pacem-menu-item, .menu-item {
+        .@{PCSS}-menu-item, .menu-item {
 
-            pacem-button, button,
-            pacem-a, a {
+           @{P}-button, button,
+           @{P}-a, a {
                 display: block;
                 cursor: pointer;
                 box-sizing: border-box;
                 .Ellipsed();
             }
 
-            pacem-button,
-            pacem-a.pacem-button {
+           @{P}-button,
+           @{P}-a.@{PCSS}-button {
                 margin: 0;
             }
 
-            pacem-button {
+           @{P}-button {
                 padding: .25 * @grid_spacing @grid_spacing .25 * @grid_spacing 2 * @grid_spacing;
             }
 
-            pacem-a,
+           @{P}-a,
             a {
                 padding: .25 * @grid_spacing @grid_spacing .25 * @grid_spacing @grid_spacing - @_brd_a;
                 font-family: @menu_link_fontfamily;
@@ -102,14 +102,14 @@ pacem-menu {
                 border-left: @_brd_a solid fade(@_clr_a_active, 0);
             }
 
-            pacem-button::before {
+           @{P}-button::before {
                 left: round(5 * @grid_spacing / 6);
                 top: round(@grid_spacing/8);
             }
 
-            pacem-button,
+           @{P}-button,
             button,
-            pacem-a,
+           @{P}-a,
             a {
                 text-align: left;
                 text-transform: none;
@@ -153,10 +153,10 @@ pacem-menu {
             padding-top: @grid_spacing;
         }
 
-        pacem-collapse {
-            .pacem-menu-item,
+       @{P}-collapse {
+            .@{PCSS}-menu-item,
             .menu-item {
-                pacem-a, a {
+               @{P}-a, a {
                     padding-left: 2 * @grid_spacing;
                 }
             }
@@ -164,8 +164,8 @@ pacem-menu {
     }
 
     &.menu-close,
-    &.pacem-hidden {
-        // reset from .pacem-hidden
+    &.@{PCSS}-hidden {
+        // reset from .@{PCSS}-hidden
         opacity: 1;
         //
         transform: translateX(-100%) translateY(0) translateZ(0);
@@ -176,7 +176,7 @@ pacem-menu {
     }
 
     &.menu-open,
-    &.pacem-shown {
+    &.@{PCSS}-shown {
         background-color: @color_lightbox_back;
         transform: translateX(0) translateY(0) translateZ(0);
 
@@ -186,9 +186,9 @@ pacem-menu {
     }
 }
 
-pacem-menu {
-    pacem-button.pacem-back,
-    pacem-button.pacem-hamburger {
+@{P}-menu {
+   @{P}-button.@{PCSS}-back,
+   @{P}-button.@{PCSS}-hamburger {
         // reset from pacem-button
         padding: 0;
         min-width: 0;
@@ -206,17 +206,17 @@ pacem-menu {
         background-size: .8 * @grid_cell;
         margin: 0;
 
-        button.pacem-button {
+        button.@{PCSS}-button {
             font-size: 0;
         }
     }
 
-    pacem-button {
+   @{P}-button {
         @_sz: round(.5 * @grid_cell);
         @_pad: round(.5 * (@grid_cell - @_sz));
 
-        &.pacem-hamburger,
-        &.pacem-back {
+        &.@{PCSS}-hamburger,
+        &.@{PCSS}-back {
             top: 0;
             left: 0;
 
@@ -228,7 +228,7 @@ pacem-menu {
             }
         }
 
-        &.pacem-back {
+        &.@{PCSS}-back {
             transition: transform .25s ease-out .075s, opacity .3s;
             transform: translateX(-2 * @grid_cell);
 
@@ -237,13 +237,13 @@ pacem-menu {
             }
 
             &.menu-open,
-            &.pacem-shown {
+            &.@{PCSS}-shown {
                 transition-delay: .625s;
                 transform: translateX(0) translateY(0) translateZ(0);
             }
         }
 
-        &.pacem-hamburger {
+        &.@{PCSS}-hamburger {
             transition: transform .25s ease-in-out, opacity .3s;
             left: 0;
 
@@ -253,13 +253,13 @@ pacem-menu {
             }
 
             &.menu-open,
-            &.pacem-shown {
+            &.@{PCSS}-shown {
                 transition-delay: .4s;
                 transform: scale(1) translateZ(0);
             }
 
             &.menu-close,
-            &.pacem-hidden {
+            &.@{PCSS}-hidden {
                 //opacity: 1;
                 transform: scale(0) translateZ(0);
             }
@@ -271,10 +271,10 @@ pacem-menu {
 /*#region ASIDE MENU */
 @media screen and (min-width: 1200px) {
 
-    pacem-menu {
+   @{P}-menu {
         font-size: .8em;
 
-        .pacem-hamburger-menu {
+        .@{PCSS}-hamburger-menu {
             width: @_w;
 
             nav {
@@ -286,7 +286,7 @@ pacem-menu {
 
         &.menu-header-off,
         &[header] {
-            .pacem-hamburger-menu {
+            .@{PCSS}-hamburger-menu {
 
                 nav {
                     grid-row-start: 2;
@@ -296,7 +296,7 @@ pacem-menu {
 
         &.menu-footer-off,
         &[footer] {
-            .pacem-hamburger-menu {
+            .@{PCSS}-hamburger-menu {
                 grid-template-rows: @grid_cell // header 1
                 1fr // main 2
                 @grid_spacing // toolbar 3
@@ -309,7 +309,7 @@ pacem-menu {
 
         &.menu-toolbar-off,
         &[toolbar] {
-            .pacem-hamburger-menu {
+            .@{PCSS}-hamburger-menu {
                 //padding-bottom: @grid_spacing;
                 nav {
                     grid-row-end: 3;
@@ -317,17 +317,17 @@ pacem-menu {
             }
         }
 
-        .pacem-hamburger-menu {
+        .@{PCSS}-hamburger-menu {
             transform: translateX(-100%);
         }
 
-        .pacem-hamburger-menu.menu-open,
-        .pacem-hamburger-menu.pacem-shown {
+        .@{PCSS}-hamburger-menu.menu-open,
+        .@{PCSS}-hamburger-menu.@{PCSS}-shown {
             background-color: rgba(0,0,0,0);
             transform: translateX(0) translateY(0) translateZ(0);
         }
 
-        .pacem-hamburger-menu nav {
+        .@{PCSS}-hamburger-menu nav {
             box-shadow: none;
             box-sizing: border-box;
             //.Box();
@@ -336,18 +336,18 @@ pacem-menu {
             //.Background(@color_background);
         }
 
-        pacem-button.pacem-hamburger {
+       @{P}-button.@{PCSS}-hamburger {
             //display: none;
         }
 
-        pacem-button.pacem-back {
+       @{P}-button.@{PCSS}-back {
             left: @_w - @grid_cell;
             transform: translateX(@grid_spacing) scale(0.67);
             opacity: 0;
             pointer-events: none;
 
             &.menu-open,
-            &.pacem-shown {
+            &.@{PCSS}-shown {
                 transform: translateX(0);
                 opacity: 1;
                 pointer-events: all;
@@ -355,7 +355,7 @@ pacem-menu {
         }
 
         nav {
-            a, pacem-a {
+            a,@{P}-a {
                 color: @_clr_a;
 
                 &:hover {
@@ -371,12 +371,12 @@ pacem-menu {
 // see body modifications in `../body.less`
 
 
-.pacem-animations {
+.@{PCSS}-animations {
 
-    .pacem-menu-item, .menu-item {
+    .@{PCSS}-menu-item, .menu-item {
 
-        pacem-button, button,
-        pacem-a, a {
+       @{P}-button, button,
+       @{P}-a, a {
             transition: background-color .2s, border-color ease-in .25s;
         }
     }

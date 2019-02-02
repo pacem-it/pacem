@@ -4,29 +4,33 @@ namespace Pacem.Components.Plus {
 
     // TODO: use onewaytosource as a binding mode
     @CustomElement({
-        tagName: 'pacem-modal-form', shadow: Defaults.USE_SHADOW_ROOT,
-        template: `<pacem-lightbox modal="true">
-        <pacem-form on-submit=":host._onSubmit($event)" action="{{ :host.action }}" entity="{{ :host.state }}" on-success=":host._broadcast($event)" on-fail=":host._broadcast($event)"
+        tagName: P + '-modal-form', shadow: Defaults.USE_SHADOW_ROOT,
+        template: `<${ P }-lightbox modal="true">
+        <${ P }-form on-submit=":host._onSubmit($event)" action="{{ :host.action }}" entity="{{ :host.state }}" on-success=":host._broadcast($event)" on-fail=":host._broadcast($event)"
             success="{{ :host.success, twoway }}" fail="{{ :host.fail, twoway }}">
-            <pacem-repeater datasource="{{ :host.metadata }}" class="pacem-animatable-list pacem-list-bottom">
-                <template>
-                    <pacem-form-field entity="{{ :host.state, twoway }}" metadata="{{ ^item }}"></pacem-form-field>
-                </template>
-            </pacem-repeater>
-        </pacem-form>
-        <pacem-fetch method="${Pacem.Net.HttpMethod.Post}" headers="{{ :host.fetchHeaders || {} }}"></pacem-fetch> 
-    <div class="pacem-dialog-buttons">
-        <pacem-button on-click=":host._submit($event)"
-            class="button primary" disabled="{{ !(::_form.valid && ::_form.dirty) || ::_fetcher.fetching }}">Ok</pacem-button>
-        <pacem-button on-click=":host._cancel($event)" class="button" disabled="{{ ::_fetcher.fetching }}">Cancel</pacem-button>
+            <${ P}-repeater datasource="{{ :host.metadata && (:host.metadata.props || :host.metadata) }}" class="${PCSS}-animatable-list ${PCSS}-list-bottom">
+                <${P}-panel css="{{ :host.metadata.css }}" css-class="{{ :host.metadata.cssClass }}">
+                    <template>
+                        <${ P}-form-field css-class="{{ ^item.display && ^item.display.cssClass }}" css="{{ ^item.display && ^item.display.css }}"
+                                          fetch-headers="{{ :host.fetchHeaders }}" fetch-credentials="{{ :host.fetchCredentials }}"
+                                          entity="{{ :host.state, twoway }}" metadata="{{ ^item }}"></${ P }-form-field>
+                    </template>
+                </${P}-panel>
+            </${ P }-repeater>
+        </${ P }-form>
+        <${ P}-fetch method="${Pacem.Net.HttpMethod.Post}" headers="{{ :host.fetchHeaders }}" credentials="{{ :host.fetchCredentials }}"></${ P }-fetch> 
+    <div class="${PCSS}-dialog-buttons">
+        <${ P }-button on-click=":host._submit($event)"
+            class="button primary" disabled="{{ !(::_form.valid && ::_form.dirty) || ::_fetcher.fetching }}">Ok</${ P }-button>
+        <${ P }-button on-click=":host._cancel($event)" class="button" disabled="{{ ::_fetcher.fetching }}">Cancel</${ P }-button>
     </div>
-    <pacem-loader type="{{ :host.loaderType }}" class="pacem-hover loader-primary loader-small" active="{{ ::_fetcher.fetching }}"></pacem-loader>
-</pacem-lightbox>`
+    <${ P }-loader type="{{ :host.loaderType }}" class="${PCSS}-hover loader-primary loader-small" active="{{ ::_fetcher.fetching }}"></${ P }-loader>
+</${ P }-lightbox>`
     })
-    export class PacemModalFormElement extends UI.PacemDialogBase implements OnViewActivated, OnPropertyChanged {
+    export class PacemModalFormElement extends UI.PacemDialogBase implements Pacem.Net.OAuthFetchable {
         
         @Watch()
-        metadata: Scaffolding.PropertyMetadata[];
+        metadata: Pacem.Scaffolding.EntityMetadata | Scaffolding.PropertyMetadata[];
 
         @Watch({ converter: PropertyConverters.String })
         action: string;
@@ -40,22 +44,25 @@ namespace Pacem.Components.Plus {
         @Watch({ converter: PropertyConverters.Boolean })
         fail: boolean;
 
-        @Watch()
-        fetchHeaders: any;
+        @Watch({ emit: false, converter: PropertyConverters.Json })
+        fetchHeaders: { [key: string]: string };
 
-        @ViewChild('pacem-lightbox') protected lightbox: UI.PacemLightboxElement;
-        @ViewChild('pacem-form') private _form: Scaffolding.PacemFormElement;
-        @ViewChild('pacem-fetch') private _fetcher: PacemFetchElement;
+        @Watch({ emit: false, converter: PropertyConverters.String })
+        fetchCredentials: RequestCredentials;
+
+        @ViewChild(P + '-lightbox') protected lightbox: UI.PacemLightboxElement;
+        @ViewChild(P + '-form') private _form: Scaffolding.PacemFormElement;
+        @ViewChild(P + '-fetch') private _fetcher: PacemFetchElement;
 
         viewActivatedCallback() {
             super.viewActivatedCallback();
             // HACK: move the buttons outside the .pacem-scrollable element in the lightbox
-            var lightboxCore = this.querySelector('.pacem-lightbox');
+            var lightboxCore = this.querySelector(`.${PCSS}-lightbox`);
             lightboxCore.appendChild(
-                this.querySelector('.pacem-dialog-buttons')
+                this.querySelector(`.${PCSS}-dialog-buttons`)
             );
             lightboxCore.appendChild(
-                this.querySelector('pacem-loader')
+                this.querySelector(P + '-loader')
             );
         }
 

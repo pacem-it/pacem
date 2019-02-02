@@ -75,8 +75,8 @@ namespace Pacem.Components {
         constructor(private _element: HTMLElement | SVGElement, private _swiper: Pacem.UI.Swiper
             , private _logFn: (level: Logging.LogLevel, message: string, category?: string) => void) {
 
-            Utils.addClass(_element, 'pacem-swipe-lock');
-            Utils.removeClass(_element, 'pacem-swipe-back');
+            Utils.addClass(_element, PCSS + '-swipe-lock');
+            Utils.removeClass(_element, PCSS + '-swipe-back');
             this._originalTransform = Utils.deserializeTransform(getComputedStyle(_element));
             // clientWidth causes reflow: use it only once here in the constructor.
             this._halfElementWidth = .5 * _element.clientWidth;
@@ -92,7 +92,7 @@ namespace Pacem.Components {
             DEL_VAL(el, MOUSEDOWN);
             DEL_VAL(el, SWIPE_DATA);
             DEL_VAL(el, DELEGATE);
-            Utils.removeClass(el, 'pacem-swipe-lock');
+            Utils.removeClass(el, PCSS + '-swipe-lock');
             window.removeEventListener('mouseup', this._endHandler, false);
             window.removeEventListener('touchend', this._endHandler, false);
             window.removeEventListener('mousemove', this._moveHandler, false);
@@ -148,7 +148,7 @@ namespace Pacem.Components {
                     swipe.dispatchEvent(new UI.SwipeEvent(args2.direction === 'left' ? UI.SwipeEventType.SwipeLeft : UI.SwipeEventType.SwipeRight, args2));
                 } else {
                     this._logFn(Logging.LogLevel.Debug, `Rolling back: kinetic ${kinetic} < elastic ${elastic})`);
-                    Utils.addClass(el, 'pacem-swipe-back');
+                    Utils.addClass(el, PCSS + '-swipe-back');
                 }
 
                 el.style.transform = '';
@@ -209,7 +209,7 @@ namespace Pacem.Components {
     const k_swipe: number = 0.15;
     const k_pan: number = 20.0;
 
-    @CustomElement({ tagName: 'pacem-swipe' })
+    @CustomElement({ tagName: P + '-swipe' })
     export class PacemSwipeElement extends Pacem.Behaviors.PacemBehavior implements Pacem.UI.Swiper {
 
         private _startHandler = (evt: TouchEvent | MouseEvent | PointerEvent) => {

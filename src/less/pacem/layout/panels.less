@@ -8,24 +8,24 @@
     .PanelColorize(panel, @_clr);
 }
 
-.pacem-scrollable {
+.@{PCSS}-scrollable {
     display: block;
     overflow: hidden;
     overflow-y: auto;
     box-sizing: border-box;
 }
 
-.pacem-panel,
-.pacem-wrapper {
+.@{PCSS}-panel,
+.@{PCSS}-wrapper {
     box-sizing: border-box;
     margin: 0 @grid_spacing/2 @grid_spacing @grid_spacing/2;
 }
 
-.pacem-panel.panel-lonely {
+.@{PCSS}-panel.panel-lonely {
     margin: 0;
 }
 
-.pacem-panel {
+.@{PCSS}-panel {
     .Panel(panel);
     display: block;
 
@@ -34,16 +34,16 @@
         padding-bottom: @grid_spacing/2;
     }
 
-    .panel-body.pacem-flex,
-    .panel-body.pacem-row {
+    .panel-body.@{PCSS}-flex,
+    .panel-body.@{PCSS}-row {
         //margin: -@grid_spacing/2 -(@grid_spacing * 7/6) -7 * @grid_spacing/4 -(@grid_spacing * 7/6);
         margin: -@grid_spacing/2 -(@grid_spacing * 7/6) 0 -(@grid_spacing * 7/6);
     }
 
-    .panel-body.pacem-grid {
+    .panel-body.@{PCSS}-grid {
         padding: 0;
 
-        .pacem-panel {
+        .@{PCSS}-panel {
             margin: 0;
         }
     }
@@ -61,7 +61,7 @@
     }
 }
 /* #region MASTER PANEL */
-.pacem-wrapper {
+.@{PCSS}-wrapper {
     @_brd_in_clr: #595a58;
     @_brd_in_w: 2px;
     border: @grid_spacing/3 solid #868584;
@@ -69,18 +69,18 @@
     padding: @_brd_in_w;
     border-radius: @border_radius;
 
-    .pacem-row,
-    .pacem-flex {
+    .@{PCSS}-row,
+    .@{PCSS}-flex {
         margin: 0 @grid_spacing/3;
     }
 
-    .pacem-grid {
+    .@{PCSS}-grid {
         @_gap: @grid_spacing/1.5;
         margin: 0 @_gap @_gap @_gap;
         grid-gap: @_gap;
     }
 
-    .pacem-panel {
+    .@{PCSS}-panel {
         margin: 0 @grid_spacing/3 @grid_spacing/1.5 @grid_spacing/3;
         padding-bottom: 0;
 
@@ -105,7 +105,7 @@
     }
 }
 
-.pacem-panel.panel-master {
+.@{PCSS}-panel.panel-master {
     .PanelColorize(@color_default_inv);
     background-color: @color_default;
 
@@ -124,7 +124,7 @@
 
     .tools {
 
-        pacem-button:before {
+       @{P}-button:before {
             color: @color_default_inv;
         }
     }

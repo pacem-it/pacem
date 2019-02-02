@@ -23,6 +23,17 @@ namespace Pacem.Tests {
             });
 
         }
+    },
+    {
+        name: 'LCD', test: function () {
+
+            it('Should work', function () {
+
+                const lcd = Pacem.Maths.lcd(3, 4, 5, 6, 7, 13);
+                expect(lcd).toEqual(13 * 7 * 12 * 5);
+            });
+
+        }
     }
     ];
 

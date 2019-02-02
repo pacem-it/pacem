@@ -2,38 +2,38 @@
 @import "../theme-dark";
 @import "shared";
 
-pacem-latlng {
+@{P}-latlng {
     .FormFieldItemWrapper();
     .FormFieldItemMultiline();
 
-    .pacem-map {
+    .@{PCSS}-map {
         margin-top: @grid_spacing/2;
     }
 
-    .pacem-latlng {
-        .pacem-latlng-fields {
+    .@{PCSS}-latlng {
+        .@{PCSS}-latlng-fields {
 
-            pacem-input-number {
+           @{P}-input-number {
                 padding-left: @grid_spacing;
                 position: relative;
                 box-sizing: border-box;
 
-                .pacem-input {
+                .@{PCSS}-input {
                     min-width: @field_min_width - @grid_spacing;
                     padding-left: @grid_spacing/6;
                     text-align: left;
                 }
 
-                &.pacem-lat:before {
+                &.@{PCSS}-lat:before {
                     .Icon('swap_vert');
                 }
 
-                &.pacem-lng:before {
+                &.@{PCSS}-lng:before {
                     .Icon('swap_horiz');
                 }
 
-                &.pacem-lat:before,
-                &.pacem-lng:before {
+                &.@{PCSS}-lat:before,
+                &.@{PCSS}-lng:before {
                     left: 0;
                     color: @color_default;
                     line-height: @field_height;
@@ -82,7 +82,7 @@ pacem-latlng {
                 &:nth-of-type(3) {
                     color: fade(@color_tech, 100);
 
-                    pacem-span {
+                   @{P}-span {
                         position: relative;
                         padding-left: @grid_spacing;
                         display: inline-block;
@@ -96,37 +96,37 @@ pacem-latlng {
                     }
                 }
 
-                pacem-span.pacem-lat-north:before {
+               @{P}-span.@{PCSS}-lat-north:before {
                     content: 'N';
                 }
 
-                pacem-span.pacem-lat-south:before {
+               @{P}-span.@{PCSS}-lat-south:before {
                     content: 'S';
                 }
 
-                pacem-span.pacem-lng-east:before {
+               @{P}-span.@{PCSS}-lng-east:before {
                     content: 'E';
                 }
 
-                pacem-span.pacem-lng-west:before {
+               @{P}-span.@{PCSS}-lng-west:before {
                     content: 'W';
                 }
             }
 
-            &.pacem-hidden {
+            &.@{PCSS}-hidden {
                 transition: all .3s;
                 transform: none;
                 height: 0;
             }
 
-            &.pacem-shown {
+            &.@{PCSS}-shown {
                 transition: all .3s /*cubic-bezier(0.23, 1, 0.32, 1)*/ .1s;
                 transform: none;
             }
         }
     }
 
-    .pacem-readonly {
+    .@{PCSS}-readonly {
         padding-left: @grid_spacing;
         .Ellipsed(@field_min_width_wide);
 

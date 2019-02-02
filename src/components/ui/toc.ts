@@ -2,11 +2,11 @@
 namespace Pacem.Components.UI {
 
     @CustomElement({
-        tagName: 'pacem-toc', shadow: Defaults.USE_SHADOW_ROOT,
-        template: `<pacem-scroll-aware on-${ScrollEventName}=":host._onScroll($event)" url="{{ :host.url }}"></pacem-scroll-aware>
-<pacem-repeater><nav class="pacem-toc"><template>
-    <pacem-a on-click=":host._startScrollTo(^item, $event)" css-class="{{ {'toc-focus': ^item.focus} }}" href="{{ ^item.url }}"><pacem-text text="{{ ^item.label }}"></pacem-text></pacem-a>
-</template></nav></pacem-repeater>`
+        tagName: P + '-toc', shadow: Defaults.USE_SHADOW_ROOT,
+        template: `<${ P }-scroll-aware on-${ScrollEventName}=":host._onScroll($event)" url="{{ :host.url }}"></${ P }-scroll-aware>
+<${ P }-repeater><nav class="${PCSS}-toc"><template>
+    <${ P }-a on-click=":host._startScrollTo(^item, $event)" css-class="{{ {'toc-focus': ^item.focus} }}" href="{{ ^item.url }}"><${ P }-text text="{{ ^item.label }}"></${ P }-text></${ P }-a>
+</template></nav></${ P }-repeater>`
     })
     export class PacemTocElement extends PacemElement {
 
@@ -18,7 +18,7 @@ namespace Pacem.Components.UI {
         @Watch({ emit: false, converter: PropertyConverters.Number }) offset: number;
         @Watch({ emit: false, converter: PropertyConverters.Element }) target: HTMLElement;
 
-        @ViewChild('pacem-repeater') private _repeater: PacemRepeaterElement;
+        @ViewChild(P + '-repeater') private _repeater: PacemRepeaterElement;
 
         propertyChangedCallback(name: string, old: any, val: any, first?: boolean) {
             super.propertyChangedCallback(name, old, val, first);
@@ -126,7 +126,7 @@ namespace Pacem.Components.UI {
             // reset items
             for (let item of this._items) {
                 item.dom.removeEventListener('click', this._scrollToSelf, false);
-                Utils.removeClass(item.dom, 'pacem-toc-item');
+                Utils.removeClass(item.dom, PCSS + '-toc-item');
             }
             //
             const selector = this.selector;
@@ -139,7 +139,7 @@ namespace Pacem.Components.UI {
             for (let j = 0; j < items.length; j++) {
                 const dom = <HTMLElement>items.item(j);
                 dom.addEventListener('click', this._scrollToSelf, false);
-                Utils.addClass(dom, 'pacem-toc-item');
+                Utils.addClass(dom, PCSS + '-toc-item');
                 elements.push({ dom: dom, top: this._getTop(dom) });
             }
 

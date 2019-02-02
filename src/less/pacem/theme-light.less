@@ -32,6 +32,7 @@
 @border_radius: 6px;
 /*#region SCAFFOLDING_VARIABLES*/
 @color_input_back: rgba(0,0,0,0.025);
+@color_input_fore: fade(@color_default, 75);
 /*#endregion*/
 /*#region UI VARIABLES*/
 // button
@@ -52,7 +53,7 @@
 @color_suggest_border_light: rgba(255,255,255,0.8);
 @color_suggest_border_dark: rgba(0,0,0,0.075);
 // lightbox
-@color_lightbox_back: fade(@color_dark, 90);
+@color_lightbox_back: rgba(0,0,0,0.1);
 
 @color_marquee_back: @color_lightblue;
 @color_marquee_fore: @color_default;
@@ -65,6 +66,7 @@
 @color_field_back: #fff;
 @border_field_size: 1px;
 @color_field_label: @color_teal;
+@border_field_underline: false;
 
 /*#endregion*/
 /*.FormFieldItemBorders() {

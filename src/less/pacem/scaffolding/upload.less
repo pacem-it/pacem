@@ -1,9 +1,9 @@
 ﻿@import "../../shared";
 @import "../theme-dark";
 
-pacem-upload {
+@{P}-upload {
 
-    .pacem-upload {
+    .@{PCSS}-upload {
         width: @grid_spacing;
         height: @grid_spacing;
         position: relative;
@@ -26,8 +26,8 @@ pacem-upload {
             .UploadButton();
         }
 
-        .pacem-upload-filewrapper,
-        pacem-button {
+        .@{PCSS}-upload-filewrapper,
+       @{P}-button {
             .UploadButton();
             width: @grid_spacing;
             height: @grid_spacing;
@@ -39,30 +39,30 @@ pacem-upload {
             }
         }
 
-        .pacem-upload-filewrapper:before {
+        .@{PCSS}-upload-filewrapper:before {
             .Icon('file_upload');
         }
 
-        pacem-button {
+       @{P}-button {
             font-size: 0;
             min-width: 0;
 
-            &.pacem-upload-retry:before {
+            &.@{PCSS}-upload-retry:before {
                 .Icon('refresh');
             }
 
-            &.pacem-upload-undo:before {
+            &.@{PCSS}-upload-undo:before {
                 .Icon('cancel');
             }
         }
     }
 }
 
-pacem-upload .pacem-upload.pacem-progress {
+@{P}-upload .@{PCSS}-upload.@{PCSS}-progress {
     height: @grid_cell;
     width: @grid_cell;
 
-    pacem-tuner {
+   @{P}-tuner {
         pointer-events: none;
         position: absolute;
         top: 0;
@@ -72,17 +72,17 @@ pacem-upload .pacem-upload.pacem-progress {
         height: @grid_cell;
     }
 
-    .pacem-upload-filewrapper,
-    pacem-button {
+    .@{PCSS}-upload-filewrapper,
+   @{P}-button {
         top: .5 * (@grid_cell - @grid_spacing);
         left: .5 *(@grid_cell - @grid_spacing);
     }
 }
 
 
-.pacem-animations {
+.@{PCSS}-animations {
 
-    pacem-upload .pacem-upload-filewrapper {
+   @{P}-upload .@{PCSS}-upload-filewrapper {
         .Animatable(pop-anim, .55s, @easing_out_back);
     }
 }

@@ -1,18 +1,21 @@
 ﻿@import "shared";
 
-pacem-textarea {
+@{P}-textarea {
     .FormFieldItemMultiline();
-    /*textarea.pacem-input {
+    /*textarea.@{PCSS}-input {
         //display: block;
         line-height: 1;
         flex: 1 0 100%;
     }*/
-    .pacem-readonly {
-        line-height: 1;
+    .@{PCSS}-readonly {
         white-space: pre-line;
     }
 
-    &.pacem-stretch {
+    &.@{PCSS}-readonly {
+        min-width: unset;
+    }
+
+    &.@{PCSS}-stretch {
         .FormFieldStretch();
     }
 }

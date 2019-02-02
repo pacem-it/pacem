@@ -19,8 +19,11 @@ namespace Pacem.Components.Scaffolding {
 
     const SUBMIT_CANCELLATION_TOKEN = false;
 
-    @CustomElement({ tagName: 'pacem-form' })
-    export class PacemFormElement extends PacemFormRelevantElement implements OnPropertyChanged, OnViewActivated, OnDisconnected {
+    @CustomElement({ tagName: P + '-form' })
+    export class PacemFormElement extends PacemFormRelevantElement implements Pacem.Net.OAuthFetchable {
+
+        @Watch({ emit: false, converter: PropertyConverters.String }) fetchCredentials: RequestCredentials;
+        @Watch({ emit: false, converter: PropertyConverters.Json }) fetchHeaders: { [key: string]: string; };
 
         constructor() {
             super();
@@ -29,7 +32,7 @@ namespace Pacem.Components.Scaffolding {
         propertyChangedCallback(name: string, old: any, val: any, first: boolean) {
             super.propertyChangedCallback(name, old, val, first);
             if ((name === 'metadata' && this.autogenerate === true) ||
-                (name === 'autogenerate' && val === true && this.metadata && this.metadata.length > 0)) {
+                (name === 'autogenerate' && val === true && this.metadata && (this.metadata['props'] || this.metadata).length > 0)) {
                 this._buildUpForm();
             } else {
                 switch (name) {
@@ -51,24 +54,36 @@ namespace Pacem.Components.Scaffolding {
             super.disconnectedCallback();
         }
 
+        @Debounce(100)
         private _buildUpForm() {
             const key = '_' + Pacem.Utils.uniqueCode();
             const uid = this.id = (this.id || key);
             const f_uid = 'fetch' + key;
-            // build-up dynamically
-            this.innerHTML = `<form id="frm_${uid}" class="pacem-form" pacem novalidate><pacem-repeater class="pacem-animatable-list pacem-list-bottom" datasource="{{ #${uid}.metadata }}">
-    <template>
-        <pacem-form-field logger="{{ #${uid}.logger }}" entity="{{ #${uid}.entity, twoway }}" metadata="{{ ^item }}" readonly="{{ #${uid}.readonly }}"></pacem-form-field>
-    </template>
-</pacem-repeater>
-<pacem-fetch logger="{{ #${uid}.logger }}" id="${f_uid}" method="${Pacem.Net.HttpMethod.Post}"></pacem-fetch> 
-<pacem-button logger="{{ #${uid}.logger }}" on-click="#${uid}._submit(#${f_uid}, $event)" type="submit" hide="{{ #${uid}.readonly || Pacem.Utils.isNullOrEmpty(#${uid}.action) }}" class="button primary" disabled="{{ !(#${uid}.valid && #${uid}.dirty) || #${f_uid}.fetching }}">Ok</pacem-button>
-<pacem-button logger="{{ #${uid}.logger }}" on-click="#${uid}._reset($event)" type="reset" class="button" hide="{{ #${uid}.readonly || !#${uid}.dirty }}" disabled="{{ #${f_uid}.fetching }}">Reset</pacem-button>
-</form>`;
-            document.getElementById('frm_' + uid).addEventListener('submit', Pacem.avoidHandler, false);
-            document.getElementById('frm_' + uid).addEventListener('keyup', (evt) => {
+            //
+            const form = document.createElement('form');
+            form.id = "frm_" + uid;
+            form.className = PCSS + '-form';
+            form.setAttribute('pacem', '');
+            form.setAttribute('novalidate', '');
+            const html = `<${P}-repeater class="${PCSS}-animatable-list ${PCSS}-list-bottom" datasource="{{ #${uid}.metadata && (#${uid}.metadata.props || #${uid}.metadata) }}">
+    <${P}-panel css="{{ #${uid}.metadata.css }}" css-class="{{ #${uid}.metadata.cssClass }}">
+        <template>
+            <${P}-form-field css-class="{{ ^item.display && ^item.display.cssClass }}" css="{{ ^item.display && ^item.display.css }}"
+                             fetch-credentials="{{ #${uid}.fetchCredentials }}" fetch-headers="{{ #${uid}.fetchHeaders }}"
+                             logger="{{ #${uid}.logger }}" entity="{{ #${uid}.entity, twoway }}" metadata="{{ ^item }}" readonly="{{ #${uid}.readonly }}"></${P}-form-field>
+        </template>
+    </${P}-panel>
+</${P}-repeater>
+<${P}-fetch logger="{{ #${uid}.logger }}" id="${f_uid}" method="${Pacem.Net.HttpMethod.Post}" credentials="{{ #${uid}.fetchCredentials }}" headers="{{ #${uid}.fetchHeaders }}"></${P}-fetch> 
+<${P}-button logger="{{ #${uid}.logger }}" on-click="#${uid}._submit(#${f_uid}, $event)" type="submit" hide="{{ #${uid}.readonly || Pacem.Utils.isNullOrEmpty(#${uid}.action) }}" class="button primary" disabled="{{ !(#${uid}.valid && #${uid}.dirty) || #${f_uid}.fetching }}">Ok</${P}-button>
+<${P}-button logger="{{ #${uid}.logger }}" on-click="#${uid}._reset($event)" type="reset" class="button" hide="{{ #${uid}.readonly || !#${uid}.dirty }}" disabled="{{ #${f_uid}.fetching }}">Reset</${P}-button>`;
+            form.innerHTML = html;
+            this.innerHTML = '';
+            this.appendChild(form);
+            form.addEventListener('submit', Pacem.avoidHandler, false);
+            form.addEventListener('keyup', (evt) => {
                 if (evt.keyCode === 13) {
-                    let btn: Pacem.Components.UI.PacemButtonElement = (<HTMLFormElement>evt.currentTarget).querySelector('pacem-button[type=submit]');
+                    let btn: Pacem.Components.UI.PacemButtonElement = (<HTMLFormElement>evt.currentTarget).querySelector(P + '-button[type=submit]');
                     if (!btn.disabled) {
                         btn.click();
                     }
@@ -81,9 +96,9 @@ namespace Pacem.Components.Scaffolding {
                 Pacem.avoidHandler(evt);
             var args =
                 this.submit(fetcher).then(_ => {
-                        // successful submission here
-                        this.setPristine();
-                    },
+                    // successful submission here
+                    this.setPristine();
+                },
                     _ => {
                         // catch rejected/canceled
                     });
@@ -166,9 +181,9 @@ namespace Pacem.Components.Scaffolding {
                     switch (evt.detail.propertyName) {
                         case 'fetching':
                             if (evt.detail.currentValue === true) {
-                                Utils.addClass(this, 'pacem-fetching');
+                                Utils.addClass(this, PCSS + '-fetching');
                             } else {
-                                Utils.removeClass(this, 'pacem-fetching');
+                                Utils.removeClass(this, PCSS + '-fetching');
                                 fetcher.removeEventListener(Pacem.PropertyChangeEventName, fnPropChange, false);
                             }
                             break;
@@ -270,7 +285,7 @@ namespace Pacem.Components.Scaffolding {
                 if (validators && validators.length > 0) {
                     this.log(Logging.LogLevel.Log, `Computing "${model.name}" validity.`);
                     Promise.all(
-                        validators.map(v => v.evaluate(model.value)
+                        validators.map(v => v.validate(model.value)
                             .then(_ => !(v.invalid = !_))
                         )
                     )
@@ -438,7 +453,7 @@ namespace Pacem.Components.Scaffolding {
         entityName: string;
 
         @Watch()
-        metadata: PropertyMetadata[];
+        metadata: Pacem.Scaffolding.EntityMetadata | PropertyMetadata[];
 
         @Watch({ emit: false, converter: PropertyConverters.Boolean })
         autogenerate: boolean;

@@ -49,12 +49,12 @@
     .Spinner(@_brd, @_size, fade(@color_default, 10), 0);
 }
 
-pacem-loader {
+@{P}-loader {
     display: block;
     height: 100%;
     pointer-events: none;
 
-    > div.pacem-loader {
+    > div.@{PCSS}-loader {
         height: 100%;
         display: flex;
         justify-content: center;
@@ -63,43 +63,43 @@ pacem-loader {
 
     @_max_size: 108px;
 
-    div.pacem-spinner {
+    div.@{PCSS}-spinner {
         .Spinner(@grid_spacing/2, @_max_size);
     }
 
     &.loader-full {
-        div.pacem-spinner {
+        div.@{PCSS}-spinner {
             .Spinner(2px, @_max_size, transparent, @grid_spacing/3);
         }
 
 
         &.loader-small {
-            div.pacem-spinner {
+            div.@{PCSS}-spinner {
                 .Spinner(1px, @grid_cell, transparent, @grid_spacing/4);
             }
         }
 
         &.loader-smaller {
-            div.pacem-spinner {
+            div.@{PCSS}-spinner {
                 .Spinner(1px, 2 * @grid_spacing, transparent, @grid_spacing/6);
             }
         }
     }
 
     &.loader-small {
-        div.pacem-spinner {
+        div.@{PCSS}-spinner {
             .Spinner(@grid_spacing/3, @grid_cell);
         }
     }
 
     &.loader-smaller {
-        div.pacem-spinner {
+        div.@{PCSS}-spinner {
             .Spinner(@grid_spacing/4, 2 * @grid_spacing);
         }
     }
 
-    div.pacem-spinner,
-    &.loader-full div.pacem-spinner {
+    div.@{PCSS}-spinner,
+    &.loader-full div.@{PCSS}-spinner {
         border-top-color: @color_default;
         animation: rotate_anim linear 1s infinite both;
 
@@ -116,45 +116,45 @@ pacem-loader {
 
     &.loader-accent.loader-full,
     &.loader-accent {
-        div.pacem-spinner,
-        div.pacem-spinner > div {
+        div.@{PCSS}-spinner,
+        div.@{PCSS}-spinner > div {
             border-top-color: @color_accent;
         }
     }
 
     &.loader-primary.loader-full,
     &.loader-primary {
-        div.pacem-spinner,
-        div.pacem-spinner > div {
+        div.@{PCSS}-spinner,
+        div.@{PCSS}-spinner > div {
             border-top-color: @color_primary;
         }
     }
 
     &.loader-success.loader-full,
     &.loader-success {
-        div.pacem-spinner,
-        div.pacem-spinner > div {
+        div.@{PCSS}-spinner,
+        div.@{PCSS}-spinner > div {
             border-top-color: @color_success;
         }
     }
 
     &.loader-warning.loader-full,
     &.loader-warning {
-        div.pacem-spinner,
-        div.pacem-spinner > div {
+        div.@{PCSS}-spinner,
+        div.@{PCSS}-spinner > div {
             border-top-color: @color_warning;
         }
     }
 
     &.loader-danger.loader-full,
     &.loader-danger {
-        div.pacem-spinner,
-        div.pacem-spinner > div {
+        div.@{PCSS}-spinner,
+        div.@{PCSS}-spinner > div {
             border-top-color: @color_danger;
         }
     }
 
-    svg.pacem-spinner {
+    svg.@{PCSS}-spinner {
         height: @_max_size;
         width: @_max_size;
 
@@ -191,9 +191,9 @@ pacem-loader {
     }
 }
 
-pacem-loader {
+@{P}-loader {
 
-    .pacem-loader {
+    .@{PCSS}-loader {
         transition: transform .25s @easing_in_back;
         transform: scale(0);
 

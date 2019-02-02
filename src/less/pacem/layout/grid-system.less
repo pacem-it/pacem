@@ -34,8 +34,8 @@
 
 /* #endregion */
 
-.pacem-flex,
-.pacem-row {
+.@{PCSS}-flex,
+.@{PCSS}-row {
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
@@ -44,130 +44,130 @@
     align-items: stretch;
 }
 
-.pacem-flex.flex-vertical {
+.@{PCSS}-flex.flex-vertical {
     flex-direction: column;
 }
 
-.pacem-flex .pacem-flex,
-.pacem-row .pacem-row {
+.@{PCSS}-flex .@{PCSS}-flex,
+.@{PCSS}-row .@{PCSS}-row {
     margin: 0;
 }
 
-.pacem-row .pacem-column,
-.pacem-flex .pacem-box {
+.@{PCSS}-row .@{PCSS}-column,
+.@{PCSS}-flex .@{PCSS}-box {
     flex-basis: auto;
     flex-shrink: 1;
     flex-grow: 1;
 }
 
-.pacem-row .pacem-column {
+.@{PCSS}-row .@{PCSS}-column {
     .Cells(col, 12);
 }
 
-.pacem-flex .pacem-box {
+.@{PCSS}-flex .@{PCSS}-box {
     .Cells(box, 12);
 }
 
 @media (max-width: @threshold_sm -1)  {
 
-    .pacem-row .pacem-column {
+    .@{PCSS}-row .@{PCSS}-column {
         .CellsMid(col, xs, 12);
     }
 
-    .pacem-flex .pacem-box {
+    .@{PCSS}-flex .@{PCSS}-box {
         .CellsMid(box, xs, 12);
     }
 }
 
 @media (min-width: @threshold_sm) {
 
-    .pacem-row .pacem-column {
+    .@{PCSS}-row .@{PCSS}-column {
         .CellsMid(col, sm, 12);
     }
 
-    .pacem-flex .pacem-box {
+    .@{PCSS}-flex .@{PCSS}-box {
         .CellsMid(box, sm, 12);
     }
 }
 
 @media (min-width: @threshold_md) {
 
-    .pacem-row .pacem-column {
+    .@{PCSS}-row .@{PCSS}-column {
         .CellsMid(col, md, 12);
     }
 
-    .pacem-flex .pacem-box {
+    .@{PCSS}-flex .@{PCSS}-box {
         .CellsMid(box, md, 12);
     }
 }
 
 @media (min-width: @threshold_lg) {
 
-    .pacem-row .pacem-column {
+    .@{PCSS}-row .@{PCSS}-column {
         .CellsMid(col, lg, 12);
     }
 
-    .pacem-flex .pacem-box {
+    .@{PCSS}-flex .@{PCSS}-box {
         .CellsMid(box, lg, 12);
     }
 }
 
 @media (min-width: @threshold_xl) {
 
-    .pacem-row .pacem-column {
+    .@{PCSS}-row .@{PCSS}-column {
         .CellsMid(col, xl, 12);
     }
 
-    .pacem-flex .pacem-box {
+    .@{PCSS}-flex .@{PCSS}-box {
         .CellsMid(box, xl, 12);
     }
 }
 
 @media (min-width: @threshold_hd) {
 
-    .pacem-row .pacem-column {
+    .@{PCSS}-row .@{PCSS}-column {
         .CellsMid(col, hd, 12);
     }
 
-    .pacem-flex .pacem-box {
+    .@{PCSS}-flex .@{PCSS}-box {
         .CellsMid(box, hd, 12);
     }
 }
 
 @media (min-width: @threshold_uhd) {
 
-    .pacem-row .pacem-column {
+    .@{PCSS}-row .@{PCSS}-column {
         .CellsMid(col, uhd, 12);
     }
 
-    .pacem-flex .pacem-box {
+    .@{PCSS}-flex .@{PCSS}-box {
         .CellsMid(box, uhd, 12);
     }
 }
 
 @media (min-width: @threshold_4k) {
 
-    .pacem-row .pacem-column {
+    .@{PCSS}-row .@{PCSS}-column {
         .CellsMid(col, 4k, 12);
     }
 
-    .pacem-flex .pacem-box {
+    .@{PCSS}-flex .@{PCSS}-box {
         .CellsMid(box, 4k, 12);
     }
 }
 
 @media (orientation: portrait) {
 
-    .pacem-row .pacem-column {
+    .@{PCSS}-row .@{PCSS}-column {
         .CellsMid(col, v, 12); // v := vertical
     }
 
-    .pacem-flex .pacem-box {
+    .@{PCSS}-flex .@{PCSS}-box {
         .CellsMid(box, v, 12); // v := vertical
     }
 }
 
-.pacem-flex {
+.@{PCSS}-flex {
     flex-wrap: wrap;
 
     &.flex-right {
@@ -191,9 +191,9 @@
     }
 }
 
-body.pacem-animations {
-    .pacem-column.pacem-animatable,
-    .pacem-box.pacem-animatable {
+body.@{PCSS}-animations {
+    .@{PCSS}-column.@{PCSS}-animatable,
+    .@{PCSS}-box.@{PCSS}-animatable {
         transition: flex-basis .333s @easing_in_out_sine;
     }
 }

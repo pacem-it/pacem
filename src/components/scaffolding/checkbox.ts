@@ -8,9 +8,9 @@ namespace Pacem.Components.Scaffolding {
     }
 
     @CustomElement({
-        tagName: 'pacem-checkbox',
-        template: `<pacem-span class="pacem-readonly pacem-checkbox" text="{{ :host.caption }}"></pacem-span>
-<input type="checkbox" class="pacem-input" /><label class="pacem-label pacem-checkbox pacem-viewfinder" pacem><pacem-text text="{{ :host.caption }}"></pacem-text></label>`,
+        tagName: P + '-checkbox',
+        template: `<${ P }-span class="${PCSS}-readonly ${PCSS}-checkbox" text="{{ :host.caption }}"></${ P }-span>
+<input type="checkbox" class="${PCSS}-input" /><label class="${PCSS}-label ${PCSS}-checkbox ${PCSS}-viewfinder" pacem><${ P }-text text="{{ :host.caption }}"></${ P }-text></label>`,
         shadow: Defaults.USE_SHADOW_ROOT
     })
     export class PacemCheckboxElement extends PacemBaseElement implements OnPropertyChanged, OnViewActivated {
@@ -27,8 +27,8 @@ namespace Pacem.Components.Scaffolding {
         }
 
         @ViewChild("input[type=checkbox]") private _checkbox: HTMLInputElement;
-        @ViewChild("label") label: HTMLLabelElement;
-        @ViewChild(".pacem-readonly") span: HTMLElement;
+        @ViewChild("label") private _label: HTMLLabelElement;
+        @ViewChild(`.${PCSS}-readonly`) span: HTMLElement;
 
         @Watch({ converter: PropertyConverters.String }) caption: string = '';
         @Watch({ emit: false, converter: StringOrBooleanPropertyConverter }) trueValue: any;
@@ -38,7 +38,7 @@ namespace Pacem.Components.Scaffolding {
 
         protected toggleReadonlyView(readonly: boolean) {
             this.span.hidden = !readonly;
-            this._checkbox.hidden = this.label.hidden = readonly;
+            this._checkbox.hidden = this._label.hidden = readonly;
         }
 
         protected get inputFields() {
@@ -53,7 +53,7 @@ namespace Pacem.Components.Scaffolding {
 
         viewActivatedCallback() {
             super.viewActivatedCallback();
-            this._checkbox.id = this.label.htmlFor = this._key;
+            this._checkbox.id = this._label.htmlFor = this._key;
             if (this.value /* weak equality to deal with declarative values and conversions */ == this.trueValue)
                 this.selected = true;
             else if (this.value /* weak equality to deal with declarative values and conversions */ == this.falseValue)
@@ -64,7 +64,7 @@ namespace Pacem.Components.Scaffolding {
             super.propertyChangedCallback(name, old, val, first);
             switch (name) {
                 case 'caption':
-                    this.label.hidden = Utils.isNullOrEmpty(val);
+                    this._label.hidden = Utils.isNullOrEmpty(val);
                     break;
                 case 'name':
                     this._checkbox.name = val;
@@ -72,11 +72,11 @@ namespace Pacem.Components.Scaffolding {
                 case 'selected':
                     if (this._checkbox.checked = val) {
                         this.value = this.trueValue;
-                        Utils.addClass(this, 'pacem-selected');
+                        Utils.addClass(this, PCSS + '-selected');
                         this.aria.attributes.set('checked', 'true');
                     } else {
                         this.value = this.falseValue;
-                        Utils.removeClass(this, 'pacem-selected');
+                        Utils.removeClass(this, PCSS + '-selected');
                         this.aria.attributes.set('checked', 'false');
                     }
                     break;

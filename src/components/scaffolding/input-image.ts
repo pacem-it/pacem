@@ -33,31 +33,31 @@ namespace Pacem.Components.Scaffolding {
     }
 
     @CustomElement({
-        tagName: 'pacem-edit-image', shadow: Defaults.USE_SHADOW_ROOT,
-        template: `<pacem-panel class="pacem-edit-image"
-        css-class="{{ {'pacem-snapshot': ::_snapshot.step != '${ UI.SnapshotStep.Start}', 'pacem-uploading': ::_uploader.uploading, 'pacem-upload-enabled': !Pacem.Utils.isNullOrEmpty(:host.uploadUrl), 'pacem-snapshot-enabled': !Pacem.Utils.isNullOrEmpty(:host.uploadUrl) && :host.allowSnapshot} }}">
+        tagName: P + '-edit-image', shadow: Defaults.USE_SHADOW_ROOT,
+        template: `<${P}-panel class="${PCSS}-edit-image"
+        css-class="{{ {'${PCSS}-snapshot': ::_snapshot.step != '${UI.SnapshotStep.Start}', '${PCSS}-uploading': ::_uploader.uploading, '${PCSS}-upload-enabled': !Pacem.Utils.isNullOrEmpty(:host.uploadUrl), '${PCSS}-snapshot-enabled': !Pacem.Utils.isNullOrEmpty(:host.uploadUrl) && :host.allowSnapshot} }}">
         <div>
-            <pacem-input-search value="{{ :host.hint, twoway }}"></pacem-input-search>
-            <pacem-upload main pattern=".+\.(jpe?g|png|svg|ico)$" url="{{ :host.uploadUrl }}"
+            <${ P}-input-search value="{{ :host.hint, twoway }}"></${P}-input-search>
+            <${ P}-upload main pattern=".+\.(jpe?g|png|svg|ico)$" url="{{ :host.uploadUrl }}"
                     max-image-width="{{ :host.maxWidth }}" max-image-height="{{ :host.maxHeight }}"
                     on-${FileUploadEventName}=":host._uploaderFileUploadCallback($event)"
-                    on-${PropertyChangeEventName}=":host._uploaderPropertyChangedCallback($event)" hide="{{ Pacem.Utils.isNullOrEmpty(:host.uploadUrl) || ::_thumbUploader.uploading }}"></pacem-upload>
-            <pacem-upload thumb pattern=".+\.(jpe?g|png|svg|ico)$" url="{{ :host.uploadUrl }}" hide="{{ !::_thumbUploader.uploading  }}"
+                    on-${PropertyChangeEventName}=":host._uploaderPropertyChangedCallback($event)" hide="{{ Pacem.Utils.isNullOrEmpty(:host.uploadUrl) || ::_thumbUploader.uploading }}"></${P}-upload>
+            <${ P}-upload thumb pattern=".+\.(jpe?g|png|svg|ico)$" url="{{ :host.uploadUrl }}" hide="{{ !::_thumbUploader.uploading  }}"
                     max-image-width="{{ :host.maxThumbnailWidth }}" max-image-height="{{ :host.maxThumbnailHeight }}"
-                    on-${PropertyChangeEventName}=":host._thumbnailUploaderPropertyChangedCallback($event)"></pacem-upload>
-            <pacem-button class="pacem-snapshot" on-click="Pacem.avoidHandler($event); ::_snapshot.step = '${ UI.SnapshotStep.Taking}'" hide="{{ Pacem.Utils.isNullOrEmpty(:host.uploadUrl) || !:host.allowSnapshot }}"></pacem-button>
-            <pacem-infinite-scroller container="{{ ::_repeater }}" on-fetchmore=":host._imagefetchSuddenly()" disabled="{{ :host._fetching || :host.disabled || :host._images.length >= :host.imageSet.total }}"></pacem-infinite-scroller>
-            <pacem-repeater datasource="{{ :host._images }}">
+                    on-${PropertyChangeEventName}=":host._thumbnailUploaderPropertyChangedCallback($event)"></${P}-upload>
+            <${ P}-button class="${PCSS}-snapshot" on-click="Pacem.avoidHandler($event); ::_snapshot.step = '${UI.SnapshotStep.Taking}'" hide="{{ Pacem.Utils.isNullOrEmpty(:host.uploadUrl) || !:host.allowSnapshot }}"></${P}-button>
+            <${ P}-infinite-scroller container="{{ ::_repeater }}" on-fetchmore=":host._imagefetchSuddenly()" disabled="{{ :host._fetching || :host.disabled || :host._images.length >= :host.imageSet.total }}"></${P}-infinite-scroller>
+            <${ P}-repeater datasource="{{ :host._images }}">
                 <template>
-                    <pacem-img css-class="{{ {'pacem-selected': ^item.src === :host.value } }}" on-click=":host.value = ^item.src" src="{{ ^item.thumb }}" adapt="contain"></pacem-img>
+                    <${ P}-img css-class="{{ {'${PCSS}-selected': ^item.src === :host.value } }}" on-click=":host.value = ^item.src" src="{{ ^item.thumb }}" adapt="contain"></${P}-img>
                 </template>
-            </pacem-repeater>
-            <pacem-progressbar class="progressbar-smaller progressbar-accent" caption="{{ ::_thumbUploader.uploading ? 'thumbnail...' : 'uploading...' }}"></pacem-progressbar>
+            </${ P}-repeater>
+            <${ P}-progressbar class="progressbar-smaller progressbar-accent" caption="{{ ::_thumbUploader.uploading ? 'thumbnail...' : 'uploading...' }}"></${P}-progressbar>
         </div>
         <div>
-            <pacem-snapshot hide="{{ !:host.allowSnapshot }}" on-${PropertyChangeEventName}=":host._snapshotPropertyChangedCallback($event)"></pacem-snapshot>
+            <${ P}-snapshot hide="{{ !:host.allowSnapshot }}" on-${PropertyChangeEventName}=":host._snapshotPropertyChangedCallback($event)"></${P}-snapshot>
         </div>
-    </pacem-panel>`
+    </${ P}-panel>`
     })
     export class PacemEditImageElement extends PacemElement implements OnPropertyChanged {
 
@@ -158,11 +158,11 @@ namespace Pacem.Components.Scaffolding {
         @Watch({ converter: PropertyConverters.Boolean }) allowSnapshot: boolean;
         @Watch() private _fetching: boolean;
         @Watch() private _images: Picture[];
-        @ViewChild('pacem-repeater') private _repeater: PacemRepeaterElement;
-        @ViewChild('pacem-upload[main]') private _uploader: Scaffolding.PacemUploadElement;
-        @ViewChild('pacem-upload[thumb]') private _thumbUploader: Scaffolding.PacemUploadElement;
-        @ViewChild('pacem-snapshot') private _snapshot: UI.PacemSnapshotElement;
-        @ViewChild('pacem-progressbar') private _progressbar: UI.PacemProgressbarElement;
+        @ViewChild(P + '-repeater') private _repeater: PacemRepeaterElement;
+        @ViewChild(P + '-upload[main]') private _uploader: Scaffolding.PacemUploadElement;
+        @ViewChild(P + '-upload[thumb]') private _thumbUploader: Scaffolding.PacemUploadElement;
+        @ViewChild(P + '-snapshot') private _snapshot: UI.PacemSnapshotElement;
+        @ViewChild(P + '-progressbar') private _progressbar: UI.PacemProgressbarElement;
 
         private _imagefetchSuddenly(ndx?: number) {
             this._fetching = true;
@@ -178,17 +178,17 @@ namespace Pacem.Components.Scaffolding {
     }
 
     @CustomElement({
-        tagName: 'pacem-input-image', shadow: Defaults.USE_SHADOW_ROOT,
-        template: `<div class="pacem-input-image"><pacem-img src="{{ :host.value }}" adapt="contain"></pacem-img><div class="pacem-input-image-dashboard">
-    <pacem-button on-click=":host._edit($event)" hide="{{ :host.disabled }}" class="pacem-edit">Edit</pacem-button>
-    <pacem-button on-click=":host._clear($event)" hide="{{ :host.disabled }}" class="pacem-clear">Clear</pacem-button>
-</div><pacem-input-url placeholder="{{ :host.placeholder }}" on-change=":host.changeHandler($event)" value="{{ :host.value }}"></pacem-input-url>
+        tagName: P + '-input-image', shadow: Defaults.USE_SHADOW_ROOT,
+        template: `<div class="${PCSS}-input-image"><${P}-img src="{{ :host.value }}" adapt="contain"></${P}-img><div class="${PCSS}-input-image-dashboard">
+    <${ P}-button on-click=":host._edit($event)" hide="{{ :host.disabled }}" class="${PCSS}-edit">Edit</${P}-button>
+    <${ P}-button on-click=":host._clear($event)" hide="{{ :host.disabled }}" class="${PCSS}-clear">Clear</${P}-button>
+</div><${ P}-input-url placeholder="{{ :host.placeholder }}" on-change=":host.changeHandler($event)" value="{{ :host.value }}"></${P}-input-url>
 
-    <pacem-panel hide="{{ Pacem.Utils.isNullOrEmpty(:host.value) }}">
-    <dl class="pacem-input-image-preview">
-        <dt>dimensions:</dt><dd><pacem-text text="{{ ::_image.size.width +'x'+ ::_image.size.height }}"></pacem-text></dd>
-        <dt>size:</dt><dd><pacem-text text="{{ $pacem.size(::_image.size.weight) }}"></pacem-text></dd>
-    </dl></pacem-panel>
+    <${ P}-panel hide="{{ Pacem.Utils.isNullOrEmpty(:host.value) }}">
+    <dl class="${PCSS}-input-image-preview">
+        <dt>dimensions:</dt><dd><${ P}-text text="{{ ::_image.size.width +'x'+ ::_image.size.height }}"></${P}-text></dd>
+        <dt>size:</dt><dd><${ P}-text text="{{ $pacem.size(::_image.size.weight) }}"></${P}-text></dd>
+    </dl></${ P}-panel>
 
 </div>`
     })
@@ -197,13 +197,13 @@ namespace Pacem.Components.Scaffolding {
         protected convertValueAttributeToProperty(attr: string) {
             return attr; // better assumptions anyone?
         }
-        
+
         private _editImage: Scaffolding.PacemEditImageElement;
         private _dialog: UI.PacemDialogElement;
-        @ViewChild('pacem-img') private _image: UI.PacemImageElement;
-        @ViewChild('pacem-button.pacem-edit') private _editBtn: UI.PacemButtonElement;
-        @ViewChild('pacem-button.pacem-clear') private _clearBtn: UI.PacemButtonElement;
-        @ViewChild('pacem-input-url') private _input: PacemUrlInputElement;
+        @ViewChild(P + '-img') private _image: UI.PacemImageElement;
+        @ViewChild(P + '-button.' + PCSS + '-edit') private _editBtn: UI.PacemButtonElement;
+        @ViewChild(P + '-button.' + PCSS + '-clear') private _clearBtn: UI.PacemButtonElement;
+        @ViewChild(P + '-input-url') private _input: PacemUrlInputElement;
 
         getViewValue(value: any) {
             return value;
@@ -234,7 +234,7 @@ namespace Pacem.Components.Scaffolding {
         }
 
         private _addDialog() {
-            var dialog = <UI.PacemDialogElement>document.createElement('pacem-dialog');
+            var dialog = <UI.PacemDialogElement>document.createElement(P + '-dialog');
             dialog.buttons = UI.DialogButtons.OkCancel;
             dialog.addEventListener(UI.DialogResultEventName, this.changeHandler, false);
             dialog.appendChild(this._addEditImage());
@@ -252,7 +252,7 @@ namespace Pacem.Components.Scaffolding {
         }
 
         private _addEditImage() {
-            var editImage = <Scaffolding.PacemEditImageElement>document.createElement('pacem-edit-image');
+            var editImage = <Scaffolding.PacemEditImageElement>document.createElement(P + '-edit-image');
             editImage.disabled = true;
             editImage.addEventListener(PropertyChangeEventName, this._innerValueChangedHandler, false);
             editImage.addEventListener(ImageFetchRequestEventName, this._broadcastFetchRequestEventName, false);

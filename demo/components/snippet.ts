@@ -24,30 +24,32 @@ namespace Pacem.Components.Js {
         }
     }
 
+    var COPY_TOASTER_SINGLETON: HTMLElement;
+    var COPY_TOAST_SINGLETON: Pacem.Components.UI.PacemToastElement;
+
     @CustomElement({
         tagName: 'pacemjs-snippet', shadow: false,
-        template: `<pacem-content></pacem-content>
+        template: `<${P}-content></${P}-content>
     <h4 class="snippet-header">&lt;Snippet/&gt;</h4>
-    <pacem-tabs>
-    <pacem-tab label="demo">
-        <pacem-view></pacem-view>
-    </pacem-tab>
-    <pacem-tab label="code" class="pos-relative">
-        <pacem-markdown class="text-small"></pacem-markdown>
-        <pacem-button class="hide-md flat circular copy pos-absolute absolute-top absolute-right" on-click=":host._copy()" tooltip="copy code snippet"></pacem-button>
-    </pacem-tab>
-</pacem-tabs>
+    <${ P}-tabs>
+    <${ P}-tab label="demo">
+        <${ P}-view></${P}-view>
+    </${ P}-tab>
+    <${ P}-tab label="code" class="pos-relative">
+        <${ P}-markdown class="text-small"></${P}-markdown>
+        <${ P}-button class="hide-md flat circular copy pos-absolute absolute-top absolute-right" on-click=":host._copy()" tooltip="copy code snippet"></${P}-button>
+    </${ P}-tab>
+</${ P}-tabs>
     <div class="pacem-toaster toaster-bottom">
-        <pacem-toast timeout="1250" class="toast-primary"><span>Copied!</span></pacem-toast>
+        <${ P}-toast timeout="1250" class="toast-primary"><span>Copied!</span></${P}-toast>
     </div>`
     })
     export class PacemSnippetElement extends PacemElement {
 
         private _itemTemplate: HTMLTemplateElement;
-        @ViewChild('pacem-toast') private _toast: UI.PacemToastElement;
-        @ViewChild('pacem-view') private _view: UI.PacemViewElement;
-        @ViewChild('pacem-markdown') private _md: UI.PacemMarkdownElement;
-        
+        @ViewChild(P + '-view') private _view: UI.PacemViewElement;
+        @ViewChild(P + '-markdown') private _md: UI.PacemMarkdownElement;
+
         viewActivatedCallback() {
             super.viewActivatedCallback();
             this._itemTemplate = this.querySelector('template');
@@ -57,11 +59,30 @@ namespace Pacem.Components.Js {
             }
             this._view.setAttribute('url', `#${id}`);
             this._md.setAttribute('value', `{{ '\`\`\`html\\n\\n'+ $pacem.removeLeadingTabs(#${id}.innerHTML) +'\\n\`\`\`' }}`);
+            //
+            this._setupToaster();
+        }
+
+        private _setupToaster() {
+            var toaster = COPY_TOASTER_SINGLETON;
+            if (Utils.isNull(toaster)) {
+                toaster = COPY_TOASTER_SINGLETON = document.createElement('div');
+                Utils.addClass(toaster, 'pacem-toaster toaster-bottom');
+                var toast = COPY_TOAST_SINGLETON = <UI.PacemToastElement>document.createElement(P + '-toast');
+                toast.timeout = 1250;
+                Utils.addClass(toast, 'toast-primary');
+                toast.textContent = "Copied!";
+
+                toaster.appendChild(toast);
+                document.body.appendChild(toaster);
+            }
+
         }
 
         private _copy() {
             Utils.copyToClipboard(this._itemTemplate.innerHTML).then(_ => {
-                this._toast.show = true;
+                if (!Utils.isNull(COPY_TOAST_SINGLETON))
+                    COPY_TOAST_SINGLETON.show = true;
             });
         }
 

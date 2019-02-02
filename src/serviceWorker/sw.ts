@@ -1,11 +1,11 @@
-﻿const VERSION = "0.7.13.0";
+﻿const VERSION = "0.8.0.0";
 const CACHE_KEY = 'pacem-js-v' + VERSION;
 const OFFLINE_PAGE = '/views/offline.html';
 
 const PREFETCHED = [
     //'/', // do not cache root: eases refresh
     '/menu.json',
-    '/intro/start',
+    '/intro/welcome',
     OFFLINE_PAGE,
     '/dist/css/demo.min.css',
     '/dist/css/pacem.min.css',

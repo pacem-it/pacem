@@ -3,16 +3,17 @@
 namespace Pacem.Components.Scaffolding {
 
     @CustomElement({
-        tagName: 'pacem-form-field', template: `<pacem-form class="pacem-field" logger="{{ :host.logger }}" 
-css-class="{{ {'pacem-fetching': ::_fetcher.fetching, 'pacem-dirty': this.dirty, 'pacem-invalid': !this.valid, 'pacem-editable': !:host.readonly, 'pacem-readonly': :host.readonly, 'pacem-pristine': !this.dirty, 'pacem-valid': this.valid, 'pacem-has-value': !:host._isValueNullOrEmpty(:host.entity, :host.metadata) } }}">
-    <label class="pacem-label"></label>
-    <div class="pacem-input-container"></div>
-    <pacem-fetch debounce="50" logger="{{ :host.logger }}"></pacem-fetch>
-    <pacem-panel class="pacem-validators" hide="{{ ::_form.valid || !::_form.dirty }}">
-    </pacem-panel>
-</pacem-form>` })
-    export class PacemFormFieldElement extends PacemElement {
-
+        tagName: P + '-form-field', template: `<${P}-form class="${PCSS}-field" logger="{{ :host.logger }}" 
+css-class="{{ {'${PCSS}-fetching': ::_fetcher.fetching, '${PCSS}-dirty': this.dirty, '${PCSS}-invalid': !this.valid, '${PCSS}-editable': !:host.readonly, '${PCSS}-readonly': :host.readonly, '${PCSS}-pristine': !this.dirty, '${PCSS}-valid': this.valid, '${PCSS}-has-value': !:host._isValueNullOrEmpty(:host.entity, :host.metadata) } }}">
+    <label class="${PCSS}-label"></label>
+    <div class="${PCSS}-input-container"></div>
+    <${ P}-fetch debounce="50" logger="{{ :host.logger }}" credentials="{{ :host.fetchCredentials }}" headers="{{ :host.fetchHeaders }}" diff-by-values="true"></${P}-fetch>
+    <${ P}-panel class="${PCSS}-validators" hide="{{ ::_form.valid || !::_form.dirty }}">
+    </${ P}-panel>
+</${ P}-form>`
+    })
+    export class PacemFormFieldElement extends PacemElement implements Pacem.Net.OAuthFetchable {
+        
         constructor() {
             super();
         }
@@ -22,21 +23,29 @@ css-class="{{ {'pacem-fetching': ::_fetcher.fetching, 'pacem-dirty': this.dirty,
 
         @ViewChild('label') private label: HTMLLabelElement;
 
-        @ViewChild('div.pacem-input-container') private container: HTMLDivElement;
+        @ViewChild(`div.${PCSS}-input-container`) private container: HTMLDivElement;
 
         private _balloon: UI.PacemBalloonElement;
 
-        @ViewChild('pacem-fetch') private _fetcher: PacemFetchElement;
+        @ViewChild(P + '-fetch') private _fetcher: PacemFetchElement;
 
-        @ViewChild('pacem-form') private _form: PacemFormElement;
+        @ViewChild(P + '-form') private _form: PacemFormElement;
 
-        @ViewChild('pacem-panel.pacem-validators') private _validators: PacemPanelElement;
+        @ViewChild(P + '-panel.' + PCSS + '-validators') private _validators: PacemPanelElement;
 
         get key(): string {
             return this._key;
         }
 
+        get fetcher(): Pacem.Net.Fetcher {
+            return this._fetcher;
+        }
+
         @Watch({ converter: PropertyConverters.Json }) metadata: Pacem.Scaffolding.PropertyMetadata;
+
+        @Watch({ converter: PropertyConverters.Json }) fetchHeaders: { [key: string]: string };
+
+        @Watch({ converter: PropertyConverters.String }) fetchCredentials: RequestCredentials;
 
         @Watch({ converter: PropertyConverters.Boolean }) readonly: boolean;
 
@@ -75,20 +84,20 @@ css-class="{{ {'pacem-fetching': ::_fetcher.fetching, 'pacem-dirty': this.dirty,
         private _ensureBalloon(): void {
             // balloon
             if (Utils.isNull(this._balloon)) {
-                let balloon = <UI.PacemBalloonElement>document.createElement('pacem-balloon');
+                let balloon = <UI.PacemBalloonElement>document.createElement(P + '-balloon');
                 balloon.options = {
                     behavior: UI.BalloonBehavior.Tooltip,
                     position: UI.BalloonPosition.Top,
                     hoverDelay: 100, hoverTimeout: 200,
                     align: UI.BalloonAlignment.Start
                 };
-                Utils.addClass(balloon, 'pacem-field-tooltip');
+                Utils.addClass(balloon, PCSS + '-field-tooltip');
                 document.body.appendChild(this._balloon = balloon);
             }
             /*
-            <pacem-balloon
+            <${ P }-balloon
             target="{{ ::label }}"
-            options="{ 'behavior': 'tooltip' }"><pacem-text text="{{ :host.metadata && :host.metadata.display && :host.metadata.display.description }}"></pacem-text></pacem-balloon>
+            options="{ 'behavior': 'tooltip' }"><${ P }-text text="{{ :host.metadata && :host.metadata.display && :host.metadata.display.description }}"></${ P }-text></${ P }-balloon>
             */
             const balloon = this._balloon;
             balloon.target = this.label;
@@ -104,17 +113,17 @@ css-class="{{ {'pacem-fetching': ::_fetcher.fetching, 'pacem-dirty': this.dirty,
             var label = this.label;
             let meta = this.metadata;
             label.htmlFor = this._key;
-            Utils.addClass(label, 'pacem-label');
+            Utils.addClass(label, PCSS + '-label');
             const vals = this.metadata.validators;
             if (vals && vals.find(v => v.type === 'required'))
-                Utils.addClass(label, 'pacem-required');
+                Utils.addClass(label, PCSS + '-required');
             else
-                Utils.removeClass(label, 'pacem-required');
+                Utils.removeClass(label, PCSS + '-required');
             //
             if (!this._balloon.disabled)
-                Utils.addClass(label, 'pacem-tooltip');
+                Utils.addClass(label, PCSS + '-tooltip');
             else
-                Utils.removeClass(label, 'pacem-tooltip');
+                Utils.removeClass(label, PCSS + '-tooltip');
             label.textContent = (meta.display && meta.display.name) || meta.prop;
         }
 
@@ -148,7 +157,7 @@ css-class="{{ {'pacem-fetching': ::_fetcher.fetching, 'pacem-dirty': this.dirty,
             var meta = this.metadata;
 
             // field
-            let tagName: string = 'pacem-input-text';
+            let tagName: string = P + '-input-text';
             let attrs: { [key: string]: string } = {
                 'id': this._key, 'name': meta.prop,
                 // readonly if property `readonly` set to true OR metadata property is not editable OR parent form's `readonly` property is set to true
@@ -159,6 +168,8 @@ css-class="{{ {'pacem-fetching': ::_fetcher.fetching, 'pacem-dirty': this.dirty,
             // fetch data
             let fetchData: { sourceUrl: string, valueProperty: string, textProperty: string, verb: Pacem.Net.HttpMethod, dependsOn?: { prop: string, alias?: string, value?: any, hide?: boolean }[] } = meta.extra;
             let fetchAttrs: { [key: string]: string } = {};
+
+            let disabledAttr = "false";
 
             // dependency from other props
             if (!Utils.isNullOrEmpty(fetchData && fetchData.dependsOn)) {
@@ -188,15 +199,17 @@ css-class="{{ {'pacem-fetching': ::_fetcher.fetching, 'pacem-dirty': this.dirty,
                     let ne: string = 'false',
                         emp: string = 'false';
                     if (!Utils.isNullOrEmpty(d.notEqual)) {
-                        ne = '('+ d.notEqual.join(' && ') +')';
+                        ne = '(' + d.notEqual.join(' && ') + ')';
                     }
                     if (!Utils.isNullOrEmpty(d.empty)) {
-                        emp = '(' + d.empty.join(' || ') +')';
+                        emp = '(' + d.empty.join(' || ') + ')';
                     }
                     return ne + ' || ' + emp;
                 };
 
-                attrs['disabled'] = `{{ ${joinClauses(disablingClauses)} }}`;
+                disabledAttr = `{{ ${joinClauses(disablingClauses)} }}`;
+                // never disable the form-field, NEVER!
+                // attrs['disabled'] = disabledAttr; // * BUG
                 this.setAttribute('hide', `{{ ${joinClauses(hidingClauses)} }}`);
             }
 
@@ -205,17 +218,17 @@ css-class="{{ {'pacem-fetching': ::_fetcher.fetching, 'pacem-dirty': this.dirty,
                 // remove this (use dataType = 'HTML' instead).
                 case 'contentEditable':
                     console.warn('`contentEditable` ui hint is deprecated. Lean on `dataType` equal to \'HTML\' instead.');
-                    tagName = 'pacem-contenteditable';
+                    tagName = P + '-contenteditable';
                     break;
                 case 'snapshot':
-                    tagName = 'pacem-thumbnail';
+                    tagName = P + '-thumbnail';
                     let w = attrs['width'] = meta.extra.width;
                     let h = attrs['height'] = meta.extra.height;
                     let mode = attrs['mode'] = meta.type.toLowerCase() === 'string' ? 'string' : 'binary';
                     break;
                 case 'oneToMany':
                     // select
-                    tagName = 'pacem-select';
+                    tagName = P + '-select';
                     attrs['on-mousewheel'] = '$event.preventDefault()';
                     if (!Utils.isNullOrEmpty(fetchData.textProperty))
                         attrs['text-property'] = fetchData.textProperty;
@@ -243,14 +256,14 @@ css-class="{{ {'pacem-fetching': ::_fetcher.fetching, 'pacem-dirty': this.dirty,
                         }
 
                         fetchAttrs['parameters'] = `{{ { ${namesAndPaths.join(', ')} } }}`;
-                        fetchAttrs['disabled'] = `{{ Pacem.Utils.isNullOrEmpty(${paths.join(") || Pacem.Utils.isNullOrEmpty(")}) }}`;
+                        fetchAttrs['disabled'] = disabledAttr;// `{{ Pacem.Utils.isNullOrEmpty(${paths.join(") || Pacem.Utils.isNullOrEmpty(")}) }}`;
                     }
                     //
                     attrs['datasource'] = `{{ ${dependingClause} Pacem.Utils.getApiResult(#fetch${this._key}.result) }}`;
                     break;
                 case 'manyToMany':
                     // checkboxlist
-                    tagName = 'pacem-checkbox-list';
+                    tagName = P + '-checkbox-list';
                     delete attrs['placeholder'];
                     attrs['datasource'] = `{{ Pacem.Utils.getApiResult(#fetch${this._key}.result) }}`;
                     if (!Utils.isNullOrEmpty(fetchData.textProperty))
@@ -267,7 +280,8 @@ css-class="{{ {'pacem-fetching': ::_fetcher.fetching, 'pacem-dirty': this.dirty,
                 case 'tags':
                 case 'autocomplete':
                     // autocomplete
-                    tagName = meta.display.ui === 'tags' ? 'pacem-tags' : 'pacem-suggest';
+                    const tags = meta.display.ui === 'tags';
+                    tagName = P + (tags ? '-tags' : '-suggest');
                     this._fetcher.id = `fetch${this._key}`;
                     attrs['datasource'] = `{{ Pacem.Utils.getApiResult(#fetch${this._key}.result) }}`;
                     if (!Utils.isNullOrEmpty(fetchData.textProperty))
@@ -276,10 +290,14 @@ css-class="{{ {'pacem-fetching': ::_fetcher.fetching, 'pacem-dirty': this.dirty,
                     let itemValue = `#${this._key}.value`;
                     if (!Utils.isNullOrEmpty(fetchData.valueProperty)) {
                         attrs['compare-by'] = fetchData.valueProperty;
-                        itemValue = `(${itemValue} && ${itemValue}.${fetchData.valueProperty}) || ''`;
+                        if (tags) {
+                            itemValue = `(${itemValue} && ${itemValue}.${fetchData.valueProperty}) || ''`;
+                        } else {
+                            attrs['value-property'] = fetchData.valueProperty;
+                        }
                     }
                     // fairly complicated (any way of simplifying it?)
-                    fetchAttrs['parameters'] = `{{ {q: #${this._key}.hint || '', ${ (fetchData.valueProperty || 'value') }: ${itemValue} } }}`;
+                    fetchAttrs['parameters'] = `{{ {q: #${this._key}.hint || '', ${(fetchData.valueProperty || 'value')}: ${itemValue} } }}`;
                     //fetchAttrs['disabled'] = `{{ !(#${this._key}.hint || (#${this._key}.value && !#${this._key}.dirty)) }}`;
                     fetchAttrs['url'] = `${fetchData.sourceUrl}`; //`{{ (#${this._key}.hint || (#${this._key}.value && !#${this._key}.dirty)) ? '${fetchData.sourceUrl}' : '' }}`;
                     this._fetcher.method = fetchData.verb;
@@ -289,7 +307,7 @@ css-class="{{ {'pacem-fetching': ::_fetcher.fetching, 'pacem-dirty': this.dirty,
                 default:
                     switch ((meta.dataType || meta.type).toLowerCase()) {
                         case 'imageurl':
-                            tagName = 'pacem-input-image';
+                            tagName = P + '-input-image';
                             const f_id = this._fetcher.id = `fetch${this._key}`;
                             attrs['image-set'] = `{{ Pacem.Utils.getApiResult(#${f_id}.result) }}`;
                             attrs['on-imagefetchrequest'] = `#${f_id}.url = '${meta.extra.fetchUrl}'; #${f_id}.parameters = { q: $event.detail.hint, skip: $event.detail.skip, take: $event.detail.take }`;
@@ -304,59 +322,59 @@ css-class="{{ {'pacem-fetching': ::_fetcher.fetching, 'pacem-dirty': this.dirty,
                             break;
                         case 'html':
                             // contenteditable
-                            tagName = 'pacem-contenteditable';
+                            tagName = P + '-contenteditable';
                             break;
                         case 'enumeration':
                             // radiobutton list
-                            tagName = 'pacem-radio-list';
-                            attrs['class'] = 'pacem-radio-list';
+                            tagName = P + '-radio-list';
+                            attrs['class'] = PCSS + '-radio-list';
                             attrs['value-property'] = "value";
                             attrs['text-property'] = "caption";
                             attrs['datasource'] = '{{ ' + JSON.stringify(meta.extra.enum) + ' }}';
                             delete attrs['placeholder'];
                             break;
                         case 'password':
-                            tagName = 'pacem-input-password';
+                            tagName = P + '-input-password';
                             break;
                         case 'emailaddress':
-                            tagName = 'pacem-input-email';
+                            tagName = P + '-input-email';
                             break;
                         case "color":
-                            tagName = 'pacem-input-color';
+                            tagName = P + '-input-color';
                             break;
                         case "time":
-                            tagName = 'pacem-datetime-picker';
+                            tagName = P + '-datetime-picker';
                             break;
                         case "datetime":
-                            tagName = 'pacem-datetime-picker';
+                            tagName = P + '-datetime-picker';
                             delete attrs['placeholder'];
                             delete attrs['class'];
                             attrs['precision'] = "minute";
                             break;
                         case "date":
-                            tagName = 'pacem-datetime-picker';
+                            tagName = P + '-datetime-picker';
                             delete attrs['placeholder'];
                             delete attrs['class'];
                             break;
                         case "url":
-                            tagName = 'pacem-input-url';
+                            tagName = P + '-input-url';
                             break;
                         case "phonenumber":
-                            tagName = 'pacem-input-tel';
+                            tagName = P + '-input-tel';
                             break;
                         case "multilinetext":
-                            tagName = 'pacem-textarea';
+                            tagName = P + '-textarea';
                             break;
                         case "markdown":
-                            tagName = 'pacem-textarea-markdown';
+                            tagName = P + '-textarea-markdown';
                             break;
                         case 'latlng':
-                            tagName = 'pacem-latlng';
+                            tagName = P + '-latlng';
                             break;
                         default:
                             switch ((meta.type || '').toLowerCase()) {
                                 case "boolean":
-                                    tagName = 'pacem-checkbox';
+                                    tagName = P + '-checkbox';
                                     //attrs['selected'] = `{{ :host.entity.${meta.prop}, twoway }}`;
                                     attrs['true-value'] = "{{ true }}";
                                     attrs['false-value'] = "{{ false }}";
@@ -365,7 +383,7 @@ css-class="{{ {'pacem-fetching': ::_fetcher.fetching, 'pacem-dirty': this.dirty,
                                     delete attrs['placeholder'];
                                     break;
                                 case "byte":
-                                    tagName = 'pacem-input-number';
+                                    tagName = P + '-input-number';
                                     attrs['min'] = '0';
                                     attrs['max'] = '255';
                                     break;
@@ -374,13 +392,13 @@ css-class="{{ {'pacem-fetching': ::_fetcher.fetching, 'pacem-dirty': this.dirty,
                                 case "integer":
                                 case "int":
                                 case "long":
-                                    tagName = 'pacem-input-number';
+                                    tagName = P + '-input-number';
                                     break;
                                 case "double":
                                 case "decimal":
                                 case "float":
                                 case "single":
-                                    tagName = 'pacem-input-number';
+                                    tagName = P + '-input-number';
                                     attrs['step'] = "{{ 'any' }}";
                                     break;
                                 default:
@@ -398,10 +416,10 @@ css-class="{{ {'pacem-fetching': ::_fetcher.fetching, 'pacem-dirty': this.dirty,
                     switch (validator.type) {
                         case 'required':
                             attrs['required'] = 'true';
-                            validatorElement = <PacemRequiredValidatorElement>document.createElement('pacem-required-validator');
+                            validatorElement = <PacemRequiredValidatorElement>document.createElement(P + '-required-validator');
                             break;
                         case 'length':
-                            let lengthValidator = <PacemLengthValidatorElement>document.createElement('pacem-length-validator');
+                            let lengthValidator = <PacemLengthValidatorElement>document.createElement(P + '-length-validator');
                             validatorElement = lengthValidator;
                             let max = validator.params && validator.params['max'];
                             let min = validator.params && validator.params['min'];
@@ -413,11 +431,11 @@ css-class="{{ {'pacem-fetching': ::_fetcher.fetching, 'pacem-dirty': this.dirty,
                             }
                             break;
                         case 'range':
-                            let rangeValidator = <PacemRangeValidatorElement>document.createElement('pacem-range-validator');
+                            let rangeValidator = <PacemRangeValidatorElement>document.createElement(P + '-range-validator');
                             validatorElement = rangeValidator;
                             let maxNum = validator.params && validator.params['max'];
                             let minNum = validator.params && validator.params['min'];
-                            let isDateTime = tagName === 'pacem-datetime-picker';
+                            let isDateTime = tagName === P + '-datetime-picker';
                             if (maxNum != null) {
                                 rangeValidator.max = maxNum;
                                 attrs['max'] = "{{ " + (isDateTime ? "'" + maxNum + "'" : maxNum) + " }}";
@@ -428,25 +446,25 @@ css-class="{{ {'pacem-fetching': ::_fetcher.fetching, 'pacem-dirty': this.dirty,
                             }
                             break;
                         case 'email':
-                            let emailValidator = <PacemRegexValidatorElement>document.createElement('pacem-regex-validator');
+                            let emailValidator = <PacemRegexValidatorElement>document.createElement(P + '-regex-validator');
                             validatorElement = emailValidator;
                             attrs['pattern'] = emailValidator.pattern = "[\\w\\.-]+@[\\w\\.-]+\\.[a-zA-Z0-9]{2,6}";
                             break;
                         case 'regex':
-                            let regexValidator = <PacemRegexValidatorElement>document.createElement('pacem-regex-validator');
+                            let regexValidator = <PacemRegexValidatorElement>document.createElement(P + '-regex-validator');
                             validatorElement = regexValidator;
                             let pattern = validator.params['pattern'];
                             attrs['pattern'] = pattern.replace('\\', '\\\\');
                             regexValidator.pattern = pattern;
                             break;
                         case 'compare':
-                            let compareValidator = <PacemCompareValidatorElement>document.createElement('pacem-compare-validator');
+                            let compareValidator = <PacemCompareValidatorElement>document.createElement(P + '-compare-validator');
                             validatorElement = compareValidator;
                             let comparedTo = `{{ :host.entity.${validator.params['to']} }}`;
                             compareValidator.setAttribute('to', comparedTo);
                             let operator = compareValidator.operator = validator.params['operator'] || 'equal';
                             // In case of `date(time)` try to add some interaction with `datetime-picker`'s min/max props.
-                            if (tagName === 'pacem-datetime-picker') {
+                            if (tagName === P + '-datetime-picker') {
                                 switch (operator) {
                                     case 'lessOrEqual':
                                     case 'less': // approximation: edge value won't be allowed but will result enabled on the `datetime-picker`
@@ -465,6 +483,7 @@ css-class="{{ {'pacem-fetching': ::_fetcher.fetching, 'pacem-dirty': this.dirty,
                     } else {
                         validatorElement.watch = meta.prop;
                         validatorElement.setAttribute('hide', '{{ !this.invalid }}');
+                        validatorElement.setAttribute('disabled', disabledAttr);
                         validatorElement.errorMessage = validator.errorMessage;
                         this._validators.appendChild(validatorElement);
                     }

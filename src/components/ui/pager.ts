@@ -2,19 +2,19 @@
 namespace Pacem.Components.UI {
 
     @CustomElement({
-        tagName: 'pacem-pager', shadow: Defaults.USE_SHADOW_ROOT,
-        template: `<pacem-repeater class="pacem-pager"><div class="pacem-buttonset">
+        tagName: P + '-pager', shadow: Defaults.USE_SHADOW_ROOT,
+        template: `<${ P }-repeater class="${PCSS}-pager"><div class="${PCSS}-buttonset">
 <div class="pager-buttons">
     <template>
-        <pacem-button class="pacem-page button" on-click=":host.index = ^item.index" disabled="{{ ^item.disabled }}"
-    css-class="{{ { 'currentpage': ^item.index === :host.index, 'firstpage buttonset-first': ^item.first, 'previouspage': ^item.previous, 'nextpage': ^item.next, 'lastpage buttonset-last': ^item.last } }}"><pacem-span content="{{ ^item.caption }}"></pacem-span></pacem-button>
+        <${ P }-button class="${PCSS}-page button" on-click=":host.index = ^item.index" disabled="{{ ^item.disabled }}"
+    css-class="{{ { 'currentpage': ^item.index === :host.index, 'firstpage buttonset-first': ^item.first, 'previouspage': ^item.previous, 'nextpage': ^item.next, 'lastpage buttonset-last': ^item.last } }}"><${ P }-span content="{{ ^item.caption }}"></${ P }-span></${ P }-button>
     </template>
 </div>
-</div></pacem-repeater>`
+</div></${ P }-repeater>`
     })
     export class PacemPagerElement extends PacemElement {
 
-        @ViewChild('pacem-repeater') private _repeater: PacemRepeaterElement;
+        @ViewChild(P + '-repeater') private _repeater: PacemRepeaterElement;
 
         @Watch({ converter: PropertyConverters.Number }) index: number;
         @Watch({ converter: PropertyConverters.Number, emit: false }) total: number;

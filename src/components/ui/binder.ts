@@ -78,7 +78,7 @@ namespace Pacem.Components.UI {
         }
     };
 
-    @CustomElement({ tagName: 'pacem-binder' })
+    @CustomElement({ tagName: P +'-binder' })
     export class PacemBinderElement extends PacemElement implements OnConnected, OnDisconnected, OnPropertyChanged {
 
         @Watch({ emit: false, converter: ElementOrPointPropertyConverter }) from: PacemBinderTarget;
@@ -121,9 +121,7 @@ namespace Pacem.Components.UI {
                     break;
                 case 'cssClass':
                     if (!Utils.isNull(this._svg)) {
-                        this._svg.setAttribute('class', 'pacem-binder ' + this.className);
-                        //Utils.removeClass(this._svg, 'pacem-binder ' + this._svg.className);
-                        //Utils.addClass(this._svg, );
+                        this._svg.setAttribute('class', PCSS + '-binder ' + this.className);
                     }
                     break;
             }
@@ -146,7 +144,7 @@ namespace Pacem.Components.UI {
 
                 let svg = this._svg = <SVGSVGElement>document.createElementNS('http://www.w3.org/2000/svg', 'svg');
                 svg.style.position = 'absolute';
-                Utils.addClass(svg, 'pacem-binder ' + this.className);
+                Utils.addClass(svg, PCSS + '-binder ' + this.className);
                 svg.style.top = '0';
                 svg.style.left = '0';
                 svg.style.overflow = 'hidden';

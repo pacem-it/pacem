@@ -2,15 +2,15 @@
 namespace Pacem.Components.UI {
 
     @CustomElement({
-        tagName: 'pacem-collapse', shadow: Defaults.USE_SHADOW_ROOT,
-        template: `<div class="pacem-collapse"><pacem-resize on-${ResizeEventName}=":host._resize($event)">
-    <pacem-content></pacem-content>
-</pacem-resize></div>`
+        tagName: P +'-collapse', shadow: Defaults.USE_SHADOW_ROOT,
+        template: `<div class="${PCSS}-collapse"><${ P }-resize on-${ResizeEventName}=":host._resize($event)">
+    <${ P }-content></${ P }-content>
+</${ P }-resize></div>`
     })
     export class PacemCollapseElement extends PacemEventTarget implements OnPropertyChanged, OnViewActivated {
 
-        @ViewChild('.pacem-collapse') private _container: HTMLDivElement;
-        @ViewChild('pacem-resize') private _resizer: PacemResizeElement;
+        @ViewChild(`.${PCSS}-collapse`) private _container: HTMLDivElement;
+        @ViewChild(P +'-resize') private _resizer: PacemResizeElement;
         @Watch({ converter: PropertyConverters.Boolean }) collapse: boolean;
         @Watch({ emit: false, converter: PropertyConverters.Boolean }) horizontal: boolean;
         private _state: ResizeEventArgs;
@@ -46,10 +46,10 @@ namespace Pacem.Components.UI {
             //
             div.style.height = collapse ? '0' : (state && state.height + 'px') || '';
             if (this.horizontal) {
-                Utils.addClass(div, 'pacem-horizontal');
+                Utils.addClass(div, PCSS + '-horizontal');
                 div.style.width = collapse ? '0' : (state && state.width + 'px') || '';
             } else {
-                Utils.removeClass(div, 'pacem-horizontal');
+                Utils.removeClass(div, PCSS + '-horizontal');
             }
         }
     }

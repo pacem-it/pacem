@@ -1,16 +1,16 @@
 ﻿/// <reference path="../../../dist/js/pacem-core.d.ts" />
 namespace Pacem.Components.Scaffolding {
 
-    export const CHAR_COUNTER_CHILD: string = `<pacem-char-count hide="{{ :host.readonly || !(:host.minlength > 0 || :host.maxlength > 0) }}" minlength="{{ :host.minlength }}" maxlength="{{ :host.maxlength }}" string="{{ :host.value }}"></pacem-char-count>`;
+    export const CHAR_COUNTER_CHILD: string = `<${ P }-char-count hide="{{ :host.readonly || !(:host.minlength > 0 || :host.maxlength > 0) }}" minlength="{{ :host.minlength }}" maxlength="{{ :host.maxlength }}" string="{{ :host.value }}"></${ P }-char-count>`;
 
     @CustomElement({
-        tagName: 'pacem-char-count',
+        tagName: P + '-char-count',
         shadow: Defaults.USE_SHADOW_ROOT,
-        template: `<pacem-panel class="pacem-char-count" css-class="{{ {'valid': :host._isValid(:host.string), 'invalid': !:host._isValid(:host.string) } }}">
-    <pacem-span hide="{{ !(:host.minlength > 0) }}" class="pacem-char-min" content="{{ :host.minlength }}"></pacem-span>
-    <pacem-span class="pacem-char-curr" content="{{ :host._length(:host.string) }}"></pacem-span>
-    <pacem-span hide="{{ !(:host.maxlength > 0) }}" class="pacem-char-max" content="{{ :host.maxlength }}"></pacem-span>
-</pacem-panel>`
+        template: `<${ P }-panel class="${PCSS}-char-count" css-class="{{ {'valid': :host._isValid(:host.string), 'invalid': !:host._isValid(:host.string) } }}">
+    <${ P }-span hide="{{ !(:host.minlength > 0) }}" class="${PCSS}-char-min" content="{{ :host.minlength }}"></${ P }-span>
+    <${ P }-span class="${PCSS}-char-curr" content="{{ :host._length(:host.string) }}"></${ P }-span>
+    <${ P }-span hide="{{ !(:host.maxlength > 0) }}" class="${PCSS}-char-max" content="{{ :host.maxlength }}"></${ P }-span>
+</${ P }-panel>`
     })
     export class PacemCharCountElement extends PacemElement {
 

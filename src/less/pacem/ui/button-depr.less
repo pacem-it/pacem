@@ -8,8 +8,8 @@
 @_height: @grid_spacing * 1.5;
 @_border: 1px;
 
-.pacem-button.button,
-pacem-button.button {
+.@{PCSS}-button.button,
+@{P}-button.button {
     @_brd: @_border;
     @_h: @_height;
     height: @_h - 2 * @_brd;
@@ -46,32 +46,32 @@ pacem-button.button {
     border-left-color: @color_button_border;
 }
 
-.pacem-button.button when (@shadows = true) {
+.@{PCSS}-button.button when (@shadows = true) {
     .ButtonShadows();
 }
 
-pacem-button.button when (@shadows = true) {
+@{P}-button.button when (@shadows = true) {
     .ButtonShadows();
 }
 
-.pacem-button.button when (@gradients = true) {
+.@{PCSS}-button.button when (@gradients = true) {
     .ButtonGradients();
 }
 
-pacem-button.button when (@gradients = true) {
+@{P}-button.button when (@gradients = true) {
     .ButtonGradients();
 }
 
-pacem-button.button when (@gradients = false) {
+@{P}-button.button when (@gradients = false) {
     .ButtonNoGradients();
 }
 
-pacem-button.button when (@gradients = false) {
+@{P}-button.button when (@gradients = false) {
     .ButtonNoGradients();
 }
 
-.pacem-button,
-pacem-button {
+.@{PCSS}-button,
+@{P}-button {
     position: relative;
     cursor: pointer;
     display: inline-block;
@@ -244,9 +244,9 @@ pacem-button {
     }
 }
 
-pacem-button, .pacem-button {
+@{P}-button, .@{PCSS}-button {
 
-    &.pacem-focus when (@gradients = true) {
+    &.@{PCSS}-focus when (@gradients = true) {
         .GradientBorderVertical(1, 0, 100%, fade(@color_button_border_light, 20), fade(@color_button_border, 0));
     }
 
@@ -254,7 +254,7 @@ pacem-button, .pacem-button {
         .GradientBorderVertical(1, 0, 100%, fade(@color_button_border_light, 20), fade(@color_button_border, 0));
     }
 
-    &.pacem-focus when (@gradients = false) {
+    &.@{PCSS}-focus when (@gradients = false) {
         border-bottom-color: @color_button_border_dark;
     }
 
@@ -287,7 +287,7 @@ pacem-button, .pacem-button {
 }
 
 //:host,
-pacem-button > button[pacem] {
+@{P}-button > button[pacem] {
     background: transparent;
     border: none;
     width: 100%;
@@ -298,18 +298,18 @@ pacem-button > button[pacem] {
     color: @color_button_fore;
 }
 
-.pacem-button,
-pacem-button > button[pacem] {
+.@{PCSS}-button,
+@{P}-button > button[pacem] {
     .ButtonText();
 }
 
-pacem-button, .pacem-button {
+@{P}-button, .@{PCSS}-button {
     > button[pacem] when (@uppercase_buttons = true) {
         text-transform: uppercase;
     }
 }
 
-pacem-button, .pacem-button {
+@{P}-button, .@{PCSS}-button {
 
     &:hover when (@glows = true) {
         > button[pacem] {
@@ -319,32 +319,32 @@ pacem-button, .pacem-button {
 }
 
 //:host([disabled]),
-.pacem-button.pacem-disabled,
-.pacem-button[disabled],
-pacem-button.pacem-disabled > button[pacem] {
+.@{PCSS}-button.@{PCSS}-disabled,
+.@{PCSS}-button[disabled],
+@{P}-button.@{PCSS}-disabled > button[pacem] {
     cursor: default;
     color: fade(@color_button_fore, 30);
     text-shadow: none;
 }
 
-.pacem-button,
-pacem-button {
+.@{PCSS}-button,
+@{P}-button {
 
-    &.pacem-disabled {
+    &.@{PCSS}-disabled {
         background-color: @color_button_back;
         cursor: default;
     }
 
-    &.pacem-disabled when (@gradients = true) {
+    &.@{PCSS}-disabled when (@gradients = true) {
         .GradientBorderVertical(1, 0, 50%, fade(@color_button_border_light, 10), fade(@color_button_border, 0));
         //border-color: transparent;
     }
 
-    &.pacem-disabled when (@shadows = true) {
+    &.@{PCSS}-disabled when (@shadows = true) {
         box-shadow: 0 2px 2px rgba(0,0,0,0.1);
     }
 
-    &.pacem-disabled when (@gradients = false) {
+    &.@{PCSS}-disabled when (@gradients = false) {
         //border-color: #f0f0f0;
         border-color: transparent;
     }
@@ -358,7 +358,7 @@ pacem-button {
 }*/
 /* #endregion */
 
-pacem-buttonset {
+@{P}-buttonset {
     display: block;
     border: 4px solid transparent;
     transition: border .25s linear;
@@ -378,7 +378,7 @@ pacem-buttonset {
     }*/
 }
 
-.pacem-buttonset {
+.@{PCSS}-buttonset {
     display: grid;
     grid-gap: 0;
     padding: @grid_spacing/2 0 0 0;
@@ -386,37 +386,37 @@ pacem-buttonset {
     grid-template-areas: 'left . center . right';
     white-space: nowrap;
 
-    .pacem-buttonset-left, .buttonset-left,
-    .pacem-buttonset-center, .buttonset-center,
-    .pacem-buttonset-right, .buttonset-right {
+    .@{PCSS}-buttonset-left, .buttonset-left,
+    .@{PCSS}-buttonset-center, .buttonset-center,
+    .@{PCSS}-buttonset-right, .buttonset-right {
         display: flex;
         flex-direction: row;
     }
 
     &.buttons when (@shadows = true) {
-        .pacem-buttonset-left, .buttonset-left,
-        .pacem-buttonset-center, .buttonset-center,
-        .pacem-buttonset-right, .buttonset-right {
+        .@{PCSS}-buttonset-left, .buttonset-left,
+        .@{PCSS}-buttonset-center, .buttonset-center,
+        .@{PCSS}-buttonset-right, .buttonset-right {
             .ButtonShadows();
         }
     }
 
-    .pacem-buttonset-left, .buttonset-left {
+    .@{PCSS}-buttonset-left, .buttonset-left {
         grid-area: left;
         align-content: flex-start;
     }
 
-    .pacem-buttonset-center, .buttonset-center {
+    .@{PCSS}-buttonset-center, .buttonset-center {
         grid-area: center;
         align-content: center;
     }
 
-    .pacem-buttonset-right, .buttonset-right {
+    .@{PCSS}-buttonset-right, .buttonset-right {
         grid-area: right;
         align-content: flex-end;
     }
 
-    pacem-button {
+   @{P}-button {
         margin: 0;
         border-radius: 0;
         display: block;
@@ -438,7 +438,7 @@ pacem-buttonset {
     }
 }
 
-pacem-button.dropdown-toggle {
+@{P}-button.dropdown-toggle {
     padding-right: @grid_spacing;
     margin-bottom: 0;
     position: relative;
@@ -457,7 +457,7 @@ pacem-button.dropdown-toggle {
     }
 }
 
-pacem-button.dropdown-item {
+@{P}-button.dropdown-item {
     display: block;
     margin: 0;
     height: @_height;
@@ -471,7 +471,7 @@ pacem-button.dropdown-item {
     }
 
     &:hover,
-    &.pacem-focus {
+    &.@{PCSS}-focus {
         background-color: @color_suggest_focus_back;
         color: @color_suggest_focus_fore;
     }

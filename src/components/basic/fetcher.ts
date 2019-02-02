@@ -14,22 +14,30 @@ namespace Pacem.Net {
         fetch: () => PromiseLike<GlobalResponse>;
     }
 
+    export interface OAuthFetchable {
+
+        readonly fetcher?: Fetcher;
+        fetchCredentials: RequestCredentials;
+        fetchHeaders: { [key: string]: string };
+
+    }
+
     export const FetchResultEventName = 'fetchresult';
     export const FetchErrorEventName = 'error';
 }
 
 namespace Pacem.Components {
 
-    @CustomElement({ tagName: 'pacem-fetch' })
+    @CustomElement({ tagName: P + '-fetch' })
     export class PacemFetchElement extends PacemEventTarget implements Net.Fetcher {
 
         @Watch({ emit: false, reflectBack: true, converter: PropertyConverters.String }) url: string;
 
         @Watch({ emit: false, reflectBack: true, converter: PropertyConverters.String }) method: Net.HttpMethod;
 
-        @Watch({ emit: false, converter: PropertyConverters.Eval }) parameters: { [key: string]: string };
+        @Watch({ emit: false, converter: PropertyConverters.Json }) parameters: { [key: string]: string };
 
-        @Watch({ emit: false, converter: PropertyConverters.Eval }) headers: { [key: string]: string };
+        @Watch({ emit: false, converter: PropertyConverters.Json }) headers: { [key: string]: string };
 
         @Watch({ emit: false, converter: PropertyConverters.String }) credentials: 'omit' | 'same-origin' | 'include';
 
@@ -42,6 +50,9 @@ namespace Pacem.Components {
         @Watch({ emit: false, converter: PropertyConverters.String }) type: 'json' | 'raw';
 
         @Watch({ reflectBack: true, converter: PropertyConverters.Number }) debounce: number = 100;
+
+        /** Whether to compare parameter and header single values prior to trigger a new fetch execution (default false). */
+        @Watch({ emit: false, reflectBack: true, converter: PropertyConverters.Boolean }) diffByValues: boolean;
 
         @Watch() result: any;
 
@@ -65,14 +76,22 @@ namespace Pacem.Components {
                     break;
                 case 'url':
                 case 'method':
-                case 'parameters':
-                case 'headers':
                 case 'type':
                 case 'as':
                 case 'mode':
                 case 'credentials':
                 case 'disabled':
                     this._delayFetch();
+                    break;
+                case 'parameters':
+                case 'headers':
+                    if (!this.diffByValues
+                        // spare round-trips: compare stringified values.
+                        // state might be changed, by it's up to the dev to unlock this
+                        // (i.e. just by calling 'fetch()' directly)
+                        || Utils.jsonSortStringify(old) != Utils.jsonSortStringify(val)) {
+                        this._delayFetch();
+                    }
                     break;
             }
         }

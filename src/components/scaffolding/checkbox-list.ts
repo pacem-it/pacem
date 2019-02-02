@@ -4,15 +4,15 @@
 namespace Pacem.Components.Scaffolding {
 
     @CustomElement({
-        tagName: 'pacem-checkbox-list', template: `<pacem-repeater datasource="{{ :host.adaptedDatasource }}">
-    <ol class="pacem-checkbox-list pacem-viewfinder" pacem>
+        tagName: P + '-checkbox-list', template: `<${ P }-repeater datasource="{{ :host.adaptedDatasource }}">
+    <ol class="${PCSS}-checkbox-list ${PCSS}-viewfinder" pacem>
         <template>
-            <li><pacem-checkbox disabled="{{ ::_disable.model }}" name="{{ :host.key }}" caption="{{ ^item.viewValue }}" true-value="{{ ^item.value }}" selected="{{ :host.isDataSourceItemSelected(^item, :host.value) }}"
+            <li><${ P }-checkbox disabled="{{ ::_disable.model }}" name="{{ :host.key }}" caption="{{ ^item.viewValue }}" true-value="{{ ^item.value }}" selected="{{ :host.isDataSourceItemSelected(^item, :host.value) }}"
 on-focus=":host.focusHandler($event)" on-blur=":host.focusHandler($event)"
-on-${ PropertyChangeEventName}=":host._selectionChanged($event, ^index, ^item)" on-change=":host.changeHandler($event)"></pacem-checkbox></li>
+on-${ PropertyChangeEventName}=":host._selectionChanged($event, ^index, ^item)" on-change=":host.changeHandler($event)"></${ P }-checkbox></li>
         </template>
     </ol>
-</pacem-repeater><span class="pacem-readonly"><pacem-text text="{{ :host.viewValue }}"></pacem-text></span><pacem-data></pacem-data><pacem-content></pacem-content>`,
+</${ P }-repeater><span class="${PCSS}-readonly"><${ P }-text text="{{ :host.viewValue }}"></${ P }-text></span><${ P }-data></${ P }-data><${ P }-content></${ P }-content>`,
         shadow: Defaults.USE_SHADOW_ROOT
     })
     export class PacemCheckboxListElement extends PacemDataSourceElement {
@@ -30,9 +30,9 @@ on-${ PropertyChangeEventName}=":host._selectionChanged($event, ^index, ^item)" 
             return [];
         }
 
-        @ViewChild('span.pacem-readonly') private _span: HTMLSpanElement;
-        @ViewChild('pacem-repeater') private _repeater: PacemRepeaterElement;
-        @ViewChild('pacem-data') private _disable: PacemDataElement;
+        @ViewChild(`span.${PCSS}-readonly`) private _span: HTMLSpanElement;
+        @ViewChild(P + '-repeater') private _repeater: PacemRepeaterElement;
+        @ViewChild(P + '-data') private _disable: PacemDataElement;
 
         propertyChangedCallback(name: string, old: any, val: any, first?: boolean) {
             super.propertyChangedCallback(name, old, val, first);

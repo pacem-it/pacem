@@ -1,6 +1,6 @@
 ﻿@import "shared";
 
-pacem-select {
+@{P}-select {
     .FormFieldItemWrapper();
 
     &::after {
@@ -11,7 +11,14 @@ pacem-select {
         pointer-events: none;
     }
 
-    .pacem-select {
+    &.@{PCSS}-readonly {
+
+        &::after {
+            display: none;
+        }
+    }
+
+    .@{PCSS}-select {
         .FormFieldItem();
         .FormFieldItemInline();
         box-sizing: border-box;
@@ -22,11 +29,10 @@ pacem-select {
         > option {
             background-color: @color_lightblue;
 
-            &.pacem-watermark {
+            &.@{PCSS}-watermark {
                 .Watermark();
             }
         }
-
         // normalize toggle button:
         -webkit-appearance: none;
         -moz-appearance: none;

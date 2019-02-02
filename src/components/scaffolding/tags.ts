@@ -14,15 +14,15 @@ namespace Pacem.Components.Scaffolding {
     }
 
     @CustomElement({
-        tagName: 'pacem-tag', shadow: Defaults.USE_SHADOW_ROOT,
-        template: `<pacem-text text="{{ :host.tag }}"></pacem-text>
-                <pacem-button on-click=":host._remove()" hide="{{ :host.readonly }}"></pacem-button>`
+        tagName: P + '-tag', shadow: Defaults.USE_SHADOW_ROOT,
+        template: `<${P}-text text="{{ :host.tag }}"></${P}-text>
+                <${ P}-button on-click=":host._remove()" hide="{{ :host.readonly }}"></${P}-button>`
     })
     export class PacemTagElement extends PacemElement {
 
         @Watch({ converter: PropertyConverters.String }) tag: string;
         @Watch({ emit: false, converter: PropertyConverters.Boolean }) readonly: boolean;
-        @ViewChild('pacem-button') private _btn: UI.PacemButtonElement;
+        @ViewChild(P + '-button') private _btn: UI.PacemButtonElement;
 
         propertyChangedCallback(name: string, old: any, val: any, first?: boolean) {
             super.propertyChangedCallback(name, old, val, first);
@@ -48,19 +48,19 @@ namespace Pacem.Components.Scaffolding {
     }
 
     @CustomElement({
-        tagName: 'pacem-tags', shadow: Defaults.USE_SHADOW_ROOT,
-        template: `<pacem-repeater class="pacem-tags">
-    <ul class="pacem-tags pacem-viewfinder pacem-list list-unstyled list-inline">
+        tagName: P + '-tags', shadow: Defaults.USE_SHADOW_ROOT,
+        template: `<${P}-repeater class="${PCSS}-tags">
+    <ul class="${PCSS}-tags ${PCSS}-viewfinder ${PCSS}-list list-unstyled list-inline">
         <template>
-            <li class="pacem-tag">
-                <pacem-tag on-remove=":host._tagRemove(^index)" css-class="{{ { 'tag-in': :host._justAddedIndex === ^index } }}" tag="{{ :host.mapEntityToViewValue(^item) }}" readonly="{{ :host.readonly }}"></pacem-tag>
+            <li class="${PCSS}-tag">
+                <${ P}-tag on-remove=":host._tagRemove(^index)" css-class="{{ { 'tag-in': :host._justAddedIndex === ^index } }}" tag="{{ :host.mapEntityToViewValue(^item) }}" readonly="{{ :host.readonly }}"></${P}-tag>
             </li>
         </template>
         <li class="tag-new">
-            <pacem-suggest logger="{{ :host.logger }}" placeholder="{{ :host.placeholder }}" allow-new="{{ :host.allowNew }}" class="pacem-tags" on-change=":host._tagAdd($this.value)" hint="{{ :host.hint, twoway }}"></pacem-suggest>
+            <${ P}-suggest logger="{{ :host.logger }}" placeholder="{{ :host.placeholder }}" allow-new="{{ :host.allowNew }}" class="${PCSS}-tags" on-change=":host._tagAdd($this.value)" hint="{{ :host.hint, twoway }}"></${P}-suggest>
         </li>
     </ul>
-</pacem-repeater>`
+</${ P}-repeater>`
     })
     export class PacemTagsElement extends PacemDataSourceElement {
 
@@ -72,8 +72,8 @@ namespace Pacem.Components.Scaffolding {
         @Watch({ emit: false, converter: PropertyConverters.Boolean }) allowDuplicates: boolean;
         @Watch({ converter: PropertyConverters.Boolean }) allowNew: boolean;
         @Watch({ converter: PropertyConverters.Number }) private _justAddedIndex: number;
-        @ViewChild('pacem-suggest') private _suggest: PacemSuggestElement;
-        @ViewChild('pacem-repeater.pacem-tags') private _tags: PacemRepeaterElement;
+        @ViewChild(P + '-suggest') private _suggest: PacemSuggestElement;
+        @ViewChild(P + '-repeater.' + PCSS + '-tags') private _tags: PacemRepeaterElement;
 
         protected inputFields: HTMLElement[] = [];
 

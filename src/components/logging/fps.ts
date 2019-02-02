@@ -3,7 +3,7 @@
 namespace Pacem.Components.Logging {
 
     @CustomElement({
-        tagName: 'pacem-fps'
+        tagName: P + '-fps'
     })
     export class PacemFpsElement extends PacemTrackerElement implements OnViewActivated, OnDisconnected {
 

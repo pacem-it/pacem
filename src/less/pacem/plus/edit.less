@@ -4,24 +4,24 @@
 @_color: fade(@color_primary, 60);
 @_hover_color: @color_highlight;
 
-pacem-edit {
+@{P}-edit {
     display: block;
 }
 
-pacem-dialog {
+@{P}-dialog {
 
-    pacem-textarea.pacem-edit-text {
+   @{P}-textarea.@{PCSS}-edit-text {
         display: block;
         margin-bottom: @grid_spacing;
     }
 }
 
-.pacem-editing {
+.@{PCSS}-editing {
     border: 1px solid @_color;
     min-height: @grid_spacing;
     position: relative;
 
-    pacem-button.pacem-edit-button {
+   @{P}-button.@{PCSS}-edit-button {
         position: absolute;
         background: @_color;
         right: 0;

@@ -2,8 +2,8 @@
 namespace Pacem.Components.UI {
 
     @CustomElement({
-        tagName: 'pacem-marquee', shadow: Defaults.USE_SHADOW_ROOT,
-        template: `<div class="pacem-marquee"><pacem-content></pacem-content></div><div class="pacem-marquee-overlap"></div><pacem-resize target="{{ :host._marquee }}" on-${ResizeEventName}=":host._resize($event)"></pacem-resize>`
+        tagName: P + '-marquee', shadow: Defaults.USE_SHADOW_ROOT,
+        template: `<div class="${PCSS}-marquee"><${ P }-content></${ P }-content></div><div class="${PCSS}-marquee-overlap"></div><${ P }-resize target="{{ :host._marquee }}" on-${ResizeEventName}=":host._resize($event)"></${ P }-resize>`
     })
     export class PacemMarqueeElement extends PacemElement {
 
@@ -43,8 +43,8 @@ namespace Pacem.Components.UI {
         private _css: HTMLStyleElement;
         private _state: ResizeEventArgs;
 
-        @ViewChild(".pacem-marquee") private _marquee: HTMLDivElement;
-        @ViewChild("pacem-resize") private _resizer: PacemResizeElement;
+        @ViewChild(`.${PCSS}-marquee`) private _marquee: HTMLDivElement;
+        @ViewChild(P + "-resize") private _resizer: PacemResizeElement;
         /** seconds per 1920px */
         @Watch({ converter: PropertyConverters.Number }) speed: number;
 

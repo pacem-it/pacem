@@ -86,7 +86,7 @@ namespace Pacem.Components {
         }
     }
 
-    @CustomElement({ tagName: 'pacem-tween' })
+    @CustomElement({ tagName: P + '-tween' })
     export class PacemTweenElement extends PacemEventTarget implements OnPropertyChanged {
 
         constructor(private _tweener = new Pacem.Animations.TweenService()) {

@@ -69,17 +69,17 @@ namespace Pacem.Components.Scaffolding {
     }
 
     @CustomElement({
-        tagName: 'pacem-contenteditable', shadow: Defaults.USE_SHADOW_ROOT,
-        template: `<div class="pacem-contenteditable pacem-viewfinder">
+        tagName: P + '-contenteditable', shadow: Defaults.USE_SHADOW_ROOT,
+        template: `<div class="${PCSS}-contenteditable ${PCSS}-viewfinder">
     <div contenteditable pacem></div>
 </div>${ CHAR_COUNTER_CHILD}
-<pacem-repeater>
-<div class="pacem-commands">
+<${ P }-repeater>
+<div class="${PCSS}-commands">
 <template>
-    <pacem-button class="button pacem-command" css-class="{{ ['pacem-'+ ^item.toLowerCase()] }}" on-click=":host._commands.exec(^item).then(() => :host.changeHandler($event))"></pacem-button>
+    <${ P }-button class="button ${PCSS}-command" css-class="{{ ['${PCSS}-'+ ^item.toLowerCase()] }}" on-click=":host._commands.exec(^item).then(() => :host.changeHandler($event))"></${ P }-button>
 </template>
 </div>
-</pacem-repeater>`
+</${ P }-repeater>`
     })
     export class PacemContenteditableElement extends PacemBaseElement implements OnPropertyChanged, OnViewActivated, OnDisconnected {
 
@@ -93,7 +93,7 @@ namespace Pacem.Components.Scaffolding {
         }
 
         @ViewChild("div[pacem]") private _container: HTMLDivElement;
-        @ViewChild("pacem-repeater") private _repeater: PacemRepeaterElement;
+        @ViewChild(P + "-repeater") private _repeater: PacemRepeaterElement;
         @Watch({ converter: PropertyConverters.Number }) minlength: number;
         @Watch({ converter: PropertyConverters.Number }) maxlength: number;
 

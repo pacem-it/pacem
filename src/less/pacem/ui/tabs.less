@@ -6,11 +6,11 @@
 @_clr_brd_tab: @color_border;
 @_brd_tab: @border_tab;
 
-pacem-tabs {
+@{P}-tabs {
     display: block;
     //position: relative;
 
-    pacem-tab {
+   @{P}-tab {
         display: none;
         opacity: 0;
         pointer-events: none;
@@ -30,14 +30,14 @@ pacem-tabs {
         }
 
         &.tab-focus,
-        &.pacem-tab-focus {
+        &.@{PCSS}-tab-focus {
             pointer-events: auto;
             opacity: 1;
             transform: none; // translateX(0) translateY(0) translateZ(0);
         }
     }
 
-    .pacem-tabs-content {
+    .@{PCSS}-tabs-content {
         background: @_clr_tab;
         padding: @grid_spacing;
         border-radius: @border_radius;
@@ -46,7 +46,7 @@ pacem-tabs {
         overflow: hidden;
         display: grid;
 
-        > pacem-tab {
+        >@{P}-tab {
             grid-column: 1;
             grid-row: 1;
             align-self: start;
@@ -101,21 +101,21 @@ pacem-tabs {
             }
         }
     }
-    /*.pacem-tabs-content {
+    /*.@{PCSS}-tabs-content {
         z-index: 1;
     }
 
-    .pacem-tabs-adapter {
+    .@{PCSS}-tabs-adapter {
         z-index: 0;
     }*/
     &.rise {
-        .pacem-tabs-content {
+        .@{PCSS}-tabs-content {
             box-shadow: 0 2px @grid_spacing/6 rgba(0,0,0,0.5);
         }
 
-        .pacem-tabs.tabs-vertical {
+        .@{PCSS}-tabs.tabs-vertical {
 
-            pacem-button.pacem-adapter-page.pacem-adapter-active {
+           @{P}-button.@{PCSS}-adapter-page.@{PCSS}-adapter-active {
                 box-shadow: 0 1px 0 rgba(0,0,0,0.5);
             }
         }
@@ -125,9 +125,9 @@ pacem-tabs {
 @_s_btn: @grid_spacing;
 
 // tabs (header)
-pacem-adapter.pacem-tabs-adapter {
+@{P}-adapter.@{PCSS}-tabs-adapter {
 
-    .pacem-adapter-dashboard {
+    .@{PCSS}-adapter-dashboard {
         list-style-type: none;
         display: flex;
         flex-direction: row;
@@ -138,7 +138,7 @@ pacem-adapter.pacem-tabs-adapter {
 
         > li {
 
-            > pacem-button.pacem-adapter-page {
+            >@{P}-button.@{PCSS}-adapter-page {
                 padding: @grid_spacing/6 @grid_spacing/2 0 @grid_spacing/2;
                 margin: 0;
                 background-color: transparent;
@@ -147,11 +147,11 @@ pacem-adapter.pacem-tabs-adapter {
                 border-top-left-radius: @border_radius;
                 border-top-right-radius: @border_radius;
 
-                &.pacem-disabled {
+                &.@{PCSS}-disabled {
                     box-shadow: none;
                 }
 
-                > pacem-span {
+                >@{P}-span {
                     display: block;
                     box-sizing: border-box;
                     height: @_h_tab - @grid_spacing/6;
@@ -165,7 +165,7 @@ pacem-adapter.pacem-tabs-adapter {
                     }
                 }
 
-                &.pacem-adapter-active {
+                &.@{PCSS}-adapter-active {
                     background-color: @_clr_tab;
                     border-top: @_brd_tab solid @_clr_brd_tab;
                     border-right: @_brd_tab solid @_clr_brd_tab;
@@ -173,7 +173,7 @@ pacem-adapter.pacem-tabs-adapter {
                     z-index: 1;
                     transform: translateY(@_brd_tab);
 
-                    > pacem-span {
+                    >@{P}-span {
                         border-color: @color_tab_highlight;
                         //background-color: @color_teal;
                     }
@@ -182,8 +182,8 @@ pacem-adapter.pacem-tabs-adapter {
         }
     }
 
-    .pacem-adapter-next,
-    .pacem-adapter-previous {
+    .@{PCSS}-adapter-next,
+    .@{PCSS}-adapter-previous {
         font-size: 0;
         float: left;
         height: @_h_tab;
@@ -194,16 +194,16 @@ pacem-adapter.pacem-tabs-adapter {
         margin: 0;
     }
 
-    .pacem-adapter-next::before {
+    .@{PCSS}-adapter-next::before {
         .Icon('chevron_right', @_s_btn);
     }
 
-    .pacem-adapter-previous::before {
+    .@{PCSS}-adapter-previous::before {
         .Icon('chevron_left', @_s_btn);
     }
 
-    .pacem-adapter-next,
-    .pacem-adapter-previous {
+    .@{PCSS}-adapter-next,
+    .@{PCSS}-adapter-previous {
 
         &::before {
             left: 0;
@@ -213,29 +213,29 @@ pacem-adapter.pacem-tabs-adapter {
     }
 }
 
-.pacem-tabs.tabs-vertical {
+.@{PCSS}-tabs.tabs-vertical {
     display: flex;
     flex-direction: row;
 
-    .pacem-tabs-adapter {
+    .@{PCSS}-tabs-adapter {
         flex-basis: @grid_cell * 2;
         flex-grow: 0;
         flex-shrink: 0;
 
-        .pacem-adapter-dashboard {
+        .@{PCSS}-adapter-dashboard {
             display: block;
             margin: 2 * @_s_btn 0 0 0;
 
             > li {
                 display: list-item;
 
-                > pacem-button.pacem-adapter-page {
+                >@{P}-button.@{PCSS}-adapter-page {
                     padding: @grid_spacing/4 0 @grid_spacing/4 @grid_spacing/2;
                     display: block;
                     border-bottom-left-radius: @border_radius;
                     border-top-right-radius: 0;
 
-                    > pacem-span {
+                    >@{P}-span {
                         display: block;
                         text-align: left;
                         margin: 0;
@@ -246,9 +246,9 @@ pacem-adapter.pacem-tabs-adapter {
                         border-right: 1px solid transparent;
                     }
 
-                    &.pacem-adapter-active {
+                    &.@{PCSS}-adapter-active {
 
-                        > pacem-span {
+                        >@{P}-span {
                             border-color: @color_tab_highlight;
                         }
                     }
@@ -256,8 +256,8 @@ pacem-adapter.pacem-tabs-adapter {
             }
         }
 
-        .pacem-adapter-next,
-        .pacem-adapter-previous {
+        .@{PCSS}-adapter-next,
+        .@{PCSS}-adapter-previous {
             margin-left: @grid_spacing/2;
             margin-bottom: 0;
             margin-right: 0;
@@ -267,24 +267,24 @@ pacem-adapter.pacem-tabs-adapter {
             }
         }
 
-        .pacem-adapter-next::before {
+        .@{PCSS}-adapter-next::before {
             content: 'keyboard_arrow_down';
         }
 
-        .pacem-adapter-previous::before {
+        .@{PCSS}-adapter-previous::before {
             content: 'keyboard_arrow_up';
         }
     }
 
-    .pacem-tabs-content {
+    .@{PCSS}-tabs-content {
         flex-grow: 1;
     }
 }
 
 // animations
-.pacem-animations {
-    pacem-tabs {
-        pacem-tab {
+.@{PCSS}-animations {
+   @{P}-tabs {
+       @{P}-tab {
             transition: opacity .2s, transform .2s @easing_out_sine;
         }
     }

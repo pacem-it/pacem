@@ -140,7 +140,7 @@ namespace Pacem.Components {
 
         constructor(private _element: HTMLElement | SVGElement, private _dragDropper: Pacem.UI.DragDropper
             , private _logFn: (level: Logging.LogLevel, message: string, category?: string) => void) {
-            Utils.addClass(_element, 'pacem-drag-lock');
+            Utils.addClass(_element, PCSS + '-drag-lock');
             window.addEventListener('mouseup', this._endHandler, false);
             window.addEventListener('touchend', this._endHandler, false);
             window.addEventListener('mousemove', this._moveHandler, false);
@@ -216,7 +216,7 @@ namespace Pacem.Components {
                 floater = <HTMLElement | SVGElement>floater.cloneNode(true);
                 CustomElementUtils.stripObservedAttributes(floater);
                 if (floater instanceof HTMLElement || floater instanceof SVGElement) {
-                    Utils.addClass(floater, 'pacem-drag-floater');
+                    Utils.addClass(floater, PCSS + '-drag-floater');
                     document.body.appendChild(floater);
                     floater.style.position = 'absolute';
                     let pos = { left: origin.x + Utils.scrollLeft - floater.clientWidth / 2, top: origin.y + Utils.scrollTop - floater.clientHeight / 2 };
@@ -286,7 +286,7 @@ namespace Pacem.Components {
             if (!Utils.isNull(origin = GET_VAL(el, MOUSE_DOWN))) {
                 this._logFn(Logging.LogLevel.Info, 'Dragging act started');
                 DEL_VAL(el, MOUSE_DOWN);
-                Utils.addClass(el, 'pacem-dragging');
+                Utils.addClass(el, PCSS + '-dragging');
                 let style = getComputedStyle(el),
                     initialDelta = { x: -Utils.scrollLeft, y: -Utils.scrollTop },
                     css = Utils.deserializeTransform(style);
@@ -356,7 +356,7 @@ namespace Pacem.Components {
                 const isMouseFlag = evt instanceof MouseEvent;
                 if (isMouseFlag)
                     Pacem.avoidHandler(evt);
-                Utils.addClass(document.body, 'pacem-dragging');
+                Utils.addClass(document.body, PCSS + '-dragging');
                 const pos = args.currentPosition = getCurrentPosition();
                 const delta = Geom.add(args.initialDelta, { x: Utils.scrollLeft, y: Utils.scrollTop }, Geom.subtract(args.origin, args.currentPosition));
                 let floater = args.floater;
@@ -373,7 +373,7 @@ namespace Pacem.Components {
                 // changed hover element since last time?
                 if (hover !== args.target) {
                     if (!Utils.isNull(args.target)) {
-                        Utils.removeClass(<HTMLElement | SVGElement>args.target, 'pacem-dropping');
+                        Utils.removeClass(<HTMLElement | SVGElement>args.target, PCSS + '-dropping');
                         dragger.dispatchEvent(new UI.DragDropEvent(UI.DragDropEventType.Out, UI.DragDropEventArgsClass.fromArgs(args)));
                         this._logFn(Logging.LogLevel.Info, `Drop area left (${(args.target['id'] || args.target.constructor.name)})`);
                     }
@@ -385,7 +385,7 @@ namespace Pacem.Components {
                         if (evt.defaultPrevented) {
                             delete args.target;
                         } else {
-                            Utils.addClass(<HTMLElement | SVGElement>args.target, 'pacem-dropping');
+                            Utils.addClass(<HTMLElement | SVGElement>args.target, PCSS + '-dropping');
                             this._logFn(Logging.LogLevel.Info, `Drop area entered (${(args.target['id'] || args.target.constructor.name)})`);
                         }
                     } else
@@ -418,12 +418,12 @@ namespace Pacem.Components {
                 if (dragger.mode !== UI.DragDataMode.Self) {
                     args.floater.remove();
                 }
-                Utils.removeClass(el, 'pacem-dragging');
-                Utils.removeClass(el, 'pacem-drag-lock');
+                Utils.removeClass(el, PCSS + '-dragging');
+                Utils.removeClass(el, PCSS + '-drag-lock');
                 DEL_VAL(el, DRAGGING);
                 if (!Utils.isNull(args.placeholder)) {
-                    Utils.removeClass(<HTMLElement | SVGElement>args.placeholder, 'pacem-dragging');
-                    Utils.removeClass(<HTMLElement | SVGElement>args.placeholder, 'pacem-drag-lock');
+                    Utils.removeClass(<HTMLElement | SVGElement>args.placeholder, PCSS + '-dragging');
+                    Utils.removeClass(<HTMLElement | SVGElement>args.placeholder, PCSS + '-drag-lock');
                     DEL_VAL(args.placeholder, DRAGGING);
                 }
 
@@ -464,10 +464,10 @@ namespace Pacem.Components {
 
                 dragger.dispatchEvent(new UI.DragDropEvent(UI.DragDropEventType.End, UI.DragDropEventArgsClass.fromArgs(args)));
                 //
-                Utils.removeClass(document.body, 'pacem-dragging');
+                Utils.removeClass(document.body, PCSS + '-dragging');
             }
 
-            Utils.removeClass(el, 'pacem-drag-lock');
+            Utils.removeClass(el, PCSS + '-drag-lock');
             // disposing
             this.dispose();
 
@@ -489,7 +489,7 @@ namespace Pacem.Components {
     /**
      * Pacem Drag & Drop element adapter.
      */
-    @CustomElement({ tagName: 'pacem-drag-drop' })
+    @CustomElement({ tagName: P + '-drag-drop' })
     export class PacemDragDropElement extends Pacem.Behaviors.PacemBehavior implements Pacem.UI.DragDropper {
         
         private _startHandler = (evt: MouseEvent | TouchEvent) => {

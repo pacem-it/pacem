@@ -17,7 +17,7 @@ namespace Pacem.Components {
         }
     }
 
-    @CustomElement({ tagName: 'pacem-position' })
+    @CustomElement({ tagName: P + '-position' })
     export class PacemPositionElement extends PacemEventTarget implements OnConnected, OnDisconnected, OnPropertyChanged {
 
         constructor() {

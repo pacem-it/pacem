@@ -4,7 +4,7 @@ namespace Pacem.Components.UI {
     const PACEM_TOAST_POPS = "pacem:toast:pops";
 
     @CustomElement({
-        tagName: 'pacem-toast'
+        tagName: P + '-toast'
     })
     export class PacemToastElement extends PacemElement implements OnPropertyChanged {
 

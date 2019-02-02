@@ -161,15 +161,17 @@ namespace Pacem {
                         const cmpRef = `__host_pacem`;
 
                         // default initialization := assumes `this`
-                        let retval = CONTEXT_PREFIX + '.$this'+ (melem.endsWith('.') ? '.' : ''),
+                        let retval = CONTEXT_PREFIX + '.$this' + (melem.endsWith('.') ? '.' : ''),
                             el: Node = element,
                             dotIndex = input.indexOf('.', index),
                             furtherParts = dotIndex > index ? input.substr(dotIndex + 1).trim() : '',
                             pathRegexArray = /^[\w\.\$]+/.exec(furtherParts),
                             path = pathRegexArray && pathRegexArray.length > 0 && pathRegexArray[0],
                             propArray,
-                            prop = path && (propArray = path.split('.')).length > 0 && propArray[0],
-                            isMethod = path && path.length > 0 && /^\(/.test(furtherParts.substr(path.length).trim());
+                            prop = path && (propArray = path.split('.')).length > 0 && propArray[0]
+                            // check whether a method is directly called against the possible variable
+                            // ,isMethod = !(prop && path && prop.length < path.length) && (path && path.length > 0 && /^\(/.test(furtherParts.substr(path.length).trim()))
+                            ;
 
                         if (melem === ':host.') {
 
@@ -214,7 +216,7 @@ namespace Pacem {
                         }
 
                         // merge dependencies
-                        if (!isMethod && prop && dependencies.find(d => d.element === el && d.property == prop) == null)
+                        if (/*!isMethod && */prop && dependencies.find(d => d.element === el && d.property == prop) == null)
                             dependencies.push({ element: el, property: prop, path: path, twowayAllowed: false });
 
 

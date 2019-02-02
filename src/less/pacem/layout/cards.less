@@ -2,7 +2,7 @@
 @import "../theme-dark";
 @import "mixins";
 
-.pacem-card {
+.@{PCSS}-card {
     .Panel(card);
     display: flex;
     flex-direction: column;
@@ -48,7 +48,7 @@
     }
 }
 
-.pacem-card.card-full {
+.@{PCSS}-card.card-full {
     /*.card-heading {
         margin-bottom: @grid_cell;
         height: auto;
@@ -66,14 +66,14 @@
     }
 }
 
-.pacem-card:not(.card-left) {
+.@{PCSS}-card:not(.card-left) {
     .card-img {
         position: absolute;
     }
 }
 
-.pacem-card.card-left//:not(pacem-a),
-/*pacem-a.pacem-card.card-left a*/ {
+.@{PCSS}-card.card-left//:not(pacem-a),
+/*pacem-a.@{PCSS}-card.card-left a*/ {
     display: grid;
     grid-template-columns: 28% 1fr;
     grid-template-rows: auto 1fr auto;
@@ -154,7 +154,7 @@
     .CardRibbon(@grid_cell + @grid_spacing * 2 / 3);
 }
 
-.pacem-card .card-ribbon {
+.@{PCSS}-card .card-ribbon {
     position: absolute;
     background-color: @color_lightblue;
     z-index: 2;
@@ -204,7 +204,7 @@
 
 /*#region ANCHOR-FIX*/
 
-pacem-a.pacem-card a {
+@{P}-a.@{PCSS}-card a {
     position: relative;
     color: @color_default;
 

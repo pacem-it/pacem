@@ -21,19 +21,19 @@
     }
 }
 
-pacem-fancy {
+@{P}-fancy {
     .Inert();
 }
 
-.pacem-fancy {
+.@{PCSS}-fancy {
 
-    .pacem-fancify {
+    .@{PCSS}-fancify {
         display: inline-block;
         animation: fancy-anim .5s @_easing both;
     }
 }
 
-.pacem-panel.panel-fancy {
+.@{PCSS}-panel.panel-fancy {
 
     @_delay: .5s;
 
@@ -46,14 +46,14 @@ pacem-fancy {
         //transform-origin: @grid_spacing @grid_spacing;
         transform: translateX(0) translateY(0);
 
-        canvas.pacem-tuner {
+        canvas.@{PCSS}-tuner {
             stroke: @color_teal;
         }
 
-        pacem-tuner {
+       @{P}-tuner {
             margin-top: @grid_spacing/4;
 
-            .pacem-content {
+            .@{PCSS}-content {
                 font-size: 1em;
                 transition: opacity .2s, transform .4s @easing_in_out_sine .1s;
             }
@@ -82,12 +82,12 @@ pacem-fancy {
         > .panel-side {
             transform: translateX(-1 * @_offset) translateY(0);
 
-            canvas.pacem-tuner {
+            canvas.@{PCSS}-tuner {
                 stroke: @color_tech;
             }
 
-            pacem-tuner {
-                .pacem-content {
+           @{P}-tuner {
+                .@{PCSS}-content {
                     opacity: 0;
                     transform: rotate(90deg);
                 }
@@ -123,14 +123,14 @@ pacem-fancy {
 
         > .panel-side {
 
-            pacem-tuner {
-                .pacem-content {
+           @{P}-tuner {
+                .@{PCSS}-content {
                     opacity: 1;
                     transform: rotate(0);
                 }
             }
 
-            canvas.pacem-tuner {
+            canvas.@{PCSS}-tuner {
                 stroke: @color_teal;
             }
         }*/

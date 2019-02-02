@@ -2,11 +2,11 @@
 /// <reference path="../../../dist/js/pacem-ui.d.ts" />
 namespace Pacem.Components.Fx {
 
-    const FANCY_CSS = "pacem-fancy";
-    const FANCIFY_CSS = "pacem-fancify";
+    const FANCY_CSS = PCSS + "-fancy";
+    const FANCIFY_CSS = PCSS + "-fancify";
     const DEFAULT_GAP = 20;
 
-    @CustomElement({ tagName: 'pacem-fx-fancy' })
+    @CustomElement({ tagName: P + '-fx-fancy' })
     export class PacemFancyElement extends PacemEventTarget {
 
 

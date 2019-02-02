@@ -2,15 +2,15 @@
 
 @_pad: @input_padding_horiz;
 
-pacem-radio,
-pacem-checkbox,
-pacem-radio-list,
-pacem-checkbox-list {
+@{P}-radio,
+@{P}-checkbox,
+@{P}-radio-list,
+@{P}-checkbox-list {
     .FormFieldItemWrapper();
 }
 
-pacem-radio-list,
-pacem-checkbox-list {
+@{P}-radio-list,
+@{P}-checkbox-list {
 
 
     ol {
@@ -33,10 +33,10 @@ pacem-checkbox-list {
     }
 }
 
-pacem-radio,
-pacem-checkbox {
+@{P}-radio,
+@{P}-checkbox {
 
-    .pacem-input {
+    .@{PCSS}-input {
         display: inline;
         opacity: 0;
         width: 0;
@@ -48,14 +48,20 @@ pacem-checkbox {
         min-height: 0;
     }
 
-    label.pacem-label {
+    label.@{PCSS}-label {
         .FormFieldItem();
         cursor: pointer;
         display: inline-block;
     }
 
-    .pacem-readonly,
-    label.pacem-label {
+    &.pacem-disabled {
+
+        label.@{PCSS}-label {
+            cursor: default;
+        }
+    }
+
+    label.@{PCSS}-label {
         padding-left: @grid_spacing + @_pad;
         padding-right: @_pad;
         position: relative;
@@ -63,22 +69,22 @@ pacem-checkbox {
         line-height: @field_height;
     }
 
-    &.pacem-focus label.pacem-label:before {
+    &.@{PCSS}-focus label.@{PCSS}-label::before {
         color: @color_default;
     }
 
-    &.pacem-selected .pacem-readonly:before {
+    &.@{PCSS}-selected .@{PCSS}-readonly::before {
         color: @color_primary;
     }
 }
 
-pacem-checkbox .pacem-label.pacem-checkbox {
+@{P}-checkbox .@{PCSS}-label.@{PCSS}-checkbox {
     min-width: @field_min_width;
     box-sizing: border-box;
 }
 
-pacem-checkbox-list {
-    pacem-checkbox .pacem-label.pacem-checkbox {
+@{P}-checkbox-list {
+    @{P}-checkbox .@{PCSS}-label.@{PCSS}-checkbox {
         min-width: 0;
     }
 }

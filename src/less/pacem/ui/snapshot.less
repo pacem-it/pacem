@@ -1,7 +1,7 @@
 ﻿@import "../../shared";
 @import "../theme-dark";
 
-.pacem-brightout {
+.@{PCSS}-brightout {
     -moz-animation: bright-out 1s 1 normal;
     -o-animation: bright-out 1s 1 normal;
     -webkit-animation: bright-out 1s 1 normal;
@@ -26,7 +26,7 @@
     transition-delay: .333s;
 }
 
-pacem-snapshot {
+@{P}-snapshot {
     display: block;
 
     @_dim_w: @grid_spacing * 10;
@@ -41,7 +41,7 @@ pacem-snapshot {
     width: @_dim_w + 2 * @_brd;
     height: @_dim_h + 2 * @_brd;
 
-    .pacem-snapshot {
+    .@{PCSS}-snapshot {
         position: relative;
         height: 100%;
         width: 100%;
@@ -49,16 +49,16 @@ pacem-snapshot {
         justify-content: center;
         align-items: center;
 
-        &.pacem-ongoing {
+        &.@{PCSS}-ongoing {
         }
 
-        pacem-button {
+       @{P}-button {
             // default: disabled
             .ButtonHidden();
             color: @color_light;
             text-shadow: 0 1px 1px @color_default_inv;
             //
-            &.pacem-countdown {
+            &.@{PCSS}-countdown {
                 font-size: 0;
 
                 &:before {
@@ -67,20 +67,20 @@ pacem-snapshot {
             }
         }
         // cascade-based visibility
-        &.pacem-steady pacem-button.pacem-camera,
-        &.pacem-preview pacem-button.pacem-confirm,
-        &.pacem-ongoing pacem-button.pacem-undo,
-        &.pacem-video pacem-button.pacem-countdown {
+        &.@{PCSS}-steady @{P}-button.@{PCSS}-camera,
+        &.@{PCSS}-preview @{P}-button.@{PCSS}-confirm,
+        &.@{PCSS}-ongoing @{P}-button.@{PCSS}-undo,
+        &.@{PCSS}-video @{P}-button.@{PCSS}-countdown {
             .ButtonVisible();
         }
 
-        &.pacem-video pacem-button.pacem-countdown {
+        &.@{PCSS}-video @{P}-button.@{PCSS}-countdown {
             pointer-events: /*still*/ none;
         }
         // taking picture vs countdown rolling
-        &.pacem-video.pacem-countdown {
+        &.@{PCSS}-video.@{PCSS}-countdown {
 
-            pacem-button.pacem-countdown {
+           @{P}-button.@{PCSS}-countdown {
                 font-size: @grid_spacing;
                 text-align: center;
 
@@ -90,7 +90,7 @@ pacem-snapshot {
             }
         }
 
-        .pacem-camera {
+        .@{PCSS}-camera {
             z-index: 1;
 
             &:before {
@@ -98,11 +98,11 @@ pacem-snapshot {
             }
         }
 
-        .pacem-undo:before {
+        .@{PCSS}-undo:before {
             .Icon('arrow_back');
         }
 
-        .pacem-confirm:before {
+        .@{PCSS}-confirm:before {
             .Icon('check');
             color: @color_highlight;
         }
@@ -122,14 +122,14 @@ pacem-snapshot {
             pointer-events: none;
         }
 
-        &.pacem-steady .pacem-preview,
-        &.pacem-preview.pacem-taking .pacem-preview,
-        &.pacem-video video {
+        &.@{PCSS}-steady .@{PCSS}-preview,
+        &.@{PCSS}-preview.@{PCSS}-taking .@{PCSS}-preview,
+        &.@{PCSS}-video video {
             visibility: visible;
             pointer-events: all;
         }
 
-        &.pacem-preview.pacem-taking .pacem-preview {
+        &.@{PCSS}-preview.@{PCSS}-taking .@{PCSS}-preview {
             border-color: @color_highlight;
         }
 
@@ -140,28 +140,28 @@ pacem-snapshot {
 
         @_pad: @grid_spacing/4;
 
-        .pacem-confirm,
-        .pacem-undo,
-        .pacem-countdown {
+        .@{PCSS}-confirm,
+        .@{PCSS}-undo,
+        .@{PCSS}-countdown {
             position: absolute;
             top: @_pad;
         }
 
-        .pacem-undo {
+        .@{PCSS}-undo {
             left: @_pad;
         }
 
-        .pacem-confirm,
-        .pacem-countdown {
+        .@{PCSS}-confirm,
+        .@{PCSS}-countdown {
             right: @_pad;
         }
     }
 }
 
 
-.pacem-animations {
+.@{PCSS}-animations {
 
-    pacem-snapshot {
+   @{P}-snapshot {
         .Animatable(pop-anim, .4s, @easing_out_back);
     }
 }

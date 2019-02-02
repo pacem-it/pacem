@@ -70,7 +70,7 @@ namespace Pacem.Components {
      * Manages scrolling interactions firing self-referenced ad-hoc events.
      */
     @CustomElement({
-        tagName: 'pacem-scroll-aware'
+        tagName: P + '-scroll-aware'
     })
     export class PacemScrollAwareElement extends Pacem.Components.PacemEventTarget implements OnViewActivated, OnDisconnected {
 
