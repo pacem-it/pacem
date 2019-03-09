@@ -6,15 +6,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-const VERSION = "0.8.1.0";
+const VERSION = "0.8.1.1";
 const CACHE_KEY = 'pacem-js-v' + VERSION;
 const OFFLINE_PAGE = '/views/offline.html';
 const PREFETCHED = [
     '/menu.json',
     '/intro/welcome',
     OFFLINE_PAGE,
-    '/dist/css/demo.min.css',
-    '/dist/css/pacem.min.css',
+    '/dist/css/pacem-docs-dark.min.css',
+    '/dist/css/pacem-docs-light.min.css',
+    '/dist/css/pacem-docs-phousys.min.css',
+    '/dist/css/pacem-dark.min.css',
     '/dist/css/pacem-light.min.css',
     '/dist/css/pacem-phousys.min.css',
     '/polyfills/documentfragment.edge.js',
