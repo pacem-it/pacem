@@ -452,7 +452,7 @@ namespace Pacem {
                 x: Math.round(rect.left) + Utils.scrollLeft,
                 width: Math.round(rect.width),
                 height: Math.round(rect.height)
-            }; 
+            };
         }
 
         static deserializeTransform(style: CSSStyleDeclaration): { a: number, b: number, c: number, d: number, x: number, y: number } {
@@ -471,7 +471,7 @@ namespace Pacem {
             }
             return { a: a, b: b, c: c, d: d, x: x, y: y };
         }
-        
+
         static get scrollTop() {
             return window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
         }
@@ -494,7 +494,7 @@ namespace Pacem {
          * @param callback Then callback.
          * @param timeout Fallback timeout (ms) in case the animation/transitionend event won't fire.
          */
-        static addAnimationEndCallback(element: HTMLElement, callback: (element?:HTMLElement) => void, timeout: number = 500) {
+        static addAnimationEndCallback(element: HTMLElement | SVGElement, callback: (element?: HTMLElement | SVGElement) => void, timeout: number = 500) {
             const fn = (e?: Event) => {
                 if (!e || e.target == element) {
                     clearTimeout(handle);
@@ -507,6 +507,31 @@ namespace Pacem {
             element.addEventListener('transitionend', fn, false);
             // fallback in case animation is missing
             const handle = setTimeout(fn, timeout);
+        }
+
+        /**
+         * Increases a callback loop call until cancelation is called.
+         * @param callback Callback looped.
+         * @param interval First callback call delay in ms (default 500).
+         * @param pace Acceleration in ms per loop (default 5).
+         * @param min Minimum loop rate in ms (default 20).
+         */
+        static accelerateCallback(callback: (token: { cancel: boolean }) => void, interval = 500, pace = 5, min = 20) {
+            let token = { cancel: false },
+                int: number = interval,
+                last = pace + min;
+            let fn = () => {
+                callback(token);
+                if (!token.cancel) {
+                    setTimeout(fn, int);
+                    if (int < last) {
+                        int = min;
+                    } else {
+                        int -= pace;
+                    }
+                }
+            }
+            fn();
         }
 
         // #endregion
@@ -1004,7 +1029,8 @@ namespace Pacem {
                             return '[' + v.map(revertFn).join(',') + ']';
                         }
                         if (v instanceof Element) {
-                            return `#${v.id}`;
+                            const vid = v.id = v.id || ('_' + Utils.uniqueCode());
+                            return `#${vid}`;
                         } else {
                             return `${JSON.stringify(v)}`;
                         }

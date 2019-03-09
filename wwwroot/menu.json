@@ -235,6 +235,11 @@
         "title": "<pacem-form-field>"
       },
       {
+        "label": "Slider",
+        "view": "slider",
+        "title": "<pacem-slider>"
+      },
+      {
         "label": "Suggest",
         "view": "suggest",
         "title": "<pacem-suggest>"

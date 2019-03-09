@@ -32,10 +32,6 @@ namespace Pacem.Components.UI {
     })
     export class PacemAdapterElement extends PacemAdapter<PacemIterativeElement<any>, any> {
 
-        constructor() {
-            super();
-        }
-
         @ViewChild(P + '-repeater') private _repeater: PacemRepeaterElement;
         @ViewChild(P + '-button.' + PCSS + '-adapter-previous') private _prevBtn: PacemButtonElement;
         @ViewChild(P + '-button.' + PCSS + '-adapter-next') private _nextBtn: PacemButtonElement;
@@ -70,6 +66,9 @@ namespace Pacem.Components.UI {
             if (!tab || tab < 0)
                 el.tabIndex = 0;
             el.addEventListener('keydown', this._keydownHandler, false);
+            this.addEventListener('keydown', this._keydownHandler, false);
+            el.addEventListener(Pacem.Components.ItemRegisterEventName, this._itemRegisterHandler, false);
+            el.addEventListener(Pacem.Components.ItemUnregisterEventName, this._itemUnregisterHandler, false);
             //
             this._syncViewWithItems();
         }
@@ -81,6 +80,7 @@ namespace Pacem.Components.UI {
                 behaviors.splice(ndx, 1);
 
                 el.tabIndex = this._previousTabIndex;
+                this.removeEventListener('keydown', this._keydownHandler, false);
                 el.removeEventListener('keydown', this._keydownHandler, false);
             }
             super.destroyCallback();
@@ -102,11 +102,16 @@ namespace Pacem.Components.UI {
         @Watch({ emit: false, converter: PropertyConverters.Number }) interval: number;
         @Watch({ emit: false, converter: PropertyConverters.String }) orientation: AdapterOrientation;
         @Watch({ emit: false, reflectBack: true, converter: PropertyConverters.Boolean }) interactive: boolean = true;
+        /** Gets or sets whether swipe gesture is enabled for navigation (also depends on the 'interactive' flag being set to 'true') */
+        @Watch({ emit: false, reflectBack: true, converter: PropertyConverters.Boolean }) swipeEnabled: boolean = true;
+
+        @Watch({ emit: false }) labelCallback: (item: any, index: number) => string = (item, index) => (index + 1).toString();
+
+        // private
         @Watch() private _index: number;
         @Watch() private _paused: boolean;
         // hack in order to trigger propertychange events
         @Watch() private _v: number;
-        @Watch({ emit: false }) labelCallback: (item: any, index: number) => string = (item, index) => (index + 1).toString();
 
         propertyChangedCallback(name: string, old: any, val: any, first?: boolean) {
             super.propertyChangedCallback(name, old, val, first);
@@ -114,9 +119,12 @@ namespace Pacem.Components.UI {
                 case 'interval':
                     this._resetTimer(val);
                     break;
+                case 'swipeEnabled':
+                    this._swiper.disabled = !val || !this.interactive;
+                    break;
                 case 'interactive':
-                    this.hidden =
-                        this._swiper.disabled = !val;
+                    this.hidden = !val;
+                    this._swiper.disabled = !val || !this.swipeEnabled;
                     break;
                 case 'pausable':
                     if (val == true)
@@ -137,8 +145,12 @@ namespace Pacem.Components.UI {
             this._prevBtn.hide = this._nextBtn.hide = this._panel.hide = !(val && val.length > 1);
             this._repeater.datasource = val;
             this._index = this.master.index;
-            if (this.master.behaviors.indexOf(this._swiper) == -1)
-                this.master.behaviors.push(this._swiper);
+            if (!Utils.isNullOrEmpty(this.master.items)) {
+                for (let item of this.master.items) {
+                    if (item instanceof PacemElement && item.behaviors.indexOf(this._swiper) == -1)
+                        item.behaviors.push(this._swiper);
+                }
+            }
         }
 
         private _toggle(evt: Event) {
@@ -159,14 +171,18 @@ namespace Pacem.Components.UI {
                 }, val);
         }
 
+        @Throttle(333)
         private _next(evt: Event) {
-            Pacem.avoidHandler(evt);
+            if (evt.type !== Pacem.UI.SwipeEventType.SwipeLeft)
+                Pacem.avoidHandler(evt);
             this._resetTimer(this.interval);
             super.next();
         }
 
+        @Throttle(333)
         private _previous(evt: Event) {
-            Pacem.avoidHandler(evt);
+            if (evt.type !== Pacem.UI.SwipeEventType.SwipeRight)
+                Pacem.avoidHandler(evt);
             this._resetTimer(this.interval);
             super.previous();
         }
@@ -176,6 +192,18 @@ namespace Pacem.Components.UI {
             this._resetTimer(this.interval);
             super.select(ndx);
         }
+
+        private _itemRegisterHandler = (evt: ItemRegisterEvent<any>) => {
+            let item = evt.detail;
+            if (item instanceof PacemElement && item.behaviors.indexOf(this._swiper) == -1)
+                item.behaviors.push(this._swiper);
+        };
+
+        private _itemUnregisterHandler = (evt: ItemUnregisterEvent<any>) => {
+            let item = evt.detail, index: number;
+            if (item instanceof PacemElement && (index = item.behaviors.indexOf(this._swiper)) >= 0)
+                item.behaviors.splice(index, 1);
+        };
 
         private _keydownHandler = (evt: KeyboardEvent) => {
             if (!this.interactive) {

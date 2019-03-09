@@ -96,7 +96,7 @@ namespace Pacem.Components {
         private async _setupProxy() {
             if (!this.disabled && !Utils.isNullOrEmpty(this.url)) {
                 const connBuilder = new signalR.HubConnectionBuilder();
-                connBuilder.withUrl(this.url, {
+                connBuilder.withUrl(this.url, { 
                     accessTokenFactory: () => this.accesstoken
                 });
                 const h = this._hub = connBuilder.build();

@@ -14,7 +14,7 @@ Default appearance:
         <pacem-body-proxy>
             <pacem-toast show="{{ #show0.model, twoway }}" css-class="{{ ['toast-' + #style0.value] }}">Popped!</pacem-toast>
         </pacem-body-proxy>
-        <pacem-radio-list id="style0" class="display-block pacem-margin margin-bottom" value="default" disabled="{{ #show0.model }}">
+        <pacem-radio-list id="style0" class="display-block pacem-margin margin-bottom-3" value="default" disabled="{{ #show0.model }}">
             <pacem-data-item value="default"></pacem-data-item>
             <pacem-data-item value="primary"></pacem-data-item>
             <pacem-data-item value="accent"></pacem-data-item>
@@ -51,7 +51,7 @@ Default spawning position is assumed to be `top right`.
                 <pacem-toast timeout="{{ #dur1.value }}" show="{{ #show3.model, twoway }}" class="toast-success">Popped 3!</pacem-toast>
             </pacem-panel>
         </pacem-body-proxy>
-        <div class="pacem-margin margin-bottom form-field">
+        <div class="pacem-margin margin-bottom-3 form-field">
             <pacem-select id="pos1" value="top right" disabled="{{ #show1.model || #show2.model || #show3.model }}">
                 <pacem-data-item value="top left"></pacem-data-item>
                 <pacem-data-item value="top right"></pacem-data-item>
@@ -59,7 +59,7 @@ Default spawning position is assumed to be `top right`.
                 <pacem-data-item value="bottom left"></pacem-data-item>
             </pacem-select>
         </div>
-        <div class="pacem-margin margin-bottom form-field">
+        <div class="pacem-margin margin-bottom-3 form-field">
             <label class="pacem-label">timeout:</label>
             <pacem-input-number id="dur1" value="3000" step="500" min="0"></pacem-input-number>
         </div>
@@ -86,10 +86,10 @@ To make the toast to be persistent, force the user to dismiss it:
         <pacem-body-proxy>
             <div class="pacem-toaster">
                 <pacem-toast show="{{ #show4.model, twoway }}" autohide="false" class="toast-danger">
-                    <p>
-                        <i class="pacem-icon">announcement</i>
+                    <i class="pacem-icon">announcement</i>
+                    <div>                        
                         Click me to dismiss.
-                    </p>
+                    </div>
                 </pacem-toast>
             </div>
         </pacem-body-proxy>

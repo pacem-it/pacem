@@ -11,7 +11,7 @@ namespace Pacem.Components.UI {
     @CustomElement({
         tagName: P + '-slideshow'
     })
-    export class PacemSlideshowElement extends PacemIterativeElement<PacemSlideElement> implements OnPropertyChanged {
+    export class PacemSlideshowElement extends PacemIterativeElement<PacemSlideElement> {
 
         validate(item) {
             return item instanceof PacemSlideElement;

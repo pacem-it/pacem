@@ -16,7 +16,7 @@ namespace Pacem.Components.Plus {
 css-class="{{ { '${PCSS}-gallery-previous': :host.isPrevious(^index, ::_slideshow.index), '${PCSS}-gallery-next': :host.isNext(^index, ::_slideshow.index), '${PCSS}-gallery-focus': ^index === ::_slideshow.index } }}"
 >
             <${ P }-img src="{{ ^item.image }}" disabled="{{ !(:host.isCloseTo(^index, ::_slideshow.index) || ^index === ::_slideshow.index) }}" 
-css="{{ {'visibility': (:host._poppingUp ? 'hidden' : '')} }}" class="${PCSS}-gallery-splash" adapt="contain"></${ P }-img>
+css="{{ {'visibility': (:host._poppingUp ? 'hidden' : ''), 'transition': (:host._poppingUp ? 'none' : '')} }}" class="${PCSS}-gallery-splash" adapt="contain"></${ P }-img>
             </${ P }-slide>
         </template>
         </${ P }-slideshow>
@@ -94,7 +94,7 @@ css="{{ {'visibility': (:host._poppingUp ? 'hidden' : '')} }}" class="${PCSS}-ga
         open(startIndex: number, heroFrom?: HTMLElement, src?: string) {
             this._poppingUp = true;
             this._lightbox.show = true;
-            this._slideshow.index = startIndex;
+            this._slideshow.index = startIndex; // reflects on 'this' (twoway)
             this._heroAnimate(heroFrom)
                 .then(_ => {
                     this._poppingUp = false;

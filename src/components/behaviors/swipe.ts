@@ -15,7 +15,11 @@
     export enum SwipeEventType {
         Swipe = 'swipe',
         SwipeLeft = 'swipeleft',
-        SwipeRight = 'swiperight'
+        SwipeRight = 'swiperight',
+        // end of swipe animation
+        SwipeAnimationEnd = 'swipeanimationend',
+        SwipeLeftAnimationEnd = 'swipeleftanimationend',
+        SwipeRightAnimationEnd = 'swiperightanimationend',
     }
 
     export class SwipeEventArgsClass {
@@ -48,7 +52,7 @@
     }
 
     export interface Swiper {
-        threshold: number;
+        readonly threshold: number;
 
         addEventListener(evt: SwipeEventType, listener: (evt: SwipeEvent) => void, useCapture?: boolean): void;
         removeEventListener(evt: SwipeEventType, listener: (evt: SwipeEvent) => void, useCapture?: boolean): void;
@@ -84,7 +88,6 @@ namespace Pacem.Components {
             window.addEventListener('touchend', this._endHandler, false);
             window.addEventListener('mousemove', this._moveHandler, false);
             window.addEventListener('touchmove', this._moveHandler, TOUCH_OPTIONS);
-
         }
 
         dispose() {
@@ -120,7 +123,7 @@ namespace Pacem.Components {
             }
         }
 
-        @Throttle(200)
+        @Throttle(25)
         private _updateState(args: { timestamp: number, position: Point }) {
             var args1 = this._getUpdatedState(args);
             SET_VAL(this._element, SWIPE_DATA, args1);
@@ -141,17 +144,58 @@ namespace Pacem.Components {
                 const kinetic = .5 * Math.pow(args.horizontalspeed, 2);
                 const elastic = .5 * k_swipe * (Math.pow(swipe.threshold, 2) - Math.pow(from, 2));
 
+                let fnReset = () => {
+                    el.style.transform =
+                        el.style.opacity =
+                        el.style.transition = '';
+                };
+
                 if (kinetic >= elastic) {
                     const args2 = UI.SwipeEventArgsClass.fromArgs(args);
                     this._logFn(Logging.LogLevel.Debug, `Swiping ${args2.direction}! (speed: ${args2.speed}, kinetic ${kinetic}, elastic ${elastic})`);
-                    swipe.dispatchEvent(new UI.SwipeEvent(UI.SwipeEventType.Swipe, args2));
-                    swipe.dispatchEvent(new UI.SwipeEvent(args2.direction === 'left' ? UI.SwipeEventType.SwipeLeft : UI.SwipeEventType.SwipeRight, args2));
+                    const evt0 = new UI.SwipeEvent(UI.SwipeEventType.Swipe, args2, { cancelable: true });
+                    swipe.dispatchEvent(evt0);
+                    if (!evt0.defaultPrevented) {
+                        const evt1 = new UI.SwipeEvent(args2.direction === 'left' ? UI.SwipeEventType.SwipeLeft : UI.SwipeEventType.SwipeRight, args2, { cancelable: true });
+                        swipe.dispatchEvent(evt1);
+                        if (!evt1.defaultPrevented) {
+                            // create ad-hoc animation for the element
+                            let offset = Utils.offset(el),
+                                wsize = Utils.windowSize.width,
+                                tget = args2.direction === 'left' ? -(wsize - .5 * (wsize - offset.width)) : (offset.width + .5 * (wsize - offset.width)),
+                                delta = tget - offset.left,
+                                time /* in secs */ = delta / args.horizontalspeed;
+
+                            el.style.transform = `translateX(${tget}px)`;
+                            el.style.opacity = '0';
+                            el.style.transition =  /* ease-out-sine -> starts with x/t = 1 */ `transform ${Math.min(.667, Math.max(.333, 2 * time))}s cubic-bezier(0.39, 0.575, 0.565, 1), opacity .5s`;
+                            Utils.addClass(el, PCSS + '-swipe-go');
+                            Utils.addAnimationEndCallback(el, () => {
+                                let evt2 = new UI.SwipeEvent(UI.SwipeEventType.SwipeAnimationEnd, args2, { cancelable: true });
+                                swipe.dispatchEvent(evt2);
+                                if (!evt2.defaultPrevented) {
+                                    let evt3 = new UI.SwipeEvent(args2.direction === 'left' ? UI.SwipeEventType.SwipeLeftAnimationEnd : UI.SwipeEventType.SwipeRightAnimationEnd, args2, { cancelable: true });
+                                    swipe.dispatchEvent(evt3);
+                                    if (!evt3.defaultPrevented) {
+                                        fnReset();
+                                    }
+                                }
+                                Utils.removeClass(el, PCSS + '-swipe-go');
+
+                            });
+                            //
+                        } else {
+                            fnReset();
+                        }
+                    } else {
+                        fnReset();
+                    }
                 } else {
                     this._logFn(Logging.LogLevel.Debug, `Rolling back: kinetic ${kinetic} < elastic ${elastic})`);
                     Utils.addClass(el, PCSS + '-swipe-back');
+                    fnReset();
                 }
 
-                el.style.transform = '';
             }
             this.dispose();
         }
@@ -207,7 +251,7 @@ namespace Pacem.Components {
      * Elasticity characteristic
      */
     const k_swipe: number = 0.15;
-    const k_pan: number = 20.0;
+    const k_pan: number = 1.25;
 
     @CustomElement({ tagName: P + '-swipe' })
     export class PacemSwipeElement extends Pacem.Behaviors.PacemBehavior implements Pacem.UI.Swiper {
@@ -220,6 +264,10 @@ namespace Pacem.Components {
                 origin: Point;
 
             if (evt instanceof MouseEvent) {
+                if (!this.includeMouse) {
+                    // does not handle mouse events, exit.
+                    return;
+                }
                 origin = { x: evt.clientX, y: evt.clientY };
             } else {
                 if (evt.touches.length != 1)
@@ -227,13 +275,14 @@ namespace Pacem.Components {
                 origin = { x: evt.touches[0].clientX, y: evt.touches[0].clientY };
             }
 
+            evt.stopPropagation();
             SET_VAL(el, MOUSEDOWN, { position: origin, timestamp: Date.now() });
             SET_VAL(el, DELEGATE, new SwipeElementDelegate(<HTMLElement | SVGElement>el, this, (level, message, category) => this.log.apply(this, [level, message, category])));
         };
 
         /** No return point distance on the horizontal axis (defaults to half the device screen width). */
-        @Watch({ emit: false, converter: PropertyConverters.Number })
-        threshold: number = window.screen.availWidth / 2.0;
+        @Watch({ emit: false, converter: PropertyConverters.Number }) threshold: number = window.screen.availWidth / 2.0;
+        @Watch({ emit: false, converter: PropertyConverters.Boolean }) includeMouse: boolean;
 
         protected decorate(element: Element) {
             // TODO: https://docs.microsoft.com/en-us/microsoft-edge/dev-guide/dom/pointer-events

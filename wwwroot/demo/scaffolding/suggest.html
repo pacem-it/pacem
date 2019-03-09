@@ -16,12 +16,12 @@ Set the `allowNew` property to `true` to allow extra values.
         <pacem-data id="foods" model="['Apples', 'Bread', 'Cheese', 'Cookies', 'Donuts', 'Eggs', 'French fries', 'Hamburgers', 'Ice creams', 'Jam', 'Meat', 'Omelette', 'Pizza', 'Quiche', 'Yougurt']">
         </pacem-data>
 
-        <div class="pacem-margin margin-bottom">
+        <div class="pacem-margin margin-bottom-3">
             <pacem-suggest id="food" placeholder="Fav food..." max-suggestions="5" datasource="{{ #foods.model }}"></pacem-suggest>
         </div>
         <div>
             <pacem-checkbox value="{{ #food.allowNew, twoway }}" true-value="true" false-value="false" caption="allow new"></pacem-checkbox>
-            <span class="display-inline-block pacem-margin margin-left">picked: <b><pacem-text text="{{ #food.value }}"></pacem-text></b></span>
+            <span class="display-inline-block pacem-margin margin-left-3">picked: <b><pacem-text text="{{ #food.value }}"></pacem-text></b></span>
         </div>
 
     </template>
@@ -41,7 +41,7 @@ Define a `textProperty` and eventually a `valueProperty` to teach the autocomple
         <!-- server-side web api that needs a 'hint' or the actual 'value' -->
         <pacem-fetch url="/api/test/autocomplete" parameters="{{ {'q': #region.hint, 'id': #region.value } }}" id="regions"></pacem-fetch>
 
-        <div class="pacem-margin margin-bottom">
+        <div class="pacem-margin margin-bottom-3">
 
             <!-- pacem-suggest -->
             <pacem-suggest id="region" 

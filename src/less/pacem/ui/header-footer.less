@@ -1,39 +1,6 @@
 ﻿@import "../theme-dark";
 
-.@{PCSS}-body {
-
-    &.@{PCSS}-animations {
-
-        header[pacem],
-        .@{PCSS}-header,
-        footer[pacem],
-        .@{PCSS}-footer {
-            transition: padding @easing_in_out_sine .3s;
-        }
-
-        &.@{PCSS}-menu-close {
-            header[pacem],
-            .@{PCSS}-header,
-            footer[pacem],
-            .@{PCSS}-footer {
-                transition-delay: .25s;
-            }
-        }
-
-        &.@{PCSS}-menu-open {
-        }
-    }
-}
 
 @media (min-width: 1200px) {
 
-    .@{PCSS}-body.@{PCSS}-menu-open {
-
-        header[pacem],
-        .@{PCSS}-header,
-        footer[pacem],
-        .@{PCSS}-footer {
-            padding-left: 11 * @grid_spacing;
-        }
-    }
 }

@@ -6,8 +6,9 @@ namespace Pacem.Components.UI {
         tagName: P + '-menu', template: `<${ P }-panel class="${PCSS}-hamburger-menu" css-class="{{ {'menu-close': !:host.open, 'menu-open': :host.open} }}" on-click=":host._toggle($event)">    
     <nav><${ P }-content></${ P }-content></nav>
 </${ P }-panel>
-<${ P }-button class="${PCSS}-back flat" css-class="{{ {'menu-close': !:host.open, 'menu-open': :host.open} }}" on-click=":host._toggle($event)">BACK</${ P }-button>
-<${ P }-button class="${PCSS}-hamburger flat" css-class="{{ {'menu-close': :host.open, 'menu-open': !:host.open} }}" on-click=":host._toggle($event)">MENU</${ P }-button>`,
+<${P}-body-proxy>
+<${ P}-button class="${PCSS}-back ${PCSS}-menu flat" css-class="{{ {'menu-close': !:host.open, 'menu-open': :host.open} }}" on-click=":host._toggle($event)">BACK</${ P }-button>
+<${ P}-button class="${PCSS}-hamburger ${PCSS}-menu flat" css-class="{{ {'menu-close': :host.open, 'menu-open': !:host.open} }}" on-click=":host._toggle($event)">MENU</${P}-button></${P}-body-proxy>`,
         shadow: Defaults.USE_SHADOW_ROOT
     })
     export class PacemMenuElement extends PacemElement {

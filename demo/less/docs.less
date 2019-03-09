@@ -132,13 +132,7 @@ body.@{PCSS}-body {
     //max-width: 640px;
 }
 
-@media (min-width: @threshold_lg) {
-    @{P}-view#view {
-        margin-right: @_toc;
-    }
-}
-
-h1#heading{
+h1#heading {
     position: sticky;
     top: @grid_cell; // 4.5 * @grid_spacing;
     z-index: @header-z-index - 100;
@@ -154,14 +148,14 @@ h1#heading{
 }
 
 .@{PCSS}-animations {
-   @{P}-view.@{PCSS}-animatable {
+    @{P}-view.@{PCSS}-animatable {
     }
 }
 
-footer {
+/*footer {
     position: absolute;
     bottom: @grid_spacing * .5;
-}
+}*/
 
 @{P}-menu .collapsed .@{PCSS}-icon {
     transform: rotate(-90deg);
@@ -251,10 +245,17 @@ dl {
         /*display: inline-block;*/
     }
 
-    .@{PCSS}-toc >@{P}-a {
+    .@{PCSS}-toc > @{P}-a {
         line-height: 36px;
     }
 }
+
+.@{PCSS}-body[headbar]{
+    .toc{
+        top: 76px;
+    }
+}
+
 // sticky position adjust for schedules
 @{P}-schedule {
     display: block;
@@ -268,7 +269,7 @@ dl {
             //color: @color_highlight_fore;
         }
 
-       @{P}-agenda {
+        @{P}-agenda {
             .agenda-allday,
             .all-day {
                 top: @grid_cell + @_headr_height;
@@ -277,8 +278,8 @@ dl {
     }
 }
 
-@media (max-width: @threshold_lg - 1){
-   @{P}-schedule {
+@media (max-width: @threshold_lg - 1) {
+    @{P}-schedule {
         .@{PCSS}-schedule {
             .schedule-header {
                 top: 2 * @grid_cell;

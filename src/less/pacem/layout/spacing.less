@@ -1,4 +1,5 @@
 ﻿@import "../theme-dark";
+@import "shared";
 
 hr.spacer {
     margin-bottom: @grid_spacing;
@@ -16,122 +17,195 @@ hr.spacer {
     }
 }
 
-@_spacing: @grid_spacing;
-@_spacing_xs: @_spacing / 4;
-@_spacing_sm: @_spacing / 2;
-@_spacing_lg: @_spacing * 1.5;
-@_spacing_xl: @_spacing * 2;
+// emended
+@_segmentation: 3;
+@_spacing_unit: @grid_spacing / @_segmentation;
 
-.Spaced(@what, @prefix, @suffix) {
-    @{what}-@{suffix}: @_spacing;
+.Spaced(@what, @prefix, @count, @index) when (@index >= 0) {
 
-    &.@{prefix}-xs {
-        @{what}-@{suffix}: @_spacing_xs;
+    @_spacing_indexed_unit: @index * @_spacing_unit;
+
+    &.@{prefix}-@{index} {
+        @{what}: @_spacing_indexed_unit;
     }
 
-    &.@{prefix}-sm {
-        @{what}-@{suffix}: @_spacing_sm;
+    &.@{prefix}-y-@{index} {
+        @{what}-top: @_spacing_indexed_unit;
+        @{what}-bottom: @_spacing_indexed_unit;
     }
 
-    &.@{prefix}-lg {
-        @{what}-@{suffix}: @_spacing_lg;
+    &.@{prefix}-x-@{index} {
+        @{what}-left: @_spacing_indexed_unit;
+        @{what}-right: @_spacing_indexed_unit;
     }
 
-    &.@{prefix}-xl {
-        @{what}-@{suffix}: @_spacing_xl;
+    &.@{prefix}-top-@{index} {
+        @{what}-top: @_spacing_indexed_unit;
     }
+
+    &.@{prefix}-right-@{index} {
+        @{what}-right: @_spacing_indexed_unit;
+    }
+
+    &.@{prefix}-bottom-@{index} {
+        @{what}-bottom: @_spacing_indexed_unit;
+    }
+
+    &.@{prefix}-left-@{index} {
+        @{what}-left: @_spacing_indexed_unit;
+    }
+
+    .Spaced(@what,@prefix, @count, @index - 1);
 }
 
-.Pad(@suffix) {
-    .Spaced(padding, pad, @suffix);
-}
-
-.Margin(@suffix) {
-    .Spaced(margin, margin, @suffix);
-}
-
-.@{PCSS}-nomargin {
-    margin: 0 !important;
+.Spaced(@what, @prefix) {
+    .Spaced(@what, @prefix, 2 * @_segmentation, 2 * @_segmentation);
 }
 
 .@{PCSS}-margin {
-
-    &:not(.margin-right):not(.margin-bottom):not(.margin-left):not(.margin-top) {
-        margin: @_spacing;
-
-        &.margin-xs {
-            margin: @_spacing_xs;
-        }
-
-        &.margin-sm {
-            margin: @_spacing_sm;
-        }
-
-        &.margin-lg {
-            margin: @_spacing_lg;
-        }
-
-        &.margin-xl {
-            margin: @_spacing_xl;
-        }
-    }
-
-    &.margin-top {
-        .Margin(top);
-    }
-
-    &.margin-bottom {
-        .Margin(bottom);
-    }
-
-    &.margin-right {
-        .Margin(right);
-    }
-
-    &.margin-left {
-        .Margin(left);
-    }
-}
-
-.@{PCSS}-nopad {
-    padding: 0 !important;
+    .Spaced(margin, margin);
 }
 
 .@{PCSS}-pad {
+    .Spaced(padding, pad);
+}
 
-    &:not(.pad-right):not(.pad-bottom):not(.pad-left):not(.pad-top) {
-        padding: @_spacing;
+.SpacedThresholded(@what, @prefix,@threshold, @count, @index) when (@index >= 0) {
 
-        &.pad-xs {
-            padding: @_spacing_xs;
-        }
+    @_spacing_indexed_unit: @index * @_spacing_unit;
 
-        &.pad-sm {
-            padding: @_spacing_sm;
-        }
-
-        &.pad-lg {
-            padding: @_spacing_lg;
-        }
-
-        &.pad-xl {
-            padding: @_spacing_xl;
-        }
+    &.@{prefix}-@{threshold}-@{index} {
+        @{what}: @_spacing_indexed_unit;
     }
 
-    &.pad-top {
-        .Pad(top);
+    &.@{prefix}-y-@{threshold}-@{index} {
+        @{what}-top: @_spacing_indexed_unit;
+        @{what}-bottom: @_spacing_indexed_unit;
     }
 
-    &.pad-bottom {
-        .Pad(bottom);
+    &.@{prefix}-x-@{threshold}-@{index} {
+        @{what}-left: @_spacing_indexed_unit;
+        @{what}-right: @_spacing_indexed_unit;
     }
 
-    &.pad-right {
-        .Pad(right);
+    &.@{prefix}-top-@{threshold}-@{index} {
+        @{what}-top: @_spacing_indexed_unit;
     }
 
-    &.pad-left {
-        .Pad(left);
+    &.@{prefix}-right-@{threshold}-@{index} {
+        @{what}-right: @_spacing_indexed_unit;
+    }
+
+    &.@{prefix}-bottom-@{threshold}-@{index} {
+        @{what}-bottom: @_spacing_indexed_unit;
+    }
+
+    &.@{prefix}-left-@{threshold}-@{index} {
+        @{what}-left: @_spacing_indexed_unit;
+    }
+
+    .SpacedThresholded(@what,@prefix,@threshold, @count, @index - 1);
+}
+
+.SpacedThresholded(@what, @prefix, @threshold) {
+    .SpacedThresholded(@what, @prefix, @threshold, 2 * @_segmentation, 2 * @_segmentation);
+}
+
+@media (max-width: @threshold_sm - 1) {
+
+    .@{PCSS}-margin {
+        .SpacedThresholded(margin, margin, xs);
+    }
+
+    .@{PCSS}-pad {
+        .SpacedThresholded(padding, pad, xs);
+    }
+}
+
+@media (min-width: @threshold_sm) {
+
+    .@{PCSS}-margin {
+        .SpacedThresholded(margin, margin, sm);
+    }
+
+    .@{PCSS}-pad {
+        .SpacedThresholded(padding, pad, sm);
+    }
+}
+
+@media (min-width: @threshold_md) {
+
+    .@{PCSS}-margin {
+        .SpacedThresholded(margin, margin, md);
+    }
+
+    .@{PCSS}-pad {
+        .SpacedThresholded(padding, pad, md);
+    }
+}
+
+@media (min-width: @threshold_lg) {
+
+    .@{PCSS}-margin {
+        .SpacedThresholded(margin, margin, lg);
+    }
+
+    .@{PCSS}-pad {
+        .SpacedThresholded(padding, pad, lg);
+    }
+}
+
+@media (min-width: @threshold_xl) {
+
+    .@{PCSS}-margin {
+        .SpacedThresholded(margin, margin, xl);
+    }
+
+    .@{PCSS}-pad {
+        .SpacedThresholded(padding, pad, xl);
+    }
+}
+
+@media (min-width: @threshold_hd) {
+
+    .@{PCSS}-margin {
+        .SpacedThresholded(margin, margin, hd);
+    }
+
+    .@{PCSS}-pad {
+        .SpacedThresholded(padding, pad, hd);
+    }
+}
+
+@media (min-width: @threshold_uhd) {
+
+    .@{PCSS}-margin {
+        .SpacedThresholded(margin, margin, uhd);
+    }
+
+    .@{PCSS}-pad {
+        .SpacedThresholded(padding, pad, uhd);
+    }
+}
+
+@media (min-width: @threshold_4k) {
+
+    .@{PCSS}-margin {
+        .SpacedThresholded(margin, margin, 4k);
+    }
+
+    .@{PCSS}-pad {
+        .SpacedThresholded(padding, pad, 4k);
+    }
+}
+
+@media (orientation: portrait) {
+
+    .@{PCSS}-margin {
+        .SpacedThresholded(margin, margin, v);
+    }
+
+    .@{PCSS}-pad {
+        .SpacedThresholded(padding, pad, v);
     }
 }

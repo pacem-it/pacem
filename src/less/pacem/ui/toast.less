@@ -26,7 +26,7 @@
     right: 0;
     height: @_ht;
     overflow: visible;
-    display: block;
+
     cursor: pointer;
     background: fade( @color_background, 75);
     border: @_brdt solid;
@@ -40,9 +40,9 @@
     padding: 0;
     margin: 0;
     display: flex;
-    justify-content: center;
+    justify-content: space-around;
     align-items: center;
-    align-content: center;
+    align-content: flex-start;
     .FontMainSize(1.25);
     height: @_ht;
     transition: transform .3s @easing_out_sine, opacity .25s linear;

@@ -453,7 +453,7 @@ namespace Pacem.Components.Scaffolding {
         entityName: string;
 
         @Watch()
-        metadata: Pacem.Scaffolding.EntityMetadata | PropertyMetadata[];
+        metadata: Pacem.Scaffolding.TypeMetadata | PropertyMetadata[];
 
         @Watch({ emit: false, converter: PropertyConverters.Boolean })
         autogenerate: boolean;

@@ -11,6 +11,7 @@
 @color_lightblue: rgb(242,242,242); // #262b3e;
 @color_dark: #fff;
 
+@color_root_background: @color_blue;
 @color_background_alt: #efefef;
 @color_error: @color_red;
 @color_tech: fade( @color_highlight, 60);
@@ -47,11 +48,17 @@
 @menu_link_fontsize: 1rem * @font_rem_factor;
 // balloon
 @balloon_shadows: true;
+// slider
+@color_slider_thumb: darken(@color_button_back, 5);
 // suggest
 @color_suggest_border: @color_button_border_dark;
 @color_suggest_back: @color_lightblue;
 @color_suggest_border_light: rgba(255,255,255,0.8);
 @color_suggest_border_dark: rgba(0,0,0,0.075);
+// tab
+@color_tab_back: @color_button_back;
+@color_tab_highlight: @color_highlight;
+@border_tab: 0;
 // lightbox
 @color_lightbox_back: rgba(0,0,0,0.1);
 

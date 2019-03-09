@@ -8,8 +8,7 @@ css-class="{{ {'${PCSS}-fetching': ::_fetcher.fetching, '${PCSS}-dirty': this.di
     <label class="${PCSS}-label"></label>
     <div class="${PCSS}-input-container"></div>
     <${ P}-fetch debounce="50" logger="{{ :host.logger }}" credentials="{{ :host.fetchCredentials }}" headers="{{ :host.fetchHeaders }}" diff-by-values="true"></${P}-fetch>
-    <${ P}-panel class="${PCSS}-validators" hide="{{ ::_form.valid || !::_form.dirty }}">
-    </${ P}-panel>
+    <${ P}-panel class="${PCSS}-validators" hide="{{ ::_form.valid || !::_form.dirty }}"></${ P}-panel>
 </${ P}-form>`
     })
     export class PacemFormFieldElement extends PacemElement implements Pacem.Net.OAuthFetchable {
@@ -23,7 +22,7 @@ css-class="{{ {'${PCSS}-fetching': ::_fetcher.fetching, '${PCSS}-dirty': this.di
 
         @ViewChild('label') private label: HTMLLabelElement;
 
-        @ViewChild(`div.${PCSS}-input-container`) private container: HTMLDivElement;
+        @ViewChild(`div.${PCSS}-input-container`) private _container: HTMLDivElement;
 
         private _balloon: UI.PacemBalloonElement;
 
@@ -497,7 +496,7 @@ css-class="{{ {'${PCSS}-fetching': ::_fetcher.fetching, '${PCSS}-dirty': this.di
                     field.setAttribute(name, attr);
             }
             this._field = field;
-            this.container.appendChild(field);
+            this._container.appendChild(field);
 
             for (var name in fetchAttrs) {
                 let attr: string;

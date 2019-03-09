@@ -8,7 +8,7 @@ namespace Pacem.Components.Scaffolding {
         Blur = 'blur'
     }
 
-    export abstract class PacemBaseInputElement extends PacemBaseElement implements OnPropertyChanged, OnConnected, OnDisconnected {
+    export abstract class PacemBaseInputElement extends PacemBaseElement {
         
         @Watch({
             emit: false, converter: {
@@ -91,7 +91,7 @@ namespace Pacem.Components.Scaffolding {
         }
     }
 
-    export abstract class PacemOrdinalInputElement extends PacemBaseInputElement implements OnPropertyChanged {
+    export abstract class PacemOrdinalInputElement extends PacemBaseInputElement {
 
         @Watch({ converter: PropertyConverters.Number }) min: any;
         @Watch({ converter: PropertyConverters.Number }) max: any;
@@ -113,7 +113,7 @@ namespace Pacem.Components.Scaffolding {
         }
     }
 
-    export abstract class PacemTextualInputElement extends PacemBaseInputElement implements OnPropertyChanged {
+    export abstract class PacemTextualInputElement extends PacemBaseInputElement {
 
         @Watch({ converter: PropertyConverters.String}) pattern: string;
         @Watch({ converter: PropertyConverters.Number}) minlength: number;

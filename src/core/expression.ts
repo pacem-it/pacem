@@ -169,8 +169,8 @@ namespace Pacem {
                             path = pathRegexArray && pathRegexArray.length > 0 && pathRegexArray[0],
                             propArray,
                             prop = path && (propArray = path.split('.')).length > 0 && propArray[0]
-                            // check whether a method is directly called against the possible variable
-                            // ,isMethod = !(prop && path && prop.length < path.length) && (path && path.length > 0 && /^\(/.test(furtherParts.substr(path.length).trim()))
+                            // check whether a method is directly called against the possible dependency (element)
+                            // ,isMethodCall = prop === path && (path && path.length > 0 && /^\(/.test(furtherParts.substr(path.length).trim()))
                             ;
 
                         if (melem === ':host.') {
@@ -216,7 +216,11 @@ namespace Pacem {
                         }
 
                         // merge dependencies
-                        if (/*!isMethod && */prop && dependencies.find(d => d.element === el && d.property == prop) == null)
+                        if (prop && el && prop in el
+                            // && it is not a direct method call (which means that the 'prop' isn't in fact a 'func')
+                             && typeof el[prop] !== 'function' //!isMethodCall 
+                            // && does not already exist as a dependency
+                            && dependencies.find(d => d.element === el && d.property == prop) == null)
                             dependencies.push({ element: el, property: prop, path: path, twowayAllowed: false });
 
 
@@ -234,7 +238,7 @@ namespace Pacem {
             }
 
             if (independent) {
-
+                // constant expression
                 var constexpr = new Expression();
                 constexpr._independent = true;
                 constexpr._fnBody = `return ${expression};`;
@@ -252,8 +256,12 @@ namespace Pacem {
                     return Expression._getPendingExpressionSingleton();
             }
 
-            if (dependencies.length == 1 && /[^\w\.\$]+/.test(expr.trim()) !== true)
+            if (dependencies.length == 1
+                // := && trimmed expression contains only letters, figures, underscores, dots, and '$'...
+                && /[^\w\.\$]+/.test(expr.trim()) !== true) { 
+                // ...then 'twoway' binding might be applied/accepted
                 dependencies[0].twowayAllowed = true;
+            }
 
             var retexpr = new Expression();
             retexpr._args = args;

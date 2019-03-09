@@ -20,7 +20,7 @@ namespace Pacem.Scaffolding {
         validators?: { type: string, errorMessage: string, params?: any }[]
     };
 
-    export declare type EntityMetadata = {
+    export declare type TypeMetadata = {
         // css styles
         css?: { [name: string]: string },
         // css class
@@ -76,6 +76,9 @@ namespace Pacem.Components.Scaffolding {
 
         viewActivatedCallback() {
             super.viewActivatedCallback();
+            if (!Utils.isNullOrEmpty(this.name)) {
+                this.form && this.form.registerField(this.name, this);
+            }
             this._setAsOriginalValue(this.value);
         }
 

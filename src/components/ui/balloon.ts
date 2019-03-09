@@ -246,6 +246,7 @@ namespace Pacem.Components.UI {
             this.popup();
         }
 
+        @Debounce(true)
         private _onLayoutChange(evt) {
             if (this._visible)
                 this._adjust();

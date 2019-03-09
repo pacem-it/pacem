@@ -24,11 +24,19 @@ namespace Pacem.UI {
     }
 
     export enum DragDropEventType {
+        /** Initial lock state change before the first dragging act. */
+        Lock = 'draglock',
+        /** First dragging act. */
         Start = 'dragstart', // 'dragstart' might conflict with HTML Drag & Drop API event (and so the others)
+        /** Any dragging act. */
         Drag = 'drag',
+        /** Dropping act. */
         Drop = 'drop',
+        /** Hovering a drop target. */
         Over = 'dragover',
+        /** Exiting a drop target. */
         Out = 'dragout',
+        /** Terminating the drag-drop activities. */
         End = 'dragend'
     }
 
@@ -69,6 +77,11 @@ namespace Pacem.UI {
         target: Element;
         currentPosition: Point;
 
+        get delta() {
+            var args = this;
+            return Geom.add(args.initialDelta, { x: Utils.scrollLeft, y: Utils.scrollTop }, Geom.subtract(args.origin, args.currentPosition));
+        }
+
         static fromArgs(builder: DragDropEventArgs) {
             return new DragDropEventArgsClass(Utils.extend({}, builder));
         }
@@ -92,13 +105,20 @@ namespace Pacem.UI {
             super(type, args, eventInit);
         }
 
+        /**
+         * Moves, visually, then floating element to the requested position.
+         * @param delta
+         */
+        move(delta = this.detail.delta) {
+            (<HTMLElement>this.detail.floater).style.transform = `translateX(${delta.x}px) translateY(${delta.y}px)`;
+        }
     }
 
     /**
     * Interface to be implemented in order to create a proper drag & drop adapter.
     */
     export interface DragDropper {
-        
+
         addEventListener(evt: DragDropEventType, listener: (evt: DragDropEvent) => void, useCapture?: boolean): void;
         removeEventListener(evt: DragDropEventType, listener: (evt: DragDropEvent) => void, useCapture?: boolean): void;
         dispatchEvent(evt: DragDropEvent): boolean;
@@ -151,7 +171,6 @@ namespace Pacem.Components {
             });
             // is `_element` a dynamic one belonging to a repeater item?
             this._repeaterItem = RepeaterUtils.findItemContext(_element, 0, null);
-            //
         }
 
         private _currentTarget: Element;
@@ -326,7 +345,7 @@ namespace Pacem.Components {
                 // setup args
                 args = {
                     element: el,
-                    placeholder: placeholder,
+                    placeholder: placeholder || el,
                     data: data,
                     startTime: Date.now(),
                     origin: origin,
@@ -358,12 +377,14 @@ namespace Pacem.Components {
                     Pacem.avoidHandler(evt);
                 Utils.addClass(document.body, PCSS + '-dragging');
                 const pos = args.currentPosition = getCurrentPosition();
-                const delta = Geom.add(args.initialDelta, { x: Utils.scrollLeft, y: Utils.scrollTop }, Geom.subtract(args.origin, args.currentPosition));
                 let floater = args.floater;
-                if (floater instanceof HTMLElement || floater instanceof SVGElement) {
-                    floater.style.transform = `translateX(${delta.x}px) translateY(${delta.y}px)`;
+                let moveEvt = new UI.DragDropEvent(UI.DragDropEventType.Drag, UI.DragDropEventArgsClass.fromArgs(args), { cancelable: true });
+                // dispatch move event
+                dragger.dispatchEvent(moveEvt);
+                if (!moveEvt.defaultPrevented // obey the - eventual - canceling feedback
+                    && (floater instanceof HTMLElement || floater instanceof SVGElement)) {
+                    moveEvt.move();
                 }
-                dragger.dispatchEvent(new UI.DragDropEvent(UI.DragDropEventType.Drag, UI.DragDropEventArgsClass.fromArgs(args)));
                 // what am I over?
                 var hover = this._currentTarget;
                 if (!isMouseFlag && dragger.dropTargets.length > 0) {
@@ -453,7 +474,12 @@ namespace Pacem.Components {
                 }
 
                 if (!Utils.isNull(sourceRepeater) && targetRepeater === sourceRepeater) {
-                    sourceRepeater.datasource.moveWithin(repItem.index, targetRepItem.index);
+                    let from = repItem.index, to = targetRepItem.index;
+                    if (to > from) {
+                        // tweak
+                        to--;
+                    }
+                    sourceRepeater.datasource.moveWithin(from, to);
                 } else {
                     sourceRepeater && sourceRepeater.datasource.splice(repItem.index, 1);
                     targetRepeater && (targetRepeater.datasource = targetRepeater.datasource || []).splice(targetRepItem.index, 0, data);
@@ -491,14 +517,17 @@ namespace Pacem.Components {
      */
     @CustomElement({ tagName: P + '-drag-drop' })
     export class PacemDragDropElement extends Pacem.Behaviors.PacemBehavior implements Pacem.UI.DragDropper {
-        
+
         private _startHandler = (evt: MouseEvent | TouchEvent) => {
 
             if (this.disabled) {
                 // sudden exit when disabled
                 return;
             }
-            
+
+            // stop and prevent
+            avoidHandler(evt);
+
             var el = evt.currentTarget,
                 origin: Point;
 
@@ -511,11 +540,15 @@ namespace Pacem.Components {
             }
 
             const lockFn = () => {
+                let element = <HTMLElement | SVGElement>el;
+                this.dispatchEvent(new Pacem.UI.DragDropEvent(Pacem.UI.DragDropEventType.Lock, UI.DragDropEventArgsClass.fromArgs({
+                    element: element, placeholder: null, currentPosition: origin, origin: origin, initialDelta: { x: 0, y: 0 }, startTime: null, floater: null, data: null
+                })));
                 this.log(Logging.LogLevel.Info, 'Drag locked!');
                 el.removeEventListener('mouseup', unlockFn, false);
                 el.removeEventListener('touchend', unlockFn, false);
                 SET_VAL(el, MOUSE_DOWN, origin);
-                SET_VAL(el, DELEGATE, new DragElementDelegate(<HTMLElement | SVGElement>el, this, (level, message, category) => this.log.apply(this, [level, message, category])));
+                SET_VAL(el, DELEGATE, new DragElementDelegate(element, this, (level, message, category) => this.log.apply(this, [level, message, category])));
             };
             const unlockFn = (evt?: Event) => {
                 this.log(Logging.LogLevel.Info, 'Drag avoided!');
@@ -534,7 +567,7 @@ namespace Pacem.Components {
         }
 
         protected undecorate(element: Element) {
-            const options : any = { capture: false, passive: true };
+            const options: any = { capture: false, passive: true };
             element.removeEventListener('mousedown', this._startHandler, false);
             element.removeEventListener('touchstart', this._startHandler, options);
         }

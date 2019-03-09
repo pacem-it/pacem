@@ -5,7 +5,7 @@
 namespace Pacem.Components.Scaffolding {
 
     @CustomElement({ tagName: P + '-textarea', template: `<textarea class="${PCSS}-input" pacem></textarea>${ CHAR_COUNTER_CHILD }<span class="${PCSS}-readonly"><${ P }-text text="{{ :host.viewValue }}"></${ P }-text></span>`, shadow: Defaults.USE_SHADOW_ROOT })
-    export class PacemTextAreaElement extends PacemTextualInputElement implements OnPropertyChanged {
+    export class PacemTextAreaElement extends PacemTextualInputElement {
 
         @Watch({ emit: false, converter: PropertyConverters.Number }) rows = 5;
         @Watch({ emit: false, converter: PropertyConverters.Number }) cols = 50;

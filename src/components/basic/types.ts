@@ -250,7 +250,7 @@ namespace Pacem.Components {
             }
         }
 
-        @Watch({ emit: false, converter: PropertyConverters.Eval /* when declared plainly assume array of strings */ })
+        @Watch({ emit: false, converter: PropertyConverters.Json /* when declared plainly assume array of strings */ })
         cssClass: { [key: string]: boolean } | string[];
 
         @Watch({ emit: false, converter: PropertyConverters.Eval })
@@ -273,7 +273,7 @@ namespace Pacem.Components {
 
     }
 
-    export abstract class PacemContentElement extends PacemElement implements OnPropertyChanged, OnDisconnected {
+    export abstract class PacemContentElement extends PacemElement {
 
         protected abstract cleanup(html: string): string;
 

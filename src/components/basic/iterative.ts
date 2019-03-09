@@ -3,7 +3,7 @@
 /// <reference path="adapter.ts" />
 namespace Pacem.Components {
 
-    export abstract class PacemIterableElement extends PacemItemElement implements OnViewActivated, OnDisconnected {
+    export abstract class PacemIterableElement extends PacemItemElement {
         
         protected findContainer() {
             return CustomElementUtils.findAncestor(this, n => n instanceof PacemIterativeElement);
@@ -26,11 +26,7 @@ namespace Pacem.Components {
     }
 
     export abstract class PacemIterativeElement<TItem extends PacemIterableElement> extends PacemItemsContainerElement<TItem>
-        implements Iterative<TItem>, OnPropertyChanged, OnDisconnected {
-
-        constructor() {
-            super();
-        }
+        implements Iterative<TItem> {
 
         @Watch({ emit: false, converter: PropertyConverters.Element }) adapter: PacemAdapter<PacemIterativeElement<TItem>, TItem>;
         @Watch({ converter: PropertyConverters.Number }) index: number;

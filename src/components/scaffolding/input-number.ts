@@ -10,16 +10,16 @@ namespace Pacem.Components.Scaffolding {
             super();
         }
 
-        @ViewChild('input[type=number]') input: HTMLInputElement;
-        @ViewChild(`span.${PCSS}-readonly`) span: HTMLSpanElement;
+        @ViewChild('input[type=number]') private _input: HTMLInputElement;
+        @ViewChild(`span.${PCSS}-readonly`) private _span: HTMLSpanElement;
 
         protected toggleReadonlyView(readonly: boolean) {
-            this.span.hidden = !readonly;
-            this.input.hidden = readonly;
+            this._span.hidden = !readonly;
+            this._input.hidden = readonly;
         }
 
         protected get inputFields(): HTMLInputElement[] {
-            return [this.input];
+            return [this._input];
         }
 
         getViewValue(val: any): string {

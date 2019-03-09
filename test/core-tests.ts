@@ -144,7 +144,24 @@ namespace Pacem.Tests {
             })
         }
     },
+    {
+        name: 'Array extensions', test: function () {
 
+            it('Move within', function () {
+
+                var arr1 = ['apples', 'bananas', 'apricots'];
+                arr1.moveWithin(2, 1);
+                expect(arr1[1]).toEqual('apricots');
+                arr1.moveWithin(0, 1);
+                expect(arr1[1]).toEqual('apples');
+                arr1.moveWithin(0, 2);
+                expect(arr1[1]).toEqual('bananas');
+                arr1.moveWithin(2, 0);
+                expect(arr1[1]).toEqual('apples');
+            });
+
+        }
+    },
     {
 
         name: 'Base ES6', test: function () {
@@ -452,7 +469,7 @@ logger="{{ #_RFzKYbi.logger }}" entity="{{ #_RFzKYbi.entity, twoway }}" metadata
 
             });
 
-            it('Dodgy method recognition', function () {
+            it('Method recognition', function () {
 
                 let id = '_' + Utils.uniqueCode();
 
@@ -461,7 +478,7 @@ logger="{{ #_RFzKYbi.logger }}" entity="{{ #_RFzKYbi.entity, twoway }}" metadata
                 div['prop'] = 'foo';
                 document.body.appendChild(div);
 
-                //{ binding this[^myel.prop] == 'ciao' && this['myprop'] == 'bye'}
+                // should not consider it a fn
                 var expr = `{{ #${id}.prop.toString() }}`;
 
                 var parsed = CustomElementUtils.parseBindingAttribute(expr, div);
@@ -469,6 +486,15 @@ logger="{{ #_RFzKYbi.logger }}" entity="{{ #_RFzKYbi.entity, twoway }}" metadata
                 expect(parsed.dependencies).not.toBeNull();
                 expect(parsed.dependencies.length).toEqual(1);
                 expect(parsed.dependencies[0].twowayAllowed).toBeFalsy();
+
+                // should consider this a fn
+                var expr2 = `{{ #${id}.toString() }}`;
+
+                var parsed2 = CustomElementUtils.parseBindingAttribute(expr2, div);
+
+                expect(parsed2.dependencies).not.toBeNull();
+                expect(parsed2.dependencies.length).toEqual(0);
+
 
             });
 

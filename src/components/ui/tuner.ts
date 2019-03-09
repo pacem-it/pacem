@@ -67,8 +67,7 @@ namespace Pacem.Components.UI {
 
         @Watch({ emit: false, converter: PropertyConverters.Number }) round: number;
         private pivotPoint: { x: number, y: number };
-
-        //@Debounce(10)
+        
         private _setValue(pt: { x: number, y: number }) {
             const roundAngle = 2 * Math.PI;
             var angle = Math.atan2(pt.x - this.pivotPoint.x, - pt.y + this.pivotPoint.y);

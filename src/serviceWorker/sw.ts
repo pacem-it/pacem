@@ -1,4 +1,4 @@
-﻿const VERSION = "0.8.0.0";
+﻿const VERSION = "0.8.1.0";
 const CACHE_KEY = 'pacem-js-v' + VERSION;
 const OFFLINE_PAGE = '/views/offline.html';
 

@@ -54,6 +54,8 @@ namespace Pacem {
                         return date.toISOString();
                     case 'isodate':
                         return date.toISOString().substr(0, 10);
+                    case 'localdate':
+                        return `${ date.getFullYear() }-${ Utils.leftPad(date.getMonth()+1, 2, '0') }-${ Utils.leftPad(date.getDate(), 2, '0') }`;
                     case 'full':
                         const offset = -(date.getTimezoneOffset() / 60);
                         var utc = '';

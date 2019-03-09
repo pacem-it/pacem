@@ -13,8 +13,8 @@ Example:
 <pacemjs-snippet>
     <template id="demo1">
 
-        <pacem-panel behaviors="{{ [#rescale1] }}" class="bg-primary pacem-pad pacem-borderbox">
-            <p class="text-nowrap text-ellipsed pacem-nomargin">Resize me, freely.</p>
+        <pacem-panel behaviors="{{ [#rescale1] }}" class="bg-primary pacem-pad pad-1 pacem-borderbox">
+            <p class="text-nowrap text-ellipsed pacem-margin margin-0">Resize me, freely.</p>
         </pacem-panel>
         <pacem-rescale id="rescale1"></pacem-rescale>
 
@@ -38,8 +38,8 @@ Example:
 <pacemjs-snippet>
     <template id="demo2">
 
-        <pacem-panel behaviors="{{ [#rescale2] }}" class="bg-warning pacem-pad pacem-borderbox" id="paragraph2">
-            <p class="text-nowrap text-ellipsed pacem-nomargin">Resize me. <b>Constraints</b> are applied and only <b>bottom-right</b> handles are enabled.</p>
+        <pacem-panel behaviors="{{ [#rescale2] }}" class="bg-warning pacem-pad pad-1 pacem-borderbox" id="paragraph2">
+            <p class="text-nowrap text-ellipsed pacem-margin margin-0">Resize me. <b>Constraints</b> are applied and only <b>bottom-right</b> handles are enabled.</p>
         </pacem-panel>
         <pacem-rescale id="rescale2" handles="right bottom" min-width="120" max-height="160"
                        disabled="{{ #disabled.model }}"
@@ -71,8 +71,8 @@ Example:
     <template id="demo3">
 
         <pacem-data id="data3"></pacem-data>
-        <pacem-panel behaviors="{{ [#rescale3] }}" class="bg-success pacem-pad pacem-borderbox" id="always-me">
-            <p class="text-nowrap text-ellipsed pacem-nomargin">
+        <pacem-panel behaviors="{{ [#rescale3] }}" class="bg-success pacem-pad pad-1 pacem-borderbox" id="always-me">
+            <p class="text-nowrap text-ellipsed pacem-margin margin-0">
                 <pacem-if match="{{ Pacem.Utils.isNull(#data3.model) }}">Resize me.</pacem-if>
                 <pacem-if match="{{ !Pacem.Utils.isNull(#data3.model) }}">
                     Resizing <pacem-text class="text-bold" text="{{ #data3.model.element.id }}"></pacem-text>,
@@ -99,8 +99,8 @@ Feel free to play with the cofiguration:
 
             <!-- rescalable -->
             <div class="pacem-cell cols-lg-7 cols-12">
-                <pacem-panel behaviors="{{ [#rescale4] }}" class="bg-invert pacem-pad pacem-borderbox" id="paragraph4">
-                    <p class="text-nowrap text-ellipsed pacem-nomargin">Resize me. Tweak bolts if you will.</p>
+                <pacem-panel behaviors="{{ [#rescale4] }}" class="bg-invert pacem-pad pad-1 pacem-borderbox" id="paragraph4">
+                    <p class="text-nowrap text-ellipsed pacem-margin margin-0">Resize me. Tweak bolts if you will.</p>
                 </pacem-panel>
             </div>
 
@@ -108,13 +108,13 @@ Feel free to play with the cofiguration:
             <div class="pacem-cell cols-lg-5 cols-12">
 
                 <!-- disable -->
-                <div class="pacem-grid pacem-field pacem-nopad pacem-margin margin-xs-bottom">
+                <div class="pacem-grid pacem-field pacem-nopad pacem-margin margin-bottom-1">
                     <label class="pacem-cell cols-3 pacem-label text-ellipsed">rescaling</label>
                     <pacem-checkbox class="pacem-cell cols-9" value="{{ #disabled.model, twoway }}" true-value="true" false-value="false" caption="disable"></pacem-checkbox>
                 </div>
 
                 <!-- handles -->
-                <div class="pacem-grid pacem-field pacem-nopad pacem-margin margin-xs-bottom">
+                <div class="pacem-grid pacem-field pacem-nopad pacem-margin margin-bottom-1">
                     <label class="pacem-cell cols-3 pacem-label text-ellipsed">handles</label>
                     <pacem-checkbox-list class="pacem-cell cols-9" value="{{ #handles.model, twoway }}">
                         <pacem-data-item value="top"></pacem-data-item>
@@ -125,25 +125,25 @@ Feel free to play with the cofiguration:
                 </div>
 
                 <!-- min-width -->
-                <div class="pacem-grid pacem-field pacem-nopad pacem-margin margin-xs-bottom">
+                <div class="pacem-grid pacem-field pacem-nopad pacem-margin margin-bottom-1">
                     <label class="pacem-cell cols-3 pacem-label text-ellipsed">min-width</label>
                     <pacem-input-number class="pacem-cell cols-9" value="{{ #minWidth.model, twoway }}"></pacem-input-number>
                 </div>
 
                 <!-- max-width -->
-                <div class="pacem-grid pacem-field pacem-nopad pacem-margin margin-xs-bottom">
+                <div class="pacem-grid pacem-field pacem-nopad pacem-margin margin-bottom-1">
                     <label class="pacem-cell cols-3 pacem-label text-ellipsed">max-width</label>
                     <pacem-input-number class="pacem-cell cols-9" value="{{ #maxWidth.model, twoway }}"></pacem-input-number>
                 </div>
 
                 <!-- min-height -->
-                <div class="pacem-grid pacem-field pacem-nopad pacem-margin margin-xs-bottom">
+                <div class="pacem-grid pacem-field pacem-nopad pacem-margin margin-bottom-1">
                     <label class="pacem-cell cols-3 pacem-label text-ellipsed">min-height</label>
                     <pacem-input-number class="pacem-cell cols-9" value="{{ #minHeight.model, twoway }}"></pacem-input-number>
                 </div>
 
                 <!-- max-height -->
-                <div class="pacem-grid pacem-field pacem-nopad pacem-margin margin-xs-bottom">
+                <div class="pacem-grid pacem-field pacem-nopad pacem-margin margin-bottom-1">
                     <label class="pacem-cell cols-3 pacem-label text-ellipsed">max-height</label>
                     <pacem-input-number class="pacem-cell cols-9" value="{{ #maxHeight.model, twoway }}"></pacem-input-number>
                 </div>

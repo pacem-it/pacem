@@ -22,7 +22,7 @@ Example:
         <p>timer:</p>
         <i class="pacem-icon">timer</i>
         <b><pacem-text text="{{ #myTicks.model }}"></pacem-text></b>
-        <div class="pacem-buttonset buttons">
+        <div class="pacem-buttonset buttons pacem-pad pad-bottom-1">
             <div class="buttonset-left">
                 <pacem-button class="button" on-click="#myTicks.model++">add extra ticks</pacem-button>
                 <pacem-button class="button" on-click="#myTicks.model = 0">reset</pacem-button>
@@ -84,7 +84,7 @@ Example:
         <p>last set:</p>
         <i class="pacem-icon">timer</i>
         <b><pacem-text text="{{ $pacem.date( #myPersisted.model, 'full') }}"></pacem-text></b>
-        <div class="pacem-buttonset buttons">
+        <div class="pacem-buttonset buttons pacem-pad pad-bottom-1">
             <div class="buttonset-left">
                 <pacem-button class="button" on-click="#myPersisted.model = Date.now()">set now</pacem-button>
             </div>

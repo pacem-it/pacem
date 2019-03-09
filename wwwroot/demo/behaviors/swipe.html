@@ -1,11 +1,58 @@
 ﻿
 
-<pacem-markdown value="{{ #content0.textContent }}" root></pacem-markdown>
+<pacem-markdown value="{{ #content0.textContent }}" root class="md-tech"></pacem-markdown>
 
 <pre pacem hidden id="content0">
-# `&lt;pacem-swipe>`
 
-typing docs...
+The `&lt;pacem-swipe>` behavioral element is meant to add touch swiping gesture capabilities to a `PacemElement` (it can be extended to mouse gestures).  
+Very convenient for carousel, slideshow and gallery components, in **Pacem JS** the swipe behavior is even exploited in tab controls navigation.
+
+## Basic behavior
+In its basic fashion, swipe gesture - when triggered - translates an element outside the viewport (screen).
+Once the translation animation is finished, the element gets re-rendered in its original place.
+
+> Swipe gesture gets detected only if a "decent" amount of speed is registered below your finger while releasing.
+
+A panning gesture gets visually handled. But if the finger is _still_ when the gesture ends, then a backwards animation might restore the object's original place.
+
+Example:
+</pre>
+
+<pacemjs-snippet>
+    <template id="demo1">
+
+        <div style="overflow: hidden">
+            <pacem-panel style="width: 50%; height: 120px; margin: auto" behaviors="{{ [#swipe1] }}" class="bg-invert pacem-pad pad-1 pacem-borderbox">
+                <p class="text-nowrap text-ellipsed pacem-margin margin-0">Swipe me sideways.</p>
+            </pacem-panel>
+        </div>
+        <pacem-swipe id="swipe1" include-mouse="{{ #includeMouse1.model }}"></pacem-swipe>
+
+        <div class="pacem-margin margin-top-3">
+            <pacem-data id="includeMouse1" model="false"></pacem-data>
+            <pacem-checkbox caption="enable mouse usage" false-value="false" true-value="true" value="{{ #includeMouse1.model, twoway }}"></pacem-checkbox>
+        </div>
+
+    </template>
+</pacemjs-snippet>
+
+
+<pacem-markdown value="{{ #content1.textContent }}" root class="md-tech"></pacem-markdown>
+
+<pre pacem hidden id="content1">
+
+## Event chain
+Basic behavior in itself is almost useless, unless you - the developer - inject some logic into strategic key-points.  
+Here's the sequence of events triggered by the swiping gesture:
+
+- `swipe` (cancelable): detects and notifies a swipe event
+- either `swipeleft` or `swiperight` (both cancelable): fires only for the specific detected direction.
+- `swipeanimationend` (cancelable): fires when the swipe animation ends, right before the element gets restored in its original position.
+- either `swipeleftanimationend` or `swiperightanimationend` (cancelable): fires when the swipe animation ends, depending on the direction, right before the element gets restored in its original position.
+
+If an event gets canceled, by calling `preventDefault()`, the event chain gets interrupted.
+
+> If, for instance, a `swipeanimationend` gets canceled, then the element won't return in its original position.
 
 </pre>
 

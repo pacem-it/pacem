@@ -1,38 +1,5 @@
 ﻿@import "../theme-dark";
 
-.@{PCSS}-body {
-    display: block;
-    min-height: 100vh;
-    padding: @grid_spacing + @grid_cell @grid_spacing @grid_spacing @grid_spacing;
-    box-sizing: border-box;
-    z-index: 0;
-
-    &.@{PCSS}-menu-close {
-    }
-
-    &.@{PCSS}-menu-open {
-    }
-
-    &.@{PCSS}-animations.@{PCSS}-animatable {
-        transition: padding @easing_in_out_sine .3s;
-
-        &.@{PCSS}-menu-close {
-            transition-delay: .25s;
-        }
-
-        &.@{PCSS}-menu-open {
-        }
-    }
-}
-
 @media (min-width: 1200px) {
 
-    .@{PCSS}-body {
-        padding-left: @grid_cell;
-        padding-right: @grid_cell;
-
-        &.@{PCSS}-menu-open {
-            padding-left: 11 * @grid_spacing;
-        }
-    }
 }

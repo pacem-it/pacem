@@ -34,9 +34,12 @@
     <None Remove="index.d.ts" />
     <None Remove="src\components\basic\body-proxy.ts" />
     <None Remove="src\components\basic\html-proxy.ts" />
+    <None Remove="src\components\basic\hub-proxy.ts" />
+    <None Remove="src\components\basic\layout-proxy.ts" />
     <None Remove="src\components\basic\style-proxy.ts" />
     <None Remove="src\components\fx\fancy.ts" />
     <None Remove="src\components\fx\hero.ts" />
+    <None Remove="src\components\scaffolding\slider.ts" />
     <None Remove="src\components\scaffolding\tags.ts" />
     <None Remove="src\components\ui\calendar.ts" />
     <None Remove="src\components\ui\pager.ts" />
@@ -54,7 +57,6 @@
     <None Remove="src\components\basic\data.ts" />
     <None Remove="src\components\basic\dock.ts" />
     <None Remove="src\components\basic\fetcher.ts" />
-    <None Remove="src\components\basic\hubproxy.ts" />
     <None Remove="src\components\basic\if.ts" />
     <None Remove="src\components\basic\index.ts" />
     <None Remove="src\components\basic\items-container.ts" />
@@ -222,7 +224,8 @@
     <TypeScriptCompile Include="src\components\basic\data.ts" />
     <TypeScriptCompile Include="src\components\basic\dock.ts" />
     <TypeScriptCompile Include="src\components\basic\fetcher.ts" />
-    <TypeScriptCompile Include="src\components\basic\hubproxy.ts" />
+    <TypeScriptCompile Include="src\components\basic\layout-proxy.ts" />
+    <TypeScriptCompile Include="src\components\basic\hub-proxy.ts" />
     <TypeScriptCompile Include="src\components\basic\if.ts" />
     <TypeScriptCompile Include="src\components\basic\index.ts" />
     <TypeScriptCompile Include="src\components\basic\items-container.ts" />
@@ -274,6 +277,7 @@
     <TypeScriptCompile Include="src\components\scaffolding\input-file.ts" />
     <TypeScriptCompile Include="src\components\scaffolding\input-hidden.ts" />
     <TypeScriptCompile Include="src\components\scaffolding\input-image.ts" />
+    <TypeScriptCompile Include="src\components\scaffolding\slider.ts" />
     <TypeScriptCompile Include="src\components\scaffolding\input-number.ts" />
     <TypeScriptCompile Include="src\components\scaffolding\input-password.ts" />
     <TypeScriptCompile Include="src\components\scaffolding\input-search.ts" />

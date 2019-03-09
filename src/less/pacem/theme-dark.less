@@ -100,6 +100,7 @@
 /*#region STD-VARIABLES */
 
 @color_background: @color_blue;
+@color_root_background: darken(@color_background, 3);
 @color_background_alt: #0e456e;
 @color_default: @color_light;
 @color_default_inv: @color_dark;
@@ -195,8 +196,11 @@
 @color_suggest_focus_fore: @color_light;
 @color_suggest_focus_highlight: @color_blue;
 
+// slider
+@color_slider_thumb: lighten(@color_button_back, 5);
+
 // tab
-@color_tab_back: @color_button_back;
+@color_tab_back: @color_background;
 @color_tab_highlight: @color_highlight;
 @border_tab: 0;
 

@@ -30,29 +30,31 @@ namespace Pacem.Components.UI {
 
             let fn = (ev: Event) => {
                 super.emit(ev);
-                if (ev.type === 'click' && !Utils.isNullOrEmpty(this.commandName)) {
-                    this.dispatchEvent(new Pacem.CommandEvent({ commandName: this.commandName, commandArgument: this.commandArgument }));
-                } else {
-                    switch (ev.type) {
-                        case 'mousedown':
-                            Utils.addClass(this, PCSS + '-active');
-                            break;
-                        case 'keydown':
-                            if ((<KeyboardEvent>ev).keyCode === 32 || (<KeyboardEvent>ev).keyCode === 13) {
-                                evt.preventDefault();
+                if (!ev.defaultPrevented) {
+                    if (ev.type === 'click' && !Utils.isNullOrEmpty(this.commandName)) {
+                        this.dispatchEvent(new Pacem.CommandEvent({ commandName: this.commandName, commandArgument: this.commandArgument }));
+                    } else {
+                        switch (ev.type) {
+                            case 'mousedown':
                                 Utils.addClass(this, PCSS + '-active');
-                            }
-                            break;
-                        case 'blur':
-                        case 'mouseup':
-                            Utils.removeClass(this, PCSS + '-active');
-                            break;
-                        case 'keyup':
-                            if ((<KeyboardEvent>ev).keyCode === 32 || (<KeyboardEvent>ev).keyCode === 13) {
-                                this.click();
+                                break;
+                            case 'keydown':
+                                if ((<KeyboardEvent>ev).keyCode === 32 || (<KeyboardEvent>ev).keyCode === 13) {
+                                    evt.preventDefault();
+                                    Utils.addClass(this, PCSS + '-active');
+                                }
+                                break;
+                            case 'blur':
+                            case 'mouseup':
                                 Utils.removeClass(this, PCSS + '-active');
-                            }
-                            break;
+                                break;
+                            case 'keyup':
+                                if ((<KeyboardEvent>ev).keyCode === 32 || (<KeyboardEvent>ev).keyCode === 13) {
+                                    this.click();
+                                    Utils.removeClass(this, PCSS + '-active');
+                                }
+                                break;
+                        }
                     }
                 }
             };

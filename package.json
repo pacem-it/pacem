@@ -1,5 +1,5 @@
 {
-  "version": "0.8.0",
+  "version": "0.8.1",
   "name": "pacem",
   "homepage": "https://js.pacem.it",
   "repository": {
@@ -35,7 +35,7 @@
     "dist/js/pacem-fx.min.js",
     "dist/js/pacem-plus.min.js",
     "dist/js/pacem-charts.min.js",
-    "dist/css/pacem.min.css",
+    "dist/css/pacem-dark.min.css",
     "dist/css/pacem-phousys.min.css",
     "dist/css/pacem-light.min.css",
     "index.d.ts",
@@ -92,6 +92,7 @@
     "build-demo-prod": "npm run build-demo && npm run build-css-demo-dark && npm run build-css-demo-light && npm run build-css-demo-phousys",
     "build-test": "tsc -p test/tsconfig.json",
     "build-sw": "tsc -p src/serviceWorker/tsconfig.json",
+    "safe-publish": "node safePublishing.js",
     "header": "header dist/**/*.*",
     "copyfiles": "copyfiles -f src/polyfills/*.* dist/js/polyfills && copyfiles dist/**/*.* wwwroot",
     "docs": "typedoc --out wwwroot/typedoc/ --target ES6 --excludeExternals --excludePrivate && typedoc --json wwwroot/typedoc/core.json --target ES6 --excludeExternals --excludePrivate"
@@ -112,6 +113,7 @@
     "rimraf": "2.6.2",
     "typedoc": "0.13.0",
     "typescript": "3.2.4",
-    "uglify-es": "3.3.10"
+    "uglify-es": "3.3.10",
+    "child-process-promise": "2.2.1"
   }
 }
