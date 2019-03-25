@@ -10,6 +10,7 @@ namespace Pacem.Components.UI {
     export enum BalloonTrigger {
         Hover = 'hover',
         Click = 'click',
+        ContextMenu = 'contextmenu',
         Focus = 'focus'
     }
 
@@ -189,6 +190,7 @@ namespace Pacem.Components.UI {
                             // do nothing else: only the blur event will pop the balloon out
                             break;
                         case BalloonTrigger.Click:
+                        case BalloonTrigger.ContextMenu:
                             popup.addEventListener('mousedown', Pacem.stopPropagationHandler, false);
                             window.document.body.addEventListener('mousedown', this._outConditionalDelegate, false);
                             break;
@@ -202,6 +204,7 @@ namespace Pacem.Components.UI {
                     switch (options.trigger) {
                         case BalloonTrigger.Focus:
                         case BalloonTrigger.Click:
+                        case BalloonTrigger.ContextMenu:
                             window.document.body.addEventListener('mousedown', this._outConditionalDelegate, false);
                             break;
                         default:
@@ -223,6 +226,7 @@ namespace Pacem.Components.UI {
                             // do nothing else: only the blur event will pop the balloon out
                             break;
                         case BalloonTrigger.Click:
+                        case BalloonTrigger.ContextMenu:
                             popup.removeEventListener('mousedown', Pacem.stopPropagationHandler, false);
                             window.document.body.removeEventListener('mousedown', this._outConditionalDelegate, false);
                             break;
@@ -235,6 +239,7 @@ namespace Pacem.Components.UI {
                 case BalloonBehavior.Tooltip:
                     switch (opts.trigger) {
                         case BalloonTrigger.Click:
+                        case BalloonTrigger.ContextMenu:
                             window.document.body.removeEventListener('mousedown', this._outConditionalDelegate, false);
                             break;
                     }
@@ -479,6 +484,7 @@ namespace Pacem.Components.UI {
             el.removeEventListener('click', this._toggleDelegate, false);
             el.removeEventListener('focus', this._hoverDelegate, false);
             el.removeEventListener('blur', this._outDelegate, false);
+            el.removeEventListener('contextmenu', this._toggleDelegate, false);
         }
 
         private _setHandlers(el: HTMLElement) {
@@ -501,6 +507,10 @@ namespace Pacem.Components.UI {
                     opts.hoverDelay = opts.hoverTimeout = 0;
                     el.addEventListener('mousedown', this._mousedownConditionalDelegate, false);
                     el.addEventListener('click', this._toggleDelegate, false)/*.blur(obj.methods.out)*/;
+                    break;
+                case BalloonTrigger.ContextMenu:
+                    opts.hoverDelay = opts.hoverTimeout = 0;
+                    el.addEventListener('contextmenu', this._toggleDelegate, false);
                     break;
             }
         }

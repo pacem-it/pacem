@@ -1,15 +1,18 @@
 ﻿/// <reference path="../../../dist/js/pacem-core.d.ts" />
 
 namespace Pacem.Components.UI {
-    
+
     @CustomElement({
-        tagName: P +'-button'
+        tagName: P + '-button'
     })
     export class PacemButtonElement extends PacemIterableElement {
 
         constructor() {
             super('button');
         }
+
+        @Watch({ emit: false, converter: PropertyConverters.String }) iconGlyph: string;
+        @Watch({ emit: false, converter: PropertyConverters.String }) iconUrl: string;
 
         @Watch({ emit: false, converter: PropertyConverters.String }) commandName: string;
         @Watch({ emit: false, converter: PropertyConverters.String }) commandArgument: any;
@@ -21,9 +24,16 @@ namespace Pacem.Components.UI {
             this.tabOrder = 0;
         }
 
-        disconnectedCallback() {
-            
-            super.disconnectedCallback();
+        propertyChangedCallback(name: string, old, val, first?: boolean) {
+            super.propertyChangedCallback(name, old, val, first);
+            switch (name) {
+                case 'iconGlyph':
+                    // suppose ligatures enabled
+                case 'iconUrl':
+                    // handle this via css attr(), considering that it's the proper way to access and modify pseudo::before content
+                    this.dataset[name] = val;
+                    break;
+            }
         }
 
         protected emit(evt: Event) {

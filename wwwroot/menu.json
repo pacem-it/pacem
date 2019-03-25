@@ -59,6 +59,11 @@
         "label": "Router",
         "view": "router",
         "title": "<pacem-router>"
+      },
+      {
+        "label": "Localization",
+        "view": "l10n",
+        "title": "Localization"
       }
     ]
   },

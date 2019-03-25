@@ -2,11 +2,9 @@
 /// <reference path="types.ts" />
 namespace Pacem.Components {
 
-    /** Moves its content to the document body and eventually removes it when disconnected. */
-    @CustomElement({
-        tagName: P + '-body-proxy'
-    })
-    export class PacemBodyProxyElement extends PacemEventTarget {
+    abstract class PacemTransferProxyElement extends PacemEventTarget {
+
+        protected abstract get proxy(): HTMLElement;
 
         private _dom: Node[] = [];
 
@@ -16,7 +14,7 @@ namespace Pacem.Components {
                 ref: Node;
             for (let j = nodes.length - 1; j >= 0; j--) {
                 let item = nodes.item(j);
-                document.body.insertBefore(item, ref);
+                this.proxy.insertBefore(item, ref);
                 this._dom.push(item);
                 ref = item;
             }
@@ -24,10 +22,33 @@ namespace Pacem.Components {
 
         disconnectedCallback() {
             for (let item of this._dom.splice(0)) {
-                item.parentElement === document.body &&
-                    document.body.removeChild(item);
+                item.parentElement === this.proxy &&
+                    this.proxy.removeChild(item);
             }
             super.disconnectedCallback();
+        }
+    }
+
+    /** Moves its content to the document body and eventually removes it when disconnected. */
+    @CustomElement({
+        tagName: P + '-body-proxy'
+    })
+    export class PacemBodyProxyElement extends PacemTransferProxyElement {
+
+        protected get proxy(): HTMLElement {
+            return document.body;
+        }
+
+    }
+
+    /** Moves its content to the closest shell and eventually removes it when disconnected. */
+    @CustomElement({
+        tagName: P + '-shell-proxy'
+    })
+    export class PacemShellProxyElement extends PacemTransferProxyElement {
+
+        protected get proxy(): HTMLElement {
+            return CustomElementUtils.findAncestorShell(this);
         }
 
     }

@@ -1,12 +1,13 @@
 ﻿@import "../theme-dark";
 @import "shared";
 
-@_aside_width: 10 * @grid_spacing;
+@_aside_width: @layout_aside_width;
+@_header_height: @layout_header_height;
+@_toolbar_height: @layout_toolbar_height;
+@_footer_height: @layout_footer_height;
+@_bigfooter_height: @layout_bigfooter_height;
+
 @_aside_margin: @grid_spacing;
-@_header_height: @grid_cell;
-@_toolbar_height: @grid_spacing;
-@_footer_height: @grid_cell - @grid_spacing;
-@_bigfooter_height: @grid_cell;
 
 .LayoutHeaderHidden() {
     // start hidden

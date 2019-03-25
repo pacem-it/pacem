@@ -75,7 +75,7 @@
     <link href="/manifest.json" rel="manifest" />
 
 </head>
-<body class="pacem-body pacem-animations pacem-animatable" header footer aside>
+<body>
 
     <pacem-annihilator>
         <img src="@img" alt="Pacem JS" />
@@ -94,132 +94,134 @@
     <pacem-style-proxy src="{{ '/dist/css/pacem-docs-'+ #themename.model +'.min.css?v=@(version)' }}"></pacem-style-proxy>
 
     <!-- shell layout -->
-    <pacem-data id="layoutHeader" model="true"></pacem-data>
-    <pacem-data id="layoutFooter" model="true"></pacem-data>
-    <pacem-data id="layoutBigfooter" model="false"></pacem-data>
-    <pacem-data id="layoutAside" model="true"></pacem-data>
-    <pacem-data id="layoutFootbar" model="false"></pacem-data>
-    <pacem-data id="layoutHeadbar" model="false"></pacem-data>
-    <pacem-data id="layoutHeadbarPrepend" model="false"></pacem-data>
-    <pacem-data id="layoutFootbarAppend" model="false"></pacem-data>
+    <div class="pacem-body pacem-animations pacem-animatable" header footer aside>
+        <pacem-data id="layoutHeader" model="true"></pacem-data>
+        <pacem-data id="layoutFooter" model="true"></pacem-data>
+        <pacem-data id="layoutBigfooter" model="false"></pacem-data>
+        <pacem-data id="layoutAside" model="true"></pacem-data>
+        <pacem-data id="layoutFootbar" model="false"></pacem-data>
+        <pacem-data id="layoutHeadbar" model="false"></pacem-data>
+        <pacem-data id="layoutHeadbarPrepend" model="false"></pacem-data>
+        <pacem-data id="layoutFootbarAppend" model="false"></pacem-data>
 
-    <pacem-layout-proxy attr="header" value="{{ #layoutHeader.model.toString() }}"></pacem-layout-proxy>
-    <pacem-layout-proxy attr="footer" value="{{ #layoutFooter.model.toString() }}"></pacem-layout-proxy>
-    <pacem-layout-proxy attr="bigfooter" value="{{ #layoutBigfooter.model.toString() }}"></pacem-layout-proxy>
-    <pacem-layout-proxy attr="aside" value="{{ #layoutAside.model.toString() }}"></pacem-layout-proxy>
-    <pacem-layout-proxy attr="footbar" value="{{ #layoutFootbar.model.toString() }}"></pacem-layout-proxy>
-    <pacem-layout-proxy attr="headbar" value="{{ #layoutHeadbar.model.toString() }}"></pacem-layout-proxy>
-    <pacem-layout-proxy attr="footbar-append" value="{{ #layoutFootbarAppend.model.toString() }}"></pacem-layout-proxy>
-    <pacem-layout-proxy attr="headbar-prepend" value="{{ #layoutHeadbarPrepend.model.toString() }}"></pacem-layout-proxy>
+        <pacem-layout-proxy attr="header" value="{{ #layoutHeader.model.toString() }}"></pacem-layout-proxy>
+        <pacem-layout-proxy attr="footer" value="{{ #layoutFooter.model.toString() }}"></pacem-layout-proxy>
+        <pacem-layout-proxy attr="bigfooter" value="{{ #layoutBigfooter.model.toString() }}"></pacem-layout-proxy>
+        <pacem-layout-proxy attr="aside" value="{{ #layoutAside.model.toString() }}"></pacem-layout-proxy>
+        <pacem-layout-proxy attr="footbar" value="{{ #layoutFootbar.model.toString() }}"></pacem-layout-proxy>
+        <pacem-layout-proxy attr="headbar" value="{{ #layoutHeadbar.model.toString() }}"></pacem-layout-proxy>
+        <pacem-layout-proxy attr="footbar-append" value="{{ #layoutFootbarAppend.model.toString() }}"></pacem-layout-proxy>
+        <pacem-layout-proxy attr="headbar-prepend" value="{{ #layoutHeadbarPrepend.model.toString() }}"></pacem-layout-proxy>
 
-    <header class="header-border" pacem>
-        <div class="pacem-breadcrumbs">
-            <pacem-button class="breadcrumb home dropdown-toggle" id="selector" css-class="{{ { 'dropdown-open': #ddl.visible } }}">
-                <span class="breadcrumb-extra">ver. @(pacemjs_version)</span>
-                <pacem-text text="{{ 'theme: '+ #theme.model.label }}" class="breadcrumb-detail"></pacem-text>
-                <pacem-img class="breadcrumb-main" adapt="contain" src="{{ '/assets/logo-'+ #themename.model +'.svg' }}"></pacem-img>
-            </pacem-button>
+        <header class="header-border" pacem>
+            <div class="pacem-breadcrumbs">
+                <pacem-button class="breadcrumb home dropdown-toggle" id="selector" css-class="{{ { 'dropdown-open': #ddl.visible } }}">
+                    <span class="breadcrumb-extra">ver. @(pacemjs_version)</span>
+                    <pacem-text text="{{ 'theme: '+ #theme.model.label }}" class="breadcrumb-detail"></pacem-text>
+                    <pacem-img class="breadcrumb-main" adapt="contain" src="{{ '/assets/logo-'+ #themename.model +'.svg' }}"></pacem-img>
+                </pacem-button>
 
-            <pacem-panel class="breadcrumb hide-md hide-v" css-class="{{ {'active': #router.state != null } }}">
-                <span class="breadcrumb-extra">Pacem JS</span>
-                <pacem-text class="breadcrumb-detail text-capital" text="{{ #router.state.package }}"></pacem-text>
-                <pacem-span class="breadcrumb-main text-accent" css-class="{{ {'text-tech': #routetitle.model && #routetitle.model.startsWith('<') } }}"
-                            text="{{ #routetitle.model }}"></pacem-span>
-            </pacem-panel>
-        </div>
-    </header>
-    <div class="pacem-toolbar toolbar-header toolbar-border"></div>
-
-    <!-- dropdown balloon and adapter -->
-    <pacem-adapter id="adapter" hide="true" orientation="vertical"></pacem-adapter>
-    <pacem-balloon options="{{ { trigger:'click', align: 'start', trackPosition: true, size: 'match' } }}" target="#selector" id="ddl"
-                   on-popup="#buttonset.index = -1; #buttonset.focus(); #collapse.collapse = false"
-                   on-popout="#collapse.collapse = true"
-                   class="balloon-border balloon-corners">
-        <div class="pacem-panel balloon-panel panel-primary">
-            <div class="panel-heading heading-sever pacem-grid">
-
-                <div class="pacem-cell cols-4">
-                    Version
-                </div>
-                <div class="pacem-cell cols-8 text-nowrap">
-                    Theme
-                </div>
-
+                <pacem-panel class="breadcrumb hide-md hide-v" css-class="{{ {'active': #router.state != null } }}">
+                    <span class="breadcrumb-extra">Pacem JS</span>
+                    <pacem-text class="breadcrumb-detail text-capital" text="{{ #router.state.package }}"></pacem-text>
+                    <pacem-span class="breadcrumb-main text-accent" css-class="{{ {'text-tech': #routetitle.model && #routetitle.model.startsWith('<') } }}"
+                                text="{{ #routetitle.model }}"></pacem-span>
+                </pacem-panel>
             </div>
-            <div class="panel-body">
-                <div class="pacem-grid">
+        </header>
+        <div class="pacem-toolbar toolbar-header toolbar-border"></div>
+
+        <!-- dropdown balloon and adapter -->
+        <pacem-adapter id="adapter" hide="true" orientation="vertical"></pacem-adapter>
+        <pacem-balloon options="{{ { trigger:'click', align: 'start', trackPosition: true, size: 'match' } }}" target="#selector" id="ddl"
+                       on-popup="#buttonset.index = -1; #buttonset.focus(); #collapse.collapse = false"
+                       on-popout="#collapse.collapse = true"
+                       class="balloon-border balloon-corners">
+            <div class="pacem-panel balloon-panel panel-primary">
+                <div class="panel-heading heading-sever pacem-grid">
+
                     <div class="pacem-cell cols-4">
-                        v@(pacemjs_version)
+                        Version
                     </div>
                     <div class="pacem-cell cols-8 text-nowrap">
-                        <pacem-radio-list datasource="{{ #themes.model }}"
-                                          value="{{ #theme.model }}"
-                                          on-change="#themename.model = $this.value.value; #ddl.popout()"
-                                          text-property="label"></pacem-radio-list>
+                        Theme
                     </div>
-                    <div class="pacem-cell" pacem hidden>
-                        <pacem-checkbox true-value="true" false-value="false" readonly="false" caption="Header" value="{{ #layoutHeader.model, twoway }}"></pacem-checkbox>
-                        <pacem-checkbox true-value="true" false-value="false" caption="Footer" value="{{ #layoutFooter.model, twoway }}"></pacem-checkbox>
-                        <pacem-checkbox true-value="true" false-value="false" caption="Head bar" value="{{ #layoutHeadbar.model, twoway }}"></pacem-checkbox>
-                        <pacem-checkbox true-value="true" false-value="false" caption="Foot bar" value="{{ #layoutFootbar.model, twoway }}"></pacem-checkbox>
-                        <pacem-checkbox true-value="true" false-value="false" caption="Head bar (prepend)" value="{{ #layoutHeadbarPrepend.model, twoway }}"></pacem-checkbox>
-                        <pacem-checkbox true-value="true" false-value="false" caption="Foot bar (append)" value="{{ #layoutFootbarAppend.model, twoway }}"></pacem-checkbox>
-                        <pacem-checkbox true-value="true" false-value="false" caption="Aside" value="{{ #layoutAside.model, twoway }}"></pacem-checkbox>
+
+                </div>
+                <div class="panel-body">
+                    <div class="pacem-grid">
+                        <div class="pacem-cell cols-4">
+                            v@(pacemjs_version)
+                        </div>
+                        <div class="pacem-cell cols-8 text-nowrap">
+                            <pacem-radio-list datasource="{{ #themes.model }}"
+                                              value="{{ #theme.model }}"
+                                              on-change="#themename.model = $this.value.value; #ddl.popout()"
+                                              text-property="label"></pacem-radio-list>
+                        </div>
+                        <div class="pacem-cell" pacem hidden>
+                            <pacem-checkbox true-value="true" false-value="false" readonly="false" caption="Header" value="{{ #layoutHeader.model, twoway }}"></pacem-checkbox>
+                            <pacem-checkbox true-value="true" false-value="false" caption="Footer" value="{{ #layoutFooter.model, twoway }}"></pacem-checkbox>
+                            <pacem-checkbox true-value="true" false-value="false" caption="Head bar" value="{{ #layoutHeadbar.model, twoway }}"></pacem-checkbox>
+                            <pacem-checkbox true-value="true" false-value="false" caption="Foot bar" value="{{ #layoutFootbar.model, twoway }}"></pacem-checkbox>
+                            <pacem-checkbox true-value="true" false-value="false" caption="Head bar (prepend)" value="{{ #layoutHeadbarPrepend.model, twoway }}"></pacem-checkbox>
+                            <pacem-checkbox true-value="true" false-value="false" caption="Foot bar (append)" value="{{ #layoutFootbarAppend.model, twoway }}"></pacem-checkbox>
+                            <pacem-checkbox true-value="true" false-value="false" caption="Aside" value="{{ #layoutAside.model, twoway }}"></pacem-checkbox>
+                        </div>
                     </div>
                 </div>
             </div>
+        </pacem-balloon>
+        <!-- /dropdown balloon and adapter -->
+
+        <pacem-data id="m_open" persist-as="menu_open"></pacem-data>
+        <pacem-repeater id="menu_rep" datasource="{{ #menu.result }}">
+            <pacem-menu open="{{ #m_open.model, twoway }}">
+                <pacem-a id="add-to-home" href="#" class="pacem-button" hidden>Install PWA App</pacem-a>
+                <template>
+
+                    <pacem-panel class="menu-group" css-class="{{ {'group-active': #router.state.package === ^item.package, 'collapsed': ^item.collapsed, 'item-space item-separate': ^index > 0 } }}">
+                        <i class="pacem-icon pacem-animatable">keyboard_arrow_down</i>
+                        <pacem-button class="flat" on-click="#menu_rep.datasource.splice(^index, 1, Pacem.Utils.extend({}, ^item, { collapsed: !^item.collapsed}))">
+                            <pacem-text text="{{ ^item.label }}"></pacem-text>
+                        </pacem-button>
+                    </pacem-panel>
+                    <pacem-collapse collapse="{{ ^item.collapsed }}">
+                        <pacem-repeater datasource="{{ ^item.items }}">
+                            <template>
+                                <div class="pacem-menu-item">
+                                    <pacem-a href="{{ '/'+ ^^item.package +'/'+ ^item.view }}"
+                                             router="{{ #router }}"
+                                             css-class="{{ {'item-active': #router.state.package === ^^item.package && #router.state.view === ^item.view } }}">
+                                        <pacem-text text="{{ ^item.label }}"></pacem-text>
+                                    </pacem-a>
+                                </div>
+                            </template>
+                        </pacem-repeater>
+                    </pacem-collapse>
+
+                </template>
+            </pacem-menu>
+        </pacem-repeater>
+
+        <pacem-router template="/{package}/{view}" path="/@(Model.Package ?? "intro")/@(Model.View ?? "start")" id="router"></pacem-router>
+
+        <h1 class="text-accent show-v" id="heading">
+            <pacem-span css-class="{{ {'text-tech': #routetitle.model && #routetitle.model.startsWith('<') } }}" text="{{ #routetitle.model }}">Pacem JS -@Model.Title</pacem-span>
+        </h1>
+        <pacem-view id="view" url="{{ '/demo/'+ #router.state.package + '/'+ #router.state.view +'.html?v=@(version)' }}" class="pacem-animatable"></pacem-view>
+
+        <div class="toc hide-v hide-md">
+            <h3>TOC <i class="pacem-icon">keyboard_arrow_down</i></h3>
+            <pacem-toc id="toc" selector="h2" target="{{ #view }}" offset="108"></pacem-toc>
         </div>
-    </pacem-balloon>
-    <!-- /dropdown balloon and adapter -->
 
-    <pacem-data id="m_open" persist-as="menu_open"></pacem-data>
-    <pacem-repeater id="menu_rep" datasource="{{ #menu.result }}">
-        <pacem-menu open="{{ #m_open.model, twoway }}">
-            <pacem-a id="add-to-home" href="#" class="pacem-button" hidden>Install PWA App</pacem-a>
-            <template>
-
-                <pacem-panel class="menu-group" css-class="{{ {'group-active': #router.state.package === ^item.package, 'collapsed': ^item.collapsed, 'item-space item-separate': ^index > 0 } }}">
-                    <i class="pacem-icon pacem-animatable">keyboard_arrow_down</i>
-                    <pacem-button class="flat" on-click="#menu_rep.datasource.splice(^index, 1, Pacem.Utils.extend({}, ^item, { collapsed: !^item.collapsed}))">
-                        <pacem-text text="{{ ^item.label }}"></pacem-text>
-                    </pacem-button>
-                </pacem-panel>
-                <pacem-collapse collapse="{{ ^item.collapsed }}">
-                    <pacem-repeater datasource="{{ ^item.items }}">
-                        <template>
-                            <div class="pacem-menu-item">
-                                <pacem-a href="{{ '/'+ ^^item.package +'/'+ ^item.view }}"
-                                         router="{{ #router }}"
-                                         css-class="{{ {'item-active': #router.state.package === ^^item.package && #router.state.view === ^item.view } }}">
-                                    <pacem-text text="{{ ^item.label }}"></pacem-text>
-                                </pacem-a>
-                            </div>
-                        </template>
-                    </pacem-repeater>
-                </pacem-collapse>
-
-            </template>
-        </pacem-menu>
-    </pacem-repeater>
-
-    <pacem-router template="/{package}/{view}" path="/@(Model.Package ?? "intro")/@(Model.View ?? "start")" id="router"></pacem-router>
-
-    <h1 class="text-accent show-v" id="heading">
-        <pacem-span css-class="{{ {'text-tech': #routetitle.model && #routetitle.model.startsWith('<') } }}" text="{{ #routetitle.model }}">Pacem JS -@Model.Title</pacem-span>
-    </h1>
-    <pacem-view id="view" url="{{ '/demo/'+ #router.state.package + '/'+ #router.state.view +'.html?v=@(version)' }}" class="pacem-animatable"></pacem-view>
-
-    <div class="toc hide-v hide-md">
-        <h3>TOC <i class="pacem-icon">keyboard_arrow_down</i></h3>
-        <pacem-toc id="toc" selector="h2" target="{{ #view }}" offset="108"></pacem-toc>
-    </div>
-
-    <footer class="footer-border" pacem>
-        <span>Copyright @(DateTime.UtcNow.Year) - <a href="https://pacem.it" target="_blank">Pacem</a></span>
-    </footer>
-    <div class="pacem-toolbar toolbar-footer toolbar-border">
-        <div class="bg-invert"></div>
+        <footer class="footer-border" pacem>
+            <span>Copyright @(DateTime.UtcNow.Year) - <a href="https://pacem.it" target="_blank">Pacem</a></span>
+        </footer>
+        <div class="pacem-toolbar toolbar-footer toolbar-border">
+            <div class="bg-invert"></div>
+        </div>
     </div>
 
     <script>

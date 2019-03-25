@@ -25,7 +25,7 @@ namespace Pacem.Components {
                 return;
             }
             const value = this.value;
-            const layout = document.body;
+            const layout = CustomElementUtils.findAncestorShell(this);
             if (Utils.isNullOrEmpty(value) || value === REMOVE_VALUE) {
                 layout.removeAttribute(key);
             } else {

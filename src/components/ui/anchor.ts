@@ -35,6 +35,11 @@ namespace Pacem.Components.UI {
             return this._fetching;
         }
 
+        connectedCallback() {
+            super.connectedCallback();
+            this.tabOrder = 0;
+        }
+
         propertyChangedCallback(name: string, old: any, val: any, first?: boolean) {
             super.propertyChangedCallback(name, old, val, first);
             switch (name) {
@@ -49,6 +54,7 @@ namespace Pacem.Components.UI {
                     break;
             }
         }
+
         protected emit(evt: Event) {
             super.emit(evt);
             switch (evt.type) {

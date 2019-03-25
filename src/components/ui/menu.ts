@@ -6,9 +6,9 @@ namespace Pacem.Components.UI {
         tagName: P + '-menu', template: `<${ P }-panel class="${PCSS}-hamburger-menu" css-class="{{ {'menu-close': !:host.open, 'menu-open': :host.open} }}" on-click=":host._toggle($event)">    
     <nav><${ P }-content></${ P }-content></nav>
 </${ P }-panel>
-<${P}-body-proxy>
+<${P}-shell-proxy>
 <${ P}-button class="${PCSS}-back ${PCSS}-menu flat" css-class="{{ {'menu-close': !:host.open, 'menu-open': :host.open} }}" on-click=":host._toggle($event)">BACK</${ P }-button>
-<${ P}-button class="${PCSS}-hamburger ${PCSS}-menu flat" css-class="{{ {'menu-close': :host.open, 'menu-open': !:host.open} }}" on-click=":host._toggle($event)">MENU</${P}-button></${P}-body-proxy>`,
+<${ P}-button class="${PCSS}-hamburger ${PCSS}-menu flat" css-class="{{ {'menu-close': :host.open, 'menu-open': !:host.open} }}" on-click=":host._toggle($event)">MENU</${P}-button></${P}-shell-proxy>`,
         shadow: Defaults.USE_SHADOW_ROOT
     })
     export class PacemMenuElement extends PacemElement {
@@ -46,7 +46,7 @@ namespace Pacem.Components.UI {
         connectedCallback() {
             super.connectedCallback();
             window.addEventListener('navigate', this._stopPropagationHandlerConditional, false);
-            this._body = /*CustomElementUtils.findAncestorOfType(this, Pacem.Components.UI.PacemBodyElement) ||*/ document.body;
+            this._shell = CustomElementUtils.findAncestorShell(this);
         }
 
         private _toggle(evt: Event) {
@@ -55,11 +55,11 @@ namespace Pacem.Components.UI {
             this.dispatchEvent(new Event('toggle'));
         }
 
-        private _body: HTMLElement;
+        private _shell: HTMLElement;
 
         private _sync(val = this.open) {
-            Utils.addClass(this._body, PCSS + (val === true ? '-menu-open' : '-menu-close'));
-            Utils.removeClass(this._body, PCSS +(val === true ? '-menu-close' : '-menu-open'));
+            Utils.addClass(this._shell, PCSS + (val === true ? '-menu-open' : '-menu-close'));
+            Utils.removeClass(this._shell, PCSS +(val === true ? '-menu-close' : '-menu-open'));
         }
 
         propertyChangedCallback(name: string, old: any, val: any, first?: boolean) {

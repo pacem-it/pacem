@@ -381,6 +381,115 @@
 }
 /*#endregion*/
 
+@{P}-balloon {
+    // default state
+    opacity: 0;
+    pointer-events: none;
+    transform: scale(@_scale_off);
+    //
+    &.balloon-in {
+        opacity: 1;
+    }
+
+    &.balloon-right {
+        transform: translateX(-@_balloon_offset) scale(@_scale_off);
+
+        &.balloon-start {
+            transform-origin: left top;
+        }
+
+        &.balloon-end {
+            transform-origin: left bottom;
+        }
+
+        &.balloon-center {
+            transform-origin: left 50%;
+        }
+
+        &.balloon-in {
+            // animation:@{P}-balloon-right @_d ease-out both;
+            transform: translateX(@_pointer_h);
+        }
+
+        &.balloon-out {
+            // animation:@{P}-balloon-right-out @_d_out ease-in both;
+        }
+    }
+
+    &.balloon-left {
+        transform: translateX(@_balloon_offset) scale(@_scale_off);
+
+        &.balloon-start {
+            transform-origin: right top;
+        }
+
+        &.balloon-end {
+            transform-origin: right bottom;
+        }
+
+        &.balloon-center {
+            transform-origin: right 50%;
+        }
+
+        &.balloon-in {
+            //animation:@{P}-balloon-left @_d ease-out both;
+            transform: translateX(-@_pointer_h);
+        }
+
+        &.balloon-out {
+            //animation:@{P}-balloon-left-out @_d_out ease-in both;
+        }
+    }
+
+    &.balloon-top {
+        transform: translateY(@_balloon_offset) scale(@_scale_off);
+
+        &.balloon-start {
+            transform-origin: left bottom;
+        }
+
+        &.balloon-end {
+            transform-origin: right bottom;
+        }
+
+        &.balloon-center {
+            transform-origin: 50% bottom;
+        }
+
+        &.balloon-in {
+            // animation:@{P}-balloon-top @_d ease-out both;
+            transform: translateY(-@_pointer_h);
+        }
+
+        &.balloon-out {
+            // animation:@{P}-balloon-top-out @_d_out ease-in both;
+        }
+    }
+
+    &.balloon-bottom {
+        // default state (not visible)
+        transform: translateY(-@_balloon_offset) scale(@_scale_off);
+
+        &.balloon-start {
+            transform-origin: left top;
+        }
+
+        &.balloon-end {
+            transform-origin: right top;
+        }
+
+        &.balloon-center {
+            transform-origin: 50% top;
+        }
+
+        &.balloon-in {
+            transform: translateY(@_pointer_h);
+        }
+
+        &.balloon-out {
+        }
+    }
+}
 
 .@{PCSS}-animations {
     @_d: .15s;
@@ -388,116 +497,10 @@
 
    @{P}-balloon {
         // default state
-        opacity: 0;
-        pointer-events: none;
         transition: transform @_d ease-out, opacity @_d;
-        transform: scale(@_scale_off);
-        //
-        &.balloon-in {
-            opacity: 1;
-        }
-
+        
         &.balloon-out {
             transition: transform @_d_out ease-in, opacity @_d_out;
-        }
-
-        &.balloon-right {
-            transform: translateX(-@_balloon_offset) scale(@_scale_off);
-
-            &.balloon-start {
-                transform-origin: left top;
-            }
-
-            &.balloon-end {
-                transform-origin: left bottom;
-            }
-
-            &.balloon-center {
-                transform-origin: left 50%;
-            }
-
-            &.balloon-in {
-                // animation:@{P}-balloon-right @_d ease-out both;
-                transform: translateX(@_pointer_h);
-            }
-
-            &.balloon-out {
-                // animation:@{P}-balloon-right-out @_d_out ease-in both;
-            }
-        }
-
-        &.balloon-left {
-            transform: translateX(@_balloon_offset) scale(@_scale_off);
-
-            &.balloon-start {
-                transform-origin: right top;
-            }
-
-            &.balloon-end {
-                transform-origin: right bottom;
-            }
-
-            &.balloon-center {
-                transform-origin: right 50%;
-            }
-
-            &.balloon-in {
-                //animation:@{P}-balloon-left @_d ease-out both;
-                transform: translateX(-@_pointer_h);
-            }
-
-            &.balloon-out {
-                //animation:@{P}-balloon-left-out @_d_out ease-in both;
-            }
-        }
-
-        &.balloon-top {
-            transform: translateY(@_balloon_offset) scale(@_scale_off);
-
-            &.balloon-start {
-                transform-origin: left bottom;
-            }
-
-            &.balloon-end {
-                transform-origin: right bottom;
-            }
-
-            &.balloon-center {
-                transform-origin: 50% bottom;
-            }
-
-            &.balloon-in {
-                // animation:@{P}-balloon-top @_d ease-out both;
-                transform: translateY(-@_pointer_h);
-            }
-
-            &.balloon-out {
-                // animation:@{P}-balloon-top-out @_d_out ease-in both;
-            }
-        }
-
-        &.balloon-bottom {
-            // default state (not visible)
-            transform: translateY(-@_balloon_offset) scale(@_scale_off);
-
-            &.balloon-start {
-                transform-origin: left top;
-            }
-
-            &.balloon-end {
-                transform-origin: right top;
-            }
-
-            &.balloon-center {
-                transform-origin: 50% top;
-            }
-
-            &.balloon-in {
-                transform: translateY(@_pointer_h);
-            }
-
-            &.balloon-out {
-            }
         }
     }
 }

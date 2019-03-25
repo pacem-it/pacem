@@ -213,7 +213,7 @@ namespace Pacem.Components {
                     }
                     break;
                 case 'disabled':
-                    let cssDis = PCSS + '-'+ name;
+                    let cssDis = PCSS + '-' + name;
                     if (!!val) {
                         this._tabIndex = this.tabIndex;
                         this.tabIndex = -1;
@@ -224,12 +224,12 @@ namespace Pacem.Components {
                     }
                     break;
                 case 'culture':
+                    if (Utils.isNullOrEmpty(val)) {
+                        this.removeAttribute('lang');
+                    } else {
+                        this.setAttribute('lang', val);
+                    }
                     if (!first) {
-                        if (Utils.isNullOrEmpty(val)) {
-                            this.removeAttribute('lang');
-                        } else {
-                            this.setAttribute('lang', val);
-                        }
                         this.refreshBindings();
                     }
                     break;

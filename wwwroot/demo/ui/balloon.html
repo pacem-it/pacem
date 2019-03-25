@@ -1,13 +1,54 @@
 ﻿
 
-<pacem-markdown value="{{ #content0.textContent }}" root></pacem-markdown>
+<pacem-markdown value="{{ #content0.textContent }}" root class="md-tech"></pacem-markdown>
 
 <pre pacem hidden id="content0">
-# `&lt;pacem-balloon>`
 
-typing docs...
+Multi-purpose balloon object. Many `use-cases` covered:
+
+## Tooltip behavior
+Configure the balloon to behave like a usual tooltip:
 
 </pre>
+
+<pacemjs-snippet>
+    <template>
+
+        <div id="tget0" class="pacem-button button">hover me</div>
+        <pacem-body-proxy>
+            <pacem-balloon target="{{ #tget0 }}" options='{ "behavior": "tooltip" }'>
+                This balloon has basic tooltip behavior.
+            </pacem-balloon>
+        </pacem-body-proxy>
+
+    </template>
+</pacemjs-snippet>
+
+
+<pacem-markdown value="{{ #content1.textContent }}" root class="md-tech"></pacem-markdown>
+
+<pre pacem hidden id="content1">
+
+## ContextMenu behavior
+Configure the balloon to behave like a `contextmenu`:
+
+</pre>
+
+<pacemjs-snippet>
+    <template>
+
+        <div id="tget1" class="pacem-button button">Right click me</div>
+        <pacem-body-proxy>
+            <pacem-balloon class="pacem-contextmenu" target="{{ #tget1 }}" options='{ "trigger": "contextmenu", "position": "right", "align": "start" }'>
+                <div data-icon-glyph="home" class="pacem-button">Item 1</div>
+                <div class="pacem-button pacem-disabled">Item 2</div>
+                <hr />
+                <div data-icon-glyph="clear" class="pacem-button">Item 3</div>
+            </pacem-balloon>
+        </pacem-body-proxy>
+
+    </template>
+</pacemjs-snippet>
 
 
 <pacem-balloon id="proto" hidden></pacem-balloon>

@@ -375,7 +375,7 @@ namespace Pacem.Components {
                 const isMouseFlag = evt instanceof MouseEvent;
                 if (isMouseFlag)
                     Pacem.avoidHandler(evt);
-                Utils.addClass(document.body, PCSS + '-dragging');
+                Utils.addClass(CustomElementUtils.findAncestorShell(el), PCSS + '-dragging');
                 const pos = args.currentPosition = getCurrentPosition();
                 let floater = args.floater;
                 let moveEvt = new UI.DragDropEvent(UI.DragDropEventType.Drag, UI.DragDropEventArgsClass.fromArgs(args), { cancelable: true });
@@ -427,6 +427,7 @@ namespace Pacem.Components {
 
         private _endHandler = (evt: MouseEvent | TouchEvent) => {
             var el = this._element,
+                shell = CustomElementUtils.findAncestorShell(el),
                 dragger = this._dragDropper,
                 args: UI.DragDropEventArgs;
             if (!Utils.isNull(args = GET_VAL(el, DRAGGING))) {
@@ -490,7 +491,7 @@ namespace Pacem.Components {
 
                 dragger.dispatchEvent(new UI.DragDropEvent(UI.DragDropEventType.End, UI.DragDropEventArgsClass.fromArgs(args)));
                 //
-                Utils.removeClass(document.body, PCSS + '-dragging');
+                Utils.removeClass(shell, PCSS + '-dragging');
             }
 
             Utils.removeClass(el, PCSS + '-drag-lock');

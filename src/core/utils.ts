@@ -848,6 +848,10 @@ namespace Pacem {
             return retval;
         }
 
+        static findAncestorShell(element: Element): HTMLElement {
+            return CustomElementUtils.findAncestor(element, el => Utils.is(el, `.${PCSS}-body`) || el === document.body);
+        }
+
         static findAncestorOfType<TNode extends Node>(element: Element, ctor: Type<TNode>): TNode {
             return CustomElementUtils.findAncestor(element, el => el instanceof ctor);
         }

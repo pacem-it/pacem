@@ -26,7 +26,7 @@
     }
 }
 
-body.@{PCSS}-dragging {
+.@{PCSS}-body.@{PCSS}-dragging {
     cursor: move;
 }
 
@@ -41,7 +41,7 @@ body.@{PCSS}-dragging {
     user-select: none !important;
 }
 
-.@{PCSS}-dragging:not(body) {
+.@{PCSS}-dragging:not(.@{PCSS}-body) {
     .Dragging();
 }
 
