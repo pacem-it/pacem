@@ -37,8 +37,8 @@ The slider has several levels of customization:
 
         <div class="pacem-margin margin-top-3 pacem-grid">
             <!-- `thumb-label` flag-->
-            <pacem-checkbox class="pacem-cell cols-3" caption="thumb label" true-value="true" false-value="false" value="{{ #slider1.thumbLabel, twoway }}"></pacem-checkbox>
-            <div class="pacem-fieldset pacem-cell cols-6">
+            <pacem-checkbox class="pacem-cell cols-3 cols-xs-12" caption="thumb label" true-value="true" false-value="false" value="{{ #slider1.thumbLabel, twoway }}"></pacem-checkbox>
+            <div class="pacem-fieldset pacem-cell cols-6 cols-xs-12">
                 <div class="fieldset-left">
                     <div class="pacem-fieldgroup">
                         <!-- `min` spinner -->
@@ -57,7 +57,7 @@ The slider has several levels of customization:
 
                 </div>
             </div>
-            <div class="pacem-fieldgroup pacem-cell cols-3">
+            <div class="pacem-fieldgroup pacem-cell cols-3 cols-xs-12">
                 <!-- appearence selector -->
                 <pacem-select datasource="{{ ['default', 'primary', 'accent', 'success', 'warning', 'danger'] }}" id="selCss" value="default"></pacem-select>
                 <pacem-panel class="fieldgroup-prepend" css-class="{{ ['text-'+ #selCss.value] }}">

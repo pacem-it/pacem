@@ -2,7 +2,7 @@
 /// <reference path="types.ts" />
 namespace Pacem.Components {
 
-    abstract class PacemTransferProxyElement extends PacemEventTarget {
+    export abstract class PacemTransferProxyElement extends PacemEventTarget {
 
         protected abstract get proxy(): HTMLElement;
 
