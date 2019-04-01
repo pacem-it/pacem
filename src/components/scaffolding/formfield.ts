@@ -124,6 +124,7 @@ css-class="{{ {'${PCSS}-fetching': ::_fetcher.fetching, '${PCSS}-dirty': this.di
             else
                 Utils.removeClass(label, PCSS + '-tooltip');
             label.textContent = (meta.display && meta.display.name) || meta.prop;
+            label.setAttribute('id', 'label' + this._key);
         }
 
         private _isValueNullOrEmpty(
@@ -475,6 +476,22 @@ css-class="{{ {'${PCSS}-fetching': ::_fetcher.fetching, '${PCSS}-dirty': this.di
                                         break;
                                 }
                             }
+                            break;
+                        case 'async':
+                            let asyncValidator = <PacemAsyncValidatorElement>document.createElement(P + '-async-validator');
+                            validatorElement = asyncValidator;
+                            asyncValidator.url = validator.params['url'];
+                            let params: string[] = [],
+                                dependsOn: { alias?: string, prop: string }[] = validator.params['dependsOn'];
+                            params.push(`${meta.prop} : :host.entity.${meta.prop}`);
+                            for (let depend of dependsOn || []) {
+                                params.push(`${(depend.alias || depend.prop)} : :host.entity.${depend.prop}`);
+                            }
+                            asyncValidator.setAttribute('parameters', `{{ { ${(params.join(', '))} } }}`);
+                            asyncValidator.method = validator.params['verb'] || Pacem.Net.HttpMethod.Get;
+                            asyncValidator.setAttribute('fetch-credentials', '{{ :host.fetchCredentials }}');
+                            asyncValidator.setAttribute('fetch-headers', '{{ :host.fetchHeaders }}');
+                            break;
                     }
                     //
                     if (Utils.isNull(validatorElement)) {

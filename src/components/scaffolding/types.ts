@@ -1,7 +1,7 @@
 ﻿/// <reference path="../../../dist/js/pacem-core.d.ts" />
 /// <reference path="../../../dist/js/pacem-ui.d.ts" />
 namespace Pacem.Scaffolding {
-    
+
     export declare type PropertyMetadata = {
         prop: string,
         type: string,
@@ -220,11 +220,20 @@ namespace Pacem.Components.Scaffolding {
                 let className = `${PCSS}-${name}`;
                 val ? Utils.addClass(this, className) : Utils.removeClass(this, className);
             }
-            if (name === 'readonly')
+
+            if (name === 'readonly') {
                 this.toggleReadonlyView(val);
+            }
+            // aria-... attributes
+            else if (name === 'required') {
+                this.aria.attributes.set('required', !!val + '');
+            } else if (name === 'valid') {
+                // Specs say that 'aria-invalid' on required attributes SHOULD NOT be set before submission, 
+                // think about a 'submitted state'(?) to check against...
+                this.aria.attributes.set('invalid', (!val && !!this.dirty) + '');
+            }
         }
 
-        //private _focusHandle: number;
         protected focusHandler = (evt: FocusEvent) => {
             //cancelAnimationFrame(this._focusHandle);
             //this._focusHandle = requestAnimationFrame(() => {
@@ -240,7 +249,6 @@ namespace Pacem.Components.Scaffolding {
                 this.emit(evt);
             else
                 this.dispatchEvent(new FocusEvent(evt.type));
-            //});
         };
 
         protected changeHandler = (evt: Event) => {
@@ -258,6 +266,22 @@ namespace Pacem.Components.Scaffolding {
         viewActivatedCallback() {
             super.viewActivatedCallback();
             this.toggleReadonlyView(this.readonly || false);
+
+            // aria-attribute
+            if (!Utils.isNullOrEmpty(this.id)) {
+                const label = document.querySelector(`label[for=${this.id}]`);
+                if (label) {
+                    if (label.id) {
+                        this.aria.attributes.set('labelledby', label.id);
+                    } else {
+                        this.aria.attributes.set('label', label.textContent);
+                    }
+                } else {
+                    this.aria.attributes.remove('labelledby');
+                    this.aria.attributes.remove('label');
+                };
+            }
+
             for (let inputField of this.inputFields) {
                 inputField.addEventListener('focus', this.focusHandler, false);
                 inputField.addEventListener('blur', this.focusHandler, false);
@@ -267,9 +291,11 @@ namespace Pacem.Components.Scaffolding {
                 inputField.addEventListener('mousedown', Pacem.stopPropagationHandler, false);
                 inputField.addEventListener('touchstart', Pacem.stopPropagationHandler, { passive: false, capture: false });
             }
+
         }
 
         disconnectedCallback() {
+
             for (let inputField of this.inputFields) {
                 if (Utils.isNull(inputField)) continue;
                 inputField.removeEventListener('touchstart', Pacem.stopPropagationHandler, { capture: false });
@@ -402,7 +428,12 @@ namespace Pacem.Components.Scaffolding {
             this.databind();
         };
 
-        protected databind(datasource: DataSource = this.datasource && this.datasource.map(i => this.mapEntityToItem(i))) {
+        protected buildAdaptedDatasource(ds = this.datasource): DataSource {
+            return ds && ds.map(i => this.mapEntityToItem(i));
+        }
+
+        @Debounce(true)
+        protected databind(datasource: DataSource = this.buildAdaptedDatasource(this.datasource)) {
             if (Utils.isNull(datasource) && Utils.isNull(this.adaptedDatasource))
                 return;
             const ds = this.adaptedDatasource = datasource || [];/*
@@ -447,10 +478,10 @@ namespace Pacem.Components.Scaffolding {
             const c = this.compareBy;
             if (this.multipleChoice && Utils.isArray(value)) {
                 // caution: numbers and strings might be compared, ease the comparison by loosing equality constraints: `===` to `==`.
-                let found = (<any[]>value).find(j => j ==/*=*/ item.value || (typeof j === 'object' && !Utils.isNullOrEmpty(c) && c in j && c in item.value && j[c] ==/*=*/ item.value[c]));
+                let found = (<any[]>value).find(j => j ==/*=*/ item.value || (typeof j === 'object' && !Utils.isNullOrEmpty(c) && c in j && !Utils.isNullOrEmpty(item.value) && c in item.value && j[c] ==/*=*/ item.value[c]));
                 return !Utils.isNull(found);
             } else if (!this.multipleChoice)
-                return value ==/*=*/ item.value || (typeof value === 'object' && !Utils.isNullOrEmpty(c) && c in value && c in item.value && value[c] ==/*=*/ item.value[c]);
+                return value ==/*=*/ item.value || (typeof value === 'object' && !Utils.isNullOrEmpty(c) && c in value && !Utils.isNullOrEmpty(item.value) && c in item.value && value[c] ==/*=*/ item.value[c]);
             else
                 return false;
         }

@@ -125,7 +125,7 @@ namespace Pacem.Components.Scaffolding {
             let retval = true;
             if (!isValueEmpty(val)) {
                 let date = val;
-                if (val instanceof Date || ((date = Utils.parseDate(val)) instanceof Date && isFinite(date.valueOf()))) {
+                if (val instanceof Date || (typeof val !== 'number' && (date = Utils.parseDate(val)) instanceof Date && isFinite(date.valueOf()))) {
 
                     if (this.min != null)
                         retval = retval && date.valueOf() >= Utils.parseDate(this.min).valueOf();
@@ -193,40 +193,84 @@ namespace Pacem.Components.Scaffolding {
 
     @CustomElement({
         tagName: P + '-async-validator',
-        template: BASIC_VALIDATOR_TEMPLATE + `<${P}-fetch></${P}-fetch>`, shadow: Defaults.USE_SHADOW_ROOT
+        template: BASIC_VALIDATOR_TEMPLATE + `<${P}-fetch autofetch="false" credentials="{{ :host.fetchCredentials }}" headers="{{ :host.fetchHeaders }}"></${P}-fetch>`, shadow: Defaults.USE_SHADOW_ROOT
     })
-    export class PacemAsyncValidatorElement extends PacemBaseValidatorElement {
+    export class PacemAsyncValidatorElement extends PacemBaseValidatorElement implements Pacem.Net.OAuthFetchable {
 
-        evaluate(val: any): PromiseLike<boolean> {
+        @Debounce(1000)
+        private _fetch(val: any): PromiseLike<boolean> {
+            const deferred = this._deferredToken;
             const fetcher = this._fetcher;
-            var deferred = DeferPromise.defer<boolean>();
-            // else
-            let fn = (evt: PropertyChangeEvent) => {
-                if (evt.detail.propertyName === 'result') {
-                    fetcher.removeEventListener(PropertyChangeEventName, fn, false);
-                    var result = evt.detail.currentValue;
-                    if (typeof (result) === 'object' && (<object>result).hasOwnProperty('success')) {
-                        if (result.success === true) {
-                            deferred.resolve(result.result || false);
-                        } else {
-                            this.log(Logging.LogLevel.Error, result.error)
-                            deferred.resolve(false);
-                        }
-                    } else {
-                        deferred.resolve(result === true);
-                    }
-                }
-            };
-            fetcher.addEventListener(PropertyChangeEventName, fn, false);
-            var params = {};
+            var params = this.parameters || {};
             params[this.watch] = val;
             fetcher.parameters = params;
             fetcher.url = this.url;
+            fetcher.as = 'text';
+            fetcher.method = this.method;
+            fetcher.fetch().then(_ => {
+
+                const result: string = fetcher.result;
+                switch (result) {
+                    case 'true':
+                        deferred.resolve(true);
+                        break;
+                    case 'false':
+                        deferred.resolve(false);
+                        break;
+                    default: // expect json
+                        try {
+                            let json = JSON.parse(result);
+                            if (typeof (json) === 'object' && (<object>json).hasOwnProperty('success')) {
+                                if (json.success === true) {
+                                    deferred.resolve(json.result || false);
+                                } else {
+                                    this.log(Logging.LogLevel.Error, json.error)
+                                    deferred.resolve(false);
+                                }
+                            } else {
+                                deferred.resolve(false);
+                            }
+                        } catch{
+                            deferred.resolve(false);
+                        }
+                        break;
+                }
+            }, _ => {
+                deferred.resolve(false);
+            });
             return deferred.promise;
         }
 
+        private _deferredToken = null;
+
+        evaluate(val: any): PromiseLike<boolean> {
+
+            if (Utils.isNullOrEmpty(val)) {
+
+                return Utils.fromResult(true);
+
+            } else {
+
+                this._deferredToken = this._deferredToken = DeferPromise.defer<boolean>();
+                return this._fetch(val).then(r => {
+                    this._deferredToken = null;
+                    return r;
+                }, _ => {
+                    this._deferredToken = null;
+                    return false;
+                });
+
+            }
+
+        }
+
+        @Watch({ emit: false, converter: PropertyConverters.Json }) parameters: string;
+        @Watch({ emit: false, converter: PropertyConverters.Json }) fetchCredentials: RequestCredentials;
+        @Watch({ emit: false, converter: PropertyConverters.Json }) fetchHeaders: { [key: string]: string };
         @Watch({ emit: false, converter: PropertyConverters.String }) url: string;
-        @ViewChild(P + '-fetch') _fetcher: Net.Fetcher;
+        @Watch({ emit: false, converter: PropertyConverters.String }) method: Pacem.Net.HttpMethod;
+
+        @ViewChild(P + '-fetch') private _fetcher: PacemFetchElement;
 
     }
 }

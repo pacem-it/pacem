@@ -240,6 +240,11 @@
         "title": "<pacem-form-field>"
       },
       {
+        "label": "Select",
+        "view": "select",
+        "title": "<pacem-select>"
+      },
+      {
         "label": "Slider",
         "view": "slider",
         "title": "<pacem-slider>"

@@ -375,6 +375,24 @@ namespace Pacem {
             window.addEventListener('load', listener, false);
         }
 
+        /**
+         * Moves all the source element children to the target element and returns them as an array of nodes.
+         * @param source Source element.
+         * @param target Target element.
+         */
+        static moveChildren(source: Element, target: Element): Node[] {
+            let dom: Node[] = [],
+                nodes = source.childNodes,
+                ref: Node;
+            for (let j = nodes.length - 1; j >= 0; j--) {
+                let item = nodes.item(j);
+                target.insertBefore(item, ref);
+                dom.push(item);
+                ref = item;
+            }
+            return dom;
+        }
+
         static is(el: any, selector: string): boolean {
             return (el.matches || el.matchesSelector || el.msMatchesSelector || el.mozMatchesSelector || el.webkitMatchesSelector || el.oMatchesSelector)
                 .call(el, selector);

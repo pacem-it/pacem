@@ -1,4 +1,4 @@
-﻿const VERSION = "0.8.1.1";
+﻿const VERSION = "0.8.4.0";
 const CACHE_KEY = 'pacem-js-v' + VERSION;
 const OFFLINE_PAGE = '/views/offline.html';
 
@@ -45,6 +45,10 @@ self.addEventListener('install', (evt: ExtendableEvent) => {
  * @param response The obtained response
  */
 async function _tryCache(request: Request, response: Response) {
+    if (request.method.toUpperCase() !== 'GET') {
+        return;
+    }
+
     const url = request.url;
     // check if the requested url must not be included in the cache
     for (var excluded of EXCLUDED) {

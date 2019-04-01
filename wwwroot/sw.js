@@ -6,7 +6,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-const VERSION = "0.8.1.1";
+const VERSION = "0.8.4.0";
 const CACHE_KEY = 'pacem-js-v' + VERSION;
 const OFFLINE_PAGE = '/views/offline.html';
 const PREFETCHED = [
@@ -41,6 +41,9 @@ self.addEventListener('install', (evt) => {
 });
 function _tryCache(request, response) {
     return __awaiter(this, void 0, void 0, function* () {
+        if (request.method.toUpperCase() !== 'GET') {
+            return;
+        }
         const url = request.url;
         for (var excluded of EXCLUDED) {
             if (url.endsWith(excluded)) {

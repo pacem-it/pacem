@@ -8,7 +8,7 @@ namespace Pacem.Components.Scaffolding {
         shadow: Defaults.USE_SHADOW_ROOT,
         template: `<${ P }-panel class="${PCSS}-char-count" css-class="{{ {'valid': :host._isValid(:host.string), 'invalid': !:host._isValid(:host.string) } }}">
     <${ P }-span hide="{{ !(:host.minlength > 0) }}" class="${PCSS}-char-min" content="{{ :host.minlength }}"></${ P }-span>
-    <${ P }-span class="${PCSS}-char-curr" content="{{ :host._length(:host.string) }}"></${ P }-span>
+    <${ P }-span class="${PCSS}-char-curr" content="{{ :host._length(:host.string) || '0' }}"></${ P }-span>
     <${ P }-span hide="{{ !(:host.maxlength > 0) }}" class="${PCSS}-char-max" content="{{ :host.maxlength }}"></${ P }-span>
 </${ P }-panel>`
     })

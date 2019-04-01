@@ -24,6 +24,7 @@ namespace Pacem.Net {
 
     export const FetchResultEventName = 'fetchresult';
     export const FetchErrorEventName = 'error';
+    export const FetchSuccessEventName = 'success';
 }
 
 namespace Pacem.Components {
@@ -45,13 +46,16 @@ namespace Pacem.Components {
 
         @Watch({ converter: PropertyConverters.BooleanStrict }) fetching: boolean;
 
+        /** Gets or sets whether to trigger a fetch whenever a significant property has changed (default: true). */
+        @Watch({ reflectBack: true, converter: PropertyConverters.Boolean }) autofetch: boolean = true;
+
         @Watch({ emit: false, converter: PropertyConverters.String }) as: 'object' | 'text' | 'blob' | 'image';
 
         @Watch({ emit: false, converter: PropertyConverters.String }) type: 'json' | 'raw';
 
         @Watch({ reflectBack: true, converter: PropertyConverters.Number }) debounce: number = 100;
 
-        /** Whether to compare parameter and header single values prior to trigger a new fetch execution (default false). */
+        /** Gets or sets whether to compare parameter and header single values prior to trigger a new fetch execution (default false). */
         @Watch({ emit: false, reflectBack: true, converter: PropertyConverters.Boolean }) diffByValues: boolean;
 
         @Watch() result: any;
@@ -64,7 +68,7 @@ namespace Pacem.Components {
 
         viewActivatedCallback() {
             super.viewActivatedCallback();
-            this._delayFetch();
+            this._delayAndConditionallyFetch();
         }
 
         propertyChangedCallback(name: string, old: any, val: any, first?: boolean) {
@@ -81,7 +85,7 @@ namespace Pacem.Components {
                 case 'mode':
                 case 'credentials':
                 case 'disabled':
-                    this._delayFetch();
+                    this._delayAndConditionallyFetch();
                     break;
                 case 'parameters':
                 case 'headers':
@@ -90,17 +94,19 @@ namespace Pacem.Components {
                         // state might be changed, by it's up to the dev to unlock this
                         // (i.e. just by calling 'fetch()' directly)
                         || Utils.jsonSortStringify(old) != Utils.jsonSortStringify(val)) {
-                        this._delayFetch();
+                        this._delayAndConditionallyFetch();
                     }
                     break;
             }
         }
 
-        private _delayFetch() {
+        private _delayAndConditionallyFetch() {
             clearTimeout(this._handle);
-            this._handle = setTimeout(() => {
-                this.fetch();
-            }, this.debounce);
+            if (this.autofetch) {
+                this._handle = setTimeout(() => {
+                    this.fetch();
+                }, this.debounce);
+            }
         }
 
         /** Returns a promise to a request with an already-used body. */
@@ -156,6 +162,7 @@ namespace Pacem.Components {
                 fetch(url + query, options).then(r => {
                     _me.fetching = false;
                     if (r.ok) {
+                        this.dispatchEvent(new CustomEvent(Pacem.Net.FetchSuccessEventName, { detail: r }));
                         switch (_me.as) {
                             case 'blob':
                             case 'image':

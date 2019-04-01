@@ -26,7 +26,7 @@ namespace Pacem.Components.Scaffolding {
         @Watch({ emit: false, converter: PropertyConverters.Json }) fetchHeaders: { [key: string]: string; };
 
         constructor() {
-            super();
+            super('form');
         }
 
         propertyChangedCallback(name: string, old: any, val: any, first: boolean) {
@@ -47,9 +47,14 @@ namespace Pacem.Components.Scaffolding {
             super.viewActivatedCallback();
             this.form && this.form.registerSubForm(this);
             this._checkValidity();
+
+            this.addEventListener('keyup', this._keyupHandler, false);
         }
 
         disconnectedCallback() {
+
+            this.removeEventListener('keyup', this._keyupHandler, false);
+
             this.form && this.form.unregisterSubForm(this);
             super.disconnectedCallback();
         }
@@ -75,21 +80,23 @@ namespace Pacem.Components.Scaffolding {
     </${P}-panel>
 </${P}-repeater>
 <${P}-fetch logger="{{ #${uid}.logger }}" id="${f_uid}" method="${Pacem.Net.HttpMethod.Post}" credentials="{{ #${uid}.fetchCredentials }}" headers="{{ #${uid}.fetchHeaders }}"></${P}-fetch> 
-<${P}-button logger="{{ #${uid}.logger }}" on-click="#${uid}._submit(#${f_uid}, $event)" type="submit" hide="{{ #${uid}.readonly || Pacem.Utils.isNullOrEmpty(#${uid}.action) }}" class="button primary" disabled="{{ !(#${uid}.valid && #${uid}.dirty) || #${f_uid}.fetching }}">Ok</${P}-button>
-<${P}-button logger="{{ #${uid}.logger }}" on-click="#${uid}._reset($event)" type="reset" class="button" hide="{{ #${uid}.readonly || !#${uid}.dirty }}" disabled="{{ #${f_uid}.fetching }}">Reset</${P}-button>`;
+<${P}-button logger="{{ #${uid}.logger }}" on-click="#${uid}._submit(#${f_uid}, $event)" type="submit" hide="{{ #${uid}.readonly || Pacem.Utils.isNullOrEmpty(#${uid}.action) || !Pacem.Utils.isNull(#${uid}.form) }}" class="button primary" disabled="{{ !(#${uid}.valid && #${uid}.dirty) || #${f_uid}.fetching }}">Ok</${P}-button>
+<${P}-button logger="{{ #${uid}.logger }}" on-click="#${uid}._reset($event)" type="reset" class="button" hide="{{ #${uid}.readonly || !#${uid}.dirty || !Pacem.Utils.isNull(#${uid}.form) }}" disabled="{{ #${f_uid}.fetching }}">Reset</${P}-button>`;
+            // buttons are kept hidden if 
             form.innerHTML = html;
             this.innerHTML = '';
             this.appendChild(form);
             form.addEventListener('submit', Pacem.avoidHandler, false);
-            form.addEventListener('keyup', (evt) => {
-                if (evt.keyCode === 13) {
-                    let btn: Pacem.Components.UI.PacemButtonElement = (<HTMLFormElement>evt.currentTarget).querySelector(P + '-button[type=submit]');
-                    if (!btn.disabled) {
-                        btn.click();
-                    }
-                }
-            }, false);
         }
+
+        private _keyupHandler = (evt: KeyboardEvent) => {
+            if (evt.keyCode === 13) {
+                let btn: Pacem.Components.UI.PacemButtonElement = (<HTMLFormElement>evt.currentTarget).querySelector(P + '-button[type=submit]');
+                if (!Utils.isNull(btn) && Utils.isVisible(btn) && !btn.disabled) {
+                    btn.click();
+                }
+            }
+        };
 
         private _submit = (fetcher: Pacem.Components.PacemFetchElement, evt?: Event) => {
             if (!Utils.isNull(evt))
@@ -104,6 +111,10 @@ namespace Pacem.Components.Scaffolding {
                     });
         }
 
+        /**
+         * Submits the form data via a provided fetcher.
+         * @param fetcher The fetching delegate.
+         */
         submit(fetcher: Pacem.Net.Fetcher): PromiseLike<any> {
             if (Utils.isNull(fetcher))
                 throw `Fetcher cannot be null while submitting a form.`;
@@ -118,6 +129,11 @@ namespace Pacem.Components.Scaffolding {
                 deferred.reject(_);
             });
             return deferred.promise;
+        }
+
+        /** Resets the form to its pristine values. */
+        reset() {
+            this._reset();
         }
 
         private _submitInternally(fetcher: Pacem.Net.Fetcher, args?: FormSubmitEventArgs): PromiseLike<any> {
@@ -225,6 +241,7 @@ namespace Pacem.Components.Scaffolding {
             }
         };
 
+        /** Sets the current form state as its pristine state. */
         setPristine() {
             for (var field in this._fields) {
                 var fld = this._fields[field];

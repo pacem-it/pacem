@@ -10,14 +10,11 @@ namespace Pacem.Components {
 
         viewActivatedCallback() {
             super.viewActivatedCallback();
-            let nodes = this.childNodes,
-                ref: Node;
-            for (let j = nodes.length - 1; j >= 0; j--) {
-                let item = nodes.item(j);
-                this.proxy.insertBefore(item, ref);
-                this._dom.push(item);
-                ref = item;
-            }
+            this._dom = this.moveContent(this, this.proxy);
+        }
+
+        protected moveContent(from: Element, to: Element) {
+            return Utils.moveChildren(from, to);
         }
 
         disconnectedCallback() {

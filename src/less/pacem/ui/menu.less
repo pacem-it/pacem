@@ -10,6 +10,11 @@
 @_clr_a_active_hover: @menu_link_active_color;
 @_clr_a_active_bg: @menu_link_active_backgroundcolor;
 
+@_header_height: @layout_header_height;
+@_toolbar_height: @layout_toolbar_height;
+@_footer_height: @layout_footer_height;
+@_bigfooter_height: @layout_bigfooter_height;
+
 @_brd_a: 3px;
 
 /*#region OVERLAPPING MENU*/
@@ -29,11 +34,11 @@
 
 .@{PCSS}-hamburger-menu {
     display: grid;
-    grid-template-rows: @grid_cell // header 1
-    @grid_spacing // toolbar 2
+    grid-template-rows: @_header_height // header 1
+    @_toolbar_height // toolbar 2
     1fr // main 3
-    @grid_spacing // toolbar 4
-    @grid_cell - @grid_spacing; // footer 5
+    @_toolbar_height // toolbar 4
+    @_footer_height; // footer 5
     width: 100vw;
     height: 100vh;
     transition: transform .3s cubic-bezier(0.39, 0.575, 0.565, 1) .2s, background-color .25s linear .1s;
@@ -42,7 +47,7 @@
     nav {
         grid-row: ~"1/6";
         position: relative;
-        .Background(fade(@color_background, 80));
+        .Background(@menu_nav_background);
         //box-shadow: @grid_spacing/4 0 @grid_spacing/3 fade(@color_blue, 50);
         overflow: auto;
         width: 33vw;
@@ -309,26 +314,26 @@
     .@{PCSS}-body {
         /* #region all grid row template configurations*/
         .@{PCSS}-hamburger-menu {
-            grid-template-rows: @grid_spacing // 1 header 1/2
-            @grid_cell - @grid_spacing // 2 header 2/2
-            @grid_spacing // 3 toolbar
+            grid-template-rows: @_toolbar_height // 1 header 1/2
+            @_header_height - @_toolbar_height // 2 header 2/2
+            @_toolbar_height // 3 toolbar
             1fr // 4 main
-            @grid_spacing // 5 toolbar
-            @grid_cell - 2 * @grid_spacing // 6 footer 1/3
-            @grid_spacing // 7 footer 2/3
+            @_toolbar_height // 5 toolbar
+            @_footer_height - @_toolbar_height // 6 footer 1/3
+            @_toolbar_height // 7 footer 2/3
             auto; // 8 footer 3/3
         }
 
         &[bigfooter] {
             .@{PCSS}-hamburger-menu {
-                grid-template-rows: @grid_spacing // 1 header 1/2
-                @grid_cell - @grid_spacing // 2 header 2/2
-                @grid_spacing // 3 toolbar
+                grid-template-rows: @_toolbar_height // 1 header 1/2
+                @_header_height - @_toolbar_height // 2 header 2/2
+                @_toolbar_height // 3 toolbar
                 1fr // 4 main
-                @grid_spacing // 5 toolbar
-                @grid_cell - 2 * @grid_spacing // 6 footer 1/3
-                @grid_spacing // 7 footer 2/3
-                @grid_spacing; // 8 footer 3/3
+                @_toolbar_height // 5 toolbar
+                @_footer_height - @_toolbar_height // 6 footer 1/3
+                @_bigfooter_height - @_footer_height // 7 footer 2/3
+                @_toolbar_height; // 8 footer 3/3
             }
         }
         /* #endregion*/
@@ -391,13 +396,13 @@
                 }
             }
         }
-        // toolbar on top? Then move a bit down the buttons
+        // toolbar on top? Then move down the buttons
         &[headbar]:not([header]),
         &[headbar-prepend] {
 
             @{P}-button.@{PCSS}-menu.@{PCSS}-back,
             @{P}-button.@{PCSS}-menu.@{PCSS}-hamburger {
-                top: @grid_spacing;
+                top: @_toolbar_height;
             }
         }
         // footbars without footer?
