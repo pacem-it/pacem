@@ -21,14 +21,16 @@ namespace Pacem.Components.UI {
 
         connectedCallback() {
             super.connectedCallback();
-            this.tabOrder = 0;
+            if (!this.hasAttribute('tab-order')) {
+                this.tabOrder = 0;
+            }
         }
 
         propertyChangedCallback(name: string, old, val, first?: boolean) {
             super.propertyChangedCallback(name, old, val, first);
             switch (name) {
                 case 'iconGlyph':
-                    // suppose ligatures enabled
+                // suppose ligatures enabled
                 case 'iconUrl':
                     // handle this via css attr(), considering that it's the proper way to access and modify pseudo::before content
                     this.dataset[name] = val;

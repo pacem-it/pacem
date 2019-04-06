@@ -37,7 +37,9 @@ namespace Pacem.Components.UI {
 
         connectedCallback() {
             super.connectedCallback();
-            this.tabOrder = 0;
+            if (!this.hasAttribute('tab-order')) {
+                this.tabOrder = 0;
+            }
         }
 
         propertyChangedCallback(name: string, old: any, val: any, first?: boolean) {

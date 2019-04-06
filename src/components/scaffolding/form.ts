@@ -292,6 +292,17 @@ namespace Pacem.Components.Scaffolding {
                 this._validateField(name);
         }
 
+        @Concurrent()
+        validate(name?: string) {
+            if (!Utils.isNullOrEmpty(name)) {
+                this._checkFieldValidity(name);
+            } else {
+                for (let name in this._fields) {
+                    this._validateField(name);
+                }
+            }
+        }
+
         // Remove Concurrent from here, better check the closure for params in @Concurrent
         //@Concurrent()
         private _validateField(name: string) {

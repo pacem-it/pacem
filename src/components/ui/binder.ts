@@ -78,7 +78,7 @@ namespace Pacem.Components.UI {
         }
     };
 
-    @CustomElement({ tagName: P +'-binder' })
+    @CustomElement({ tagName: P + '-binder' })
     export class PacemBinderElement extends PacemElement implements OnConnected, OnDisconnected, OnPropertyChanged {
 
         @Watch({ emit: false, converter: ElementOrPointPropertyConverter }) from: PacemBinderTarget;
@@ -438,8 +438,18 @@ namespace Pacem.Components.UI {
                 svg = this._svg,
                 path = this._path;
 
-            if (Utils.isNull(path) || Utils.isNull(state1) || Utils.isNull(state2))
+            if (Utils.isNull(path)) {
                 return;
+            }
+
+            if (Utils.isNullOrEmpty(state1)
+                || Utils.isNullOrEmpty(state2)
+                || (this.from instanceof HTMLElement && !Utils.isVisible(this.from))
+                || (this.to instanceof HTMLElement && !Utils.isVisible(this.to))
+            ) {
+                path.setAttribute('d', '');
+                return;
+            }
 
             const points = this._computeAnchorPoints(state1.size, state1.anchor, state2.size, state2.anchor),
                 p0 = points[0],

@@ -37,8 +37,10 @@
     <None Remove="src\components\basic\hub-proxy.ts" />
     <None Remove="src\components\basic\layout-proxy.ts" />
     <None Remove="src\components\basic\style-proxy.ts" />
+    <None Remove="src\components\basic\template-proxy.ts" />
     <None Remove="src\components\fx\fancy.ts" />
     <None Remove="src\components\fx\hero.ts" />
+    <None Remove="src\components\scaffolding\namevalue-list.ts" />
     <None Remove="src\components\scaffolding\slider.ts" />
     <None Remove="src\components\scaffolding\tags.ts" />
     <None Remove="src\components\ui\calendar.ts" />
@@ -237,6 +239,7 @@
     <TypeScriptCompile Include="src\components\basic\resize.ts" />
     <TypeScriptCompile Include="src\components\basic\scroll-aware.ts" />
     <TypeScriptCompile Include="src\components\basic\span.ts" />
+    <TypeScriptCompile Include="src\components\basic\template-proxy.ts" />
     <TypeScriptCompile Include="src\components\basic\text.ts" />
     <TypeScriptCompile Include="src\components\basic\timer.ts" />
     <TypeScriptCompile Include="src\components\basic\html-proxy.ts" />
@@ -277,6 +280,7 @@
     <TypeScriptCompile Include="src\components\scaffolding\input-file.ts" />
     <TypeScriptCompile Include="src\components\scaffolding\input-hidden.ts" />
     <TypeScriptCompile Include="src\components\scaffolding\input-image.ts" />
+    <TypeScriptCompile Include="src\components\scaffolding\namevalue-list.ts" />
     <TypeScriptCompile Include="src\components\scaffolding\slider.ts" />
     <TypeScriptCompile Include="src\components\scaffolding\input-number.ts" />
     <TypeScriptCompile Include="src\components\scaffolding\input-password.ts" />

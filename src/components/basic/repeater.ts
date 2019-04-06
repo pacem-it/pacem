@@ -1,5 +1,6 @@
 ﻿/// <reference path="../../core/decorators.ts" />
 /// <reference path="types.ts" />
+/// <reference path="template-proxy.ts" />
 namespace Pacem.Components {
 
     const GET_VAL = CustomElementUtils.getAttachedPropertyValue;
@@ -58,6 +59,7 @@ namespace Pacem.Components {
         private _childItems: RepeaterItem[] = [];
 
         private _itemTemplate: HTMLTemplateElement;
+        private _childTemplatePlaceholder: HTMLTemplateElement | PacemTemplateProxyElement;
 
         private _fragment = document.createDocumentFragment();
 
@@ -69,7 +71,7 @@ namespace Pacem.Components {
             const items = this._childItems;
             let _item: RepeaterItem;
             if (index >= items.length) {
-                _item = new RepeaterItem(this, this._itemTemplate, frag);
+                _item = new RepeaterItem(this, this._itemTemplate, frag, this._childTemplatePlaceholder);
                 this._setupItem(_item, index, item);
                 items.push(_item);
                 _item.append();
@@ -99,7 +101,8 @@ namespace Pacem.Components {
 
         private _databind() {
             // no template? fail.
-            let tmpl = this._itemTemplate;
+            let tmpl = this._itemTemplate,
+                holder = this._childTemplatePlaceholder;
             if (tmpl == null)
                 throw `Missing template element in ${PacemRepeaterElement.name}.`;
             // fill up
@@ -117,7 +120,7 @@ namespace Pacem.Components {
                 this._removeItems(index, items.length - 1);
             } else
                 // flush added items
-                tmpl.parentNode.insertBefore(this._fragment, tmpl);
+                holder.parentNode.insertBefore(this._fragment, holder);
         }
 
         private _onCommand(evt: CommandEvent) {
@@ -140,7 +143,14 @@ namespace Pacem.Components {
         viewActivatedCallback() {
             super.viewActivatedCallback();
             this.addEventListener(CommandEventName, this._onCommand, false);
-            this._itemTemplate = this.querySelector('template');
+
+            let proxy = <PacemTemplateProxyElement>this.querySelector(P + '-template-proxy');
+            if (!Utils.isNull(proxy)) {
+                this._childTemplatePlaceholder = proxy;
+                this._itemTemplate = proxy.target;
+            } else {
+                this._itemTemplate = this._childTemplatePlaceholder = this.querySelector('template');
+            }
             this._databind();
         }
 
@@ -163,7 +173,7 @@ namespace Pacem.Components {
     export class RepeaterItem {
 
         static findUpwards(element: Element, upLevels: number = 0, logFn: (message?: string) => void = console.warn) {
-            if (Utils.isNull(element) || element.localName === 'template')
+            if (Utils.isNull(element) || element.localName === 'template' || element instanceof PacemTemplateProxyElement)
                 return null;
             let item: RepeaterItem = null;
             let predicate: (node: any) => boolean = (node) => !Utils.isNull(item = RepeaterItem.getRepeaterItem(node));
@@ -185,6 +195,7 @@ namespace Pacem.Components {
             private _repeater: PacemRepeaterElement,
             private _template: HTMLTemplateElement,
             private _fragment: DocumentFragment,
+            private _holder: HTMLTemplateElement | PacemTemplateProxyElement,
             private _placeholder: Comment = document.createComment('pacem-repeater-item')
         ) {
             SET_VAL(_placeholder, REPEATERITEM_PLACEHOLDER, this);
@@ -256,8 +267,7 @@ namespace Pacem.Components {
 
         /** @internal */
         remove(): void {
-            let tmplRef = this._template,
-                tmplParent = tmplRef.parentElement;
+            let tmplParent = this._holder.parentElement;
             for (var alterEgo of this._alterEgos) {
                 if (alterEgo.parentElement === tmplParent) {
                     tmplParent.removeChild(alterEgo);
@@ -279,11 +289,6 @@ namespace Pacem.Components {
 
         set item(v: any) {
             this._placeholder['item'] = v;
-            //
-            //let ds = this._repeater.datasource,
-            //    index = this._index;
-            //if (index < ds.length && ds[index] !== v)
-            //    this._repeater.datasource.splice(index, 1, v);
         }
 
         private _alterEgos: Node[] = [];

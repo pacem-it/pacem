@@ -258,6 +258,11 @@
         "label": "Tags",
         "view": "tags",
         "title": "<pacem-tags>"
+      },
+      {
+        "label": "Name-Value List / Dictionary",
+        "view": "namevalue",
+        "title": "<pacem-namevalue-list>"
       }
     ]
   }

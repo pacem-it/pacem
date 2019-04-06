@@ -43,7 +43,7 @@ namespace Pacem.Components.Scaffolding {
                     }
                     break;
                 case 'disabled':
-                    (val ? form.unregisterValidator : form.registerValidator).apply(form, [this.watch, this]);
+                    form && form.validate(this.watch);
                     break;
             }
         }
