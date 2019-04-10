@@ -78,6 +78,7 @@ namespace Pacem.Components.Scaffolding {
         viewActivatedCallback() {
             super.viewActivatedCallback();
             let field = this.inputField;
+            field.size = 1;
             field.autocomplete = 'off';
             field.addEventListener('input', this.changeHandler, false);
         }

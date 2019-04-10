@@ -10,8 +10,13 @@ namespace Pacem.Components {
         @Watch({emit: false, converter: PropertyConverters.String }) attr: string;
         @Watch({emit: false, converter: PropertyConverters.String }) value: string;
 
+        private _html = document.documentElement;
+
         propertyChangedCallback(name: string, old: any, val: any, first?: boolean) {
             super.propertyChangedCallback(name, old, val, first);
+            if (name === 'attr' && old) {
+                this._html.removeAttribute(old);
+            }
             this._update();
         }
 
@@ -22,7 +27,7 @@ namespace Pacem.Components {
                 return;
             }
             const value = this.value;
-            const html = document.documentElement;
+            const html = this._html;
             if (Utils.isNullOrEmpty(value)) {
                 html.removeAttribute(key);
             } else {

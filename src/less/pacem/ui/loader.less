@@ -1,4 +1,5 @@
 ﻿@import "../../shared";
+@import "shared";
 @import "../theme-dark";
 
 @keyframes rotate_anim {
@@ -202,4 +203,12 @@
             transform: scale(1);
         }
     }
+}
+
+.@{PCSS}-preloader{
+    // background
+    .GradientRadial(0%, 50%, @color_background, @color_root_background);
+    background-color: @color_root_background;
+    background-size: contain;
+
 }

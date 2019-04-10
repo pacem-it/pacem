@@ -79,12 +79,14 @@
 }
 
 @{P}-checkbox .@{PCSS}-label.@{PCSS}-checkbox {
-    min-width: @field_min_width;
     box-sizing: border-box;
+    width: 100%;
 }
 
-@{P}-checkbox-list {
-    @{P}-checkbox .@{PCSS}-label.@{PCSS}-checkbox {
+@media (min-width: @threshold_lg) {
+
+    @{P}-checkbox-list @{P}-checkbox,
+    @{P}-radio-list @{P}-radio {
         min-width: 0;
     }
 }

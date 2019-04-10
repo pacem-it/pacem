@@ -1,5 +1,5 @@
 {
-  "version": "0.8.5",
+  "version": "0.8.6",
   "name": "pacem-less",
   "homepage": "https://js.pacem.it",
   "repository": {
@@ -9,8 +9,7 @@
   "files": [
     "pacem/*.less",
     "pacem/**/*.less",
-    "shared.less",
-    "theme-empty.less",
+    "*.less",
     "README.md",
     "LICENSE",
     "package.json"
@@ -26,7 +25,7 @@
     }
   ],
   "license": "MIT",
-  "description": "Pacem JS theme templating, using LESS to obtain css files.",
+  "description": "Pacem JS theme generator. LESS-based.",
   "devDependencies": {
     "less": "3.9.0"
   }

@@ -4,6 +4,7 @@
     string pacemjs_version = Model.Version;
     string version = pacemjs_version + "." + Model.Refresh;
     string img = "https://pacem.azureedge.net/marketing/logojs_800x800.png";
+    string svg = "https://pacem.azureedge.net/marketing/logojs.svg";
     string title = "Pacem JS";
     string desc = "Pacem JS is a CustomElements-v1 based ecosystem for reusable web components.";
 
@@ -13,7 +14,7 @@
     }
 }
 <!DOCTYPE html>
-<html>
+<html lang="en-us">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
@@ -41,41 +42,21 @@
             global.Pacem = Object.assign(global.Pacem || {}, { Configuration: { prefix: "pacem" } });
         })(window);
     </script>
-    <environment include="Development">
-        <script src="~/polyfills/documentfragment.edge.js"></script>
-        <script src="~/polyfills/custom-elements.min.js"></script>
-        <script src="~/dist/js/pacem-core.js"></script>
-        <script src="~/dist/js/pacem-ui.js"></script>
-        <script src="~/dist/js/pacem-scaffolding.js"></script>
-        <script src="~/dist/js/pacem-logging.js"></script>
-        <script src="~/dist/js/pacem-plus.js"></script>
-        <script src="~/dist/js/pacem-fx.js"></script>
-        @*<script src="~/dist/js/pacem-3d.js" asp-append-version="true"></script>*@
-        <script src="~/dist/js/pacem-maps.js"></script>
-        <script src="~/dist/js/pacem-charts.js"></script>
-    </environment>
-    <environment exclude="Development">
-        <script src="//pacem.azureedge.net/pacemjs/polyfills/documentfragment.edge.js" pacem-distinct="src"></script>
-        <script src="//pacem.azureedge.net/pacemjs/polyfills/custom-elements.min.js" pacem-distinct="src"></script>
-        <script src="//pacem.azureedge.net/pacemjs/v@(pacemjs_version)/js/pacem-core.js" pacem-distinct="src"></script>
-        <script src="//pacem.azureedge.net/pacemjs/v@(pacemjs_version)/js/pacem-logging.js" pacem-distinct="src"></script>
-        <script src="//pacem.azureedge.net/pacemjs/v@(pacemjs_version)/js/pacem-ui.js" pacem-distinct="src"></script>
-        <script src="//pacem.azureedge.net/pacemjs/v@(pacemjs_version)/js/pacem-scaffolding.js" pacem-distinct="src"></script>
-        <script src="//pacem.azureedge.net/pacemjs/v@(pacemjs_version)/js/pacem-charts.js" pacem-distinct="src"></script>
-        <script src="//pacem.azureedge.net/pacemjs/v@(pacemjs_version)/js/pacem-maps.js" pacem-distinct="src"></script>
-        <script src="//pacem.azureedge.net/pacemjs/v@(pacemjs_version)/js/pacem-fx.js" pacem-distinct="src"></script>
-        <script src="//pacem.azureedge.net/pacemjs/v@(pacemjs_version)/js/pacem-plus.js" pacem-distinct="src"></script>
-    </environment>
-    @*<link href="~/dist/css/pacem-phousys.min.css" rel="stylesheet" />
-        <link href="~/dist/css/pacem-docs-phousys.min.css" rel="stylesheet" />*@
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous" />
-    @*    <script src="~/dist/js/less.min.js"></script>*@
-    <script src="~/dist/js/demo/pacem-js.js"></script>
+    <link href="~/dist/css/pacem-dark-shell.min.css?v=@(version)" rel="stylesheet" />
+    <link href="~/dist/css/pacem-light-shell.min.css?v=@(version)" rel="stylesheet" />
+    <link href="~/dist/css/pacem-phousys-shell.min.css?v=@(version)" rel="stylesheet" />
+
     <meta name="theme-color" content="#090c41" />
     <link href="/manifest.json" rel="manifest" />
 
 </head>
 <body>
+
+    <!-- preloader -->
+    <pacem-panel class="pacem-preloader" id="preloader" hide="{{ #style.cssReady && #styleDocs.cssReady }}">
+        <pacem-loader active="{{ !(#style.cssReady && #styleDocs.cssReady) }}" class="loader-full loader-primary"></pacem-loader>
+        <img src="@svg" alt="loading..." />
+    </pacem-panel>
 
     <pacem-annihilator>
         <img src="@img" alt="Pacem JS" />
@@ -87,14 +68,17 @@
     <pacem-data id="route" model="{{ #menu.result && #menu.result.find(_ => _.package === #router.state.package).items.find(_ => _.view === #router.state.view) }}"></pacem-data>
     <pacem-data id="routetitle" model="{{ (#route.model && (#route.model.title || #route.model.label)) || #router.state.view }}"></pacem-data>
 
+    <pacem-html-proxy attr="{{ #themename.model }}" value="true"></pacem-html-proxy>
     <pacem-title-proxy value="{{ #routetitle.model + ' | Pacem JS' }}"></pacem-title-proxy>
     <pacem-meta-proxy content="{{ #routetitle.model }}" name="og:title"></pacem-meta-proxy>
     <pacem-meta-proxy content="{{ #routetitle.model }}" name="twitter:title"></pacem-meta-proxy>
-    <pacem-style-proxy src="{{ '/dist/css/pacem-'+ #themename.model +'.min.css?v=@(version)' }}"></pacem-style-proxy>
-    <pacem-style-proxy src="{{ '/dist/css/pacem-docs-'+ #themename.model +'.min.css?v=@(version)' }}"></pacem-style-proxy>
+
+    <pacem-style-proxy id="style" css-text="{{ #styleFetch.result }}" src="{{ '/dist/css/pacem-'+ #themename.model +'-content.min.css?v=@(version)' }}"></pacem-style-proxy>
+    <pacem-style-proxy id="styleDocs" css-text="{{ #styleDocsFetch.result }}" src="{{ '/dist/css/pacem-docs-'+ #themename.model +'.min.css?v=@(version)' }}"></pacem-style-proxy>
+
 
     <!-- shell layout -->
-    <div class="pacem-body pacem-animations pacem-animatable" header footer aside>
+    <pacem-panel hidden hide="{{ !(#style.cssReady && #styleDocs.cssReady) }}" css="{{ {opacity: (#style.cssReady && #styleDocs.cssReady ? '1': '0') } }}" class="pacem-body pacem-animations pacem-animatable" header footer aside>
         <pacem-data id="layoutHeader" model="true"></pacem-data>
         <pacem-data id="layoutFooter" model="true"></pacem-data>
         <pacem-data id="layoutBigfooter" model="false"></pacem-data>
@@ -156,7 +140,7 @@
                         <div class="pacem-cell cols-8 text-nowrap">
                             <pacem-radio-list datasource="{{ #themes.model }}"
                                               value="{{ #theme.model }}"
-                                              on-change="#themename.model = $this.value.value; #ddl.popout()"
+                                              on-change="#ddl.popout(); #themename.model = $this.value.value"
                                               text-property="label"></pacem-radio-list>
                         </div>
                         <div class="pacem-cell" pacem hidden>
@@ -207,7 +191,7 @@
 
         <pacem-router template="/{package}/{view}" path="/@(Model.Package ?? "intro")/@(Model.View ?? "start")" id="router"></pacem-router>
 
-        <h1 class="text-accent show-v" id="heading">
+        <h1 class="text-accent show-v text-ellipsed" id="heading">
             <pacem-span css-class="{{ {'text-tech': #routetitle.model && #routetitle.model.startsWith('<') } }}" text="{{ #routetitle.model }}">Pacem JS -@Model.Title</pacem-span>
         </h1>
         <pacem-view id="view" url="{{ '/demo/'+ #router.state.package + '/'+ #router.state.view +'.html?v=@(version)' }}" class="pacem-animatable"></pacem-view>
@@ -223,7 +207,7 @@
         <div class="pacem-toolbar toolbar-footer toolbar-border">
             <div class="bg-invert"></div>
         </div>
-    </div>
+    </pacem-panel>
 
     <script>
         var pacemdocs = window['pacemdocs'] = window['pacemdocs'] || {};
@@ -238,6 +222,35 @@
     </script>
 
     <pacem-fetch url="/menu.json?v=@(version)" id="menu" on-fetchresult="pacemdocs.menu = $event.detail"></pacem-fetch>
+
+    <environment include="Development">
+        <script src="~/polyfills/documentfragment.edge.js"></script>
+        <script src="~/polyfills/custom-elements.min.js"></script>
+        <script src="~/dist/js/pacem-core.js"></script>
+        <script src="~/dist/js/pacem-ui.js"></script>
+        <script src="~/dist/js/pacem-scaffolding.js"></script>
+        <script src="~/dist/js/pacem-logging.js"></script>
+        <script src="~/dist/js/pacem-plus.js"></script>
+        <script src="~/dist/js/pacem-fx.js"></script>
+        @*<script src="~/dist/js/pacem-3d.js" asp-append-version="true"></script>*@
+        <script src="~/dist/js/pacem-maps.js"></script>
+        <script src="~/dist/js/pacem-charts.js"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="//pacem.azureedge.net/pacemjs/polyfills/documentfragment.edge.js" pacem-distinct="src"></script>
+        <script src="//pacem.azureedge.net/pacemjs/polyfills/custom-elements.min.js" pacem-distinct="src"></script>
+        <script src="//pacem.azureedge.net/pacemjs/v@(pacemjs_version)/js/pacem-core.js" pacem-distinct="src"></script>
+        <script src="//pacem.azureedge.net/pacemjs/v@(pacemjs_version)/js/pacem-logging.js" pacem-distinct="src"></script>
+        <script src="//pacem.azureedge.net/pacemjs/v@(pacemjs_version)/js/pacem-ui.js" pacem-distinct="src"></script>
+        <script src="//pacem.azureedge.net/pacemjs/v@(pacemjs_version)/js/pacem-scaffolding.js" pacem-distinct="src"></script>
+        <script src="//pacem.azureedge.net/pacemjs/v@(pacemjs_version)/js/pacem-charts.js" pacem-distinct="src"></script>
+        <script src="//pacem.azureedge.net/pacemjs/v@(pacemjs_version)/js/pacem-maps.js" pacem-distinct="src"></script>
+        <script src="//pacem.azureedge.net/pacemjs/v@(pacemjs_version)/js/pacem-fx.js" pacem-distinct="src"></script>
+        <script src="//pacem.azureedge.net/pacemjs/v@(pacemjs_version)/js/pacem-plus.js" pacem-distinct="src"></script>
+    </environment>
+
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous" />
+    <script src="~/dist/js/demo/pacem-js.js"></script>
 
 </body>
 </html>

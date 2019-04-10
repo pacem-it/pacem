@@ -13,16 +13,21 @@
     .@{PCSS}-latlng {
         .@{PCSS}-latlng-fields {
 
-           @{P}-input-number {
+            @{P}-input-number {
                 padding-left: @grid_spacing;
                 position: relative;
                 box-sizing: border-box;
 
                 .@{PCSS}-input {
-                    min-width: @field_min_width - @grid_spacing;
                     padding-left: @grid_spacing/6;
                     text-align: left;
+
+                    @media (min-width: @threshold_lg) {
+                        min-width: @field_min_width - @grid_spacing;
+                    }
                 }
+
+
 
                 &.@{PCSS}-lat:before {
                     .Icon('swap_vert');
@@ -82,7 +87,7 @@
                 &:nth-of-type(3) {
                     color: fade(@color_tech, 100);
 
-                   @{P}-span {
+                    @{P}-span {
                         position: relative;
                         padding-left: @grid_spacing;
                         display: inline-block;
@@ -96,19 +101,19 @@
                     }
                 }
 
-               @{P}-span.@{PCSS}-lat-north:before {
+                @{P}-span.@{PCSS}-lat-north:before {
                     content: 'N';
                 }
 
-               @{P}-span.@{PCSS}-lat-south:before {
+                @{P}-span.@{PCSS}-lat-south:before {
                     content: 'S';
                 }
 
-               @{P}-span.@{PCSS}-lng-east:before {
+                @{P}-span.@{PCSS}-lng-east:before {
                     content: 'E';
                 }
 
-               @{P}-span.@{PCSS}-lng-west:before {
+                @{P}-span.@{PCSS}-lng-west:before {
                     content: 'W';
                 }
             }

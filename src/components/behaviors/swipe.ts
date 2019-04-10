@@ -84,6 +84,7 @@ namespace Pacem.Components {
             this._originalTransform = Utils.deserializeTransform(getComputedStyle(_element));
             // clientWidth causes reflow: use it only once here in the constructor.
             this._halfElementWidth = .5 * _element.clientWidth;
+            this._threshold = _swiper.threshold || Math.min(120, Utils.windowSize.width * .25);
             window.addEventListener('mouseup', this._endHandler, false);
             window.addEventListener('touchend', this._endHandler, false);
             window.addEventListener('mousemove', this._moveHandler, false);
@@ -104,6 +105,7 @@ namespace Pacem.Components {
 
         private _originalTransform: { a: number, b: number, c: number, d: number, x: number, y: number };
         private _halfElementWidth: number;
+        private _threshold;
 
         private _getCurrentPosition(evt: TouchEvent | MouseEvent) {
             return (evt instanceof MouseEvent ? { x: evt.clientX, y: evt.clientY } : { x: evt.touches[0].clientX, y: evt.touches[0].clientY });
@@ -139,10 +141,11 @@ namespace Pacem.Components {
             if (!Utils.isNull(args)) {
                 const swipe = this._swiper;
                 const el = this._element;
+                const threshold = this._threshold;
 
                 const from = Math.abs(args.t0.position.x - args.position.x);
                 const kinetic = .5 * Math.pow(args.horizontalspeed, 2);
-                const elastic = .5 * k_swipe * (Math.pow(swipe.threshold, 2) - Math.pow(from, 2));
+                const elastic = .5 * k_swipe * (Math.pow(threshold, 2) - Math.pow(from, 2));
 
                 let fnReset = () => {
                     el.style.transform =
@@ -150,7 +153,7 @@ namespace Pacem.Components {
                         el.style.transition = '';
                 };
 
-                if (kinetic >= elastic) {
+                if (kinetic >= elastic && from >= threshold) {
                     const args2 = UI.SwipeEventArgsClass.fromArgs(args);
                     this._logFn(Logging.LogLevel.Debug, `Swiping ${args2.direction}! (speed: ${args2.speed}, kinetic ${kinetic}, elastic ${elastic})`);
                     const evt0 = new UI.SwipeEvent(UI.SwipeEventType.Swipe, args2, { cancelable: true });
@@ -201,16 +204,16 @@ namespace Pacem.Components {
         }
 
         private _moveHandler = (evt: TouchEvent | MouseEvent) => {
-            //avoidHandler(evt);
+            avoidHandler(evt);
             //
             function getProjectedDistance(xn: number, x0: number) {
                 const x = xn - x0;
-                const c = swiper.threshold - w_half;
-                return c * Math.sin(PI_HALF * Math.max(-1, Math.min(1, x / swiper.threshold))) / k_pan;
+                const c = threshold - w_half;
+                return -c * Math.sin(PI_HALF * Math.max(-1, Math.min(1, x / threshold))) / k_pan;
             }
             const el = this._element,
                 currentPosition: Point = this._getCurrentPosition(evt),
-                swiper = this._swiper;
+                threshold = this._threshold;
             var init: { position: Point, timestamp: number },
                 args: UI.SwipeEventArgs;
             const w_half = this._halfElementWidth,
@@ -281,7 +284,7 @@ namespace Pacem.Components {
         };
 
         /** No return point distance on the horizontal axis (defaults to half the device screen width). */
-        @Watch({ emit: false, converter: PropertyConverters.Number }) threshold: number = window.screen.availWidth / 2.0;
+        @Watch({ emit: false, converter: PropertyConverters.Number }) threshold: number;
         @Watch({ emit: false, converter: PropertyConverters.Boolean }) includeMouse: boolean;
 
         protected decorate(element: Element) {

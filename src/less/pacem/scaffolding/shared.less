@@ -1,5 +1,6 @@
 ﻿@import "../../shared";
 @import "../theme-dark";
+@import "../layout/shared";
 
 @field_min_width: 199px;
 @field_min_width_wide: 417px;
@@ -35,7 +36,8 @@
 }
 
 .FormFieldItemInline() {
-    min-width: @field_min_width;
+    min-width: 0;
+    width: 100%;
     line-height: @field_height;
 }
 
@@ -106,6 +108,10 @@
     position: relative;
     display: inline-block;
 
+    @media (min-width: @threshold_lg) {
+        min-width: @field_min_width;
+    }
+
     .@{PCSS}-viewfinder,
     .@{PCSS}-input {
         .FormFieldItemBorder();
@@ -137,7 +143,6 @@
         line-height: 1.5;
         min-height: @field_height;
         margin-bottom: @border_field_size; // <- replaces the bottom border
-
         & when (@border_field_underline = true) {
             margin-top: 0; //@field_readonly_top;
         }

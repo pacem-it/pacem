@@ -1,6 +1,6 @@
 {
-  "name": "Pacem JS Demo",
-  "short_name": "Pacem JS Demo",
+  "name": "Pacem JS Docs",
+  "short_name": "Pacem JS",
   "lang": "en-us",
   "icons": [
     {
@@ -14,9 +14,9 @@
       "type": "image/png"
     }
   ],
-  "start_url": "/intro/start", 
+  "start_url": "/intro/welcome",
   "display": "standalone",
   "scope": "/",
-  "background_color": "#fff",
+  "background_color": "#e4e7e9",
   "theme_color": "#090c41"
 }

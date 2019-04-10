@@ -20,16 +20,16 @@ namespace Pacem.Components.UI {
     @CustomElement({
         tagName: P + '-tabs', shadow: Defaults.USE_SHADOW_ROOT,
         template: `<div class="${PCSS}-tabs">
-    <${ P}-adapter class="${PCSS}-tabs-adapter" hide="{{ !:host._isUsingDefaultTabAdapter }}" label-callback="{{ :host._labelCallback }}"></${P}-adapter>
+    <${P}-adapter class="${PCSS}-tabs-adapter" swipe-enabled="false" hide="{{ !:host._isUsingDefaultTabAdapter }}" label-callback="{{ :host._labelCallback }}"></${P}-adapter>
     <div class="${PCSS}-tabs-content">
-        <${ P}-content></${P}-content>
+        <${P}-content></${P}-content>
     </div>
 </div>`
     })
     export class PacemTabsElement extends PacemIterativeElement<PacemTabElement> {
 
         constructor(private _tweener = new Pacem.Animations.TweenService()) {
-            super();
+            super("tablist");
         }
 
         @ViewChild(P + '-adapter') private _defaultTabAdapter: PacemAdapterElement;

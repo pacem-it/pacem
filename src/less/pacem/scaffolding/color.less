@@ -70,6 +70,15 @@
 
     .@{PCSS}-readonly {
         height: @field_height;
-        width: @field_min_width;
+    }
+}
+
+@media (min-width: @threshold_lg) {
+
+    @{P}-input-color {
+
+        .@{PCSS}-readonly {
+            width: @field_min_width;
+        }
     }
 }

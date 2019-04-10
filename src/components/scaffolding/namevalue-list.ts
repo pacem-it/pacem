@@ -20,7 +20,7 @@
         template: `<${P}-repeater datasource="{{ :host._bag }}" on-itemdelete=":host._deleteAt($event)">
     <template>
         <div class="${PCSS}-fieldset ${PCSS}-margin margin-bottom-1">
-            <div class="fieldset-left">
+            <div class="fieldset-auto">
                 <div class="${PCSS}-fieldgroup">
                     <${P}-input-text ${ITEM_TXT_CORE} value="{{ ^item.name, twoway }}" on-change=":host.changeHandler($event)"></${P}-input-text>
                     <div class="fieldgroup-prepend"></div>

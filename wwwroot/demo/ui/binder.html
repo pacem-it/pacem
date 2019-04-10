@@ -71,17 +71,19 @@ Properties available allow to customize the aspect and the behavior of a binder:
         <pacem-binder from="{{ #end1 }}" to="{{ #end4 }}" class="binder-thin"></pacem-binder>
         <pacem-drag-drop id="dnd"></pacem-drag-drop>
 
-        <div class="pacem-flex flex-center">
-            <div class="pacem-box pacem-flex flex-center">
-                <pacem-panel id="end1" class="bg-accent text-center binder--circle" behaviors="{{ [ #dnd ] }}"></pacem-panel>
+        <div style="overflow: hidden">
+            <div class="pacem-flex flex-center">
+                <div class="pacem-box pacem-flex flex-center">
+                    <pacem-panel id="end1" class="bg-accent text-center binder--circle" behaviors="{{ [ #dnd ] }}"></pacem-panel>
+                </div>
+                <div class="pacem-box pacem-flex flex-center"><pacem-panel id="end2" class="bg-success text-center binder--circle circle--small" behaviors="{{ [ #dnd ] }}"></pacem-panel></div>
+                <div class="pacem-box pacem-flex flex-center"><pacem-panel id="end3" class="bg-primary text-center binder--circle circle--small" behaviors="{{ [ #dnd ] }}"></pacem-panel></div>
+                <div class="pacem-box pacem-flex flex-center"><pacem-panel id="end4" class="bg-warning text-center binder--circle circle--small" behaviors="{{ [ #dnd ] }}"></pacem-panel></div>
             </div>
-            <div class="pacem-box pacem-flex flex-center"><pacem-panel id="end2" class="bg-success text-center binder--circle circle--small" behaviors="{{ [ #dnd ] }}"></pacem-panel></div>
-            <div class="pacem-box pacem-flex flex-center"><pacem-panel id="end3" class="bg-primary text-center binder--circle circle--small" behaviors="{{ [ #dnd ] }}"></pacem-panel></div>
-            <div class="pacem-box pacem-flex flex-center"><pacem-panel id="end4" class="bg-warning text-center binder--circle circle--small" behaviors="{{ [ #dnd ] }}"></pacem-panel></div>
+
+
+            <pacem-checkbox true-value="true" false-value="false" value="{{ #end1.hide, twoway }}" caption="hide big"></pacem-checkbox>
         </div>
-
-        <pacem-checkbox true-value="true" false-value="false" value="{{ #end1.hide, twoway }}" caption="hide big"></pacem-checkbox>
-
     </template>
 </pacemjs-snippet>
 

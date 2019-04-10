@@ -1,73 +1,47 @@
-﻿/* #region RESET */
-/* reset.css */
-html, body, div, span, menu, menuitem, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, code, del, dfn, em, img, q, dl, dt, dd, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, figure, figcaption {
-    margin: 0;
+﻿@import "../shared";
+@import "ui/shared";
+
+html .@{PCSS}-preloader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
     padding: 0;
-    border: 0;
-    -webkit-tap-highlight-color: none;
+    margin: 0;
+    box-sizing: border-box;
+    pointer-events: none;
+    display: grid;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+    z-index: @toast-z-index + 1000;
+    background-color: #fff;
 }
 
-table {
-    border-collapse: separate;
-    border-spacing: 0;
-}
+@shell_only: false;
+@full_theme: true;
 
-caption, th, td {
-    text-align: left;
-    font-weight: normal;
-}
-
-table, td, th {
-    vertical-align: middle;
-}
-
-blockquote:before, blockquote:after, q:before, q:after {
-    content: "";
-}
-
-blockquote, q {
-    quotes: "" "";
-}
-
-a img {
-    border: none;
-}
-
-a {
-    text-decoration: none;
-}
-
-*:focus, *:active {
-    outline: none;
-}
-
-textarea {
-    overflow: auto;
-}
-
-:invalid {
-    box-shadow: none; /* Firefox invalid inputs decoration */
-}
-/*#endregion*/
-
-/* #region CUSTOM FONTS */
-
+// variable values that get overridden
 @fonts: "fonts-dark";
-@import "@{fonts}";
-
-/* #endregion */
-@import "../shared";
-@import "pacem-animations";
-
-@import "attributes";
-
 @theme: "theme-dark";
+
+// theme
 @import "@{theme}";
 
-@shell: html;
+// shell
+@shell_selector: "html";
+@shell: (~"@{shell_selector}");
 
-@{shell} {
+// bug in Less.js: https://github.com/less/less.js/issues/3388
+// cannot pass variables like 'html[theme=dark]' due to the '=' sign in it
 
+@{shell} when (@shell_only = true), (@full_theme = true) {
+    // reset
+    @import "reset";
+    // basic stuff
+    @import "pacem-animations";
+    @import "attributes";
     // reset lists
     ol, ul {
         margin-top: 0;
@@ -78,25 +52,34 @@ textarea {
             margin-bottom: 0;
         }
     }
+    // layout system: -body, header, footer, toolbars...
+    @import "layout/layout";
+    // loader
+    @import "ui/loader";
+    // menu
+    @import "ui/menu";
+}
 
-    @import "basic/index";
-    @import "transforms/index";
-
+@{shell} when (@shell_only = false), (@full_theme = true) {
+    // fonts
+    @import "@{fonts}";
+    @import "logging/index";
     @import "body";
     @import "icons";
+    @import "basic/index";
 
+    // missing pieces from the shell
     @import "layout/index";
-
-    @import "logging/index";
     @import "ui/index";
+
     @import "scaffolding/index";
     @import "maps/index";
     @import "3d/index";
     @import "plus/index";
     @import "charts/index";
     @import "fx/index";
-
-
+    @import "transforms/index";
+    /* #region fancy extra */
     .Gloss(@_clr) {
         .GradientVertical(50%, 50%, 100%, fade(@_clr, 0), fade(@_clr, 40), fade(@_clr, 10));
     }
@@ -104,7 +87,7 @@ textarea {
     .Gloss() {
         .Gloss(#fff);
     }
-    /* #region fancy extra */
+
     .@{PCSS}-gloss when (@gradients = true) {
         .Gloss();
     }
@@ -184,7 +167,7 @@ textarea {
         color: @color_watermark !important;
     }
 
-    .text-strike{
+    .text-strike {
         text-decoration: line-through !important;
     }
 
@@ -260,24 +243,25 @@ textarea {
         font-weight: normal !important;
     }
     /* #endregion */
-    :root {
-        --color-background: @color_background;
-        --color-default: @color_default;
-        --color-accent: @color_accent;
-        --color-accent-inverse: @color_accent_inv;
-        --color-primary: @color_primary;
-        --color-primary-inverse: @color_primary_inv;
-        --color-danger: @color_danger;
-        --color-danger-inverse: @color_danger_inv;
-        --color-highlight: @color_highlight;
-        --color-highlight-inverse: @color_highlight_fore;
-        --color-warning: @color_warning;
-        --color-warning-inverse: @color_warning_inv;
-        --color-success: @color_success;
-        --color-success-inverse: @color_success_inv;
-        --color-disabled: @color_disabled;
-        //
-        --grid-cell: @grid_cell;
-        --grid-spacing: @grid_spacing;
-    }
+}
+
+:root {
+    --color-background: @color_background;
+    --color-default: @color_default;
+    --color-accent: @color_accent;
+    --color-accent-inverse: @color_accent_inv;
+    --color-primary: @color_primary;
+    --color-primary-inverse: @color_primary_inv;
+    --color-danger: @color_danger;
+    --color-danger-inverse: @color_danger_inv;
+    --color-highlight: @color_highlight;
+    --color-highlight-inverse: @color_highlight_fore;
+    --color-warning: @color_warning;
+    --color-warning-inverse: @color_warning_inv;
+    --color-success: @color_success;
+    --color-success-inverse: @color_success_inv;
+    --color-disabled: @color_disabled;
+    //
+    --grid-cell: @grid_cell;
+    --grid-spacing: @grid_spacing;
 }

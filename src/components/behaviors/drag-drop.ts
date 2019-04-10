@@ -290,6 +290,8 @@ namespace Pacem.Components {
         };
 
         private _moveHandler = (evt: MouseEvent | TouchEvent) => {
+            avoidHandler(evt);
+
             var el = this._element,
                 dragger = this._dragDropper,
                 origin: Point,

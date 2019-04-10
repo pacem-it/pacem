@@ -410,8 +410,8 @@
 .@{PCSS}-fieldset {
     .HorizontalItemSet(field);
 
-    .@{PCSS}-fieldset-left, .@{PCSS}-fieldset-center, .@{PCSS}-fieldset-right,
-    .fieldset-left, .fieldset-center, .fieldset-right {
+    .@{PCSS}-fieldset-left, .@{PCSS}-fieldset-center, .@{PCSS}-fieldset-right, .@{PCSS}-fieldset-auto,
+    .fieldset-left, .fieldset-center, .fieldset-right, .fieldset-auto {
         background-color: @color_input_back;
         border-radius: @border_radius;
 
@@ -445,25 +445,19 @@
 }
 
 .@{PCSS}-fieldgroup,
-input-group {
-    display: flex;
-    flex-direction: row;
-    //justify-content: flex-start;
-    align-content: flex-start;
-    align-items: flex-start;
+.input-group {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    grid-template-areas: "prepend main append";
 
     > * {
         min-height: @field_height;
-        flex: 0 0 auto;
-        order: 0;
+        grid-area: main;
 
         &.fieldgroup-prepend,
         &.input-group-prepend,
         &.fieldgroup-append,
         &.input-group-append {
-            display: inline-flex;
-            flex-direction: row;
-            align-items: flex-start;
             .FormFieldItemBorder();
             background-color: @color_input_back;
             color: @color_field_fore;
@@ -478,7 +472,7 @@ input-group {
 
         &.fieldgroup-prepend,
         &.input-group-prepend {
-            order: -1;
+            grid-area: prepend;
             border-right: none;
             border-top-left-radius: @border_radius;
             border-bottom-left-radius: @border_radius;
@@ -486,7 +480,7 @@ input-group {
 
         &.fieldgroup-append,
         &.input-group-append {
-            order: 1;
+            grid-area: append;
             border-left: none;
             border-top-right-radius: @border_radius;
             border-bottom-right-radius: @border_radius;
@@ -511,8 +505,10 @@ input-group {
         border-color: fade(@color_default, 40);
     }
 }
+
 // reset bg for groups nested inside sets
 .@{PCSS}-fieldset {
+
     .@{PCSS}-fieldgroup,
     input-group {
 
@@ -542,6 +538,7 @@ input-group {
         }
     }
 }
+
 // ANIMATIONS
 body.@{PCSS}-animations {
     @{P}-form-field > .@{PCSS}-field {

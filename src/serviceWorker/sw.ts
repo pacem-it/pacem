@@ -1,4 +1,4 @@
-﻿const VERSION = "0.8.5.0";
+﻿const VERSION = "0.8.6.0";
 const CACHE_KEY = 'pacem-js-v' + VERSION;
 const OFFLINE_PAGE = '/views/offline.html';
 
@@ -10,9 +10,12 @@ const PREFETCHED = [
     '/dist/css/pacem-docs-dark.min.css',
     '/dist/css/pacem-docs-light.min.css',
     '/dist/css/pacem-docs-phousys.min.css',
-    '/dist/css/pacem-dark.min.css',
-    '/dist/css/pacem-light.min.css',
-    '/dist/css/pacem-phousys.min.css',
+    '/dist/css/pacem-dark-shell.min.css',
+    '/dist/css/pacem-light-shell.min.css',
+    '/dist/css/pacem-phousys-shell.min.css',
+    '/dist/css/pacem-dark-content.min.css',
+    '/dist/css/pacem-light-content.min.css',
+    '/dist/css/pacem-phousys-content.min.css',
 
     '/polyfills/documentfragment.edge.js',
     '/polyfills/custom-elements.min.js',
