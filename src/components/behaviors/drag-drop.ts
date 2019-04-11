@@ -129,13 +129,6 @@ namespace Pacem.UI {
             super(type, args, eventInit);
         }
 
-        /**
-         * Moves, visually, then floating element to the requested position.
-         * @param delta
-         */
-        move(delta = this.detail.delta) {
-            (<HTMLElement>this.detail.floater).style.transform = `translateX(${delta.x}px) translateY(${delta.y}px)`;
-        }
     }
 
     /**
@@ -436,7 +429,8 @@ namespace Pacem.Components {
                 dragger.dispatchEvent(moveEvt);
                 if (!moveEvt.defaultPrevented // obey the - eventual - canceling feedback
                     && (floater instanceof HTMLElement || floater instanceof SVGElement)) {
-                    moveEvt.move();
+                    // move
+                    floater.style.transform = `translate3d(${moveEvt.detail.delta.x}px, ${moveEvt.detail.delta.y}px, 0)`;
                 }
                 // what am I over?
                 var hover = this._currentTarget;
