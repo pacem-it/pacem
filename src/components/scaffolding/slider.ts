@@ -163,7 +163,7 @@ namespace Pacem.Components.Scaffolding {
 
         viewActivatedCallback() {
             super.viewActivatedCallback();
-            this._dragger.addEventListener(Pacem.UI.DragDropEventType.Lock, this._startHandler, false);
+            this._dragger.addEventListener(Pacem.UI.DragDropEventType.Init, this._startHandler, false);
             this._dragger.addEventListener(Pacem.UI.DragDropEventType.Drag, this._dragHandler, false);
             this._thumb.addEventListener('keydown', this._keydownHandler, false);
             this._min.text = this._format(this.min);
@@ -189,7 +189,7 @@ namespace Pacem.Components.Scaffolding {
             this.removeEventListener('touchstart', this._downHandler, false);
             if (!Utils.isNull(this._dragger)) {
                 this._dragger.removeEventListener(Pacem.UI.DragDropEventType.Drag, this._dragHandler, false);
-                this._dragger.removeEventListener(Pacem.UI.DragDropEventType.Lock, this._startHandler, false);
+                this._dragger.removeEventListener(Pacem.UI.DragDropEventType.Init, this._startHandler, false);
             }
             if (!Utils.isNull(this._thumb)) {
                 this._thumb.removeEventListener('keydown', this._keydownHandler, false);

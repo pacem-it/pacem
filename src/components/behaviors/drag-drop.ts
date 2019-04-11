@@ -24,8 +24,8 @@ namespace Pacem.UI {
     }
 
     export enum DragDropEventType {
-        /** Initial lock state change before the first dragging act. */
-        Lock = 'draglock',
+        /** Initial state change before first dragging act. */
+        Init = 'draginit',
         /** First dragging act. */
         Start = 'dragstart', // 'dragstart' might conflict with HTML Drag & Drop API event (and so the others)
         /** Any dragging act. */
@@ -40,19 +40,19 @@ namespace Pacem.UI {
         End = 'dragend'
     }
 
-    export class DragDropEventArgsClass {
-        private constructor(private _builder: DragDropEventArgs) {
+    abstract class DragDropEventArgsBaseClass {
+
+        protected constructor(private _builder: DragDropEventArgs) {
             this.currentPosition = _builder.currentPosition;
             this.target = _builder.target;
         }
+
 
         get element() {
             return this._builder.element;
         }
 
-        get placeholder() {
-            return this._builder.placeholder;
-        }
+        abstract readonly placeholder: HTMLElement | SVGElement;
 
         get origin() {
             return this._builder.origin;
@@ -81,6 +81,30 @@ namespace Pacem.UI {
             var args = this;
             return Geom.add(args.initialDelta, { x: Utils.scrollLeft, y: Utils.scrollTop }, Geom.subtract(args.origin, args.currentPosition));
         }
+    }
+
+    export class DragDropInitEventArgsClass extends DragDropEventArgsBaseClass {
+
+        private constructor(_builder: DragDropEventArgs) {
+            super(_builder);
+            this.placeholder = _builder.placeholder;
+        }
+
+        placeholder: HTMLElement | SVGElement;
+
+        static fromArgs(builder: DragDropEventArgs) {
+            return new DragDropInitEventArgsClass(Utils.extend({}, builder));
+        }
+    }
+
+    export class DragDropEventArgsClass extends DragDropEventArgsBaseClass {
+        private constructor(_builder: DragDropEventArgs, private _placeholder = _builder.placeholder) {
+            super(_builder);
+        }
+
+        get placeholder() {
+            return this._placeholder;
+        }
 
         static fromArgs(builder: DragDropEventArgs) {
             return new DragDropEventArgsClass(Utils.extend({}, builder));
@@ -99,9 +123,9 @@ namespace Pacem.UI {
         target?: Element
     };
 
-    export class DragDropEvent extends CustomTypedEvent<DragDropEventArgsClass> {
+    export class DragDropEvent extends CustomTypedEvent<DragDropEventArgsClass | DragDropInitEventArgsClass> {
 
-        constructor(type: DragDropEventType, args: DragDropEventArgsClass, eventInit?: EventInit) {
+        constructor(type: DragDropEventType, args: DragDropEventArgsClass | DragDropInitEventArgsClass, eventInit?: EventInit) {
             super(type, args, eventInit);
         }
 
@@ -159,23 +183,26 @@ namespace Pacem.Components {
     class DragElementDelegate {
 
         constructor(private _element: HTMLElement | SVGElement, private _dragDropper: Pacem.UI.DragDropper
-            , private _logFn: (level: Logging.LogLevel, message: string, category?: string) => void) {
+            , placeholder: HTMLElement | SVGElement, private _logFn: (level: Logging.LogLevel, message: string, category?: string) => void) {
             Utils.addClass(_element, PCSS + '-drag-lock');
             window.addEventListener('mouseup', this._endHandler, false);
             window.addEventListener('touchend', this._endHandler, false);
             window.addEventListener('mousemove', this._moveHandler, false);
-            window.addEventListener('touchmove', this._moveHandler, false);
+            window.addEventListener('touchmove', this._moveHandler, <any>{ passive: false });
             _dragDropper.dropTargets.forEach(t => {
                 t.addEventListener('mouseenter', this._enterHandler, false);
                 t.addEventListener('mouseleave', this._leaveHandler, false);
             });
             // is `_element` a dynamic one belonging to a repeater item?
             this._repeaterItem = RepeaterUtils.findItemContext(_element, 0, null);
+            //
+            this._bootstrap(placeholder);
         }
 
         private _currentTarget: Element;
         private _currentHover: Node;
         private _repeaterItem: RepeaterItem;
+        private _started = false;
 
         // #region PRIVATE UTILS
 
@@ -246,7 +273,7 @@ namespace Pacem.Components {
                         floater.style.boxSizing = 'border-box';
                         floater.style.width = size.width + 'px';
                         floater.style.height = size.height + 'px';
-                        pos = { left: size.left, top: size.top }; 
+                        pos = { left: size.left, top: size.top };
                     }
 
                     // positioning
@@ -302,23 +329,16 @@ namespace Pacem.Components {
             this._currentTarget = null;
         };
 
-        private _moveHandler = (evt: MouseEvent | TouchEvent) => {
-            avoidHandler(evt);
-
+        private _bootstrap(placeholder) {
             var el = this._element,
                 dragger = this._dragDropper,
                 origin: Point,
-                currentPosition: Point,
                 args: UI.DragDropEventArgs;
 
-            //
-            function getCurrentPosition() {
-                return currentPosition = currentPosition || (evt instanceof MouseEvent ? { x: evt.clientX, y: evt.clientY } : { x: evt.touches[0].clientX, y: evt.touches[0].clientY });
-            }
-
-            // start
             if (!Utils.isNull(origin = GET_VAL(el, MOUSE_DOWN))) {
-                this._logFn(Logging.LogLevel.Info, 'Dragging act started');
+
+                this._started = false;
+
                 DEL_VAL(el, MOUSE_DOWN);
                 Utils.addClass(el, PCSS + '-dragging');
                 let style = getComputedStyle(el),
@@ -332,26 +352,26 @@ namespace Pacem.Components {
                 let floater = this._createFloater(dragger.floater || el, origin);
 
                 // === placeholder (then)
-                let placeholder: HTMLElement = null;
+                if (Utils.isNull(placeholder)) {
+                    switch (dragger.mode) {
+                        case UI.DragDataMode.Alias:
+                            placeholder = <HTMLElement>el;
+                            break;
+                        case UI.DragDataMode.Copy:
+                            placeholder = <HTMLElement>el.cloneNode(true);
+                            break;
+                    }
+                }
 
-                switch (dragger.mode) {
-                    case UI.DragDataMode.Alias:
-                        placeholder = <HTMLElement>el;
-                        break;
-                    case UI.DragDataMode.Copy:
-                        placeholder = <HTMLElement>el.cloneNode(true);
-                        break;
+                // add peculiar css class
+                if (!Utils.isNull(placeholder)) {
+                    Utils.addClass(placeholder, 'drag-placeholder');
                 }
 
                 // inside a repeater? freeze the item
                 if (!Utils.isNull(this._repeaterItem) && !Utils.isNull(placeholder)) {
 
-                    //if (placeholder === el)
-                    //    placeholder = <HTMLElement>placeholder.cloneNode(true);
-                    //
                     CustomElementUtils.freezeObservedAttributes(placeholder);
-                    //el.parentNode.replaceChild(placeholder, el);
-                    //this._repeaterItem.repeater.removeItem(this._repeaterItem.index);
                 }
 
                 const data = this._getLogicalData(this._repeaterItem || el);
@@ -364,11 +384,30 @@ namespace Pacem.Components {
                     startTime: Date.now(),
                     origin: origin,
                     initialDelta: initialDelta,
-                    currentPosition: getCurrentPosition(),
+                    currentPosition: origin,
                     floater: floater
                 };
                 SET_VAL(el, DRAGGING, args);
+            }
+        }
 
+        private _moveHandler = (evt: MouseEvent | TouchEvent) => {
+            avoidHandler(evt);
+
+            var el = this._element,
+                dragger = this._dragDropper,
+                currentPosition: Point,
+                args: UI.DragDropEventArgs = GET_VAL(el, DRAGGING);
+
+            //
+            function getCurrentPosition() {
+                return currentPosition = currentPosition || (evt instanceof MouseEvent ? { x: evt.clientX, y: evt.clientY } : { x: evt.touches[0].clientX, y: evt.touches[0].clientY });
+            }
+
+            // start
+            if (!this._started) {
+                this._logFn(Logging.LogLevel.Info, 'Dragging act started');
+                this._started = true;
                 // starting from a container/drop-target?
                 if (dragger.dropBehavior === UI.DropBehavior.InsertChild) {
                     var container: Element = el;
@@ -384,7 +423,7 @@ namespace Pacem.Components {
             }
 
             // move
-            if (!Utils.isNull(args = GET_VAL(el, DRAGGING))) {
+            if (!Utils.isNull(args)) {
                 this._logFn(Logging.LogLevel.Debug, 'Dragging act ongoing');
                 const isMouseFlag = evt instanceof MouseEvent;
                 if (isMouseFlag)
@@ -447,66 +486,93 @@ namespace Pacem.Components {
             if (!Utils.isNull(args = GET_VAL(el, DRAGGING))) {
                 if (evt instanceof MouseEvent)
                     Pacem.avoidHandler(evt);
-                let floater = args.floater;
-                if (floater instanceof HTMLElement || floater instanceof SVGElement) {
-                    floater.style.pointerEvents = '';
-                }
-                if (dragger.mode !== UI.DragDataMode.Self) {
-                    args.floater.remove();
-                }
-                Utils.removeClass(el, PCSS + '-dragging');
-                Utils.removeClass(el, PCSS + '-drag-lock');
-                DEL_VAL(el, DRAGGING);
-                if (!Utils.isNull(args.placeholder)) {
-                    Utils.removeClass(<HTMLElement | SVGElement>args.placeholder, PCSS + '-dragging');
-                    Utils.removeClass(<HTMLElement | SVGElement>args.placeholder, PCSS + '-drag-lock');
-                    DEL_VAL(args.placeholder, DRAGGING);
-                }
-
-                // === drop
-
-                // TODO: add animation to fit the target and to fit back when reverting...
-                if (!Utils.isNull(args.target)) {
-                    dragger.dispatchEvent(new UI.DragDropEvent(UI.DragDropEventType.Drop, UI.DragDropEventArgsClass.fromArgs(args)));
-                    Utils.removeClass(<HTMLElement>args.target, PCSS + '-dropping');
-                }
-
-                // === cleanup
-                const data = args.data,
-                    placeholder = args.placeholder,
-                    repItem = this._repeaterItem,
-                    sourceRepeater = repItem && repItem.repeater,
-                    targetRepItem = placeholder && this._findTargetRepeaterItem(args.placeholder.parentElement, args.placeholder.nextElementSibling),
-                    targetRepeater = targetRepItem && targetRepItem.repeater;
-                // refresh origin datasource and, eventually, target datasource
 
 
-                if (!Utils.isNull(sourceRepeater)) {
-                    sourceRepeater.removeItem(repItem.index);
-                }
+                // #region dispose fn
+                let fnDispose = () => {
 
-                if (!Utils.isNull(targetRepeater)) {
-                    args.placeholder.remove();
-                }
+                    let floater = args.floater;
 
-                if (!Utils.isNull(sourceRepeater) && targetRepeater === sourceRepeater) {
-                    let from = repItem.index, to = targetRepItem.index;
-                    if (to > from) {
-                        // tweak
-                        to--;
+                    if (floater instanceof HTMLElement || floater instanceof SVGElement) {
+                        floater.style.pointerEvents = '';
                     }
-                    sourceRepeater.datasource.moveWithin(from, to);
-                } else {
-                    sourceRepeater && sourceRepeater.datasource.splice(repItem.index, 1);
-                    targetRepeater && (targetRepeater.datasource = targetRepeater.datasource || []).splice(targetRepItem.index, 0, data);
+                    if (dragger.mode !== UI.DragDataMode.Self) {
+                        args.floater.remove();
+                    }
+                    Utils.removeClass(el, PCSS + '-dragging');
+                    Utils.removeClass(el, PCSS + '-drag-lock');
+                    DEL_VAL(el, DRAGGING);
+                    if (!Utils.isNull(args.placeholder)) {
+                        Utils.removeClass(<HTMLElement | SVGElement>args.placeholder, PCSS + '-dragging');
+                        Utils.removeClass(<HTMLElement | SVGElement>args.placeholder, 'drag-placeholder');
+                        Utils.removeClass(<HTMLElement | SVGElement>args.placeholder, PCSS + '-drag-lock');
+                        DEL_VAL(args.placeholder, DRAGGING);
+                    }
+
+                    // === drop
+
+                    // TODO: add animation to fit the target and to fit back when reverting...
+                    if (!Utils.isNull(args.target)) {
+                        dragger.dispatchEvent(new UI.DragDropEvent(UI.DragDropEventType.Drop, UI.DragDropEventArgsClass.fromArgs(args)));
+                        Utils.removeClass(<HTMLElement>args.target, PCSS + '-dropping');
+                    }
+
+                    // === cleanup
+                    const data = args.data,
+                        placeholder = args.placeholder,
+                        repItem = this._repeaterItem,
+                        sourceRepeater = repItem && repItem.repeater,
+                        targetRepItem = placeholder && this._findTargetRepeaterItem(args.placeholder.parentElement, args.placeholder.nextElementSibling),
+                        targetRepeater = targetRepItem && targetRepItem.repeater;
+                    // refresh origin datasource and, eventually, target datasource
+
+
+                    if (!Utils.isNull(sourceRepeater)) {
+                        sourceRepeater.removeItem(repItem.index);
+                    }
+
+                    if (!Utils.isNull(targetRepeater)) {
+                        args.placeholder.remove();
+                    }
+
+                    if (!Utils.isNull(sourceRepeater) && targetRepeater === sourceRepeater) {
+                        let from = repItem.index, to = targetRepItem.index;
+                        if (to > from) {
+                            // tweak
+                            to--;
+                        }
+                        sourceRepeater.datasource.moveWithin(from, to);
+                    } else {
+                        sourceRepeater && sourceRepeater.datasource.splice(repItem.index, 1);
+                        targetRepeater && (targetRepeater.datasource = targetRepeater.datasource || []).splice(targetRepItem.index, 0, data);
+                    }
+
+                    // TODO: check spill behavior
+                    // === end
+
+                    dragger.dispatchEvent(new UI.DragDropEvent(UI.DragDropEventType.End, UI.DragDropEventArgsClass.fromArgs(args)));
+                    //
+                    Utils.removeClass(shell, PCSS + '-dragging');
                 }
+                // #endregion
 
-                // TODO: check spill behavior
-                // === end
+                // animate to target position
+                const drag = args.placeholder || args.element
+                if (args.floater != drag) {
 
-                dragger.dispatchEvent(new UI.DragDropEvent(UI.DragDropEventType.End, UI.DragDropEventArgsClass.fromArgs(args)));
-                //
-                Utils.removeClass(shell, PCSS + '-dragging');
+                    let floater = <HTMLElement>args.floater;
+                    const tgetPos = Utils.offset(drag),
+                        srcPos = Utils.offset(floater);
+                    const m = Utils.deserializeTransform(getComputedStyle(floater));
+                    floater.style.transition = 'transform .2s ease-in-out';
+                    m.x += (tgetPos.left - srcPos.left);
+                    m.y += (tgetPos.top - srcPos.top);
+                    Utils.addAnimationEndCallback(floater, fnDispose, 300);
+                    floater.style.transform = `matrix(${m.a},${m.b},${m.c},${m.d},${m.x},${m.y}`;
+
+                } else {
+                    fnDispose();
+                }
             }
 
             Utils.removeClass(el, PCSS + '-drag-lock');
@@ -524,7 +590,7 @@ namespace Pacem.Components {
             window.removeEventListener('mouseup', this._endHandler, false);
             window.removeEventListener('touchend', this._endHandler, false);
             window.removeEventListener('mousemove', this._moveHandler, false);
-            window.removeEventListener('touchmove', this._moveHandler, false);
+            window.removeEventListener('touchmove', this._moveHandler, <any>{ passive: false });
         }
     }
 
@@ -564,14 +630,15 @@ namespace Pacem.Components {
 
             const lockFn = () => {
                 let element = <HTMLElement | SVGElement>el;
-                this.dispatchEvent(new Pacem.UI.DragDropEvent(Pacem.UI.DragDropEventType.Lock, UI.DragDropEventArgsClass.fromArgs({
+                let args = UI.DragDropInitEventArgsClass.fromArgs({
                     element: element, placeholder: null, currentPosition: origin, origin: origin, initialDelta: { x: 0, y: 0 }, startTime: null, floater: null, data: null
-                })));
+                });
+                this.dispatchEvent(new Pacem.UI.DragDropEvent(Pacem.UI.DragDropEventType.Init, args));
                 this.log(Logging.LogLevel.Info, 'Drag locked!');
                 el.removeEventListener('mouseup', unlockFn, false);
                 el.removeEventListener('touchend', unlockFn, false);
                 SET_VAL(el, MOUSE_DOWN, origin);
-                SET_VAL(el, DELEGATE, new DragElementDelegate(element, this, (level, message, category) => this.log.apply(this, [level, message, category])));
+                SET_VAL(el, DELEGATE, new DragElementDelegate(element, this, args.placeholder, (level, message, category) => this.log.apply(this, [level, message, category])));
             };
             const unlockFn = (evt?: Event) => {
                 this.log(Logging.LogLevel.Info, 'Drag avoided!');

@@ -11,8 +11,12 @@
 
         #droptarget01.pacem-dropping, #droptarget02.pacem-dropping {
             border-style: dotted;
-            border-color: var(--color-warning);
+            border-color: var(--color-accent);
         }
+
+    .draggable01 {
+        background-color: var(--color-background);
+    }
 </style>
 
 <!-- drag drop -->
@@ -20,7 +24,7 @@
 
 <!-- shared template -->
 <template id="tmpl0">
-    <pacem-panel class="pacem-panel panel-border panel-filled pacem-margin margin-bottom-1" behaviors="{{ [#dnd0] }}">
+    <pacem-panel class="pacem-panel panel-border draggable01 pacem-margin margin-bottom-1" behaviors="{{ [#dnd0] }}">
         <div class="panel-body">
             <i class="pacem-icon drag-handle">drag_indicator</i>
             <pacem-text text="{{ 'col '+ ^item.col +' / row '+ ^item.row }}"></pacem-text>
@@ -67,7 +71,7 @@ The default behavior simply moves the element around:
 <pacemjs-snippet>
     <template>
         <pacem-drag-drop id="dnd"></pacem-drag-drop>
-        <div style="padding: var(--grid-spacing)">
+        <div style="        padding: var(--grid-spacing)">
             <pacem-panel behaviors="{{ [#dnd] }}" class="pacem-panel panel-border panel-primary panel-filled" style="        max-width: var(--grid-cell);">
                 <div class="panel-body">Drag me!</div>
             </pacem-panel>
@@ -93,13 +97,14 @@ By targeting the parent element and specifying the `Pacem.UI.DropBehavior.Insert
     <template>
 
         <style>
-            .sortable1 {
-                border: 1px solid var(--color-primary);
-                padding: var(--grid-spacing);
-                font-weight: bold;
-                cursor: move;
-            }
-        </style>
+    .sortable1 {
+        border: 1px solid var(--color-primary);
+        padding: var(--grid-spacing);
+        font-weight: bold;
+        cursor: move;
+    }
+
+    </style>
 
         <pacem-drag-drop id="dnd1"
                          mode="{{ Pacem.UI.DragDataMode.Alias }}"
@@ -130,32 +135,35 @@ By setting the drag data **mode** to `Pacem.UI.DragDataMode.Copy` the drag sourc
     <template>
 
         <style>
-            .draggable2 {
-                border: 1px solid var(--color-primary);
-                padding: var(--grid-spacing);
-                margin: 0 0 var(--grid-spacing) 0;
-                font-weight: bold;
-                cursor: move;
-            }
-        </style>
+    .draggable2 {
+        border: 1px solid var(--color-primary);
+        padding: var(--grid-spacing);
+        margin: 0 0 var(--grid-spacing) 0;
+        font-weight: bold;
+        cursor: move;
+    }
 
-        <script>
+    .draggable2.drag-placeholder{
+        background-color: var(--color-primary);
+        color: var(--color-primary);
+    }
 
-            function _drop(evt) {
-                evt.detail.placeholder.removeAttribute('behaviors');
-            }
+    </style>
 
+        <!-- spawn template -->
+        <div hidden>
+            <div class="draggable2" id="spawn2">Cloned!</div>
+        </div>
 
-/**/</script>
-
-        <!-- in this case, pacem-drag-drop's drop-targets - to be found using the document.getElementById method - must be placed before the pacem-drag-drop element itself-->
+        <!-- drag-drop -->
         <pacem-drag-drop id="dragger2"
-                         logger="{{ #console }}"
                          mode="{{ Pacem.UI.DragDataMode.Copy }}"
-                         on-drop="_drop($event)"
+                         on-draginit="$event.detail.placeholder = #spawn2.cloneNode(true); $event.detail.placeholder.textContent = 'cloned at ' + $pacem.date(Date.now(), { hour: 'numeric', minute: 'numeric', second: 'numeric' })"
+                         on-drop="$event.detail.placeholder.removeAttribute('behaviors')"
                          drop-targets="{{[ #columnD ]}}"
                          drop-behavior="{{Pacem.UI.DropBehavior.InsertChild}}"></pacem-drag-drop>
-        <div style="overflow: hidden">
+
+        <div style="        overflow: hidden">
             <div class="pacem-row">
                 <div class="pacem-column col-4">
 
@@ -164,6 +172,8 @@ By setting the drag data **mode** to `Pacem.UI.DragDataMode.Copy` the drag sourc
                             Source
                         </div>
                         <div class="panel-body">
+
+                            <!-- draggable items -->
                             <pacem-panel behaviors="{{ [#dragger2] }}" class="draggable2">1</pacem-panel>
                             <pacem-panel behaviors="{{ [#dragger2] }}" class="draggable2">2</pacem-panel>
                             <pacem-panel behaviors="{{ [#dragger2] }}" class="draggable2">3</pacem-panel>
@@ -182,6 +192,8 @@ By setting the drag data **mode** to `Pacem.UI.DragDataMode.Copy` the drag sourc
                         <div class="panel-heading">
                             Target
                         </div>
+
+                        <!-- target container -->
                         <div class="panel-body" id="columnD">
                         </div>
                         <div class="corner bottom-right"></div>
@@ -223,13 +235,17 @@ be triggered by the first matching descendant of the dragged element.
 
 Several events are triggered along the drag-and-drop lifecycle. Types are listed here:
 
-- `draglock`: the elements receives the lock and it is ready for dragging. 
+- `draginit`: the elements receives the lock and it is ready for dragging. 
 - `dragstart`: first moving act registered on the dragged element.
 - `drag`: any dragging act (including the first one).
 - `dragover`: fires when, while dragging, the cursor enters a drop target.
 - `dragout`: fires when, while dragging, the cursor leaves a drop target.
 - `drop`: dropping act, fires when releasing the object on top of a target.
 - `dragend`: fires when the dragging act ceases.
+
+> On **draginit** a custom placeholder can be instantiated and set to the event arguments. This action will prevent further assumptions about the placeholder creation.
+
+Customizing the placeholder allows to decouple the source element from the target one (specially useful in swapping/spawning scenarios, see [example](#swapping) above).
 
 All these events have type `Pacem.UI.PacemDragDropEvent`, whose properties are:
 - `type`: see list above.
