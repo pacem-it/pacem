@@ -1,6 +1,12 @@
 ﻿@import "../shared";
 @import "ui/shared";
 
+.reset() when (@shell_only = true), (@full_theme = true) {
+    // reset
+    @import "reset";
+}
+.reset();
+
 html .@{PCSS}-preloader {
     position: fixed;
     top: 0;
@@ -37,8 +43,6 @@ html .@{PCSS}-preloader {
 // cannot pass variables like 'html[theme=dark]' due to the '=' sign in it
 
 @{shell} when (@shell_only = true), (@full_theme = true) {
-    // reset
-    @import "reset";
     // basic stuff
     @import "pacem-animations";
     @import "attributes";
@@ -264,4 +268,6 @@ html .@{PCSS}-preloader {
     //
     --grid-cell: @grid_cell;
     --grid-spacing: @grid_spacing;
+    @double_grid_spacing: 2 * @grid_spacing;
+    --grid-double-spacing: @double_grid_spacing;
 }

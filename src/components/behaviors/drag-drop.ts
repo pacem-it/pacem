@@ -239,6 +239,17 @@ namespace Pacem.Components {
                     document.body.appendChild(floater);
                     floater.style.position = 'absolute';
                     let pos = { left: origin.x + Utils.scrollLeft - floater.clientWidth / 2, top: origin.y + Utils.scrollTop - floater.clientHeight / 2 };
+
+                    // if cloned the original element then preserve dimensions
+                    if (src === this._element) {
+                        let size = Utils.offset(this._element);
+                        floater.style.boxSizing = 'border-box';
+                        floater.style.width = size.width + 'px';
+                        floater.style.height = size.height + 'px';
+                        pos = { left: size.left, top: size.top }; 
+                    }
+
+                    // positioning
                     floater.style.left = `${pos.left}px`;
                     floater.style.top = `${pos.top}px`;
                 }
@@ -274,8 +285,10 @@ namespace Pacem.Components {
                 nextSibling = this._findNextSibling(drop, args)
                 ;
             if (drag.nextSibling != nextSibling || drag.parentElement != drop) {
-                targetContainer.insertBefore(drag, nextSibling);
-                this._logFn(Logging.LogLevel.Info, `Positioned before ${(nextSibling && (nextSibling.id || nextSibling.constructor.name)) || "null"} for drop`);
+                if (Utils.isNull(nextSibling) || nextSibling.parentElement == targetContainer) {
+                    targetContainer.insertBefore(drag, nextSibling);
+                    this._logFn(Logging.LogLevel.Info, `Positioned before ${(nextSibling && (nextSibling.id || nextSibling.constructor.name)) || "null"} for drop`);
+                }
             }
         }
 
@@ -314,12 +327,11 @@ namespace Pacem.Components {
                 //
                 initialDelta.x += css.x;
                 initialDelta.y += css.y;
-                // === floater (first)
 
+                // === floater (first)
                 let floater = this._createFloater(dragger.floater || el, origin);
 
                 // === placeholder (then)
-
                 let placeholder: HTMLElement = null;
 
                 switch (dragger.mode) {
@@ -456,6 +468,7 @@ namespace Pacem.Components {
                 // TODO: add animation to fit the target and to fit back when reverting...
                 if (!Utils.isNull(args.target)) {
                     dragger.dispatchEvent(new UI.DragDropEvent(UI.DragDropEventType.Drop, UI.DragDropEventArgsClass.fromArgs(args)));
+                    Utils.removeClass(<HTMLElement>args.target, PCSS + '-dropping');
                 }
 
                 // === cleanup
@@ -523,11 +536,18 @@ namespace Pacem.Components {
 
         private _startHandler = (evt: MouseEvent | TouchEvent) => {
 
+            // sudden exit when disabled
             if (this.disabled) {
-                // sudden exit when disabled
                 return;
             }
 
+            // check the handle selector
+            if (!Utils.isNullOrEmpty(this.handleSelector)
+                && (<HTMLElement>evt.currentTarget).querySelector(this.handleSelector) !== evt.target) {
+                return;
+            }
+
+            // fair to go...
             // stop and prevent
             avoidHandler(evt);
 
@@ -601,6 +621,8 @@ namespace Pacem.Components {
         @Watch({ emit: false, converter: PropertyConverters.Element }) floater: Element;
         /** Gets or sets the drop mode ("insert", "nonde"). */
         @Watch({ emit: false, converter: PropertyConverters.String }) dropBehavior: Pacem.UI.DropBehavior;
+        /** Gets or sets the handle selector to be matched when starting the drop gesture. */
+        @Watch({ emit: false, converter: PropertyConverters.String }) handleSelector: string;
 
     }
 }

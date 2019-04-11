@@ -33,6 +33,7 @@ namespace Pacem.Js.CustomElements
             services.AddSignalR();
             services.AddMemoryCache();
             services.AddSingleton<Services.MenuService>();
+            services.AddSingleton<Services.SeoService>();
             services.AddMvc().SetCompatibilityVersion(Microsoft.AspNetCore.Mvc.CompatibilityVersion.Version_2_2);            
         }
 
@@ -47,6 +48,8 @@ namespace Pacem.Js.CustomElements
             }
 
             app.UseStaticFiles();
+            app.Map("/robots.txt", branch => branch.UseMiddleware<Middleware.RobotsTxtMiddleware>());
+            app.Map("/sitemap", branch => branch.UseMiddleware<Middleware.SitemapMiddleware>());
             app.UseSignalR(routes =>
             {
                 routes.MapHub<Hubs.Lobby>("/lobby");

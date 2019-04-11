@@ -54,7 +54,7 @@ namespace Pacem.Components {
             super();
         }
 
-        @Watch({ emit: false, debounce: true, converter: PropertyConverters.Eval }) datasource: any[];
+        @Watch({ emit: false, converter: PropertyConverters.Eval }) datasource: any[];
 
         private _childItems: RepeaterItem[] = [];
 
@@ -99,6 +99,7 @@ namespace Pacem.Components {
             item.item = entity;
         };
 
+        @Debounce(true)
         private _databind() {
             // no template? fail.
             let tmpl = this._itemTemplate,

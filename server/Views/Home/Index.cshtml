@@ -60,6 +60,8 @@
 
     <pacem-annihilator>
         <img src="@img" alt="Pacem JS" />
+
+        @Html.Raw(Model.HtmlContent)
     </pacem-annihilator>
 
     <pacem-data id="themes" model="[{label: 'Light', value: 'light'}, {label: 'Dark', value: 'dark'}, {label: 'Tech', value: 'phousys'}]"></pacem-data>
@@ -189,7 +191,7 @@
             </pacem-menu>
         </pacem-repeater>
 
-        <pacem-router template="/{package}/{view}" path="/@(Model.Package ?? "intro")/@(Model.View ?? "start")" id="router"></pacem-router>
+        <pacem-router template="/{package}/{view}" path="/@(Model.Package ?? "intro")/@(Model.View ?? "welcome")" id="router"></pacem-router>
 
         <h1 class="text-accent show-v text-ellipsed" id="heading">
             <pacem-span css-class="{{ {'text-tech': #routetitle.model && #routetitle.model.startsWith('<') } }}" text="{{ #routetitle.model }}">Pacem JS -@Model.Title</pacem-span>

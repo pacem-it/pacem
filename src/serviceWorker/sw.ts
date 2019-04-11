@@ -1,6 +1,6 @@
-﻿const VERSION = "0.8.6.0";
+﻿const VERSION = "0.8.7.0";
 const CACHE_KEY = 'pacem-js-v' + VERSION;
-const OFFLINE_PAGE = '/views/offline.html';
+const OFFLINE_PAGE = '/demo/offline.html';
 
 const PREFETCHED = [
     //'/', // do not cache root: eases refresh
@@ -117,8 +117,7 @@ const _networkFirst = (evt: FetchEvent) => {
                             return caches.match(OFFLINE_PAGE);
                     }
 
-                }
-            )
+                })
     );
 }
 

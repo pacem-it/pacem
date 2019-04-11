@@ -8,5 +8,7 @@
         // versioning
         public string Version { get; set; }
         public string Refresh { get; set; }
+
+        public string HtmlContent { get; set; }
     }
 }
