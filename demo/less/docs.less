@@ -42,7 +42,7 @@ html .@{PCSS}-preloader {
     .@{PCSS}-markdown,
     @{P}-markdown {
         font-size: 1.1rem;
-        margin-bottom: 1rem;
+        margin-bottom: 2 * @grid_spacing;
 
         h1 {
             /*line-height: @grid_cell;
@@ -90,9 +90,13 @@ html .@{PCSS}-preloader {
             padding-right: @grid_spacing;
             //text-decoration: underline;
             position: relative;
-            margin: 0 0 1.5rem 0;
+            margin: 2 * @grid_spacing 0 @grid_spacing / 3 0;
             display: table;
             .FontMainSize(1.75);
+
+            &:first-child{
+                margin-top: 0;
+            }
 
             &:hover {
                 padding-left: @grid_spacing * 1.5;

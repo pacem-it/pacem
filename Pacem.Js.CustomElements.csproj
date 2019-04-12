@@ -7,7 +7,13 @@
     <UserSecretsId>93207634-5ac3-47fd-a1b2-8f8c638352d8</UserSecretsId>
   </PropertyGroup>
 
-  <Import Project="../../../Shared.props" />
+  <PropertyGroup>
+    <Version>0.8.9</Version>
+    <Company>Pacem</Company>
+    <Authors>Cristian Merighi</Authors>
+    <Copyright>Copyright © Pacem 2019</Copyright>
+    <PackageIconUrl>https://pacem.azureedge.net/marketing/logojs.svg</PackageIconUrl>
+  </PropertyGroup>
 
   <ItemGroup>
     <Compile Remove="Uploads\**" />

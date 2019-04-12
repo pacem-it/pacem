@@ -70,4 +70,4 @@ To-do (improvements):
 - **CSP compliancy**. Mumblings:
   - try binding syntax semplifications that may avoid `Function()`;
   - ~~`inline-styles`: deal with them~~;
-- **Tests**: more.
+- **Tests**: add more.
