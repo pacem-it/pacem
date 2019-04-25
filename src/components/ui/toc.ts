@@ -58,7 +58,7 @@ namespace Pacem.Components.UI {
         }
 
         private _observer: MutationObserver;
-        private _items: { top: number, dom: HTMLElement, focus?: boolean }[] = [];
+        private _items: { dom: HTMLElement, focus?: boolean }[] = [];
 
         private _observe() {
             this._observer.observe(this.target || document.body, { subtree: true, childList: true });
@@ -76,7 +76,7 @@ namespace Pacem.Components.UI {
             const dom = document.querySelector(selector),
                 item = this._items.find(i => i.dom === dom);
             if (item != null) {
-                const tget = (item.top = this._getTop(item.dom)) - (this.offset || 0);
+                const tget =  this._getTop(item.dom) - (this.offset || 0);
                 if (tween) {
                     let from = Utils.scrollTop;
                     window.location.hash = item.dom.id;
@@ -94,7 +94,7 @@ namespace Pacem.Components.UI {
             this._scrollTo(window.location.hash, false);
         };
 
-        private _startScrollTo(item: { top: number, url: string }, evt: Event) {
+        private _startScrollTo(item: { url: string }, evt: Event) {
             avoidHandler(evt);
             this._scrollTo(item.url);
         }
@@ -104,23 +104,24 @@ namespace Pacem.Components.UI {
             const zero = top + (this.offset || 0);
             var current = this._items && this._items.length > 0 && this._items[0];
             for (var item of this._items) {
-                if (item.top <= zero)
+                if (Utils.offset(item.dom).top <= zero)
                     current = item;
                 else
                     break;
             }
             // update css
-            const datasource: { label: string, focus: boolean, url: string, top: number }[] = [];
+            const datasource: { label: string, focus: boolean, url: string }[] = [];
             for (var item of this._items) {
                 if (Utils.isNullOrEmpty(item.dom.id)) {
                     item.dom.id = item.dom.innerText.trim().replace(/[^a-zA-Z0-9]/g, '-').replace(/-*$/, '').replace(/^-*/, '').toLowerCase();
                 }
-                datasource.push({ focus: item === current, label: item.dom.innerText, url: '#' + item.dom.id, top: item.top });
+                datasource.push({ focus: item === current, label: item.dom.innerText, url: '#' + item.dom.id });
             }
             if (!Utils.isNull(this._repeater))
                 this._repeater.datasource = datasource;
         }
 
+        @Debounce(250)
         /** DOM might change while interacting with the page, this method allows extemporary resets. */
         refresh() {
             // reset items

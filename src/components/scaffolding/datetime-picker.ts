@@ -76,12 +76,18 @@ namespace Pacem.Components.Scaffolding {
         }
 
         protected convertValueAttributeToProperty(attr: string) {
-            return PropertyConverters.Date.convert(attr);
+            return PropertyConverters.Datetime.convert(attr);
         }
 
-        @Watch({ converter: PropertyConverters.Date }) dateValue: Date;
-        @Watch({ converter: PropertyConverters.Date }) min: string | Date;
-        @Watch({ converter: PropertyConverters.Date }) max: string | Date;
+        protected compareValuePropertyValues(old: any, val: any): boolean {
+            if (this.precision === 'day')
+                return PropertyConverters.Date.compare(old, val);
+            return PropertyConverters.Datetime.compare(old, val);
+        }
+
+        @Watch({ converter: PropertyConverters.Datetime }) dateValue: Date;
+        @Watch({ converter: PropertyConverters.Datetime }) min: string | Date;
+        @Watch({ converter: PropertyConverters.Datetime }) max: string | Date;
         @Watch({ converter: PropertyConverters.String }) precision: 'day' | 'minute' | 'second' = 'day';
 
         connectedCallback() {
@@ -186,8 +192,7 @@ namespace Pacem.Components.Scaffolding {
 
         protected onChange(evt?: Event) {
             var deferred = DeferPromise.defer<Date>();
-            if (CustomEventUtils.isInstanceOf(evt, DatetimeChangeEvent)
-                && !Utils.areSemanticallyEqual(Date.parse(this.value), (<DatetimeChangeEvent>evt).detail.date)) {
+            if (CustomEventUtils.isInstanceOf(evt, DatetimeChangeEvent)) {
                 const date = this.value = (<DatetimeChangeEvent>evt).detail.date;
                 deferred.resolve(date); // keep same type (Date or string equivalent)
             } else

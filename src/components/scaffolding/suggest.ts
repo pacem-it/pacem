@@ -12,16 +12,16 @@ namespace Pacem.Components.Scaffolding {
     @CustomElement({
         tagName: P + '-suggest', shadow: Defaults.USE_SHADOW_ROOT,
         template: `<input type="text" class="${PCSS}-input" />
-<span class="${PCSS}-readonly"><${ P }-text text="{{ :host.viewValue }}"></${ P }-text></span>
-<${ P }-repeater datasource="{{ :host._filter(:host.adaptedDatasource, :host.hint) }}"
+<span class="${PCSS}-readonly"><${P}-text text="{{ :host.viewValue }}"></${P}-text></span>
+<${ P}-repeater datasource="{{ :host._filter(:host.adaptedDatasource, :host.hint) }}"
     on-${ RepeaterItemCreateEventName}=":host._itemCreate($event)"
     on-${ RepeaterItemRemoveEventName}=":host._itemRemove($event)">
     <ol>
         <template>
-            <li><${ P }-span content="{{ $pacem.highlight(^item.viewValue, ::_input.value) }}"></${ P }-span></li>
+            <li><${ P}-span content="{{ $pacem.highlight(^item.viewValue, ::_input.value) }}"></${P}-span></li>
         </template>
     </ol>
-</${ P }-repeater><${ P }-content></${ P }-content>`
+</${ P}-repeater><${P}-content></${P}-content>`
     })
     export class PacemSuggestElement extends PacemDataSourceElement {
 
@@ -124,9 +124,9 @@ namespace Pacem.Components.Scaffolding {
             }
             super.disconnectedCallback();
         }
-        
+
         private _focusHandler = (evt: Event) => {
-            this.hint = this._input.value;
+            this.hint = (this._downOn = this._input).value;
         };
 
         private _keyupHandler = (evt: KeyboardEvent) => {
@@ -215,6 +215,9 @@ namespace Pacem.Components.Scaffolding {
                 datasource = concatenate ? [{ value: hint, viewValue: hint }].concat(filtered) : filtered;
             }
             let retval = datasource.slice(0, this.maxSuggestions || 10);
+            //
+            if (this._isTyping())
+                this._balloon.popup();
             this._balloon.style.opacity = Utils.isNullOrEmpty(retval) ? '0' : '';
             //if (this._isTyping && retval.length > 0) {
             //    this._balloon.popup();

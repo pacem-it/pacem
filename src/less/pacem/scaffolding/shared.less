@@ -140,8 +140,8 @@
     .@{PCSS}-readonly {
         .FontStdSize(1.1);
         display: block;
-        line-height: 1.5;
         min-height: @field_height;
+        line-height: 1.5;
         margin-bottom: @border_field_size; // <- replaces the bottom border
         & when (@border_field_underline = true) {
             margin-top: 0; //@field_readonly_top;
@@ -179,7 +179,7 @@
 
     &::before {
         .Icon(@icon, @field_icon_size);
-        line-height: 1.5;
+        line-height: 1.5 * 1.1 * @font_rem_factor;
         color: @color_input_toggle;
         left: 0;
         top: 0;// @input_padding_horiz / 1.5;

@@ -49,7 +49,7 @@
             return new Promise((resolve, reject) => {
 
                 let val = this._bagToValue(this._bag);
-                if (!Utils.areFormallyEqual(val, this.value)) {
+                if (!this.compareValuePropertyValues(val, this.value)) {
                     resolve(this.value = val);
                 } else {
                     reject();
@@ -68,6 +68,11 @@
             return ''; // unneeded
         }
 
+
+        protected compareValuePropertyValues(old, val): boolean {
+            return PropertyConverters.Json.compare(old, val);
+        }
+
         protected convertValueAttributeToProperty(attr: string) {
             return PropertyConverters.Json.convert(attr);
         }
@@ -82,7 +87,7 @@
         /** Gets or sets whether the names should be unique */
         @Watch({ emit: false, converter: PropertyConverters.Boolean }) dictionary: boolean;
 
-        @Watch({ converter: PropertyConverters.Json }) private _bag: NameValuePair[];
+        @Watch({ converter: PropertyConverters.Json }) private _bag: NameValuePair[] = [];
 
         private _bagToValue(bag = this._bag): {} {
             if (!this.dictionary) {

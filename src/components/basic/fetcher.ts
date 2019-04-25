@@ -153,7 +153,7 @@ namespace Pacem.Components {
                                     options.body = searchParams;
                                     break;
                                 default:
-                                    options.body = JSON.stringify(parameters);
+                                    options.body = Utils.Json.stringify(parameters);
                                     break;
                             }
                             break;

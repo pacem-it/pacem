@@ -133,8 +133,8 @@ namespace Pacem.Components.Scaffolding {
                             this._suggest.hint = '';
                             this._suggest.reset();
                             this._justAddedIndex = this.value.length - 1;
+                            setTimeout(() => this._suggest.focus(), 250);
                         }
-                        setTimeout(() => this._suggest.focus(), 250);
                         break;
                     default:
                         resolve(this.value);

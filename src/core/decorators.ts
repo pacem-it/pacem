@@ -521,8 +521,6 @@ namespace Pacem {
         reflectBack?: boolean,
         /** Whether to emit property change event or not (default true) */
         emit?: boolean,
-        /** An equality comparison function that overrides the default one */
-        comparer?: (old: any, val: any) => boolean;
         /** Alias property name */
         // alias?: string;
         /** Property converter */
@@ -540,7 +538,7 @@ namespace Pacem {
             //
             //const reflectBack = config && config.reflectBack;
             //const emit = !config || config.emit !== false;
-            const comparer = (config && config.comparer) || Utils.areSemanticallyEqual;
+            const comparer = converter.compare || DefaultComparer; //(config && config.comparer) || Utils.areSemanticallyEqual;
 
             // original setter?
             var setter = descriptor && descriptor.set;

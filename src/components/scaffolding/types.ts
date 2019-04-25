@@ -150,6 +150,7 @@ namespace Pacem.Components.Scaffolding {
         }
 
         protected abstract convertValueAttributeToProperty(attr: string): any;
+        protected abstract compareValuePropertyValues(old, val): boolean;
 
         @Watch({ converter: PropertyConverters.String }) viewValue: string;
         @Watch({
@@ -169,6 +170,10 @@ namespace Pacem.Components.Scaffolding {
     }
 
     export abstract class PacemBaseElement extends PacemModelElement {
+
+        protected compareValuePropertyValues(old: any, val: any): boolean {
+            return DefaultComparer(old, val);
+        }
 
         @Watch({ converter: PropertyConverters.Boolean }) required: boolean;
         @Watch({ converter: PropertyConverters.Boolean }) autofocus: boolean;
@@ -254,9 +259,7 @@ namespace Pacem.Components.Scaffolding {
         protected changeHandler = (evt: Event) => {
             const val = this.value;
             this.onChange(evt).then(v => {
-                //if (evt.type === 'change')
-                //    this.emit(evt);
-                if (!Utils.areSemanticallyEqual(v, val)) {
+                if (!this.compareValuePropertyValues(v, val)) {
                     this.dispatchEvent(new Event('change'));
                     this.dirty = true;
                 }
@@ -561,6 +564,14 @@ namespace Pacem.Components.Scaffolding {
                 return attr.split(',').map(i => i.trim());
             return attr;
         }
+
+        protected compareValuePropertyValues(old, val): boolean {
+            if (this.multipleChoice) {
+                return PropertyConverters.Json.compare(old, val);
+            }
+            return DefaultComparer(old, val);
+        }
+
     }
 
 }

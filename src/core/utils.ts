@@ -1,6 +1,8 @@
 ﻿/// <reference path="expression.ts" />
 /// <reference path="promise.ts" />
 /// <reference path="http.ts" />
+/// <reference path="trees/json.ts" />
+/// <reference path="number_extensions.ts" />
 
 namespace Pacem {
 
@@ -22,10 +24,6 @@ namespace Pacem {
     };
 
     export interface Type<T> extends Function { new(...args: any[]): T; }
-
-    interface HTMLElementWithValue extends HTMLElement {
-        value: string
-    }
 
     export interface CustomElementRegistry {
         define(name: string,
@@ -56,17 +54,9 @@ namespace Pacem {
 
         static uniqueCode() {
             var pacem = this.core;
-            var seed = pacem.__currentSeed || new Date().valueOf();
+            var seed: number = pacem.__currentSeed || new Date().valueOf();
             pacem.__currentSeed = ++seed;
-            var alphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-            var temp = seed;
-            var sb = '';
-            while (temp != 0) {
-                var mod = temp % 62;
-                sb = alphabet.charAt(mod) + sb;
-                temp = Math.floor(temp / 62);
-            }
-            return sb;
+            return seed.toBase62();
         }
 
         static parseDate(input: string | Date | number): Date {
@@ -101,6 +91,12 @@ namespace Pacem {
             return deferred.promise;
         }
 
+        // json-dedicated
+        static Json = {
+            stringify: Json.serialize,
+            parse: Json.deserialize
+        }
+
         // dates-dedicated
         static Dates = {
             parse: Utils.parseDate,
@@ -115,7 +111,7 @@ namespace Pacem {
              * @param date
              */
             isDate: function (date: Date): boolean {
-                return !isNaN(date.valueOf());
+                return !isNaN(date && date.valueOf());
             },
             dateOnly: function (datetime: Date): Date {
                 return new Date(datetime.getFullYear(), datetime.getMonth(), datetime.getDate());
@@ -406,7 +402,7 @@ namespace Pacem {
             if (Utils.isNull(obj)) {
                 return <any>obj;
             }
-            return JSON.stringify(obj, Object.keys(obj).sort());
+            return Utils.Json.stringify(obj);
         }
 
         static cookies(cookie = document.cookie) {
@@ -557,10 +553,12 @@ namespace Pacem {
         // #region other
 
         static isEmpty(obj) {
+            if (Utils.Dates.isDate(obj))
+                return false;
             for (var _ in obj)
                 return false;
             try {
-                return JSON.stringify({}) === JSON.stringify(obj);
+                return JSON.stringify({}) === Utils.Json.stringify(obj);
             } catch (e) {
                 return false;
             }
@@ -572,33 +570,10 @@ namespace Pacem {
 
         static isArray(val: any) {
             return Array.isArray(val);
-            //return val && val.constructor.name == 'Array';
         }
 
         static isNullOrEmpty(val: any) {
             return Utils.isNull(val) || val === '' || (Utils.isArray(val) && val.length == 0) || (typeof val === 'object' && Utils.isEmpty(val));
-        }
-
-        /**
-         * It is a `valueOf()` based comparison.
-         * @param v1 term 1
-         * @param v2 term 2
-         */
-        static areSemanticallyEqual(v1: any, v2: any) {
-            const sv1 = v1 && v1.valueOf && v1.valueOf();
-            const sv2 = v2 && v2.valueOf && v2.valueOf();
-            return sv1 === sv2;
-        }
-
-        /**
-         * It is a `JSON.stringify(v)` based comparison.
-         * @param v1 term 1
-         * @param v2 term 2
-         */
-        static areFormallyEqual(v1: any, v2: any) {
-            const sv1 = v1 && JSON.stringify(v1);
-            const sv2 = v2 && JSON.stringify(v2);
-            return sv1 === sv2;
         }
 
         static extend(target, ...sources: any[]) {
@@ -627,7 +602,7 @@ namespace Pacem {
 
         static clone(obj: any) {
             if (obj === undefined) return undefined;
-            return JSON.parse(JSON.stringify(obj));
+            return DeepCloner.clone(obj);
         }
 
         static fromResult<T>(v: T): Promise<T> {
@@ -1054,7 +1029,7 @@ namespace Pacem {
                             const vid = v.id = v.id || ('_' + Utils.uniqueCode());
                             return `#${vid}`;
                         } else {
-                            return `${JSON.stringify(v)}`;
+                            return `${Utils.Json.stringify(v)}`;
                         }
                     };
 

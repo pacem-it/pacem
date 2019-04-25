@@ -2,6 +2,8 @@
 /// <reference path="core-tests.ts" />
 /// <reference path="math-tests.ts" />
 /// <reference path="geom-tests.ts" />
+/// <reference path="deepclone-tests.ts" />
+/// <reference path="json-tests.ts" />
 /// <reference path="transformer-tests.ts" />
 
 namespace Pacem.Tests {
@@ -19,6 +21,18 @@ namespace Pacem.Tests {
     });
 
     mathTests.forEach(test => {
+
+        describe(test.name, test.test);
+
+    });
+
+    deepCloneTests.forEach(test => {
+
+        describe(test.name, test.test);
+
+    });
+
+    jsonTests.forEach(test => {
 
         describe(test.name, test.test);
 

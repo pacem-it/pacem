@@ -43,6 +43,14 @@ namespace Pacem.Components.Scaffolding {
             throw `Invalid coordinates format for "${attr}"`;
         }
 
+        protected compareValuePropertyValues(old, val) {
+            if (old && typeof old.lat === 'number' && typeof old.lng === 'number'
+                && val && typeof val.lat === 'number' && typeof val.lng === 'number') {
+                return old.lat === val.lat && old.lng === val.lng;
+            }
+            return false;
+        }
+
         protected getViewValue(value: any): string {
             return this._getViewValue(value);
         }
@@ -67,7 +75,7 @@ namespace Pacem.Components.Scaffolding {
         }
 
         protected onChange(evt?: Event): PromiseLike<any> {
-            if (CustomEventUtils.isInstanceOf(evt, Maps.MapEvent)) {
+            if (evt && evt.type === 'dragend') {
                 var mevt = <Maps.MapEvent>evt;
                 // geocoordinate change due to map drag
                 this._lat = mevt.detail.position.lat;

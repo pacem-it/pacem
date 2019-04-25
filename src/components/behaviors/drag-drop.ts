@@ -79,7 +79,10 @@ namespace Pacem.UI {
 
         get delta() {
             var args = this;
-            return Geom.add(args.initialDelta, { x: Utils.scrollLeft, y: Utils.scrollTop }, Geom.subtract(args.origin, args.currentPosition));
+            return Geom.add(
+                args.initialDelta, /* included in `initialDelta` for perf sake => { x: this._builder.scroll.left, y: this._builder.scroll.top },*/
+                Geom.subtract(args.origin, args.currentPosition)
+            );
         }
     }
 
@@ -170,28 +173,43 @@ namespace Pacem.Components {
     const DRAGGING = 'pacem:dragdrop:info';
     const DELEGATE = 'pacem:dragdrop:delegate';
 
+    type DraggableElement = HTMLElement | SVGElement;
+
+    type DragElementDelegateInitParams = {
+        element: DraggableElement,
+        dragDrop: UI.DragDropper,
+        scrollPosition: Point,
+        placeholder?: DraggableElement
+    }
+
     /**
      * Class to whom delegate the window-relevant events (in a possible future, distopic, multi-pointer scenario)
      */
     class DragElementDelegate {
 
-        constructor(private _element: HTMLElement | SVGElement, private _dragDropper: Pacem.UI.DragDropper
-            , placeholder: HTMLElement | SVGElement, private _logFn: (level: Logging.LogLevel, message: string, category?: string) => void) {
-            Utils.addClass(_element, PCSS + '-drag-lock');
+        constructor(initArgs: DragElementDelegateInitParams
+            , private _logFn: (level: Logging.LogLevel, message: string, category?: string) => void) {
+
+            this._dragDropper = initArgs.dragDrop;
+            Utils.addClass(this._element = initArgs.element, PCSS + '-drag-lock');
             window.addEventListener('mouseup', this._endHandler, false);
             window.addEventListener('touchend', this._endHandler, false);
             window.addEventListener('mousemove', this._moveHandler, false);
             window.addEventListener('touchmove', this._moveHandler, <any>{ passive: false });
-            _dragDropper.dropTargets.forEach(t => {
+            this._dragDropper.dropTargets.forEach(t => {
                 t.addEventListener('mouseenter', this._enterHandler, false);
                 t.addEventListener('mouseleave', this._leaveHandler, false);
             });
+            this._scroll = initArgs.scrollPosition;
             // is `_element` a dynamic one belonging to a repeater item?
-            this._repeaterItem = RepeaterUtils.findItemContext(_element, 0, null);
+            this._repeaterItem = RepeaterUtils.findItemContext(this._element, 0, null);
             //
-            this._bootstrap(placeholder);
+            this._bootstrap(initArgs.placeholder);
         }
 
+        private _dragDropper: UI.DragDropper;
+        private _element: DraggableElement;
+        private _scroll: Point;
         private _currentTarget: Element;
         private _currentHover: Node;
         private _repeaterItem: RepeaterItem;
@@ -211,41 +229,6 @@ namespace Pacem.Components {
             if (node instanceof RepeaterItem)
                 return node.dom;
             return [node];
-        }
-
-        /**
-         * Finds the physical next sibling given a container and dragging event arguments.
-         * @param target Container
-         * @param args Event arguments
-         */
-        private _findNextSibling(target: Element, args: Pacem.UI.DragDropEventArgs): Element {
-            var lastX: number = 0, lastY: number = 0;
-            const children = Array.from(target.children),
-                length = children.length;
-            // hover element:
-            const hover = document.elementFromPoint(args.currentPosition.x, args.currentPosition.y);
-
-            let hoverElement: Element;
-
-            if (hover === target) {
-                this._currentHover = hoverElement = args.placeholder;
-                return hoverElement.parentElement === target ? hoverElement.nextElementSibling : null;
-            }
-
-            if (hover.parentElement != target || hover === args.placeholder) {
-                this._currentHover = hoverElement = args.placeholder;
-                return hoverElement.nextElementSibling;
-            }
-
-            if (hover != this._currentHover) {
-                hoverElement = <Element>this._currentHover;
-                const
-                    from = children.indexOf(hoverElement),
-                    to = children.indexOf(hover);
-                this._currentHover = hover;
-                return from > to ? hover : hover.nextElementSibling;
-            }
-
         }
 
         private _createFloater(src: Element, origin: Point): Element {
@@ -299,6 +282,44 @@ namespace Pacem.Components {
             return null;
         }
 
+        /**
+         * Finds the physical next sibling given a container and dragging event arguments.
+         * @param target Container
+         * @param args Event arguments
+         */
+        private _findNextSibling(target: Element, args: Pacem.UI.DragDropEventArgs): Element {
+            var lastX: number = 0, lastY: number = 0;
+            const children = Array.from(target.children),
+                length = children.length;
+            // hover element:
+            const hover = document.elementFromPoint(args.currentPosition.x, args.currentPosition.y);
+
+            let hoverElement: Element;
+
+            if (hover === target) {
+                this._currentHover = hoverElement = args.placeholder;
+                return hoverElement.parentElement === target ? hoverElement.nextElementSibling : null;
+            }
+
+            if (hover.parentElement != target || hover === args.placeholder) {
+                this._currentHover = hoverElement = args.placeholder;
+                return hoverElement.nextElementSibling;
+            }
+
+            if (hover != this._currentHover) {
+                hoverElement = <Element>this._currentHover;
+                const
+                    from = children.indexOf(hoverElement),
+                    to = children.indexOf(hover);
+                this._currentHover = hover;
+                return from > to ? hover : hover.nextElementSibling;
+            }
+
+        }
+
+        /**
+         * This method is computationally heavy due to forced reflow!
+         */
         private _insertChild(targetContainer: Element, args: UI.DragDropEventArgs) {
             const drag: Node = args.placeholder || args.element,
                 drop: Element = args.target,
@@ -306,6 +327,7 @@ namespace Pacem.Components {
                 ;
             if (drag.nextSibling != nextSibling || drag.parentElement != drop) {
                 if (Utils.isNull(nextSibling) || nextSibling.parentElement == targetContainer) {
+                    // TODO: change logic (try to move elements around with css transforms)
                     targetContainer.insertBefore(drag, nextSibling);
                     this._logFn(Logging.LogLevel.Info, `Positioned before ${(nextSibling && (nextSibling.id || nextSibling.constructor.name)) || "null"} for drop`);
                 }
@@ -335,7 +357,7 @@ namespace Pacem.Components {
                 DEL_VAL(el, MOUSE_DOWN);
                 Utils.addClass(el, PCSS + '-dragging');
                 let style = getComputedStyle(el),
-                    initialDelta = { x: -Utils.scrollLeft, y: -Utils.scrollTop },
+                    initialDelta = { x: 0, y: 0 },
                     css = Utils.deserializeTransform(style);
                 //
                 initialDelta.x += css.x;
@@ -430,7 +452,8 @@ namespace Pacem.Components {
                 if (!moveEvt.defaultPrevented // obey the - eventual - canceling feedback
                     && (floater instanceof HTMLElement || floater instanceof SVGElement)) {
                     // move
-                    floater.style.transform = `translate3d(${moveEvt.detail.delta.x}px, ${moveEvt.detail.delta.y}px, 0)`;
+                    let delta =
+                        floater.style.transform = `translate3d(${moveEvt.detail.delta.x}px, ${moveEvt.detail.delta.y}px, 0)`;
                 }
                 // what am I over?
                 var hover = this._currentTarget;
@@ -555,12 +578,23 @@ namespace Pacem.Components {
                 if (args.floater != drag) {
 
                     let floater = <HTMLElement>args.floater;
-                    const tgetPos = Utils.offset(drag),
-                        srcPos = Utils.offset(floater);
                     const m = Utils.deserializeTransform(getComputedStyle(floater));
-                    floater.style.transition = 'transform .2s ease-in-out';
-                    m.x += (tgetPos.left - srcPos.left);
-                    m.y += (tgetPos.top - srcPos.top);
+
+                    // dropping?
+                    if (!Utils.isNull(args.target)) {
+
+                        // overlap to placeholder
+                        const tgetPos = Utils.offset(drag),
+                            srcPos = Utils.offset(floater);
+                        floater.style.transition = 'transform .2s ease-in-out';
+                        m.x += (tgetPos.left - srcPos.left);
+                        m.y += (tgetPos.top - srcPos.top);
+
+                    } else {
+
+                        // scale down to 0
+                        m.a = m.d = 0;
+                    }
                     Utils.addAnimationEndCallback(floater, fnDispose, 300);
                     floater.style.transform = `matrix(${m.a},${m.b},${m.c},${m.d},${m.x},${m.y}`;
 
@@ -570,7 +604,8 @@ namespace Pacem.Components {
             }
 
             Utils.removeClass(el, PCSS + '-drag-lock');
-            // disposing
+
+            // dispose
             this.dispose();
 
             this._logFn(Logging.LogLevel.Info, 'Dragging act disposed');
@@ -632,7 +667,9 @@ namespace Pacem.Components {
                 el.removeEventListener('mouseup', unlockFn, false);
                 el.removeEventListener('touchend', unlockFn, false);
                 SET_VAL(el, MOUSE_DOWN, origin);
-                SET_VAL(el, DELEGATE, new DragElementDelegate(element, this, args.placeholder, (level, message, category) => this.log.apply(this, [level, message, category])));
+                SET_VAL(el, DELEGATE, new DragElementDelegate({
+                    element: element, dragDrop: this, placeholder: args.placeholder, scrollPosition: {x: 0, y: 0}
+                }, (level, message, category) => this.log.apply(this, [level, message, category])));
             };
             const unlockFn = (evt?: Event) => {
                 this.log(Logging.LogLevel.Info, 'Drag avoided!');

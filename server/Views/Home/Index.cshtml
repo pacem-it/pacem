@@ -75,8 +75,8 @@
     <pacem-meta-proxy content="{{ #routetitle.model }}" name="og:title"></pacem-meta-proxy>
     <pacem-meta-proxy content="{{ #routetitle.model }}" name="twitter:title"></pacem-meta-proxy>
 
-    <pacem-style-proxy id="style" css-text="{{ #styleFetch.result }}" src="{{ '/dist/css/pacem-'+ #themename.model +'-content.min.css?v=@(version)' }}"></pacem-style-proxy>
-    <pacem-style-proxy id="styleDocs" css-text="{{ #styleDocsFetch.result }}" src="{{ '/dist/css/pacem-docs-'+ #themename.model +'.min.css?v=@(version)' }}"></pacem-style-proxy>
+    <pacem-style-proxy id="style" src="{{ '/dist/css/pacem-'+ #themename.model +'-content.min.css?v=@(version)' }}"></pacem-style-proxy>
+    <pacem-style-proxy id="styleDocs" src="{{ '/dist/css/pacem-docs-'+ #themename.model +'.min.css?v=@(version)' }}"></pacem-style-proxy>
 
 
     <!-- shell layout -->

@@ -11,7 +11,7 @@ namespace Pacem {
 
         setPropertyValue(name: string, value: any, persistent?: boolean) {
             var storage = this.getStorage(persistent);
-            storage.setItem(name, JSON.stringify(value));
+            storage.setItem(name, Utils.Json.stringify(value));
             // delete omonymy
             storage = this.getStorage(!persistent);
             storage.removeItem(name);
@@ -20,10 +20,10 @@ namespace Pacem {
         getPropertyValue(name: string) {
             var storage = this.getStorage(false);
             var retval;
-            if ((retval = storage.getItem(name)) !== null) return JSON.parse(retval);
+            if ((retval = storage.getItem(name)) !== null) return Utils.Json.parse(retval);
             retval = this.getStorage(true).getItem(name);
             if (retval === null) return retval;
-            return JSON.parse(retval);
+            return Utils.Json.parse(retval);
         }
 
         clear() {
