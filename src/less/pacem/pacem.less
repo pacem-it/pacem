@@ -5,6 +5,7 @@
     // reset
     @import "reset";
 }
+
 .reset();
 
 html .@{PCSS}-preloader {
@@ -34,10 +35,6 @@ html .@{PCSS}-preloader {
 
 // theme
 @import "@{theme}";
-
-// shell
-@shell_selector: "html";
-@shell: (~"@{shell_selector}");
 
 // bug in Less.js: https://github.com/less/less.js/issues/3388
 // cannot pass variables like 'html[theme=dark]' due to the '=' sign in it
@@ -71,7 +68,6 @@ html .@{PCSS}-preloader {
     @import "body";
     @import "icons";
     @import "basic/index";
-
     // missing pieces from the shell
     @import "layout/index";
     @import "ui/index";
@@ -249,7 +245,7 @@ html .@{PCSS}-preloader {
     /* #endregion */
 }
 
-:root {
+:root when (@shell_only = true), (@full_theme = true) {
     --color-background: @color_background;
     --color-root: @color_root_background;
     --color-default: @color_default;
@@ -272,3 +268,7 @@ html .@{PCSS}-preloader {
     @double_grid_spacing: 2 * @grid_spacing;
     --grid-double-spacing: @double_grid_spacing;
 }
+
+// extra
+@extra: "your-extra.less";
+@import (optional) "@{extra}";

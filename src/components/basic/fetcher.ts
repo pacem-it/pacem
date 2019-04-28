@@ -110,7 +110,7 @@ namespace Pacem.Components {
         }
 
         /** Returns a promise to a request with an already-used body. */
-        @Concurrent()
+        // @Concurrent()
         fetch(): PromiseLike<Response> {
             var deferred = DeferPromise.defer<Response>(),
                 url = this.url;

@@ -5,7 +5,7 @@ namespace Pacem.Tests {
 
         name: 'Deep clone', test: function () {
 
-            it('Keep references', function () {
+            it('Clone references as well', function () {
 
                 const now = new Date();
 

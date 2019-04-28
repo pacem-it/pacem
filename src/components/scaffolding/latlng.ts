@@ -12,25 +12,25 @@ namespace Pacem.Components.Scaffolding {
         tagName: P + '-latlng', shadow: Defaults.USE_SHADOW_ROOT,
         template: `<div class="${PCSS}-latlng">
     <div class="${PCSS}-latlng-fields ${PCSS}-viewfinder">
-        <${ P }-input-number class="${PCSS}-lat" value="{{ :host._lat, twoway }}" min="-90" max="90" step="{{ 'any' }}"></${ P }-input-number>
-        <${ P }-input-number class="${PCSS}-lng" value="{{ :host._lng, twoway }}" min="-180" max="180" step="{{ 'any' }}"></${ P }-input-number>
+        <${ P}-input-number class="${PCSS}-lat" value="{{ :host._lat, twoway }}" min="-90" max="90" step="{{ 'any' }}"></${P}-input-number>
+        <${ P}-input-number class="${PCSS}-lng" value="{{ :host._lng, twoway }}" min="-180" max="180" step="{{ 'any' }}"></${P}-input-number>
     </div>
-    <${ P }-panel hide="{{ Pacem.Utils.isNull(:host.value) || :host.readonly }}">
+    <${ P}-panel hide="{{ Pacem.Utils.isNull(:host.value) || :host.readonly }}">
     <dl class="${PCSS}-latlng-preview">
-        <dt>decimals:</dt><dd><${ P }-text text="{{ :host._getViewValue(:host.value, 12) }}"></${ P }-text></dd>
-        <dt>address:</dt><dd><${ P }-text text="{{ ::_fetcher.result.display_name || '?' }}"></${ P }-text></dd>
-        <dt>degrees:</dt><dd><${ P }-span css-class="{{ {'${PCSS}-lat-north': :host._lat > 0, '${PCSS}-lat-south': :host._lat < 0} }}" content="{{ $pacem.decToDeg(Math.abs(:host._lat)) }}"></${ P }-span>,
-        <${ P }-span css-class="{{ {'${PCSS}-lng-east': :host._lng > 0, '${PCSS}-lng-west': :host._lng < 0} }}" content="{{ $pacem.decToDeg(Math.abs(:host._lng)) }}"></${ P }-span></dd>
+        <dt>decimals:</dt><dd><${ P}-text text="{{ :host._getViewValue(:host.value, 12) }}"></${P}-text></dd>
+        <dt>address:</dt><dd><${ P}-text text="{{ ::_fetcher.result.display_name || '?' }}"></${P}-text></dd>
+        <dt>degrees:</dt><dd><${ P}-span css-class="{{ {'${PCSS}-lat-north': :host._lat > 0, '${PCSS}-lat-south': :host._lat < 0} }}" content="{{ $pacem.decToDeg(Math.abs(:host._lat)) }}"></${P}-span>,
+        <${ P}-span css-class="{{ {'${PCSS}-lng-east': :host._lng > 0, '${PCSS}-lng-west': :host._lng < 0} }}" content="{{ $pacem.decToDeg(Math.abs(:host._lng)) }}"></${P}-span></dd>
     </dl>
-    </${ P }-panel>
-    <${ P }-span class="${PCSS}-readonly" hide="{{ !:host.readonly }}" content="{{ :host.viewValue + (Pacem.Utils.isNullOrEmpty(::_fetcher.result.display_name) ? '' : (' <small>'+ ::_fetcher.result.display_name +'</small>')) }}"></${ P }-span>
-    <${ P }-map-adapter-leaflet
-    tiles="{{ :host._tiles }}" attribution="{{ :host._attribution }}"></${ P }-map-adapter-leaflet>
-    <${ P }-map adapter="{{ ::_adapter }}" mousewheel="false">
-        <${ P }-map-marker position="{{ :host.value || Pacem.Components.Maps.MapConsts.DEFAULT_COORDS }}" on-dragend=":host.changeHandler($event)" draggable="{{ !:host.readonly }}">
-        </${ P }-map-marker>
-    </${ P }-map>
-    <${ P }-fetch disabled="{{ Pacem.Utils.isNull(:host.value) }}" parameters="{{ { format: 'json', lat: :host._lat, lon: :host._lng } }}" url="${ REVERSE_GEOCODE_URL}"></${ P }-fetch>
+    </${ P}-panel>
+    <${ P}-span class="${PCSS}-readonly" hide="{{ !:host.readonly }}" content="{{ :host.viewValue + (Pacem.Utils.isNullOrEmpty(::_fetcher.result.display_name) ? '' : (' <small>'+ ::_fetcher.result.display_name +'</small>')) }}"></${P}-span>
+    <${ P}-map-adapter-leaflet
+    tiles="{{ :host._tiles }}" attribution="{{ :host._attribution }}"></${ P}-map-adapter-leaflet>
+    <${ P}-map adapter="{{ ::_adapter }}" mousewheel="false">
+        <${ P}-map-marker position="{{ :host._ensureValue(:host.value) }}" on-dragend=":host.changeHandler($event)" draggable="{{ !:host.readonly }}">
+        </${ P}-map-marker>
+    </${ P}-map>
+    <${ P}-fetch disabled="{{ Pacem.Utils.isNull(:host.value) }}" parameters="{{ { format: 'json', lat: :host._lat, lon: :host._lng } }}" url="${REVERSE_GEOCODE_URL}"></${P}-fetch>
 </div>`
     })
     export class PacemLatLngElement extends PacemBaseElement implements OnPropertyChanged {
@@ -56,7 +56,7 @@ namespace Pacem.Components.Scaffolding {
         }
 
         private _getViewValue(value: any, precision: number = 8) {
-            return value && value.lat.toFixed(precision) + ',' + value.lng.toFixed(precision);
+            return value && typeof value.lat === 'number' && typeof value.lng === 'number' && value.lat.toFixed(precision) + ',' + value.lng.toFixed(precision);
         }
 
         protected get inputFields(): HTMLElement[] {
@@ -70,8 +70,13 @@ namespace Pacem.Components.Scaffolding {
 
         // regex: 
         protected acceptValue(val) {
-            this._lat = val && val.lat;
-            this._lng = val && val.lng;
+            let e_val = this._ensureValue(val);
+            this._lat = e_val.lat;
+            this._lng = e_val.lng;
+        }
+
+        private _ensureValue(val) {
+            return (val && typeof val.lat === 'number' && typeof val.lng === 'number') ? val : Pacem.Components.Maps.MapConsts.DEFAULT_COORDS;
         }
 
         protected onChange(evt?: Event): PromiseLike<any> {

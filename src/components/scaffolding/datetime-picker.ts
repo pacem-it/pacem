@@ -80,9 +80,7 @@ namespace Pacem.Components.Scaffolding {
         }
 
         protected compareValuePropertyValues(old: any, val: any): boolean {
-            if (this.precision === 'day')
-                return PropertyConverters.Date.compare(old, val);
-            return PropertyConverters.Datetime.compare(old, val);
+            return Utils.areSemanticallyEqual(old, val);
         }
 
         @Watch({ converter: PropertyConverters.Datetime }) dateValue: Date;

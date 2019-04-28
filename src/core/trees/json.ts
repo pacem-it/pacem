@@ -18,8 +18,9 @@ namespace Pacem {
 
         private _serialize(obj: any) {
             let clone = DeepCloner.clone(obj);
-            let flat = this._flatten(clone);
-            return JSON.stringify(flat, Object.keys(flat).sort());
+            let keys = [REF_ID];
+            let flat = this._flatten(clone, 0, null, keys);
+            return JSON.stringify(flat, keys.sort());
         }
 
         private _deserialize(json: string) {
@@ -43,8 +44,9 @@ namespace Pacem {
             return obj;
         }
 
-        private _flatten(obj, increment = 0, seen?: WeakSet<any>) {
+        private _flatten(obj, increment = 0, seen?: WeakSet<any>, keys?: Array<string>): any {
             seen = seen || new WeakSet<any>();
+            keys = keys || [];
             if (obj instanceof Element) {
                 if (!obj.id) {
                     return;
@@ -53,7 +55,7 @@ namespace Pacem {
             }
             else if (typeof obj === 'object' && obj != null && !(obj instanceof Date)) {
                 if (Array.isArray(obj)) {
-                    return obj.map(i => this._flatten(i, increment, seen));
+                    return obj.map(i => this._flatten(i, increment, seen, keys));
                 }
                 else {
                     // very object
@@ -62,7 +64,12 @@ namespace Pacem {
                     }
                     else {
                         seen.add(obj);
-                        Object.keys(obj).forEach(k => { obj[k] = this._flatten(obj[k], increment, seen); });
+                        Object.keys(obj).forEach(k => {
+                            if (keys.indexOf(k) === -1) {
+                                keys.push(k);
+                            }
+                            obj[k] = this._flatten(obj[k], increment, seen, keys);
+                            });
                         return obj;
                     }
                 }

@@ -31,11 +31,13 @@ namespace Pacem {
 
     export interface PropertyConverter {
         /** You can assume `attr` not null, cause it will be processed only in that case. */
-        convert: (attr: string, element?: HTMLElement) => any,
+        readonly convert: (attr: string, element?: HTMLElement) => any,
         /** You can assume `prop` not null, cause it will be processed only in that case. */
-        convertBack?: (prop: any, element?: HTMLElement) => string
+        readonly convertBack?: (prop: any, element?: HTMLElement) => string
         /** An equality comparison function that overrides the default one */
-        compare?: PropertyComparer;
+        // readonly compare?: PropertyComparer;
+        /** Whether to retry, once more, the conversion attribute-to-property, if no results were yielded before the element was ready and the DOM loaded. */
+        readonly retryConversionWhenReady?: boolean;
     };
 
     export const PropertyConverters: { [name: string]: PropertyConverter } = {
@@ -57,17 +59,18 @@ namespace Pacem {
         Date: {
             convert: (attr: string) => Utils.parseDate(attr),
             convertBack: (prop: any) => Utils.parseDate(prop).toISOString(),
-            compare: DateComparer
+            //compare: DateComparer
         },
         Datetime: {
             convert: (attr: string) => Utils.parseDate(attr),
             convertBack: (prop: any) => Utils.parseDate(prop).toISOString(),
-            compare: DatetimeComparer
+            //compare: DatetimeComparer
         },
         Json: {
             convert: (attr: string) => Utils.Json.parse(attr),
             convertBack: (prop: any) => Utils.Json.stringify(prop),
-            compare: JsonComparer
+            //compare: JsonComparer,
+            //store: JsonStorer
         },
         Eval: {
             convert: (attr: string) => Function(`return ${attr};`).apply(null),
@@ -75,7 +78,8 @@ namespace Pacem {
         },
         Element: {
             convert: (attr: string) => document.querySelector(attr),
-            convertBack: (prop: any) => (prop instanceof Element && prop.id) ? ('#' + prop.id) : undefined
+            convertBack: (prop: any) => (prop instanceof Element && prop.id) ? ('#' + prop.id) : undefined,
+            retryConversionWhenReady: true
         }
     }
 }

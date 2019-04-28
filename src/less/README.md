@@ -16,7 +16,7 @@ in the node sub-folder and copy it locally (e.g. as **_my-theme.less_** and **_m
 Once ready, launch:
 
 ```
-lessc --modify-var=\"fonts=[path]/my-fonts\" --modify-var=\"theme=[path]/my-theme\" node_modules/pacem-less/pacem/pacem.less dist/css/my-theme.css
+lessc --modify-var="fonts=[path]/my-fonts" --modify-var="theme=[path]/my-theme" node_modules/pacem-less/pacem/pacem.less dist/css/my-theme.css
 ```
 
 Where `[path]` is the relative path from _node_modules/pacem-less/pacem/pacem.less_ to

@@ -576,6 +576,17 @@ namespace Pacem {
             return Utils.isNull(val) || val === '' || (Utils.isArray(val) && val.length == 0) || (typeof val === 'object' && Utils.isEmpty(val));
         }
 
+        /**
+         * It is a `valueOf()` based comparison.
+         * @param v1 term 1
+         * @param v2 term 2
+         */
+        static areSemanticallyEqual(v1: any, v2: any) {
+            const sv1 = v1 && v1.valueOf && v1.valueOf();
+            const sv2 = v2 && v2.valueOf && v2.valueOf();
+            return sv1 === sv2;
+        }
+
         static extend(target, ...sources: any[]) {
             for (var source of sources) {
                 var obj = <any>Object; // <- dodging the es5 compiler // TODO: replace in a future.

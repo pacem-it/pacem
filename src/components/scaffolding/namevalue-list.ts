@@ -70,7 +70,7 @@
 
 
         protected compareValuePropertyValues(old, val): boolean {
-            return PropertyConverters.Json.compare(old, val);
+            return Utils.Json.stringify(old) === Utils.Json.stringify(val);
         }
 
         protected convertValueAttributeToProperty(attr: string) {

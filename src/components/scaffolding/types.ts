@@ -259,7 +259,7 @@ namespace Pacem.Components.Scaffolding {
         protected changeHandler = (evt: Event) => {
             const val = this.value;
             this.onChange(evt).then(v => {
-                if (!this.compareValuePropertyValues(v, val)) {
+                if (!this.compareValuePropertyValues(val, v)) {
                     this.dispatchEvent(new Event('change'));
                     this.dirty = true;
                 }
@@ -566,10 +566,7 @@ namespace Pacem.Components.Scaffolding {
         }
 
         protected compareValuePropertyValues(old, val): boolean {
-            if (this.multipleChoice) {
-                return PropertyConverters.Json.compare(old, val);
-            }
-            return DefaultComparer(old, val);
+            return Utils.areSemanticallyEqual(old, val);
         }
 
     }

@@ -76,7 +76,7 @@ namespace Pacem.Js.CustomElements.Controllers
         public async Task<IActionResult> IdleRandom([FromBody] object any)
         {
             await Task.Delay(2000);
-            if (new Random().NextDouble() >= 0.5)
+            if (true || new Random().NextDouble() >= 0.5)
                 return Ok(any);
             else
                 return BadRequest("Random error");

@@ -19,8 +19,7 @@ namespace Pacem.Components {
 
         disconnectedCallback() {
             for (let item of this._dom.splice(0)) {
-                item.parentElement === this.proxy &&
-                    this.proxy.removeChild(item);
+                item instanceof Element && item.remove();
             }
             super.disconnectedCallback();
         }

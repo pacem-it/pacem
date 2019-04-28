@@ -280,9 +280,23 @@ namespace Pacem {
 
                             }
 
-
                             // flag as ready
                             SET_VAL(_this, INSTANCE_READY_VAR, true);
+
+                            // retry with unresolved properties
+                            for (let property of properties) {
+                                const prop = property.name;
+                                if (!property.converter.retryConversionWhenReady || !Utils.isNull(_this[prop])) {
+                                    continue;
+                                }
+                                // check attr
+                                const attrName = CustomElementUtils.camelToKebab(prop),
+                                    attr = (<HTMLElement>_this).getAttribute(attrName);
+                                if (!Utils.isNullOrEmpty(attr) && !CustomElementUtils.isBindingAttribute(attr)) {
+                                    // retry conversion
+                                    _this[prop] = property.converter.convert(attr, _this);
+                                }
+                            }
 
                             // execute todos (aka `reflect-backs` of prop values onto attr string values)
                             var todos = <(() => void)[]>(GET_VAL(_this, INSTANCE_ONREADY_VAR) || []);
@@ -402,6 +416,7 @@ namespace Pacem {
                             // retrieve property type and cast coherently...
                             var property = properties.find(p => p.name === prop);
                             if (!Utils.isNull(property)) {
+                                // eventual retry at Ln.286
                                 _this[prop] = property.converter.convert(val, _this);
                             }
                         }
@@ -462,7 +477,7 @@ namespace Pacem {
                             }
 
                         };
-                        // the following filter is needed in order to avoid attribute reflection and error:
+                        // the following filter is needed in order to avoid attribute reflect-back and error:
                         // `Uncaught DOMException: Failed to construct 'CustomElement': The result must not have attributes`
                         if (ready) {
                             todo.apply(_this);
@@ -535,10 +550,9 @@ namespace Pacem {
             if (config && config.converter)
                 converter = config.converter;
             watchableProperties.push({ name: prop, converter: converter });
-            //
-            //const reflectBack = config && config.reflectBack;
-            //const emit = !config || config.emit !== false;
-            const comparer = converter.compare || DefaultComparer; //(config && config.comparer) || Utils.areSemanticallyEqual;
+
+            // comparer
+            const comparer = Utils.areSemanticallyEqual;
 
             // original setter?
             var setter = descriptor && descriptor.set;
@@ -600,24 +614,30 @@ namespace Pacem {
                 }
             }
 
+            function setterCore(oldVal: any, newVal: any) {
+                var _this = this,
+                    isArray = Utils.isArray(newVal);
+                // different?
+                var diffrent = !comparer(oldVal, newVal);
+                if (diffrent || (isArray && GET_VAL(newVal, ver) != _this[propver])) {
+                    SET_VAL(_this, propref, newVal);
+                    if (isArray) {
+                        SET_VAL(_this, propver, GET_VAL(newVal, ver));
+                        decorateArray.call(_this, newVal);
+                    }
+                    onChange.call(_this, prop, oldVal, newVal);
+                }
+            }
+
             // setter
             if (setter) {
                 descriptor.set = function (v) {
-                    var _this = this,
-                        isArray = Utils.isArray(newVal);
-                    const oldVal = _this[prop];
+                    const _this = this,
+                        oldVal = _this[prop];
                     setter.call(_this, v);
                     var newVal = _this[prop];
-                    // different?
-                    var diffrent = !comparer(oldVal, newVal);
-                    if (diffrent || (isArray && GET_VAL(newVal, ver) != _this[propver])) {
-                        SET_VAL(_this, propref, newVal);
-                        if (isArray) {
-                            SET_VAL(_this, propver, GET_VAL(newVal, ver));
-                            decorateArray.call(_this, newVal);
-                        }
-                        onChange.call(_this, prop, oldVal, newVal);
-                    }
+                    //
+                    setterCore.call(_this, oldVal, newVal);
                 };
             } else {
                 //#region this is needed when creating property at runtime.
@@ -634,20 +654,10 @@ namespace Pacem {
                             return getter.call(this);
                         },
                         set: function (newVal) {
-                            var _this = this,
-                                isArray = Utils.isArray(newVal);
+                            const _this = this;
                             const oldVal = GET_VAL(_this, propref);
-                            //const oldValue = oldVal && oldVal.valueOf && oldVal.valueOf();
-                            //const newValue = newVal && newVal.valueOf && newVal.valueOf();
-                            var diffrent = !comparer(oldVal, newVal);
-                            if (diffrent || (isArray && GET_VAL(newVal, ver) != _this[propver])) {
-                                SET_VAL(_this, propref, newVal);
-                                if (isArray) {
-                                    SET_VAL(_this, propver, GET_VAL(newVal, ver));
-                                    decorateArray.call(_this, newVal);
-                                }
-                                onChange.call(_this, prop, oldVal, newVal);
-                            }
+                            //
+                            setterCore.call(_this, oldVal, newVal);
                         },
                         enumerable: true,
                         configurable: true
