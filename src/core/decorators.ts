@@ -552,7 +552,7 @@ namespace Pacem {
             watchableProperties.push({ name: prop, converter: converter });
 
             // comparer
-            const comparer = Utils.areSemanticallyEqual;
+            const comparer = DefaultComparer;
 
             // original setter?
             var setter = descriptor && descriptor.set;

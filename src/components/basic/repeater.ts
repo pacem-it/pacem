@@ -48,11 +48,7 @@ namespace Pacem.Components {
      * </pacem-repeater>
      */
     @CustomElement({ tagName: P + '-repeater' })
-    export class PacemRepeaterElement extends PacemEventTarget implements OnPropertyChanged, OnViewActivated, OnDisconnected {
-
-        constructor() {
-            super();
-        }
+    export class PacemRepeaterElement extends PacemEventTarget {
 
         @Watch({ emit: false, converter: PropertyConverters.Eval }) datasource: any[];
 

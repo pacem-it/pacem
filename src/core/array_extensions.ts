@@ -10,10 +10,6 @@ Array.prototype.moveWithin = function (this: any[], from, to) {
         throw new Error(OUT_OF_RANGE);
     if (to < 0 || to > arr.length)
         throw new Error(OUT_OF_RANGE);
-    // Allow splicing and joining even if from and to are equal.
-    // For propertychange propagation sake.
-    //if (from === to)
-    //    return;
-    //
-    arr.splice(to, 0, arr.splice(from, 1)[0]);
+
+    arr.splice(to, 0, /* avoid to trigger a double change on a single command */ Array.prototype.splice.apply(arr, [from, 1])[0]);
 };

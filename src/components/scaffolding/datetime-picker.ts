@@ -79,10 +79,6 @@ namespace Pacem.Components.Scaffolding {
             return PropertyConverters.Datetime.convert(attr);
         }
 
-        protected compareValuePropertyValues(old: any, val: any): boolean {
-            return Utils.areSemanticallyEqual(old, val);
-        }
-
         @Watch({ converter: PropertyConverters.Datetime }) dateValue: Date;
         @Watch({ converter: PropertyConverters.Datetime }) min: string | Date;
         @Watch({ converter: PropertyConverters.Datetime }) max: string | Date;

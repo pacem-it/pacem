@@ -245,7 +245,8 @@ html .@{PCSS}-preloader {
     /* #endregion */
 }
 
-:root when (@shell_only = true), (@full_theme = true) {
+// do not render variables in shell-only mode in order to ease themeable scenarios
+:root when (@shell_only = false), (@full_theme = true) {
     --color-background: @color_background;
     --color-root: @color_root_background;
     --color-default: @color_default;
