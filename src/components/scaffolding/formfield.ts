@@ -8,11 +8,11 @@ css-class="{{ {'${PCSS}-fetching': ::_fetcher.fetching, '${PCSS}-dirty': this.di
     <label class="${PCSS}-label"></label>
     <div class="${PCSS}-input-container"></div>
     <${ P}-fetch debounce="50" logger="{{ :host.logger }}" credentials="{{ :host.fetchCredentials }}" headers="{{ :host.fetchHeaders }}" diff-by-values="true"></${P}-fetch>
-    <${ P}-panel class="${PCSS}-validators" hide="{{ ::_form.valid || !::_form.dirty }}"></${ P}-panel>
+    <${ P}-panel class="${PCSS}-validators" hide="{{ ::_form.valid || !::_form.dirty }}"></${P}-panel>
 </${ P}-form>`
     })
     export class PacemFormFieldElement extends PacemElement implements Pacem.Net.OAuthFetchable {
-        
+
         constructor() {
             super();
         }
@@ -127,11 +127,36 @@ css-class="{{ {'${PCSS}-fetching': ::_fetcher.fetching, '${PCSS}-dirty': this.di
             label.setAttribute('id', 'label' + this._key);
         }
 
+        // #region Template-called
+
         private _isValueNullOrEmpty(
             entity = this.entity,
             metadata: Pacem.Scaffolding.PropertyMetadata = this.metadata) {
             return Utils.isNullOrEmpty(entity && metadata && entity[metadata.prop]);
         }
+
+        /**
+         * Reflects the value onto the entity attribute, if the 'entity' is an instance of HTMLElement.
+         * @param value
+         */
+        private _handleValueChange(value: any) {
+            var prop = this.metadata.prop;
+            if (this.entity instanceof HTMLElement) {
+
+                // handle the entity as an element and modify the attribute
+                let attr = CustomElementUtils.camelToKebab(prop);
+                if (Utils.isNullOrEmpty(value)) {
+                    this.entity.removeAttribute(attr);
+                } else {
+                    this.entity.setAttribute(attr, value.toString());
+                }
+
+            } else {
+                this.entity[prop] = value;
+            }
+        }
+
+        // #endregion
 
         private _buildUpFetcher(): void {
             // fetcher
@@ -157,7 +182,7 @@ css-class="{{ {'${PCSS}-fetching': ::_fetcher.fetching, '${PCSS}-dirty': this.di
             var meta = this.metadata;
 
             // field
-            let tagName: string = P + '-input-text';
+            let tagName: string = /* setting the default/fallback input element */ P + '-input-text';
             let attrs: { [key: string]: string } = {
                 'id': this._key, 'name': meta.prop,
                 // readonly if property `readonly` set to true OR metadata property is not editable OR parent form's `readonly` property is set to true
@@ -165,6 +190,7 @@ css-class="{{ {'${PCSS}-fetching': ::_fetcher.fetching, '${PCSS}-dirty': this.di
                 'value': `{{ :host.entity.${meta.prop}, twoway }}`,
                 'placeholder': `${((meta.display && meta.display.watermark) || "")}`
             };
+
             // fetch data
             let fetchData: { sourceUrl: string, valueProperty: string, textProperty: string, verb: Pacem.Net.HttpMethod, dependsOn?: { prop: string, alias?: string, value?: any, hide?: boolean }[] } = meta.extra;
             let fetchAttrs: { [key: string]: string } = {};
@@ -215,6 +241,11 @@ css-class="{{ {'${PCSS}-fetching': ::_fetcher.fetching, '${PCSS}-dirty': this.di
 
             // metadata
             switch (meta.display && meta.display.ui) {
+                case 'expression':
+                    // cms context sneak-in (stub)
+                    attrs['value'] = `{{ :host.entity instanceof HTMLElement && :host.entity.getAttribute('${ CustomElementUtils.camelToKebab(meta.prop) }') }}`;
+                    attrs['on-change'] = ':host._handleValueChange($event.target.value)';
+                    break;
                 // remove this (use dataType = 'HTML' instead).
                 case 'contentEditable':
                     console.warn('`contentEditable` ui hint is deprecated. Lean on `dataType` equal to \'HTML\' instead.');

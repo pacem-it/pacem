@@ -2,30 +2,43 @@
 /// <reference path="../../../dist/js/pacem-ui.d.ts" />
 namespace Pacem.Scaffolding {
 
+    export declare type DisplayMetadata = {
+        name: string, description?: string, short?: string, watermark?: string, null?: string, ui?: string, format?: string,
+
+        // css styles
+        css?: { [name: string]: string },
+
+        // css class
+        cssClass?: string[],
+    }
+
+    export declare type ValidatorMetadata = { type: string, errorMessage: string, params?: any };
+
     export declare type PropertyMetadata = {
         prop: string,
-        type: string,
-        display?: {
-            name: string, description?: string, short?: string, watermark?: string, null?: string, ui?: string, format?: string,
-            // css styles
-            css?: { [name: string]: string },
-            // css class
-            cssClass?: string[],
-        },
+        type: 'object' | 'array' | string,
+        display?: DisplayMetadata,
         extra?: any,
         isReadOnly?: boolean,
         dataType?: string,
         isComplexType?: boolean,
         isNullable?: boolean,
-        validators?: { type: string, errorMessage: string, params?: any }[]
+        validators?: ValidatorMetadata[]
+
+        // child entities
+        /** Either the metadata of an 'object' or the metadata of the single item of an homogeneous 'array'. */
+        props?: PropertyMetadata[]
     };
 
+    // It is important that Type- and Property-Metadata match in their core properties in order to allow recursion when rendered.
     export declare type TypeMetadata = {
-        // css styles
-        css?: { [name: string]: string },
-        // css class
-        cssClass?: string[],
-        props: PropertyMetadata[]
+
+        display?: DisplayMetadata,
+
+        props: PropertyMetadata[],
+
+        // one form? many subforms?
+        type?: 'object' | 'array'
     }
 
 }
@@ -48,7 +61,6 @@ namespace Pacem.Components.Scaffolding {
 
         value: any;
         viewValue: string;
-        metadata: PropertyMetadata
     }
 
     const ORIGINAL_VALUE_FIELD = 'pacem:model:original-value';
@@ -166,7 +178,6 @@ namespace Pacem.Components.Scaffolding {
         @Watch({ converter: PropertyConverters.Boolean }) dirty: boolean;
         @Watch({ converter: PropertyConverters.Boolean }) valid: boolean;
         @Watch({ converter: PropertyConverters.String }) name: string;
-        metadata: Pacem.Scaffolding.PropertyMetadata;
     }
 
     export abstract class PacemBaseElement extends PacemModelElement {
@@ -263,6 +274,8 @@ namespace Pacem.Components.Scaffolding {
                     this.dispatchEvent(new Event('change'));
                     this.dirty = true;
                 }
+            }, _ => {
+                // do nothing
             });
         }
 

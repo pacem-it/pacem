@@ -29,7 +29,7 @@
     position: fixed;
     top: 0;
     left: 0;
-    z-index: @hamburger-z-index;
+    z-index: @hamburger_z_index;
 }
 
 .@{PCSS}-hamburger-menu {
@@ -276,6 +276,19 @@
     }
 }
 
+.@{PCSS}-body {
+
+    // Toolbar on top of the layout? Hamburger button IS dependent from it.
+    &[headbar]:not([header]),
+    &[headbar-prepend] {
+
+        // Shift it down.
+        @{P}-button.@{PCSS}-menu.@{PCSS}-hamburger {
+            top: @_toolbar_height;
+        }
+    }
+}
+
 /*#endregion*/
 
 /*#region ASIDE MENU */
@@ -283,7 +296,7 @@
 
     @{P}-menu {
         font-size: .8em;
-        z-index: @header-z-index - 10;
+        z-index: @header_z_index - 10;
 
         .@{PCSS}-hamburger-menu {
             width: @_w;

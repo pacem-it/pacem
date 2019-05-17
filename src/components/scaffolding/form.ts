@@ -70,8 +70,10 @@ namespace Pacem.Components.Scaffolding {
             form.className = PCSS + '-form';
             form.setAttribute('pacem', '');
             form.setAttribute('novalidate', '');
+
+            // TODO: setup recursion
             const html = `<${P}-repeater class="${PCSS}-animatable-list ${PCSS}-list-bottom" datasource="{{ #${uid}.metadata && (#${uid}.metadata.props || #${uid}.metadata) }}">
-    <${P}-panel css="{{ #${uid}.metadata.css }}" css-class="{{ #${uid}.metadata.cssClass }}">
+    <${P}-panel css="{{ #${uid}.metadata.display && #${uid}.metadata.display.css }}" css-class="{{ #${uid}.metadata.display && #${uid}.metadata.display.cssClass }}">
         <template>
             <${P}-form-field css-class="{{ ^item.display && ^item.display.cssClass }}" css="{{ ^item.display && ^item.display.css }}"
                              fetch-credentials="{{ #${uid}.fetchCredentials }}" fetch-headers="{{ #${uid}.fetchHeaders }}"

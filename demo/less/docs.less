@@ -94,7 +94,7 @@ html .@{PCSS}-preloader {
             display: table;
             .FontMainSize(1.75);
 
-            &:first-child{
+            &:first-child {
                 margin-top: 0;
             }
 
@@ -166,7 +166,7 @@ html .@{PCSS}-preloader {
         position: sticky;
         top: @grid_cell; // 4.5 * @grid_spacing;
         z-index: @header-z-index - 100;
-        background: @color_background;
+        background: @color_root_background;
         .Background();
         margin: -@grid_spacing 0 0 0;
         padding: 0;
@@ -177,14 +177,18 @@ html .@{PCSS}-preloader {
         font-weight: 400;
     }
 
+    @media (orientation:portrait) {
+        h1#heading {
+            margin: -@grid_spacing -@grid_spacing 0 -@grid_spacing;
+            padding: 0 @grid_spacing;
+        }
+    }
+
     .@{PCSS}-animations {
         @{P}-view.@{PCSS}-animatable {
         }
     }
-    /*footer {
-    position: absolute;
-    bottom: @grid_spacing * .5;
-}*/
+    /*#region menu*/
     @{P}-menu .collapsed .@{PCSS}-icon {
         transform: rotate(-90deg);
     }
@@ -196,7 +200,7 @@ html .@{PCSS}-preloader {
             transition: transform .22s ease-in-out;
         }
     }
-    /*#region menu*/
+
     .menu-group {
         //margin: @grid_spacing 0 0 0;
         .FontMainSize(1);

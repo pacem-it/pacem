@@ -41,7 +41,7 @@
     &[header] {
         padding-top: @grid_spacing + @_header_height;
 
-        &[headbar] {
+        &[headbar], &[headbar-prepend] {
             padding-top: @grid_spacing + @_toolbar_height + @_header_height;
         }
     }
@@ -53,7 +53,7 @@
     &[footer] {
         padding-bottom: @grid_spacing + @_footer_height;
 
-        &[footbar] {
+        &[footbar], &[footbar-append] {
             padding-bottom: @grid_spacing + @_toolbar_height + @_footer_height;
         }
     }
@@ -61,7 +61,7 @@
     &[bigfooter] {
         padding-bottom: @grid_spacing + @_bigfooter_height;
 
-        &[footbar] {
+        &[footbar], &[footbar-append] {
             padding-bottom: @grid_spacing + @_toolbar_height + @_bigfooter_height;
         }
     }
@@ -102,6 +102,7 @@ header[pacem],
 .@{PCSS}-header {
     height: @_header_height + @_toolbar_height;
     padding-left: @grid_cell;
+    padding-right: @grid_spacing;
     padding-top: @_toolbar_height;
     top: 0;
     display: block;
@@ -119,6 +120,7 @@ footer[pacem],
     bottom: 0;
     height: @_bigfooter_height + @_toolbar_height;
     padding-left: @grid_spacing;
+    padding-right: @grid_spacing;
     padding-bottom: @_toolbar_height + (@_bigfooter_height - @_footer_height);
     display: flex;
     flex-direction: column;
@@ -162,7 +164,7 @@ aside[pacem], .@{PCSS}-aside {
     padding: 0;
     margin: 0;
     // css grid
-    grid-template-columns: auto 1fr;
+    grid-template-columns: minmax(@grid_cell, auto) 1fr;
 
     > * {
         height: @_toolbar_height;
@@ -208,6 +210,7 @@ aside[pacem], .@{PCSS}-aside {
     box-shadow: 0 1px @grid_spacing rgba(0,0,0,0.5);
     border-bottom-color: transparent;
 }
+
 ._FootShadow() {
     border-top-color: transparent;
     box-shadow: 0 0 @grid_spacing rgba(0,0,0,0.25);
@@ -398,11 +401,6 @@ aside[pacem], .@{PCSS}-aside {
     footer[pacem],
     .@{PCSS}-footer {
         padding-left: @grid_cell;
-    }
-
-    .@{PCSS}-toolbar.toolbar-header,
-    .@{PCSS}-toolbar.toolbar-footer {
-        grid-template-columns: minmax(@grid_cell, auto) 1fr;
     }
 
     // large screen @grid_cell padding set.

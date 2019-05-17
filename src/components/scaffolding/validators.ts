@@ -220,16 +220,8 @@ namespace Pacem.Components.Scaffolding {
                     default: // expect json
                         try {
                             let json = JSON.parse(result);
-                            if (typeof (json) === 'object' && (<object>json).hasOwnProperty('success')) {
-                                if (json.success === true) {
-                                    deferred.resolve(json.result || false);
-                                } else {
-                                    this.log(Logging.LogLevel.Error, json.error)
-                                    deferred.resolve(false);
-                                }
-                            } else {
-                                deferred.resolve(false);
-                            }
+                            let res = Utils.getApiResult(json);
+                            deferred.resolve(res || false);
                         } catch{
                             deferred.resolve(false);
                         }

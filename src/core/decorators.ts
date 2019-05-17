@@ -152,14 +152,8 @@ namespace Pacem {
                 return;
             }
 
-            //SET_VAL(target, TYPE_OPTIONS_VAR, config);
-            var properties: { name: string, converter: PropertyConverter }[] = [];
-            var chain: Type<any> = target;
-            do {
-
-                Array.prototype.splice.apply(properties, [0, 0].concat(GET_VAL(chain, WATCH_PROPS_VAR) || []));
-
-            } while (chain = Object.getPrototypeOf(chain));
+            // retrieved watched properties (inherited included)
+            var properties = CustomElementUtils.getWatchedProperties(target, true);
 
             SET_VAL(target, HAS_TEMPLATE_VAR, !(Utils.isNullOrEmpty(config.template) && Utils.isNullOrEmpty(config.templateUrl)));
 
@@ -286,7 +280,8 @@ namespace Pacem {
                             // retry with unresolved properties
                             for (let property of properties) {
                                 const prop = property.name;
-                                if (!property.converter.retryConversionWhenReady || !Utils.isNull(_this[prop])) {
+                                const config = property.config;
+                                if (!config.converter.retryConversionWhenReady || !Utils.isNull(_this[prop])) {
                                     continue;
                                 }
                                 // check attr
@@ -294,7 +289,7 @@ namespace Pacem {
                                     attr = (<HTMLElement>_this).getAttribute(attrName);
                                 if (!Utils.isNullOrEmpty(attr) && !CustomElementUtils.isBindingAttribute(attr)) {
                                     // retry conversion
-                                    _this[prop] = property.converter.convert(attr, _this);
+                                    _this[prop] = config.converter.convert(attr, _this);
                                 }
                             }
 
@@ -417,7 +412,7 @@ namespace Pacem {
                             var property = properties.find(p => p.name === prop);
                             if (!Utils.isNull(property)) {
                                 // eventual retry at Ln.286
-                                _this[prop] = property.converter.convert(val, _this);
+                                _this[prop] = property.config.converter.convert(val, _this);
                             }
                         }
 
@@ -458,11 +453,11 @@ namespace Pacem {
                                 ) {
                                     var attrName = CustomElementUtils.camelToKebab(name),
                                         attr = _this.attributes.getNamedItem(attrName);
-
+                                    var config: WatchConfig;
                                     if (val === undefined || val === null) {
                                         _this.removeAttribute(attrName);
-                                    } else if (property && property.converter && typeof property.converter.convertBack === 'function') {
-                                        const sval = property.converter.convertBack(val, _this);
+                                    } else if (property && (config = property.config) && typeof config.converter.convertBack === 'function') {
+                                        const sval = config.converter.convertBack(val, _this);
                                         /* ...and the values are different */
                                         if (attr == null || sval !== attr.value)
                                             _this.setAttribute(attrName, sval);
@@ -545,11 +540,10 @@ namespace Pacem {
     export function Watch(config?: WatchConfig) {
         return (target: any, prop: string, descriptor?: PropertyDescriptor) => {
 
-            var watchableProperties: { name: string, converter: PropertyConverter }[] = GET_VAL(target.constructor, WATCH_PROPS_VAR, []);
-            var converter = DefaultPropertyConverter;
-            if (config && config.converter)
-                converter = config.converter;
-            watchableProperties.push({ name: prop, converter: converter });
+            var watchableProperties: { name: string, config: WatchConfig }[] = GET_VAL(target.constructor, WATCH_PROPS_VAR, []);
+            watchableProperties.push({
+                name: prop, config: Utils.extend({ emit: true, converter: DefaultPropertyConverter }, config)
+            });
 
             // comparer
             const comparer = DefaultComparer;

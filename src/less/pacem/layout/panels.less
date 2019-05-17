@@ -36,7 +36,6 @@
 
     .panel-body.@{PCSS}-flex,
     .panel-body.@{PCSS}-row {
-        //margin: -@grid_spacing/2 -(@grid_spacing * 7/6) -7 * @grid_spacing/4 -(@grid_spacing * 7/6);
         margin: -@panel_spacing -(@panel_spacing * 7/3) 0 -(@panel_spacing * 7/3);
     }
 
@@ -60,6 +59,7 @@
     &.panel-master {
     }
 }
+
 /* #region MASTER PANEL */
 .@{PCSS}-wrapper {
     @_brd_in_clr: #595a58;
@@ -124,9 +124,47 @@
 
     .tools {
 
-       @{P}-button:before {
+        @{P}-button:before {
             color: @color_default_inv;
         }
     }
 }
+
+.Wide() {
+    margin: -@grid_spacing;
+    margin-bottom: 0;
+    padding: 0;
+    border: none;
+
+    &.panel-wrapper {
+        box-shadow: none;
+
+        > .panel-master {
+            border: none;
+
+            &when(@shadows = false) {
+                // add slight shadow to unshadowed themes
+                // '@shadow true' logic willingly inverted.
+                box-shadow: inset 0 4px 16px rgba(0,0,0,0.5);
+            }
+        }
+    }
+}
+
+.@{PCSS}-wide {
+    .Wide();
+}
+
+@media (orientation:portrait) {
+    .@{PCSS}-v-wide {
+        .Wide();
+    }
+}
+
+@media (max-width:@threshold_sm - 1) {
+    .@{PCSS}-xs-wide {
+        .Wide();
+    }
+}
+
 /* #endregion */

@@ -51,6 +51,7 @@
     <None Remove="src\components\scaffolding\tags.ts" />
     <None Remove="src\components\ui\calendar.ts" />
     <None Remove="src\components\ui\pager.ts" />
+    <None Remove="src\components\ui\timeline.ts" />
     <None Remove="src\core\maths\gaussian.ts" />
     <None Remove="demo\customelement-descriptor.ts" />
     <None Remove="demo\themeroller.ts" />

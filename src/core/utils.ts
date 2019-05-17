@@ -629,8 +629,8 @@ namespace Pacem {
         //#region Net
 
         static getApiResult(json: any): any {
-            if (!Utils.isNullOrEmpty(json)
-                && typeof json === 'object'
+            if (typeof json === 'object'
+                && !Utils.isNull(json)
                 && json.hasOwnProperty('success')
             ) {
                 switch (json.success) {
@@ -694,6 +694,21 @@ namespace Pacem {
             return CustomElementUtils.import(src,
                 'script', attrs,
                 (document.head || document.getElementsByTagName("head")[0]));
+        }
+
+        static getWatchedProperties(target: Type<any>, includeInherited?: boolean): { name: string, config: WatchConfig }[];
+        static getWatchedProperties(element: HTMLElement, includeInherited?: boolean): { name: string, config: WatchConfig }[];
+        static getWatchedProperties(target: Type<any> | HTMLElement, includeInherited = true): { name: string, config: WatchConfig }[] {
+            var properties: { name: string, config: WatchConfig }[] = [];
+            var chain = target instanceof HTMLElement ? target.constructor : target;
+            do {
+
+                let additional: { name: string, config: WatchConfig }[] = this.getAttachedPropertyValue(chain, WATCH_PROPS_VAR) || [];
+                let pblic: any[] = additional.filter(p => !p.name.startsWith('_'));
+                Array.prototype.splice.apply(properties, [0, 0].concat(pblic));
+
+            } while (includeInherited && (chain = Object.getPrototypeOf(chain)));
+            return properties;
         }
 
         static importcss(src: string, integrity: string = null, crossorigin: boolean = false) {
@@ -781,8 +796,12 @@ namespace Pacem {
                 var trunksSq = t.split('[');
                 trunksSq.forEach((t2, j) => {
                     parent = ref;
-                    if (/\]$/.test(t2))
+                    if (/\]$/.test(t2)) {
                         t2 = t2.substr(0, t2.length - 1);
+                        if (/^('|").+[^\\]\1$/.test(t2)) {
+                            t2 = t2.substr(1, t2.length - 2);
+                        }
+                    }
                     ref = ref[t2];
                 });
             });
@@ -802,20 +821,32 @@ namespace Pacem {
             var obj = CustomElementUtils.resolvePath(path, element);
             var current = obj.target.value;
             if (current !== value) {
-                // property change event fires automatically
-                obj.parent.value[obj.target.name] = value;
-                if (obj.parent.value != obj.root.value /* root */) {
+                if (obj.parent.value != obj.root.value /* nested property scenario */) {
+
+                    // 1. set new value (won't fire 'propertychange' since it's a nested property)
+                    obj.parent.value[obj.target.name] = value;
+
+                    // 2. clone the resulting object (will be set as the new one at 4.)
                     const set_val = Utils.clone(obj.root.value[obj.root.property]);
+
+                    // 3. reset to previous value (so that when 4. will trigger the 'propertychange' we'll have meaningful arguments)
+                    obj.parent.value[obj.target.name] = current;
+
                     // repeater-item?
                     let repItem: Components.RepeaterItem;
                     if (obj.root.property === 'item' && !Utils.isNull(repItem = Components.RepeaterItem.getRepeaterItem(obj.root.value))) {
+
                         // kind of ugly solution, I know. it works however...
                         // trigger array update
                         repItem.repeater && repItem.repeater.datasource && repItem.repeater.datasource.splice(repItem.index, 1, repItem.item = set_val);
                     } else {
-                        // force root property change
+
+                        // 4. force root property change
                         obj.root.value[obj.root.property] = set_val;
                     }
+                } else {
+                    // parent === root, property change event fires automatically
+                    obj.parent.value[obj.target.name] = value;
                 }
             }
         }

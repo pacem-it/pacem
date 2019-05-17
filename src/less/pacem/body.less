@@ -12,20 +12,20 @@ body {
     line-height: 1.5;
     font-weight: @font_weight;
 
-    &.@{PCSS}-animations {
+    .Background();
+}
 
-        .@{PCSS}-animatable {
-            .Animatable(.4s);
-        }
+.@{PCSS}-body.@{PCSS}-animations {
 
-        h1 {
-            &.@{PCSS}-animatable {
-                .Animatable('header-anim', .2s);
-            }
-        }
+    .@{PCSS}-animatable {
+        .Animatable(.4s);
     }
 
-    .Background();
+    h1 {
+        &.@{PCSS}-animatable {
+            .Animatable('header-anim', .2s);
+        }
+    }
 }
 
 ::-webkit-scrollbar {

@@ -11,8 +11,16 @@
 
 @panel_spacing: @grid_spacing / 2;
 
+// deprecated hyphenated
 @toast-z-index: 2000; // < leaflet controls z-index = 1000
 @balloon-z-index: @toast-z-index - 100;
 @lightbox-z-index: @balloon-z-index - 100;
 @hamburger-z-index: @lightbox-z-index - 100;
 @header-z-index: @hamburger-z-index - 100;
+
+// renaming with underscores
+@toast_z_index: 2000; // < leaflet controls z_index = 1000
+@balloon_z_index: @toast_z_index - 100;
+@lightbox_z_index: @balloon_z_index - 100;
+@hamburger_z_index: @lightbox_z_index - 100;
+@header_z_index: @hamburger_z_index - 100;

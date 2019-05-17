@@ -41,7 +41,8 @@
         (function (global) {
             global.Pacem = Object.assign(global.Pacem || {}, { Configuration: { prefix: "pacem" } });
         })(window);
-    </script>
+
+/**/</script>
     <link href="~/dist/css/pacem-dark-shell.min.css?v=@(version)" rel="stylesheet" />
     <link href="~/dist/css/pacem-light-shell.min.css?v=@(version)" rel="stylesheet" />
     <link href="~/dist/css/pacem-phousys-shell.min.css?v=@(version)" rel="stylesheet" />
@@ -123,39 +124,37 @@
                        on-popup="#buttonset.index = -1; #buttonset.focus(); #collapse.collapse = false"
                        on-popout="#collapse.collapse = true"
                        class="balloon-border balloon-corners">
-            <div class="pacem-panel balloon-panel panel-primary">
-                <div class="panel-heading heading-sever pacem-grid">
+            <div class="pacem-grid grid-nogap">
 
-                    <div class="pacem-cell cols-4">
+                <div class="pacem-cell cols-lg-3 pacem-panel">
+                    <div class="panel-heading heading-sever">
                         Version
                     </div>
-                    <div class="pacem-cell cols-8 text-nowrap">
+                    <div class="panel-body">
+                        v@(pacemjs_version)
+                    </div>
+                </div>
+                <div class="pacem-cell cols-lg-9 pacem-panel">
+                    <div class="panel-heading heading-sever">
                         Theme
                     </div>
-
-                </div>
-                <div class="panel-body">
-                    <div class="pacem-grid">
-                        <div class="pacem-cell cols-4">
-                            v@(pacemjs_version)
-                        </div>
-                        <div class="pacem-cell cols-8 text-nowrap">
-                            <pacem-radio-list datasource="{{ #themes.model }}"
-                                              value="{{ #theme.model }}"
-                                              on-change="#ddl.popout(); #themename.model = $this.value.value"
-                                              text-property="label"></pacem-radio-list>
-                        </div>
-                        <div class="pacem-cell" pacem hidden>
-                            <pacem-checkbox true-value="true" false-value="false" readonly="false" caption="Header" value="{{ #layoutHeader.model, twoway }}"></pacem-checkbox>
-                            <pacem-checkbox true-value="true" false-value="false" caption="Footer" value="{{ #layoutFooter.model, twoway }}"></pacem-checkbox>
-                            <pacem-checkbox true-value="true" false-value="false" caption="Big-footer" value="{{ #layoutBigfooter.model, twoway }}"></pacem-checkbox>
-                            <pacem-checkbox true-value="true" false-value="false" caption="Head bar" value="{{ #layoutHeadbar.model, twoway }}"></pacem-checkbox>
-                            <pacem-checkbox true-value="true" false-value="false" caption="Foot bar" value="{{ #layoutFootbar.model, twoway }}"></pacem-checkbox>
-                            <pacem-checkbox true-value="true" false-value="false" caption="Head bar (prepend)" value="{{ #layoutHeadbarPrepend.model, twoway }}"></pacem-checkbox>
-                            <pacem-checkbox true-value="true" false-value="false" caption="Foot bar (append)" value="{{ #layoutFootbarAppend.model, twoway }}"></pacem-checkbox>
-                            <pacem-checkbox true-value="true" false-value="false" caption="Aside" value="{{ #layoutAside.model, twoway }}"></pacem-checkbox>
-                        </div>
+                    <div class="panel-body">
+                        <pacem-radio-list datasource="{{ #themes.model }}"
+                                          value="{{ #theme.model }}"
+                                          on-change="#ddl.popout(); #themename.model = $this.value.value"
+                                          text-property="label"></pacem-radio-list>
                     </div>
+                </div>
+                <div class="pacem-cell" pacem hidden>
+
+                    <pacem-checkbox true-value="true" false-value="false" readonly="false" caption="Header" value="{{ #layoutHeader.model, twoway }}"></pacem-checkbox>
+                    <pacem-checkbox true-value="true" false-value="false" caption="Footer" value="{{ #layoutFooter.model, twoway }}"></pacem-checkbox>
+                    <pacem-checkbox true-value="true" false-value="false" caption="Big-footer" value="{{ #layoutBigfooter.model, twoway }}"></pacem-checkbox>
+                    <pacem-checkbox true-value="true" false-value="false" caption="Head bar" value="{{ #layoutHeadbar.model, twoway }}"></pacem-checkbox>
+                    <pacem-checkbox true-value="true" false-value="false" caption="Foot bar" value="{{ #layoutFootbar.model, twoway }}"></pacem-checkbox>
+                    <pacem-checkbox true-value="true" false-value="false" caption="Head bar (prepend)" value="{{ #layoutHeadbarPrepend.model, twoway }}"></pacem-checkbox>
+                    <pacem-checkbox true-value="true" false-value="false" caption="Foot bar (append)" value="{{ #layoutFootbarAppend.model, twoway }}"></pacem-checkbox>
+                    <pacem-checkbox true-value="true" false-value="false" caption="Aside" value="{{ #layoutAside.model, twoway }}"></pacem-checkbox>
                 </div>
             </div>
         </pacem-balloon>

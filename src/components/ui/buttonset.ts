@@ -4,7 +4,7 @@ namespace Pacem.Components.UI {
     @CustomElement({
         tagName: P +'-buttonset'
     })
-    export class PacemButtonsetElement extends PacemIterativeElement<PacemButtonElement> implements OnPropertyChanged, OnConnected {
+    export class PacemButtonsetElement extends PacemIterativeElement<PacemButtonElement> {
         
         connectedCallback() {
             super.connectedCallback();

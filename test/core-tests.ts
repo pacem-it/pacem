@@ -240,6 +240,55 @@ logger="{{ #_RFzKYbi.logger }}" entity="{{ #_RFzKYbi.entity, twoway }}" metadata
             });
         }
     },
+
+    {
+        name: 'CustomElementUtils', test: function () {
+
+            it('Set object leaf property (dotted path)', function () {
+
+                let node = document.createElement('div');
+                let root = {
+                    trunk: {
+                        branch: {
+                            leaf: { color: 'green' }
+                        }
+                    }
+                };
+                node['root'] = root;
+
+                CustomElementUtils.set(node, 'root.trunk.branch.leaf.color', 'yellow');
+
+                let root1 = node['root'];
+                expect(root1 === root).toBeFalsy();
+                expect(root.trunk.branch.leaf.color).toEqual('green');
+                expect(root1.trunk.branch.leaf.color).toEqual('yellow');
+
+            });
+
+            it('Set object leaf property (articulated path)', function () {
+
+                let node = document.createElement('div');
+                let root = {
+                    trunk: {
+                        branch: {
+                            leaf: { color: 'green' }
+                        }
+                    }
+                };
+                node['root'] = root;
+
+                CustomElementUtils.set(node, 'root.trunk[\'branch\'].leaf.color', 'yellow');
+
+                let root1 = node['root'];
+                expect(root1 === root).toBeFalsy();
+                expect(root.trunk.branch.leaf.color).toEqual('green');
+                expect(root1.trunk.branch.leaf.color).toEqual('yellow');
+
+            })
+
+        }
+    },
+
     {
         name: 'CustomElements', test: function () {
 

@@ -9,7 +9,7 @@ namespace Pacem.Components.Plus {
         <${ P }-form on-submit=":host._onSubmit($event)" action="{{ :host.action }}" entity="{{ :host.state }}" on-success=":host._broadcast($event)" on-fail=":host._broadcast($event)"
             success="{{ :host.success, twoway }}" fail="{{ :host.fail, twoway }}">
             <${ P}-repeater datasource="{{ :host.metadata && (:host.metadata.props || :host.metadata) }}" class="${PCSS}-animatable-list ${PCSS}-list-bottom">
-                <${P}-panel css="{{ :host.metadata.css }}" css-class="{{ :host.metadata.cssClass }}">
+                <${P}-panel css="{{ :host.metadata && :host.metadata.display && :host.metadata.display.css }}" css-class="{{ :host.metadata && :host.metadata.display && :host.metadata.display.cssClass }}">
                     <template>
                         <${ P}-form-field css-class="{{ ^item.display && ^item.display.cssClass }}" css="{{ ^item.display && ^item.display.css }}"
                                           fetch-headers="{{ :host.fetchHeaders }}" fetch-credentials="{{ :host.fetchCredentials }}"

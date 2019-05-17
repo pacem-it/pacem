@@ -1,4 +1,7 @@
 ﻿/// <reference path="../../../dist/js/pacem-core.d.ts" />
+
+/* TODO: remove from UI bundle -> dedicated API */
+
 namespace Pacem {
 
     declare type ReplaceFn = (string: string, ...args: any[]) => string;
