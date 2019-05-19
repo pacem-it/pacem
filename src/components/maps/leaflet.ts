@@ -17,16 +17,16 @@ namespace Pacem.Components.Maps {
 
         markers = new Map<PacemMapMarkerElement, L.Marker>();
 
-        private onDragEnd(item: PacemMapMarkerElement, evt: L.LeafletEvent) {
+        private _onDragEnd(item: PacemMapMarkerElement, evt: L.LeafletEvent) {
             var pos = (<L.Marker>evt.target).getLatLng();
             item.onDragEnd(pos);
         }
 
-        private onInfo(item: PacemMapMarkerElement) {
+        private _onInfo(item: PacemMapMarkerElement) {
             item.onInfoOpen();
         }
 
-        private onClose(item: PacemMapMarkerElement) {
+        private _onClose(item: PacemMapMarkerElement) {
             item.onInfoClose();
         }
 
@@ -43,16 +43,16 @@ namespace Pacem.Components.Maps {
                 marker = L.marker(
                     item.position
                 ).addTo(ctrl.map.map);
-                marker.on('click', (e) => ctrl.openInfoWindow(item, e));
+                marker.on('click', (e) => ctrl._openInfoWindow(item, e));
                 marker.on('drag', () => ctrl.map.fitBounds());
-                marker.on('dragend', (e) => ctrl.onDragEnd(item, e));
+                marker.on('dragend', (e) => ctrl._onDragEnd(item, e));
                 ctrl.markers.set(item, marker);
             } else
                 marker = ctrl.markers.get(item);
             marker.setLatLng(item.position);
             if (typeof item.icon === 'string') {
                 // icon url only
-                ctrl.setIcon(marker, item.icon);
+                ctrl._setIcon(marker, item.icon);
             } else if (!Utils.isNull(item.icon)) {
                 // structured icon
                 let options: L.IconOptions = { iconUrl: item.icon.url };
@@ -65,32 +65,39 @@ namespace Pacem.Components.Maps {
                 }
                 if (!Utils.isNullOrEmpty(item.icon.anchor)) {
                     Utils.extend(options, {
-                        iconAnchor: [item.icon.anchor.x, item.icon.anchor.y] });
+                        iconAnchor: [item.icon.anchor.x, item.icon.anchor.y]
+                    });
                 }
-                ctrl.setIcon(marker, new L.Icon(options));
+                ctrl._setIcon(marker, new L.Icon(options));
             }
-            ctrl.setCaption(marker, item.caption);
-            ctrl.setDraggable(marker, item.draggable);
+            ctrl._setCaption(marker, item.caption);
+            ctrl._setDraggable(marker, item.draggable);
         }
 
-        private openInfoWindow(item: PacemMapMarkerElement, evt?: L.LeafletEvent) {
+        private _openInfoWindow(item: PacemMapMarkerElement, evt?: L.LeafletEvent) {
             var ctrl = this,
-                marker: L.Marker = evt.target || ctrl.markers.get(item);
+                marker: L.Marker = evt.target || ctrl.markers.get(item),
+                content = item.caption;
             if (!MapUtils.isContentEmpty(item)) {
+
+                content = item.innerHTML;
+
+            }
+            if (!Utils.isNullOrEmpty(content)) {
                 marker
-                    .bindPopup(item.innerHTML)
+                    .bindPopup(content)
                     .openPopup();
 
-                ctrl.onInfo(item);
+                ctrl._onInfo(item);
 
                 marker.on('popupclose', function () {
                     marker.unbindPopup();
-                    ctrl.onClose(item);
+                    ctrl._onClose(item);
                 });
             }
         }
 
-        private setDraggable(marker: L.Marker, v: boolean) {
+        private _setDraggable(marker: L.Marker, v: boolean) {
             if (v === true)
                 marker.dragging.enable();
             else
@@ -104,7 +111,9 @@ namespace Pacem.Components.Maps {
             this.map.fitBounds();
         }
 
-        private setIcon(marker: L.Marker, v: string | L.Icon) {
+        private _setIcon(marker: L.Marker, v: string | L.Icon) {
+
+            // legacy (deprecated)
             if (typeof v === 'string') {
                 var icon = { 'iconUrl': v }, size, anchor, popup;
                 if ((size = this['size']) && /[\d]+,[\d]+/.test(size)) {
@@ -124,10 +133,12 @@ namespace Pacem.Components.Maps {
                 }
 
                 marker.setIcon(L.icon(icon));
-            } else if (v) marker.setIcon(v);
+            }
+            // good
+            else if (v) marker.setIcon(v);
         }
 
-        private setCaption(marker: L.Marker, content: string) {
+        private _setCaption(marker: L.Marker, content: string) {
             if (marker.getPopup() && marker.getPopup().getContent() != content)
                 marker.setPopupContent(content);
         }
@@ -182,7 +193,7 @@ namespace Pacem.Components.Maps {
             var center: L.LatLng = L.latLng(MapUtils.parseCoords(ctrl.center));
             var mapOptions: L.MapOptions = {
 
-                zoomControl: scale && !ctrl.zoomControl,
+                zoomControl: scale && !Utils.isNullOrEmpty(ctrl.zoomControl),
 
                 scrollWheelZoom: ctrl.mousewheel,
 
@@ -200,13 +211,14 @@ namespace Pacem.Components.Maps {
             canvas.appendChild(mapElement);
             var map = this._map = L.map(<HTMLElement>mapElement, mapOptions);
 
-            if (scale && ctrl.zoomControl)
-                map.addControl(L.control.zoom({
-                    position: ctrl['zoomControl']
-                }));
 
             map.on('moveend', () => this.idleFiller());
-            map.on('load', () => this.idleFiller());
+            map.on('load', () => {
+                if (scale && ctrl.zoomControl) {
+                    map.zoomControl.setPosition(ctrl['zoomControl']);
+                }
+                this.idleFiller()
+            });
 
             this.tileLayer = L.tileLayer(this.tiles,
                 { attribution: this.attribution }).addTo(map);

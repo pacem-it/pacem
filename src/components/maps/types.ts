@@ -26,16 +26,20 @@ namespace Pacem.Components.Maps {
             }
             return [MapConsts.DEFAULT_COORDS.lat, MapConsts.DEFAULT_COORDS.lng];
         }
-        static expandBounds(bnds: any[], latLng: LatLng) {
-            if (latLng)
-                bnds.push([latLng.lat, latLng.lng]);
+        static expandBounds(bnds: any[], latLng: LatLng | number[]) {
+            if (latLng) {
+                if (!Array.isArray(latLng)) {
+                    latLng = [latLng.lat, latLng.lng];
+                }
+                bnds.push(latLng);
+            }
         }
         static isContentEmpty(element: HTMLElement): boolean {
             return element.children.length == 0;
         }
     };
 
-    export abstract class MapRelevantElement extends PacemEventTarget implements OnViewActivated, OnDisconnected {
+    export abstract class MapRelevantElement extends PacemEventTarget {
 
         get map(): PacemMapElement {
             return this['_map'] = this['_map'] || CustomElementUtils.findAncestorOfType(this, PacemMapElement);

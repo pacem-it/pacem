@@ -1,11 +1,81 @@
-﻿
+﻿<style type="text/css">
+    .pacem-map > div {
+        min-height: 300px !important;
+    }
+</style>
 
 <pacem-markdown value="{{ #content0.textContent }}" root></pacem-markdown>
 
 <pre pacem hidden id="content0">
-# `&lt;pacem-map>`
 
-typing docs...
+## Adapter-based Maps
+Maps functionalities are abstracted in **Pacem JS** while their contextualization into a specific _Maps_ technology is delegated to adapter interfaces.
+
+Currently available adapters are:
+
+- the **LeafletJS** adapter
+- the **Azure** maps adapter
+- and the **Google** maps adapter
+
+</pre>
+
+
+<pacemjs-snippet>
+    <template>
+
+        <pacem-map-adapter-leaflet id="leafletjs"></pacem-map-adapter-leaflet>
+        <pacem-map-adapter-google id="googlemaps" api-key="AIzaSyBt15YF6PFozZ8oDbiGcz3HRvqMP5rQWCs"></pacem-map-adapter-google>
+        <pacem-map-adapter-azure id="azuremaps" subscription-key="1KOQE3tYl_TxUBDGq5FrLfOhFmOyZwUXkQJNUPp-GsI"></pacem-map-adapter-azure>
+
+        <pacem-fetch id="reverse_geocode"></pacem-fetch>
+        <pacem-data id="adapter0" model="{{ #leafletjs }}"></pacem-data>
+
+        <div class="pacem-grid grid-nospace">
+
+            <div class="pacem-cell">
+                <pacem-radio-list value="{{ #adapter0.model, twoway }}">
+                    <pacem-data-item label="leafletjs" value="{{ #leafletjs }}"></pacem-data-item>
+                    <pacem-data-item label="azure maps" value="{{ #azuremaps }}"></pacem-data-item>
+                    <pacem-data-item label="google maps" value="{{ #googlemaps }}"></pacem-data-item>
+                </pacem-radio-list>
+            </div>
+
+            <div class="pacem-cell">
+                <pacem-map adapter="{{ #adapter0.model }}" padding-top="50" padding-bottom="50" padding-left="150" padding-right="150" zoom-control="bottomright">
+                    <pacem-map-marker position="[44.714188025077984,10.296516444873811]"
+                                      icon='{ "url": "/assets/pp_w_s.png", "size": {"width": 45, "height": 45}, "anchor": {"x": 15, "y": 45} }'
+                                      on-dragend="#reverse_geocode.url = 'https://nominatim.openstreetmap.org/reverse?format=json&lat='+ $event.detail.position.lat +'&lon='+ $event.detail.position.lng" draggable="true">
+                        <pacem-text text="{{ (#reverse_geocode.result && #reverse_geocode.result.display_name) || 'at Pacem, but you can drag me...' }}"></pacem-text>
+                    </pacem-map-marker>
+
+                    <pacem-map-marker position="[52.2348893,0.1534863]">
+                        <span>OpenStreetMap Foundation</span>
+                    </pacem-map-marker>
+                    <pacem-map-marker position="[47.6519785,-122.1366468]">
+                        <span>Microsoft HeadQuarters</span>
+                    </pacem-map-marker>
+                    <pacem-map-marker position="[37.4236614,-122.0867612]">
+                        <span>Google HeadQuarters</span>
+                    </pacem-map-marker>
+                </pacem-map>
+            </div>
+        </div>
+
+    </template>
+</pacemjs-snippet>
+
+<pacem-markdown value="{{ #content1.textContent }}" root></pacem-markdown>
+
+<pre pacem hidden id="content1">
+
+## Leaflet JS
+Open source mappings with **OpenStreetMaps** tiles and **LeafletJS** engine flow naturally using the `&lt;pacem-map-adapter-leaflet>` component (aka `PacemLeafletMapAdapterElement`).
+
+## Azure Maps
+Azure cloud-powered maps are activated by referring the `&lt;pacem-map-adapter-azure>` component (aka `PacemAzureMapAdapterElement`).
+
+## Google Maps
+Google (well-known) maps are available via `&lt;pacem-map-adapter-google` component (aka `PacemGoogleMapAdapterElement`).
 
 </pre>
 

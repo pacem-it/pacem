@@ -1,5 +1,5 @@
 {
-  "version": "0.8.13",
+  "version": "0.8.14",
   "name": "pacem",
   "homepage": "https://js.pacem.it",
   "repository": {
@@ -100,6 +100,7 @@
   "devDependencies": {
     "@aspnet/signalr": "1.1.0",
     "@types/googlemaps": "^3.30.16",
+    "azure-maps-control": "2.0.5",
     "@types/jasmine": "3.3.8",
     "@types/leaflet": "1.4.0",
     "@types/three": "0.93.19",

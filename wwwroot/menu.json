@@ -207,8 +207,16 @@
         "view": "map"
       },
       {
-        "label": "Adapters (Google, LeafletJS)",
-        "view": "adapters"
+        "label": "Leaflet JS Adapters",
+        "view": "leaflet"
+      },
+      {
+        "label": "Azure Maps Adapters",
+        "view": "azure"
+      },
+      {
+        "label": "Google Maps Adapters",
+        "view": "google"
       }
     ]
   },

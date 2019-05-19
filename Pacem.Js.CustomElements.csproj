@@ -46,6 +46,7 @@
     <None Remove="src\components\basic\template-proxy.ts" />
     <None Remove="src\components\fx\fancy.ts" />
     <None Remove="src\components\fx\hero.ts" />
+    <None Remove="src\components\maps\azure-maps.d.ts" />
     <None Remove="src\components\scaffolding\namevalue-list.ts" />
     <None Remove="src\components\scaffolding\slider.ts" />
     <None Remove="src\components\scaffolding\tags.ts" />
@@ -268,6 +269,7 @@
     <TypeScriptCompile Include="src\components\logging\console.ts" />
     <TypeScriptCompile Include="src\components\logging\fps.ts" />
     <TypeScriptCompile Include="src\components\logging\types.ts" />
+    <TypeScriptCompile Include="src\components\maps\azure-maps.d.ts" />
     <TypeScriptCompile Include="src\components\maps\azure.ts" />
     <TypeScriptCompile Include="src\components\maps\google.ts" />
     <TypeScriptCompile Include="src\components\maps\leaflet.ts" />

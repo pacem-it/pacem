@@ -7,6 +7,17 @@ namespace Pacem.Components.Maps {
         API_URI: 'https://maps.googleapis.com/maps/api/js'
     };
 
+
+    class GMapsUtils {
+        static getPosition(latLng: LatLng | number[]) : google.maps.LatLngLiteral {
+            if (Array.isArray(latLng)) {
+                latLng = { lat: latLng[0], lng: latLng[1] };
+            }
+            return latLng;
+        }
+
+    }
+
     class PacemGoogleMarkerAdapter {
 
         constructor(private map: PacemGoogleMapAdapterElement) {
@@ -15,17 +26,17 @@ namespace Pacem.Components.Maps {
         markers = new Map<PacemMapMarkerElement, google.maps.Marker>();
         infoWindows = new Map<PacemMapMarkerElement, google.maps.InfoWindow>();
 
-        private onDragEnd(item: PacemMapMarkerElement, evt: MouseEvent) {
+        private _onDragEnd(item: PacemMapMarkerElement, evt: MouseEvent) {
             const pos = this.markers.get(item).getPosition(),
                 dpos = { lat: pos.lat(), lng: pos.lng() };
             item.onDragEnd(dpos);
         }
 
-        private onInfo(item: PacemMapMarkerElement) {
+        private _onInfo(item: PacemMapMarkerElement) {
             item.onInfoOpen();
         }
 
-        private onClose(item: PacemMapMarkerElement) {
+        private _onClose(item: PacemMapMarkerElement) {
             item.onInfoClose();
         }
 
@@ -40,16 +51,19 @@ namespace Pacem.Components.Maps {
             var marker: google.maps.Marker;
             if (!ctrl.markers.has(item)) {
                 marker = new google.maps.Marker({
-                    position:
-                        item.position, map: ctrl.map.map
+                    position: {lat: 0, lng: 0},
+                    map: ctrl.map.map
                 });
-                marker.addListener('click', (e) => ctrl.openInfoWindow(item, e));
+                marker.addListener('click', (e) => ctrl._openInfoWindow(item, e));
                 marker.addListener('drag', () => ctrl.map.fitBounds());
-                marker.addListener('dragend', (e) => ctrl.onDragEnd(item, e));
+                marker.addListener('dragend', (e) => ctrl._onDragEnd(item, e));
                 ctrl.markers.set(item, marker);
             } else
                 marker = ctrl.markers.get(item);
-            marker.setPosition(item.position);
+
+            // set position
+            marker.setPosition(GMapsUtils.getPosition(item.position));
+
             if (typeof item.icon === 'string') {
                 // icon url only
                 marker.setIcon(item.icon);
@@ -73,61 +87,30 @@ namespace Pacem.Components.Maps {
             marker.setDraggable(item.draggable);
         }
 
-        private openInfoWindow(item: PacemMapMarkerElement, evt?: google.maps.MouseEvent) {
+        private _openInfoWindow(item: PacemMapMarkerElement, evt?: google.maps.MouseEvent) {
             var ctrl = this,
-                marker: google.maps.Marker = ctrl.markers.get(item);
+                marker: google.maps.Marker = ctrl.markers.get(item),
+                content = item.caption;
             if (!MapUtils.isContentEmpty(item)) {
+
+                content = item.innerHTML;
+
+            }
+            if (!Utils.isNullOrEmpty(content)) {
+
                 var info: google.maps.InfoWindow;
                 if (!ctrl.infoWindows.has(item)) {
                     info = new google.maps.InfoWindow();
                     info.addListener('closeclick', function () {
-                        ctrl.onClose(item);
+                        ctrl._onClose(item);
                     });
                     ctrl.infoWindows.set(item, info);
                 } else
                     info = ctrl.infoWindows.get(item);
-                info.setContent(item.innerHTML);
+                info.setContent(content);
                 info.open(ctrl.map.map, marker);
-                ctrl.onInfo(item);
+                ctrl._onInfo(item);
             }
-        }
-
-        private setDraggable(marker: google.maps.Marker, v: boolean) {
-            marker.setDraggable(v);
-        }
-
-        private setPosition(marker: google.maps.Marker, p: string | number[]) {
-            var position = MapUtils.parseCoords(p);
-            marker.setPosition(new google.maps.LatLng(position[0], position[1]));
-            //
-            this.map.fitBounds();
-        }
-
-        private setIcon(marker: google.maps.Marker, v: string | google.maps.Icon) {
-            if (typeof v === 'string') {
-                var icon: google.maps.Icon = { url: v }, size, anchor, popup;
-                if ((size = this['size']) && /[\d]+,[\d]+/.test(size)) {
-                    var ndx = -1;
-                    var size0 = [parseInt(size.substring(0, (ndx = size.indexOf(',')))), parseInt(size.substring(ndx + 1))];
-                    icon.size = new google.maps.Size(size0[0], size0[1]);
-                    //Object.assign(icon, { 'size': size0 });
-                }
-                if ((anchor = this['anchor']) && /[\d]+,[\d]+/.test(anchor)) {
-                    var ndx = -1;
-                    var anchor0 = [parseInt(anchor.substring(0, (ndx = anchor.indexOf(',')))), parseInt(anchor.substring(ndx + 1))];
-                    icon.anchor = new google.maps.Point(anchor0[0], anchor0[1]);
-                    icon.origin = new google.maps.Point(0, -anchor0[1]);
-                    //Object.assign(icon, { 'iconAnchor': anchor0, 'popupAnchor': [0, -anchor0[1]] });
-                }
-                if ((popup = this['popupAnchor']) && /[\d]+,[\d]+/.test(popup)) {
-                    var ndx = -1;
-                    var anchor0 = [parseInt(anchor.substring(0, (ndx = anchor.indexOf(',')))), parseInt(anchor.substring(ndx + 1))];
-                    icon.origin = new google.maps.Point(anchor0[0], anchor0[1]);
-                    //Object.assign(icon, { 'popupAnchor': anchor0 });
-                }
-
-                marker.setIcon(icon);
-            } else if (v) marker.setIcon(v);
         }
 
     }
@@ -181,8 +164,21 @@ namespace Pacem.Components.Maps {
             var center: google.maps.LatLng = new google.maps.LatLng(centerPos[0], centerPos[1]);
             var mapOptions: google.maps.MapOptions = {
 
-                zoomControl: scale && !ctrl.zoomControl,
-
+                zoomControl: scale && !Utils.isNullOrEmpty(ctrl.zoomControl),
+                zoomControlOptions: {
+                    position: (function (zpos) {
+                        switch (zpos) {
+                            case 'topright':
+                                return google.maps.ControlPosition.RIGHT_TOP;
+                            case 'bottomleft':
+                                return google.maps.ControlPosition.LEFT_BOTTOM;
+                            case 'bottomright':
+                                return google.maps.ControlPosition.RIGHT_BOTTOM;
+                            default:
+                                return google.maps.ControlPosition.LEFT_TOP;
+                        }
+                    })(ctrl.zoomControl)
+                },
                 scrollwheel: ctrl.mousewheel,
                 disableDoubleClickZoom: dblClickZoom,
                 keyboardShortcuts: kbShortcuts,
@@ -218,8 +214,8 @@ namespace Pacem.Components.Maps {
                 });
             }
 
-            map.addListener('dragend', () => this.idleFiller());
-            map.addListener('center_changed', () => this.idleFiller());
+            map.addListener('dragend', () => this._idleFiller());
+            map.addListener('center_changed', () => this._idleFiller());
 
             // setting now the center and zoom, triggers the "load" event and activates the child-components, if any.
             map.setCenter(center);
@@ -271,7 +267,7 @@ namespace Pacem.Components.Maps {
         //#endregion
 
         @Debounce(500)
-        private idleFiller() {
+        private _idleFiller() {
             var ctrl = this;
             if (ctrl.map)
                 google.maps.event.trigger(ctrl.map, 'idle');
@@ -297,8 +293,10 @@ namespace Pacem.Components.Maps {
                 let marker = markers.get(m);
                 if (Utils.isNull(marker)) continue;
                 const mpos = marker.getPosition();
-                bnds.extend({ lat: mpos.lat(), lng: mpos.lng() });
-                j++;
+                if (mpos) {
+                    bnds.extend({ lat: mpos.lat(), lng: mpos.lng() });
+                    j++;
+                }
             }
             for (var s of shapes.keys()) {
                 var bx = shapes.get(s).getBounds();
