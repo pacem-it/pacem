@@ -62,7 +62,7 @@ namespace Pacem.Components.Maps {
                 const map = ctrl.map.map;
                 map.markers.add(marker, position);
                 map.events.add('click', marker, (e) => ctrl._openInfoWindow(item, e));
-                map.events.add('drag', marker, () => ctrl.map.fitBounds());
+                map.events.add('drag', marker, () => ctrl.map.fitBounds(true));
                 map.events.add('dragend', marker, (e) => ctrl._onDragEnd(item, e));
                 ctrl.markers.set(item, marker);
             } else
@@ -132,6 +132,19 @@ namespace Pacem.Components.Maps {
         constructor() {
             super();
             this._markersAdapter = new PacemAzureMarkerAdapter(this);
+        }
+
+        setView(zoom: number);
+        setView(center: LatLng, zoom?: number);
+        setView(center: any, zoom?: any) {
+            const map = this._map;
+            if (!Utils.isNull(map)) {
+                if (typeof center === 'number') {
+                    map.setCamera({ zoom: center });
+                } else {
+                    map.setCamera({ position: AtlasMapUtils.getPosition(center), zoom: zoom });
+                }
+            }
         }
 
         @Watch({ emit: false, converter: PropertyConverters.String }) subscriptionKey: string;
@@ -239,7 +252,7 @@ namespace Pacem.Components.Maps {
                     adapter.markers.delete(item);
                 }
             }
-            this.fitBounds();
+            this.fitBounds(true);
         }
 
         drawItem(item: MapRelevantElement) {
@@ -249,7 +262,7 @@ namespace Pacem.Components.Maps {
                 if (!adapter.markers.has(item))
                     adapter.markers.set(item, marker);
             }
-            this.fitBounds();
+            this.fitBounds(true);
         }
 
         //#endregion
@@ -262,9 +275,13 @@ namespace Pacem.Components.Maps {
         private _shapes = new Map<any, atlas.Shape>();
 
         @Debounce(consts.TIMEOUT)
-        fitBounds() {
+        fitBounds(onlyIfAutofit?: boolean) {
             if (!this.map) return;
             var ctrl = this._container;
+
+            // check against autofit
+            if (!ctrl.autofit && onlyIfAutofit === true) return;
+
             var markers = this._markersAdapter.markers, shapes = this._shapes;
 
             // no markers

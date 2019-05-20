@@ -29,10 +29,14 @@ Currently available adapters are:
 
         <pacem-fetch id="reverse_geocode"></pacem-fetch>
         <pacem-data id="adapter0" model="{{ #leafletjs }}"></pacem-data>
+        <pacem-data id="autofit0" model="true"></pacem-data>
 
         <div class="pacem-grid grid-nospace">
 
-            <div class="pacem-cell">
+            <div class="pacem-cell cols-hd-1">
+                <pacem-checkbox true-value="true" false-value="false" value="{{ #autofit0.model, twoway }}" caption="auto-fit"></pacem-checkbox>
+            </div>
+            <div class="pacem-cell cols-hd-11">
                 <pacem-radio-list value="{{ #adapter0.model, twoway }}">
                     <pacem-data-item label="leafletjs" value="{{ #leafletjs }}"></pacem-data-item>
                     <pacem-data-item label="azure maps" value="{{ #azuremaps }}"></pacem-data-item>
@@ -41,7 +45,8 @@ Currently available adapters are:
             </div>
 
             <div class="pacem-cell">
-                <pacem-map adapter="{{ #adapter0.model }}" padding-top="50" padding-bottom="50" padding-left="150" padding-right="150" zoom-control="bottomright">
+                <pacem-map adapter="{{ #adapter0.model }}" autofit="{{ #autofit0.model }}" padding-top="50" padding-bottom="50" padding-left="150" padding-right="150" zoom-control="bottomright">
+
                     <pacem-map-marker position="[44.714188025077984,10.296516444873811]"
                                       icon='{ "url": "/assets/pp_w_s.png", "size": {"width": 45, "height": 45}, "anchor": {"x": 15, "y": 45} }'
                                       on-dragend="#reverse_geocode.url = 'https://nominatim.openstreetmap.org/reverse?format=json&lat='+ $event.detail.position.lat +'&lon='+ $event.detail.position.lng" draggable="true">
@@ -64,12 +69,14 @@ Currently available adapters are:
     </template>
 </pacemjs-snippet>
 
-<pacem-markdown value="{{ #content1.textContent }}" root></pacem-markdown>
+<pacem-markdown value="{{ #content1.textContent }}" root class="md-tech"></pacem-markdown>
 
 <pre pacem hidden id="content1">
 
 ## Leaflet JS
-Open source mappings with **OpenStreetMaps** tiles and **LeafletJS** engine flow naturally using the `&lt;pacem-map-adapter-leaflet>` component (aka `PacemLeafletMapAdapterElement`).
+Open source mappings with **OpenStreetMaps** tiles and **LeafletJS** engine flow naturally using the `&lt;pacem-map-adapter-leaflet>` component (aka `PacemLeafletMapAdapterElement`).  
+
+> Leaflet JS + OpenStreetMaps is the preferred option in Pacem JS. Updates to the API will be added giving priority to this technology.
 
 ## Azure Maps
 Azure cloud-powered maps are activated by referring the `&lt;pacem-map-adapter-azure>` component (aka `PacemAzureMapAdapterElement`).
@@ -78,6 +85,50 @@ Azure cloud-powered maps are activated by referring the `&lt;pacem-map-adapter-a
 Google (well-known) maps are available via `&lt;pacem-map-adapter-google` component (aka `PacemGoogleMapAdapterElement`).
 
 </pre>
+
+<pacem-markdown value="{{ #content2.textContent }}" root class="md-tech"></pacem-markdown>
+<pre pacem hidden id="content2">
+## Layering
+
+WMS and TMS outputs can be easily overlayed to the map via the `&lt;pacem-map-layer>` component.  
+In the following snippet a WMS tile layer gets added to the map (only for a specific zoom-range).
+</pre>
+
+
+<pacemjs-snippet>
+    <template>
+
+        <pacem-map-adapter-leaflet id="leafletjs1"></pacem-map-adapter-leaflet>
+        <pacem-data model="13" id="zoomLevel1"></pacem-data>
+        <pacem-data model="true" id="layerOn1"></pacem-data>
+
+        <div class="pacem-grid grid-nospace">
+
+            <div class="pacem-cell cols-hd-1">
+                <pacem-checkbox true-value="true" false-value="false" value="{{ #layerOn1.model, twoway }}" caption="WMS layer on/off"></pacem-checkbox>
+            </div>
+            <pacem-panel class="pacem-cell cols-hd-11" hide="{{ !#layerOn1.model || #zoomLevel1.model <= 14 && #zoomLevel1.model >= 13 }}">
+                <pacem-button class="button pacem-margin margin-0" on-click="#zoomLevel1.model = 13">reset zoom level</pacem-button>
+            </pacem-panel>
+
+            <div class="pacem-cell">
+                <pacem-map zoom="{{ #zoomLevel1.model, twoway }}" adapter="{{ #leafletjs1 }}" zoom-control="topleft">
+
+                    <pacem-map-layer mode="wms" hide="{{ !#layerOn1.model }}" url="http://servizigis.regione.emilia-romagna.it/wms/geologia50k?" 
+                                     include='["Unita_geologiche_50K"]' min-zoom="13" max-zoom="14"></pacem-map-layer>
+
+                    <pacem-map-marker position="[44.714188025077984,10.296516444873811]"
+                                      icon='{ "url": "/assets/pp_w_s.png", "size": {"width": 45, "height": 45}, "anchor": {"x": 15, "y": 45} }'>
+                        <span>Pacem</span>
+                    </pacem-map-marker>
+
+                </pacem-map>
+            </div>
+        </div>
+
+    </template>
+</pacemjs-snippet>
+
 
 <pacem-map id="proto"></pacem-map>
 <pacemjs-descriptor target="{{ #proto }}"></pacemjs-descriptor>

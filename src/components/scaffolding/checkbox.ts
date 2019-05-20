@@ -13,7 +13,7 @@ namespace Pacem.Components.Scaffolding {
 <input type="checkbox" class="${PCSS}-input" /><label class="${PCSS}-label ${PCSS}-checkbox ${PCSS}-viewfinder" pacem><${ P }-text text="{{ :host.caption }}"></${ P }-text></label>`,
         shadow: Defaults.USE_SHADOW_ROOT
     })
-    export class PacemCheckboxElement extends PacemBaseElement implements OnPropertyChanged, OnViewActivated {
+    export class PacemCheckboxElement extends PacemBaseElement {
 
         constructor() {
             super('checkbox');

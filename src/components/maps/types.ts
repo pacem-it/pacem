@@ -13,6 +13,7 @@ namespace Pacem.Components.Maps {
         MARKER_SELECTOR: P + '-map-marker',
         POLYLINE_SELECTOR: P + '-map-polyline',
         CIRCLE_SELECTOR: P + '-map-circle',
+        LAYER_SELECTOR: P + '-map-layer',
         DEFAULT_COORDS: { lat: 44.714188025077984, lng: 10.296516444873811 }
     };
 
@@ -44,6 +45,8 @@ namespace Pacem.Components.Maps {
         get map(): PacemMapElement {
             return this['_map'] = this['_map'] || CustomElementUtils.findAncestorOfType(this, PacemMapElement);
         }
+
+        @Watch({ converter: PropertyConverters.Boolean }) hide: boolean;
 
         viewActivatedCallback() {
             super.viewActivatedCallback();
@@ -88,6 +91,17 @@ namespace Pacem.Components.Maps {
 
         /** Gets the native map instance */
         abstract get map(): any;
+
+        /**
+         * When implemented in a derived class, sets the viewport of the map.
+         * @param center {LatLng} position
+         * @param zoom {Number} zoom level
+         */
+        abstract setView(zoom: number);
+        abstract setView(center: LatLng, zoom?: number);
+
+        /** When implemented in a derived class, sets the viewport of the map so that it can fit all its content. */
+        abstract fitBounds();
     }
 
     export declare type MapEventArgs = { position?: LatLng };
@@ -122,6 +136,16 @@ namespace Pacem.Components.Maps {
         }
     }
 
+    @CustomElement({ tagName: MapConsts.LAYER_SELECTOR })
+    export class PacemMapLayerElement extends MapRelevantElement {
+        @Watch({ emit: false, converter: PropertyConverters.String }) url: string;
+        /** Gets or sets the names of the layers to include (mandatory for WMS layers). */
+        @Watch({ emit: false, converter: PropertyConverters.Json }) include: string[];
+        @Watch({ emit: false, converter: PropertyConverters.String }) mode: 'wms' | 'tms' | string;
+        @Watch({ emit: false, converter: PropertyConverters.Number }) minZoom: number;
+        @Watch({ emit: false, converter: PropertyConverters.Number }) maxZoom: number;
+    }
+
     @CustomElement({ tagName: MapConsts.MAP_SELECTOR })
     export class PacemMapElement extends PacemEventTarget {
 
@@ -136,6 +160,8 @@ namespace Pacem.Components.Maps {
         @Watch({ emit: false, converter: PropertyConverters.Boolean }) draggable: boolean = true;
         @Watch({ emit: false, converter: PropertyConverters.Boolean }) doubleClickZoom: boolean = true;
         @Watch({ emit: false, converter: PropertyConverters.Boolean }) keyboardShortcuts: boolean = true;
+        /** Gets or sets whether to autofit the bounds whenever the map gets refreshed. */
+        @Watch({ emit: false, converter: PropertyConverters.Boolean }) autofit: boolean = true;
 
         @Watch({ emit: false, converter: PropertyConverters.Number }) paddingTop: number = 0;
         @Watch({ emit: false, converter: PropertyConverters.Number }) paddingLeft: number = 0;
@@ -185,6 +211,17 @@ namespace Pacem.Components.Maps {
                     this.adapter.initialize(this).then(_ => this._afterInit(_, old));
                 }
             } else {
+                switch (name) {
+                    case 'zoom':
+                    case 'center':
+                        this.adapter && this.adapter.setView(val);
+                        break;
+                    case 'autofit':
+                        if (val) {
+                            this.adapter && this.adapter.fitBounds();
+                        }
+                        break;
+                }
                 this.adapter && this.adapter.invalidateSize();
             }
         }

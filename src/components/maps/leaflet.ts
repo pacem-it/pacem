@@ -4,18 +4,22 @@ namespace Pacem.Components.Maps {
 
     const consts = {
         TIMEOUT: 1000,
-        API_JS: 'https://unpkg.com/leaflet@1.0.3/dist/leaflet.js',
-        API_JS_INTEGRITY: 'sha512-A7vV8IFfih/D732iSSKi20u/ooOfj/AGehOKq0f4vLT1Zr2Y+RX7C+w8A1gaSasGtRUZpF/NZgzSAu4/Gc41Lg==',
-        API_CSS: 'https://unpkg.com/leaflet@1.0.3/dist/leaflet.css',
-        API_CSS_INTEGRITY: 'sha512-07I2e+7D8p6he1SIM+1twR5TIrhUQn9+I6yjqD53JQjFiMf8EtC93ty0/5vJTZGF8aAocvHYNEDJajGdNx1IsQ=='
+        API_JS: 'https://unpkg.com/leaflet@1.5.1/dist/leaflet.js',
+        API_JS_INTEGRITY: 'sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og==',
+        API_CSS: 'https://unpkg.com/leaflet@1.5.1/dist/leaflet.css',
+        API_CSS_INTEGRITY: 'sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=='
     };
 
     class PacemLeafletMarkerAdapter {
 
-        constructor(private map: PacemLeafletMapAdapterElement) {
+        constructor(private _map: PacemLeafletMapAdapterElement) {
         }
 
-        markers = new Map<PacemMapMarkerElement, L.Marker>();
+        private _markers = new Map<PacemMapMarkerElement, L.Marker>();
+
+        get markers() {
+            return this._markers;
+        }
 
         private _onDragEnd(item: PacemMapMarkerElement, evt: L.LeafletEvent) {
             var pos = (<L.Marker>evt.target).getLatLng();
@@ -32,23 +36,31 @@ namespace Pacem.Components.Maps {
 
         drawMarker(item: PacemMapMarkerElement): L.Marker {
             var ctrl = this;
-            if (Utils.isNull(ctrl.map.map)) return;
-            else if (Utils.isNull(item && item.position)) {
-                ctrl.map.removeItem(item);
+            if (Utils.isNull(ctrl._map.map)) {
                 return;
+            } else {
+                if ((Utils.isNullOrEmpty(item && item.position) || (item && item.hide))) {
+
+                    if (!Utils.isNull(item)) {
+                        ctrl._map.removeItem(item);
+                        this._markers.delete(item);
+                    }
+                    return;
+                }
+
             }
             //
             var marker: L.Marker;
-            if (!ctrl.markers.has(item)) {
+            if (!ctrl._markers.has(item)) {
                 marker = L.marker(
                     item.position
-                ).addTo(ctrl.map.map);
+                ).addTo(ctrl._map.map);
                 marker.on('click', (e) => ctrl._openInfoWindow(item, e));
-                marker.on('drag', () => ctrl.map.fitBounds());
+                marker.on('drag', () => ctrl._map.fitBounds(true));
                 marker.on('dragend', (e) => ctrl._onDragEnd(item, e));
-                ctrl.markers.set(item, marker);
+                ctrl._markers.set(item, marker);
             } else
-                marker = ctrl.markers.get(item);
+                marker = ctrl._markers.get(item);
             marker.setLatLng(item.position);
             if (typeof item.icon === 'string') {
                 // icon url only
@@ -76,7 +88,7 @@ namespace Pacem.Components.Maps {
 
         private _openInfoWindow(item: PacemMapMarkerElement, evt?: L.LeafletEvent) {
             var ctrl = this,
-                marker: L.Marker = evt.target || ctrl.markers.get(item),
+                marker: L.Marker = evt.target || ctrl._markers.get(item),
                 content = item.caption;
             if (!MapUtils.isContentEmpty(item)) {
 
@@ -102,13 +114,6 @@ namespace Pacem.Components.Maps {
                 marker.dragging.enable();
             else
                 marker.dragging.disable();
-        }
-
-        private setPosition(marker: L.Marker, p: string | number[]) {
-            var position = MapUtils.parseCoords(p);
-            marker.setLatLng(position);
-            //
-            this.map.fitBounds();
         }
 
         private _setIcon(marker: L.Marker, v: string | L.Icon) {
@@ -143,6 +148,62 @@ namespace Pacem.Components.Maps {
                 marker.setPopupContent(content);
         }
 
+        removeMarker(item: PacemMapMarkerElement) {
+            const bag = this._markers;
+            if (bag.has(item)) {
+                bag.get(item).remove();
+                bag.delete(item);
+            }
+        }
+
+    }
+
+    class PacemLeafletLayerAdapter {
+
+        constructor(private _map: PacemLeafletMapAdapterElement) {
+        }
+
+        private _layers = new Map<PacemMapLayerElement, L.TileLayer>();
+
+        drawLayer(item: PacemMapLayerElement): void {
+            const bag = this._layers;
+            // replace:
+            // remove, if any
+            if (bag.has(item)) {
+                let layer = bag.get(item);
+                if (layer) {
+                    layer.remove();
+                }
+            }
+
+            // check if disabled
+            if (item.hide) {
+                bag.delete(item);
+                return;
+            }
+
+            // then set again
+            const mode = (item.mode || '').toLowerCase(),
+                map = this._map.map;
+            switch (mode) {
+                case 'wms':
+                    let wms = L.tileLayer.wms(item.url, { layers: (item.include || []).join(','), minZoom: item.minZoom, maxZoom: item.maxZoom }).addTo(map);
+                    bag.set(item, wms);
+                    break;
+                default:
+                    let tms = L.tileLayer(item.url, { tms: mode === 'tms', minZoom: item.minZoom, maxZoom: item.maxZoom }).addTo(map);
+                    bag.set(item, tms);
+                    break;
+            }
+        }
+
+        removeLayer(item: PacemMapLayerElement) {
+            const bag = this._layers;
+            if (bag.has(item)) {
+                bag.get(item).remove();
+                bag.delete(item);
+            }
+        }
     }
 
     @CustomElement({ tagName: P + '-map-adapter-leaflet' })
@@ -151,11 +212,26 @@ namespace Pacem.Components.Maps {
         constructor() {
             super();
             this._markersAdapter = new PacemLeafletMarkerAdapter(this);
+            this._layersAdapter = new PacemLeafletLayerAdapter(this);
+        }
+
+        setView(zoom: number);
+        setView(center: LatLng, zoom?: number);
+        setView(center: LatLng | number, zoom?: any) {
+            const map = this._map;
+            if (!Utils.isNull(map)) {
+                if (typeof center === 'number') {
+                    map.setZoom(center);
+                } else {
+                    map.setView(center, zoom || map.getZoom());
+                }
+            }
         }
 
         @Watch({ emit: false, converter: PropertyConverters.String }) tiles: string = '//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
         @Watch({ emit: false, converter: PropertyConverters.String }) attribution: string = 'Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
 
+        private _layersAdapter: PacemLeafletLayerAdapter;
         private _markersAdapter: PacemLeafletMarkerAdapter;
         private _map: L.Map;
         private _container: PacemMapElement;
@@ -164,14 +240,13 @@ namespace Pacem.Components.Maps {
             return this._map;
         }
 
-        private isMapInitialized() {
-            return !Utils.isNull(this._map);
-        }
-
         propertyChangedCallback(name: string, old: any, val: any, first?: boolean) {
             super.propertyChangedCallback(name, old, val, first);
-            if (name === 'tiles')
-                this.redrawMap();
+            switch (name) {
+                case 'tiles':
+                    this._redrawMap();
+                    break;
+            }
             this.invalidateSize();
         }
 
@@ -211,16 +286,18 @@ namespace Pacem.Components.Maps {
             canvas.appendChild(mapElement);
             var map = this._map = L.map(<HTMLElement>mapElement, mapOptions);
 
-
-            map.on('moveend', () => this.idleFiller());
+            map.on('zoomend', (e) => {
+                ctrl.zoom = map.getZoom();
+            });
+            map.on('moveend', () => this._idleFiller());
             map.on('load', () => {
                 if (scale && ctrl.zoomControl) {
                     map.zoomControl.setPosition(ctrl['zoomControl']);
                 }
-                this.idleFiller()
+                this._idleFiller()
             });
 
-            this.tileLayer = L.tileLayer(this.tiles,
+            this._tileLayer = L.tileLayer(this.tiles,
                 { attribution: this.attribution }).addTo(map);
 
             // setting now the center and zoom, triggers the "load" event and activates the child-components, if any.
@@ -254,43 +331,44 @@ namespace Pacem.Components.Maps {
 
         removeItem(item: MapRelevantElement) {
             if (item instanceof PacemMapMarkerElement) {
-                var adapter = this._markersAdapter;
-                var marker = adapter.markers.get(item);
-                if (!Utils.isNull(marker)) {
-                    marker.remove();
-                    adapter.markers.delete(item);
-                }
+                this._markersAdapter.removeMarker(item);
+            } else if (item instanceof PacemMapLayerElement) {
+                this._layersAdapter.removeLayer(item);
             }
-            this.fitBounds();
+            this.fitBounds(true);
         }
 
         drawItem(item: MapRelevantElement) {
             if (item instanceof PacemMapMarkerElement) {
-                var adapter = this._markersAdapter;
-                var marker = adapter.drawMarker(item);
-                if (!adapter.markers.has(item))
-                    adapter.markers.set(item, marker);
+                this._markersAdapter.drawMarker(item);
+            } else if (item instanceof PacemMapLayerElement) {
+                this._layersAdapter.drawLayer(item);
             }
-            this.fitBounds();
+            this.fitBounds(true);
         }
 
         //#endregion
 
         @Debounce(500)
-        private idleFiller() {
+        private _idleFiller() {
             var ctrl = this;
             if (ctrl.map)
                 ctrl.map.fire('idle');
         }
 
-        private tileLayer: L.TileLayer = null;
-        private shapes = new Map<any, L.Path>();
+        private _tileLayer: L.TileLayer = null;
+        private _shapes = new Map<any, L.Path>();
 
         @Debounce(consts.TIMEOUT)
-        fitBounds() {
+        fitBounds(onlyIfAutofit?: boolean) {
             if (!this.map) return;
+
             var ctrl = this._container;
-            var markers = this._markersAdapter.markers, shapes = this.shapes;
+
+            // check against autofit
+            if (!ctrl.autofit && onlyIfAutofit === true) return;
+
+            var markers = this._markersAdapter.markers, shapes = this._shapes;
 
             // no markers
             if (!markers.size && !shapes.size) {
@@ -308,24 +386,31 @@ namespace Pacem.Components.Maps {
                 MapUtils.expandBounds(bnds, bx.getSouthWest());
                 MapUtils.expandBounds(bnds, bx.getNorthEast());
             }
-            var minZoom;
+
             var paddingTop = ctrl.paddingTop,
                 paddingLeft = ctrl.paddingLeft,
                 paddingRight = ctrl.paddingRight,
                 paddingBottom = ctrl.paddingBottom;
             var pads = { 'paddingTopLeft': new L.Point(paddingLeft, paddingTop), 'paddingBottomRight': new L.Point(paddingRight, paddingBottom) };
-            if (bnds.length >= 2 || (bnds.length == 1 && (paddingTop || paddingLeft || paddingBottom || paddingRight)))
-                this.map.fitBounds(new L.LatLngBounds(bnds), pads);
-            else {
+            if (bnds.length >= 2 || (bnds.length == 1 && (paddingTop || paddingLeft || paddingBottom || paddingRight))) {
+                const bounds = L.latLngBounds(bnds),
+                    ne = bounds.getNorthEast(),
+                    sw = bounds.getSouthWest();
+                try {
+                    this.map.fitBounds([[ne.lat, ne.lng],[sw.lat, sw.lng]], pads);
+                } catch (e) {
+                    throw e;
+                }
+            } else {
                 if (bnds.length == 1)
                     this.map.setView(bnds[0], ctrl.zoom);
             }
         };
 
-        private redrawMap() {
+        private _redrawMap() {
             var ctrl = this;
-            if (!Utils.isNull(ctrl.tiles && ctrl.tileLayer))
-                ctrl.tileLayer.setUrl(ctrl.tiles);
+            if (!Utils.isNull(ctrl.tiles && ctrl._tileLayer))
+                ctrl._tileLayer.setUrl(ctrl.tiles);
         }
     }
 
