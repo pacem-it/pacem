@@ -1,5 +1,5 @@
 ﻿/// <reference path="../../../dist/js/pacem-core.d.ts" />
-/// <reference path="azure-maps.d.ts" />
+/// <reference path="../../../dist/js/azure-maps.d.ts" />
 /// <reference path="types.ts" />
 
 namespace Pacem.Components.Maps {

@@ -1,5 +1,5 @@
 {
-  "version": "0.8.15",
+  "version": "0.8.17",
   "name": "pacem",
   "homepage": "https://js.pacem.it",
   "repository": {
@@ -11,6 +11,7 @@
     "dist/js/pacem-core.d.ts",
     "dist/js/pacem-ui.d.ts",
     "dist/js/pacem-logging.d.ts",
+    "dist/js/azure-maps.d.ts",
     "dist/js/pacem-maps.d.ts",
     "dist/js/pacem-scaffolding.d.ts",
     "dist/js/pacem-3d.d.ts",
@@ -74,7 +75,7 @@
     "build-ui": "tsc -p src/components/ui/tsconfig.json",
     "build-logging": "tsc -p src/components/logging/tsconfig.json",
     "build-scaffolding": "tsc -p src/components/scaffolding/tsconfig.json",
-    "build-maps": "tsc -p src/components/maps/tsconfig.json",
+    "build-maps": "copyfiles -f src/components/maps/azure-maps.d.ts dist/js && tsc -p src/components/maps/tsconfig.json",
     "build-plus": "tsc -p src/components/plus/tsconfig.json",
     "build-charts": "tsc -p src/components/charts/tsconfig.json",
     "build-3d": "tsc -p src/components/3d/tsconfig.json",

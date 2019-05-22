@@ -821,7 +821,8 @@ namespace Pacem {
             var obj = CustomElementUtils.resolvePath(path, element);
             var current = obj.target.value;
             if (current !== value) {
-                if (obj.parent.value != obj.root.value /* nested property scenario */) {
+                if (obj.parent.value != obj.root.value /* nested property scenario */
+                    && !(obj.parent.value instanceof HTMLElement) /* and not targeting an HTMLElement (which will eventually fire autonomously) */) {
 
                     // 1. set new value (won't fire 'propertychange' since it's a nested property)
                     obj.parent.value[obj.target.name] = value;

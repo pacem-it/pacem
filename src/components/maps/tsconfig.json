@@ -12,6 +12,7 @@
     "lib": [ "es2015", "dom" ],
     "types": [ "@aspnet/signalr", "@types/googlemaps", "@types/leaflet" ]
   },
-  "compileOnSave": false
-  
+  "compileOnSave": false,
+  "exclude": [ "azure-maps.d.ts" ]
+
 }
