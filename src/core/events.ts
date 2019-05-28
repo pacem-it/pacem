@@ -30,4 +30,7 @@
 
     }
 
+    export interface NotifyPropertyChange extends EventTarget {
+    }
+
 }

@@ -42,13 +42,13 @@ We'll skip standard static laydown of forms and fields, since you can grasp the 
         <!-- feedbacks -->
         <ul>
             <li>
-                Master Form is both <b><pacem-text text="{{ #form0.valid ? 'valid' : 'invalid' }}"></pacem-text></b> and <b><pacem-text text="{{ #form0.dirty ? 'dirty' : 'pristine' }}"></pacem-text></b>
+                Master Form is both <pacem-span css-class="{{ {'text-success': #form0.valid, 'text-danger': !#form0.valid } }}" content="{{ '<i class=\'pacem-icon\'>'+ (#form0.valid ? 'check' : 'close') +'</i> '+ (#form0.valid ? 'valid' : 'invalid') }}"></pacem-span> and <b><pacem-text text="{{ #form0.dirty ? 'dirty' : 'pristine' }}"></pacem-text></b>
             </li>
             <li>
-                Sub-Form 1 is both <b><pacem-text text="{{ #form1.valid ? 'valid' : 'invalid' }}"></pacem-text></b> and <b><pacem-text text="{{ #form1.dirty ? 'dirty' : 'pristine' }}"></pacem-text></b>
+                Sub-Form 1 is both <pacem-span css-class="{{ {'text-success': #form1.valid, 'text-danger': !#form1.valid } }}" content="{{ '<i class=\'pacem-icon\'>'+ (#form1.valid ? 'check' : 'close') +'</i> '+ (#form1.valid ? 'valid' : 'invalid') }}"></pacem-span> and <b><pacem-text text="{{ #form1.dirty ? 'dirty' : 'pristine' }}"></pacem-text></b>
             </li>
             <li>
-                Sub-Form 2 is both <b><pacem-text text="{{ #form2.valid ? 'valid' : 'invalid' }}"></pacem-text></b> and <b><pacem-text text="{{ #form2.dirty ? 'dirty' : 'pristine' }}"></pacem-text></b>
+                Sub-Form 2 is both <pacem-span css-class="{{ {'text-success': #form2.valid, 'text-danger': !#form2.valid } }}" content="{{ '<i class=\'pacem-icon\'>'+ (#form2.valid ? 'check' : 'close') +'</i> '+ (#form2.valid ? 'valid' : 'invalid') }}"></pacem-span> and <b><pacem-text text="{{ #form2.dirty ? 'dirty' : 'pristine' }}"></pacem-text></b>
             </li>
             <li>
                 The serialized entities: <code><pacem-text text="{{ JSON.stringify({ 'entity 1': #entity0.model, 'entity 2': #entity1.model }) }}"></pacem-text></code>
@@ -69,40 +69,32 @@ We'll skip standard static laydown of forms and fields, since you can grasp the 
 "Proper" metadata are defined below:
 
 ```ts
+type DisplayMetadata = {
+    name: string, description?: string, short?: string, watermark?: string, null?: string, ui?: string, format?: string,
+    css?: { [name: string]: string },
+    cssClass?: string[],
+}
+
+type ValidatorMetadata = { type: string, errorMessage: string, params?: any };
+
 type PropertyMetadata = {
-    prop: string;
-    type: string;
-    display?: {
-        name: string;
-        description?: string;
-        short?: string;
-        watermark?: string;
-        null?: string;
-        ui?: string;
-        format?: string;
-        css?: {
-            [name: string]: string;
-        };
-        cssClass?: string[];
-    };
-    extra?: any;
-    isReadOnly?: boolean;
-    dataType?: string;
-    isComplexType?: boolean;
-    isNullable?: boolean;
-    validators?: {
-        type: string;
-        errorMessage: string;
-        params?: any;
-    }[];
+    prop: string,
+    type: 'object' | 'array' | string,
+    display?: DisplayMetadata,
+    extra?: any,
+    isReadOnly?: boolean,
+    dataType?: string,
+    isComplexType?: boolean,
+    isNullable?: boolean,
+    validators?: ValidatorMetadata[],
+    props?: PropertyMetadata[]
 };
 type TypeMetadata = {
-    css?: {
-        [name: string]: string;
-    };
-    cssClass?: string[];
-    props: PropertyMetadata[];
-};
+
+    display?: DisplayMetadata,
+    props: PropertyMetadata[],
+    type?: 'object' | 'array'
+}
 ```
 Metadata-generated forms are convenient in many ways:
 
@@ -122,7 +114,7 @@ Here's the _mise en place_:
 
         <pre pacem hidden id="metajson2">
 {
-    "cssClass": ["pacem-grid", "grid-tiny-colgap", "grid-no-rowgap", "pacem-margin", "margin-bottom-0"],
+    "display": { "cssClass": ["pacem-grid", "grid-tiny-colgap", "grid-no-rowgap", "pacem-margin", "margin-bottom-0"] },
     "props": [
       {
         "prop": "Username",

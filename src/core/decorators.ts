@@ -1,22 +1,10 @@
 ﻿/// <reference path="prefix.ts" />
 /// <reference path="utils.ts" />
+/// <reference path="utils-customelement.ts" />
 /// <reference path="converters.ts" />
 namespace Pacem {
 
     // #region CUSTOM ELEMENT
-
-    export declare type CustomElementConfig = {
-        tagName: string,
-        options?: {
-            extends: string
-        },
-        /** textual templated content */
-        template?: string,
-        /** location of the templated content to fetch */
-        templateUrl?: string,
-        /** if `true` and shadow DOM is natively available then the templated content is hosted in a ShadowRoot  */
-        shadow?: boolean
-    };
 
     //export const ViewActivatedEventName: string = 'viewactivate';
 
@@ -24,7 +12,6 @@ namespace Pacem {
     const SET_VAL = CustomElementUtils.setAttachedPropertyValue;
     const DEL_VAL = CustomElementUtils.deleteAttachedPropertyValue;
 
-    export const WATCH_PROPS_VAR: string = 'pacem:properties';
     const WATCH_PROP_PREFIX: string = 'pacem:property:';
     const WATCH_VERS_PROP: string = 'pacem:version';
     const WATCH_BIND_PREFIX: string = 'pacem:binding:';
@@ -35,11 +22,9 @@ namespace Pacem {
     const HAS_TEMPLATE_VAR: string = 'pacem:custom-element:has-template';
     const HASBEEN_TEMPLATED_VAR: string = 'pacem:custom-element:has-templated';
     const INSTANCE_PROMISE_VAR: string = 'pacem:custom-element:promise';
-    export const INSTANCE_BINDINGS_VAR = 'pacem:custom-element:bindings';
     const INSTANCE_READY_VAR = 'pacem:custom-element:ready';
     const INSTANCE_ONREADY_VAR = 'pacem:custom-element:startup';
 
-    export const INSTANCE_HOST_VAR = 'pacem:custom-element:host';
     //const TYPE_OPTIONS_VAR = 'pacem:custom-element:options';
 
     function processBinding(element: HTMLElement, property: string, binding?: Expression) {
@@ -494,48 +479,11 @@ namespace Pacem {
         };
     }
 
-    export interface OnConnected {
-        connectedCallback(): void;
-    }
-
-    export interface OnDisconnected {
-        disconnectedCallback(): void;
-    }
-
-    export interface OnPropertyChanged {
-        propertyChangedCallback(name?: string, oldVal?: any, newVal?: any, firstChange?: boolean): void;
-    }
-
-    export interface OnAttributeChanged {
-        attributeChangedCallback(attrName?: string, oldVal?: string, newVal?: string): void;
-    }
-
-    export interface OnAdopted {
-        adoptedCallback(): void;
-    }
-
-    export interface OnViewActivated {
-        viewActivatedCallback(): void;
-    }
-
     // #endregion
 
     // #region WATCH PROPERTIES
 
     const DefaultPropertyConverter = PropertyConverters.None;
-
-    export declare type WatchConfig = {
-        /** Whether to debounce the property change for a while or not (numeric to specify milliseconds) */
-        debounce?: boolean | number,
-        /** Whether to reflect the property value back to the element attribute, or not (default false) */
-        reflectBack?: boolean,
-        /** Whether to emit property change event or not (default true) */
-        emit?: boolean,
-        /** Alias property name */
-        // alias?: string;
-        /** Property converter */
-        converter?: PropertyConverter;
-    };
 
     export function Watch(config?: WatchConfig) {
         return (target: any, prop: string, descriptor?: PropertyDescriptor) => {
@@ -811,8 +759,6 @@ namespace Pacem {
     // #endregion
 
     // #region TRANSFORMS
-
-    export declare type TransformFunction = (value: any, ...args: any[]) => any;
 
     class Transforms {
 

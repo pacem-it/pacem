@@ -1,5 +1,4 @@
-﻿/// <reference path="utils.ts" />
-/// <reference path="types.ts" />
+﻿/// <reference path="types.ts" />
 /// <reference path="text.ts" />
 /// <reference path="scroll-aware.ts" />
 /// <reference path="viewport-aware.ts" />

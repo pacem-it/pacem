@@ -1,6 +1,6 @@
 ﻿/// <reference path="types.ts" />
 /// <reference path="utils.ts" />
-/// <reference path="../components/basic/utils.ts" />
+/// <reference path="utils-customelement.ts" />
 
 namespace Pacem {
 
@@ -183,7 +183,7 @@ namespace Pacem {
                             let lastChar = melem.endsWith('^item') ? '' : melem.substr(melem.length - 1, 1);
                             let upLevels = melem.length - (lastChar.length > 0 ? 6 : 5); // 5 = 'item'.length + 1 (zero-based)
                             let itemRef = `__item_${upLevels}_up_pacem`
-                            let item: Components.RepeaterItem = Components.RepeaterUtils.findItemContext(element, upLevels);
+                            let item: RepeaterItem = Repeater.findItemContext(element, upLevels);
                             el = args[itemRef] = args[itemRef] || (item && item.placeholder);
                             path = 'item' + (path ? ('.' + path) : '');
                             prop = 'item';
@@ -194,7 +194,7 @@ namespace Pacem {
                             let lastChar = melem.endsWith('^index') ? '' : melem.substr(melem.length - 1, 1);
                             let upLevels = melem.length - (lastChar.length > 0 ? 7 : 6); // 6 = 'index'.length + 1 (zero-based)
                             let itemRef = `__item_${upLevels}_up_pacem`;
-                            let item: Components.RepeaterItem = Components.RepeaterUtils.findItemContext(element, upLevels);
+                            let item: RepeaterItem = Repeater.findItemContext(element, upLevels);
                             el = args[itemRef] = args[itemRef] || (item && item.placeholder);
                             path = 'index';
                             prop = 'index';

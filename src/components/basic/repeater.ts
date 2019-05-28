@@ -1,4 +1,5 @@
 ﻿/// <reference path="../../core/decorators.ts" />
+/// <reference path="../../core/utils-customelement.ts" />
 /// <reference path="types.ts" />
 /// <reference path="template-proxy.ts" />
 namespace Pacem.Components {
@@ -48,7 +49,7 @@ namespace Pacem.Components {
      * </pacem-repeater>
      */
     @CustomElement({ tagName: P + '-repeater' })
-    export class PacemRepeaterElement extends PacemEventTarget {
+    export class PacemRepeaterElement extends PacemEventTarget implements Repeater {
 
         @Watch({ emit: false, converter: PropertyConverters.Eval }) datasource: any[];
 
@@ -165,37 +166,15 @@ namespace Pacem.Components {
 
     }
 
-    const REPEATERITEM_PLACEHOLDER = 'pacem:repeater-item';
-
-    export class RepeaterItem {
-
-        static findUpwards(element: Element, upLevels: number = 0, logFn: (message?: string) => void = console.warn) {
-            if (Utils.isNull(element) || element.localName === 'template' || element instanceof PacemTemplateProxyElement)
-                return null;
-            let item: RepeaterItem = null;
-            let predicate: (node: any) => boolean = (node) => !Utils.isNull(item = RepeaterItem.getRepeaterItem(node));
-            let retval: Node = CustomElementUtils.findPreviousSiblingOrAncestor(element, predicate, upLevels);
-            if (retval == null && logFn && element instanceof HTMLElement && element['isConnected'])
-                logFn(`Couldn't find a ${RepeaterItem.name} up ${upLevels} level${((upLevels === 1) ? "" : "s")} from element "${element.constructor.name}".`);
-            return item;
-        }
-
-        static isRepeaterItem(node: Node) {
-            return !Utils.isNull(GET_VAL(node, REPEATERITEM_PLACEHOLDER));
-        }
-
-        static getRepeaterItem(node: Node): RepeaterItem {
-            return GET_VAL(node, REPEATERITEM_PLACEHOLDER);
-        }
+    export class RepeaterItem extends Pacem.RepeaterItem {
 
         constructor(
             private _repeater: PacemRepeaterElement,
             private _template: HTMLTemplateElement,
             private _fragment: DocumentFragment,
-            private _holder: HTMLTemplateElement | PacemTemplateProxyElement,
-            private _placeholder: Comment = document.createComment('pacem-repeater-item')
+            private _holder: HTMLTemplateElement | PacemTemplateProxyElement
         ) {
-            SET_VAL(_placeholder, REPEATERITEM_PLACEHOLDER, this);
+            super(document.createComment('pacem-repeater-item'));
 
             const FIELD_PREFIX = '_';
 
@@ -210,13 +189,15 @@ namespace Pacem.Components {
                 }
             }
 
-            Object.defineProperties(_placeholder, {
+            // placeholder on roids:
+            let placeholder = this.placeholder;
+            Object.defineProperties(placeholder, {
                 'item': {
                     get: function () {
                         return this[FIELD_PREFIX + 'item'];
                     },
                     set: function (v: any) {
-                        _setScopeValue.apply(_placeholder, ['item', v]);
+                        _setScopeValue.apply(placeholder, ['item', v]);
                     }, configurable: true
                 },
                 'index': {
@@ -225,13 +206,10 @@ namespace Pacem.Components {
                         return Utils.isNull(val) ? -1 : val;
                     },
                     set: function (v: number) {
-                        _setScopeValue.apply(_placeholder, ['index', v]);
+                        _setScopeValue.apply(placeholder, ['index', v]);
                     }, configurable: true
                 }
             });
-
-
-
 
         }
 
@@ -240,7 +218,7 @@ namespace Pacem.Components {
             let tmplRef = this._template,
                 tmplParent = this._fragment;
 
-            this._alterEgos.push(tmplParent.appendChild(this._placeholder));
+            this._alterEgos.push(tmplParent.appendChild(this.placeholder));
             const clonedTmpl = <HTMLTemplateElement>tmplRef.cloneNode(true);
             var host: any;
             if (!Utils.isNull(host = GET_VAL(this._repeater, INSTANCE_HOST_VAR)))
@@ -258,10 +236,6 @@ namespace Pacem.Components {
             return this._repeater;
         }
 
-        get placeholder() {
-            return this._placeholder;
-        }
-
         /** @internal */
         remove(): void {
             let tmplParent = this._holder.parentElement;
@@ -273,19 +247,19 @@ namespace Pacem.Components {
         }
 
         get index(): number {
-            return this._placeholder['index'];
+            return this.placeholder['index'];
         }
 
         set index(v: number) {
-            this._placeholder['index'] = v;
+            this.placeholder['index'] = v;
         }
 
         get item(): any {
-            return this._placeholder['item'];
+            return this.placeholder['item'];
         }
 
         set item(v: any) {
-            this._placeholder['item'] = v;
+            this.placeholder['item'] = v;
         }
 
         private _alterEgos: Node[] = [];

@@ -2,13 +2,6 @@
 /// <reference path="decorators.ts" />
 /// <reference path="logger.ts" />
 
-namespace Pacem {
-
-    export interface NotifyPropertyChange extends EventTarget {
-    }
-
-}
-
 namespace Pacem.Components {
 
     export abstract class PacemEventTarget extends HTMLElement implements NotifyPropertyChange, OnPropertyChanged, OnConnected, OnViewActivated, OnDisconnected {

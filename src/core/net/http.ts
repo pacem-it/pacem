@@ -1,4 +1,4 @@
-﻿/// <reference path="promise.ts" />
+﻿/// <reference path="../promise.ts" />
 
 namespace Pacem.Net {
 

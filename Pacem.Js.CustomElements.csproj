@@ -52,11 +52,18 @@
     <None Remove="src\components\ui\calendar.ts" />
     <None Remove="src\components\ui\pager.ts" />
     <None Remove="src\components\ui\timeline.ts" />
+    <None Remove="src\core\animations\easings.ts" />
+    <None Remove="src\core\animations\events.ts" />
+    <None Remove="src\core\animations\tween-service.ts" />
     <None Remove="src\core\maths\gaussian.ts" />
     <None Remove="demo\customelement-descriptor.ts" />
     <None Remove="demo\themeroller.ts" />
     <None Remove="src\core\maths\math.ts" />
+    <None Remove="src\core\net\fetcher.ts" />
     <None Remove="src\core\prefix.ts" />
+    <None Remove="src\core\ui\drag-drop.ts" />
+    <None Remove="src\core\ui\rescale.ts" />
+    <None Remove="src\core\ui\swipe.ts" />
     <None Remove="src\less\pacem\layout\grids.less" />
     <None Remove="src\components\3d\detector.ts" />
     <None Remove="src\components\3d\three.ts" />
@@ -256,7 +263,6 @@
     <TypeScriptCompile Include="src\components\basic\style-proxy.ts" />
     <TypeScriptCompile Include="src\components\basic\tweener.ts" />
     <TypeScriptCompile Include="src\components\basic\types.ts" />
-    <TypeScriptCompile Include="src\components\basic\utils.ts" />
     <TypeScriptCompile Include="src\components\basic\viewport-aware.ts" />
     <TypeScriptCompile Include="src\components\behaviors\behavior.ts" />
     <TypeScriptCompile Include="src\components\behaviors\drag-drop.ts" />
@@ -341,6 +347,9 @@
     <TypeScriptCompile Include="src\components\ui\tuner.ts" />
     <TypeScriptCompile Include="src\components\ui\view.ts" />
     <TypeScriptCompile Include="src\core\adapter.ts" />
+    <TypeScriptCompile Include="src\core\animations\easings.ts" />
+    <TypeScriptCompile Include="src\core\animations\events.ts" />
+    <TypeScriptCompile Include="src\core\animations\tween-service.ts" />
     <TypeScriptCompile Include="src\core\array_extensions.ts" />
     <TypeScriptCompile Include="src\core\command.ts" />
     <TypeScriptCompile Include="src\components\basic\router.ts" />
@@ -352,7 +361,8 @@
     <TypeScriptCompile Include="src\core\expression.ts" />
     <TypeScriptCompile Include="src\core\maths\gaussian.ts" />
     <TypeScriptCompile Include="src\core\maths\geom.ts" />
-    <TypeScriptCompile Include="src\core\http.ts" />
+    <TypeScriptCompile Include="src\core\net\fetcher.ts" />
+    <TypeScriptCompile Include="src\core\net\http.ts" />
     <TypeScriptCompile Include="src\core\logger.ts" />
     <TypeScriptCompile Include="src\core\maths\math.ts" />
     <TypeScriptCompile Include="src\core\prefix.ts" />
@@ -361,6 +371,9 @@
     <TypeScriptCompile Include="src\core\storage.ts" />
     <TypeScriptCompile Include="src\core\transforms.ts" />
     <TypeScriptCompile Include="src\core\types.ts" />
+    <TypeScriptCompile Include="src\core\ui\drag-drop.ts" />
+    <TypeScriptCompile Include="src\core\ui\rescale.ts" />
+    <TypeScriptCompile Include="src\core\ui\swipe.ts" />
     <TypeScriptCompile Include="src\core\utils.ts" />
     <TypeScriptCompile Include="demo\components\customelement-descriptor.ts" />
     <TypeScriptCompile Include="demo\components\themeroller.ts" />

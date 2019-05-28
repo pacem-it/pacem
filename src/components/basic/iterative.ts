@@ -4,7 +4,8 @@
 namespace Pacem.Components {
 
     export abstract class PacemIterableElement extends PacemItemElement {
-        
+
+        /** @overrides */
         protected findContainer() {
             return CustomElementUtils.findAncestor(this, n => n instanceof PacemIterativeElement);
         }
