@@ -71,14 +71,35 @@ css-class="{{ {'${PCSS}-fetching': ::_fetcher.fetching, '${PCSS}-dirty': this.di
                     this._buildUpLabel();
                     this._buildUpField();
                     break;
+                case 'entity':
+                    // In the case that the entity is a HTMLElement,
+                    // its changes might not propagate correctly.
+                    // This is a nudgy solution. Explore how to improve
+                    // `CustomElementUtils.set` as an alternative...
+                    if (old instanceof HTMLElement) {
+                        old.removeEventListener(PropertyChangeEventName, this._entityPropertyChangeHandler, false);
+                    }
+                    if (val instanceof HTMLElement) {
+                        val.addEventListener(PropertyChangeEventName, this._entityPropertyChangeHandler, false);
+                    }
+                    break;
             }
         }
 
         disconnectedCallback() {
-            super.disconnectedCallback();
-            if (!Utils.isNull(this._balloon))
+            if (this.entity instanceof HTMLElement) {
+                this.entity.removeEventListener(PropertyChangeEventName, this._entityPropertyChangeHandler, false);
+            }
+            if (!Utils.isNull(this._balloon)) {
                 this._balloon.remove();
+            }
+            super.disconnectedCallback();
         }
+
+        private _entityPropertyChangeHandler = (e) => {
+            // nudge entity propertychange notification
+            this.dispatchEvent(new Pacem.PropertyChangeEvent({ propertyName: 'entity', currentValue: this.entity }));
+        };
 
         private _ensureBalloon(): void {
             // balloon

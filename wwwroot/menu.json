@@ -273,5 +273,15 @@
         "title": "<pacem-namevalue-list>"
       }
     ]
+  },
+  {
+    "package": "2d",
+    "label": "2D Drawing",
+    "items": [
+      {
+        "label": "Canvas",
+        "view": "canvas"
+      }
+    ]
   }
 ]

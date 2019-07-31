@@ -301,18 +301,17 @@ namespace Pacem.Components.Maps {
                 MapUtils.expandBounds(bnds, AtlasMapUtils.getLatLng(atlas.data.BoundingBox.getNorthEast(bx)));
             }
 
-            var paddingTop = ctrl.paddingTop,
-                paddingLeft = ctrl.paddingLeft,
-                paddingRight = ctrl.paddingRight,
-                paddingBottom = ctrl.paddingBottom;
-            if (bnds.length >= 2 || (bnds.length == 1 && (paddingTop || paddingLeft || paddingBottom || paddingRight))) {
-
+            var paddingTop = ctrl.paddingTop || 0,
+                paddingLeft = ctrl.paddingLeft || 0,
+                paddingRight = ctrl.paddingRight || 0,
+                paddingBottom = ctrl.paddingBottom || 0;
+            if (bnds.length >= 2) {
                 // TODO: avoid double loop (specially for large sets), just set coords in 'correct' place for Azure maps right away...
                 this._map.setCamera({ bounds: AtlasMapUtils.getBounds(bnds), padding: { 'top': paddingTop, 'bottom': paddingBottom, 'left': paddingLeft, 'right': paddingRight } });
 
             } else {
-                if (bnds.length == 1) {
-                    this._map.setCamera({ center: AtlasMapUtils.getPosition(ctrl.center), zoom: ctrl.zoom });
+                if (bnds.length === 1) {
+                    this._map.setCamera({ center: AtlasMapUtils.getPosition(bnds[0]), zoom: ctrl.zoom });
                 }
             }
         };

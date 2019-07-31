@@ -4,7 +4,7 @@
 
         constructor(type: string, detail: TDetail, eventInit?: CustomEventInit<TDetail>) {
             super(type, Utils.extend({ detail: detail }, eventInit || {}));
-            CustomEventUtils.fixEdgeCustomEventSubClassInstance(this, type);
+            CustomEventUtils.fixEdgeCustomEventSubClassInstance(this, this.constructor);
         }
 
         //get detail(): TDetail {

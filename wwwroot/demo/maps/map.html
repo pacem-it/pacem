@@ -103,6 +103,9 @@ In the following snippet a WMS tile layer gets added to the map (only for a spec
 </pre>
 
 
+<!--<pacem-map-layer mode="wms" hide="{{ !#layerOn1.model }}" url="http://192.168.0.18:8080/geoserver/EMILIAMBIENTE/wms?"
+                 include='["WA_V_PIPE", "WW_V_DSP_SECTION"]'></pacem-map-layer>-->
+
 <pacemjs-snippet>
     <template>
 
@@ -131,8 +134,8 @@ In the following snippet a WMS tile layer gets added to the map (only for a spec
                 <!-- map -->
                 <pacem-map zoom="{{ #zoomLevel1.model, twoway }}" adapter="{{ #leafletjs1 }}" zoom-control="topleft">
 
-                    <!-- WMS layer -->
-                    <pacem-map-layer mode="wms" hide="{{ !#layerOn1.model }}" url="//servizigis.regione.emilia-romagna.it/wms/geologia50k?" 
+                    <!-- WMS layer-->
+                    <pacem-map-layer mode="wms" hide="{{ !#layerOn1.model }}" url="//servizigis.regione.emilia-romagna.it/wms/geologia50k?"
                                      include='["Unita_geologiche_50K"]' min-zoom="13" max-zoom="14"></pacem-map-layer>
 
                     <!-- marker -->

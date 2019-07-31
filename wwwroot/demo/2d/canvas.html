@@ -1,0 +1,51 @@
+﻿
+
+<pacem-markdown value="{{ #content0.textContent }}" root class="md-tech"></pacem-markdown>
+
+<pre pacem hidden id="content0">
+
+## Canvas-based adapter
+One possible adapter for 2D drawn object is the canvas-based one:
+
+</pre>
+
+<pacemjs-snippet>
+    <template>
+
+        <!-- interactive feedbacks -->
+        <pacem-data id="hovertag1"></pacem-data>
+        <pacem-data id="clicktag1"></pacem-data>
+        <div class="pacem-margin margin-bottom-2">
+            hovering: <b><pacem-text text="{{ #hovertag1.model || '' }}"></pacem-text></b>
+        </div>
+        <pacem-body-proxy>
+            <pacem-panel class="pacem-toaster" css-class="top right">
+                <!-- toast -->
+                <pacem-toast timeout="2500" id="toast1" class="toast-primary">
+                    <span>clicked: <b><pacem-text text="{{ #clicktag1.model  }}"></pacem-text></b></span>
+                </pacem-toast>
+            </pacem-panel>
+        </pacem-body-proxy>
+
+        <!-- 2D stuff -->
+        <pacem-2d-canvas-adapter id="canvas"></pacem-2d-canvas-adapter>
+        <pacem-2d adapter="{{ #canvas }}" style="height: 200px"
+                  on-itemout="#hovertag1.model = null"
+                  on-itemover="#hovertag1.model = $event.detail.element.tag"
+                  on-itemclick="#clicktag1.model = $event.detail.element.tag; #toast1.show = true">
+
+            <pacem-2d-rect x="125" y="125" w="125" h="50" stroke="#f40" fill="#fffcc0" tag="rectangle"></pacem-2d-rect>
+            <pacem-2d-circle radius="{{ #slider1.value }}" center='{ "x":100, "y": 100 }' line-width="10" stroke="#f00" fill="none" tag="circle"></pacem-2d-circle>
+
+        </pacem-2d>
+
+        <!-- radius slider -->
+        <pacem-slider min="25" max="75" step=".25" id="slider1" value="50" thumb-label="true"
+                      on-formatvalue="$event.detail.output = $event.detail.value +'px'"></pacem-slider>
+
+    </template>
+</pacemjs-snippet>
+
+
+<pacem-2d-canvas-adapter id="proto" hidden></pacem-2d-canvas-adapter>
+<pacemjs-descriptor target="#proto"></pacemjs-descriptor>

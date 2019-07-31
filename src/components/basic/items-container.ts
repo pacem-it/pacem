@@ -4,7 +4,6 @@ namespace Pacem.Components {
     export abstract class PacemItemElement extends PacemElement {
 
         private _container: PacemItemsContainerElement<any>;
-
         protected get container() {
             return this._container;
         }
@@ -50,8 +49,8 @@ namespace Pacem.Components {
 
     class ItemsContainerRegistrar<TItem extends PacemItemElement> {
 
-        constructor(private _container) {
-            if (_container == null || !(_container instanceof PacemItemsContainerElement)) {
+        constructor(private _container: PacemItemsContainerElement<TItem> | PacemCrossItemsContainerElement<TItem>) {
+            if (_container == null || !(_container instanceof PacemItemsContainerElement || _container instanceof PacemCrossItemsContainerElement)) {
                 throw `Must provide a valid itemscontainer.`;
             }
         }
@@ -59,7 +58,7 @@ namespace Pacem.Components {
         register(item: TItem) {
             const container = this._container;
             if (!container.validate(item)) {
-                container.log(Logging.LogLevel.Debug, `${(item && item.localName)} element couldn't be registered in a ${container.localName} element.`);
+                container.logger && container.logger.log(Pacem.Logging.LogLevel.Debug, `${(item && item.localName)} element couldn't be registered in a ${container.localName} element.`);
                 return;
             }
             if (Utils.isNull(container.items)) {
@@ -77,6 +76,39 @@ namespace Pacem.Components {
                 let item = container.items.splice(ndx, 1);
                 container.dispatchEvent(new ItemUnregisterEvent(item[0]));
             }
+        }
+    }
+
+    /** Element that can be used both as ItemElement and ItemsContainer. */
+    export abstract class PacemCrossItemsContainerElement<TItem extends PacemItemElement>
+        extends PacemItemElement
+        implements ItemsContainer<TItem>{
+
+        constructor(role?: string, aria?: { [name: string]: string }) {
+            super(role, aria)
+            this._registrar = new ItemsContainerRegistrar(this);
+        }
+
+        private _registrar: ItemsContainerRegistrar<TItem>;
+
+        @Watch(/* can only be databound or assigned at runtime */) items: TItem[];
+
+        abstract validate(item: TItem): boolean;
+
+        /**
+         * Registers a new item among the items.
+         * @param item {TItem} Item to be enrolled
+         */
+        register(item: TItem) {
+            this._registrar.register(item);
+        }
+
+        /**
+         * Removes an existing element from the items.
+         * @param item {TItem} Item to be removed
+         */
+        unregister(item: TItem) {
+            this._registrar.unregister(item);
         }
     }
 
@@ -113,36 +145,4 @@ namespace Pacem.Components {
 
     }
 
-    /** Element that can be used both as ItemElement and ItemsContainer. */
-    export abstract class PacemCrossItemsContainerElement<TItem extends PacemItemElement>
-        extends PacemItemElement
-        implements ItemsContainer<TItem>{
-
-        constructor(role?: string, aria?: { [name: string]: string }) {
-            super(role, aria)
-            this._registrar = new ItemsContainerRegistrar(this);
-        }
-
-        private _registrar: ItemsContainerRegistrar<TItem>;
-
-        @Watch(/* can only be databound or assigned at runtime */) items: TItem[];
-
-        abstract validate(item: TItem): boolean;
-
-        /**
-         * Registers a new item among the items.
-         * @param item {TItem} Item to be enrolled
-         */
-        register(item: TItem) {
-            this._registrar.register(item);
-        }
-
-        /**
-         * Removes an existing element from the items.
-         * @param item {TItem} Item to be removed
-         */
-        unregister(item: TItem) {
-            this._registrar.unregister(item);
-        }
-    }
 }

@@ -289,12 +289,18 @@ namespace Pacem {
                                 // re-evaluate pending expressions...
                                 var bindings = <string[]>(GET_VAL(_this, INSTANCE_BINDINGS_VAR) || []);
                                 bindings.forEach(attrName => {
+
                                     const attrNameBind = attrName;
                                     if (!(attrNameBind in _this.attributes)) {
                                         throw `Howcome? ${attrNameBind} not in ${_this.constructor.name} attributes!?...`;
                                     }
-                                    var expr = CustomElementUtils.parseBindingAttribute(_this.attributes[attrNameBind].value, _this);
-                                    processBinding(_this, CustomElementUtils.kebabToCamel(attrName), expr);
+
+                                    const attrValueBind = _this.attributes[attrNameBind].value;
+                                    // still a binding attribute? (might have changed its shape while pending...)
+                                    if (CustomElementUtils.isBindingAttribute(attrValueBind)) {
+                                        var expr = CustomElementUtils.parseBindingAttribute(attrValueBind, _this);
+                                        processBinding(_this, CustomElementUtils.kebabToCamel(attrName), expr);
+                                    }
                                 });
 
                             };

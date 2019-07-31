@@ -38,12 +38,18 @@
     <None Remove="demo\less\docs_splash.less" />
     <None Remove="demo\less\docs_themeroller.less" />
     <None Remove="index.d.ts" />
+    <None Remove="src\components\2d\adapters\canvasadapter.ts" />
+    <None Remove="src\components\2d\adapters\svgadapter.ts" />
+    <None Remove="src\components\2d\circle.ts" />
+    <None Remove="src\components\2d\rect.ts" />
     <None Remove="src\components\basic\body-proxy.ts" />
     <None Remove="src\components\basic\html-proxy.ts" />
     <None Remove="src\components\basic\hub-proxy.ts" />
     <None Remove="src\components\basic\layout-proxy.ts" />
     <None Remove="src\components\basic\style-proxy.ts" />
     <None Remove="src\components\basic\template-proxy.ts" />
+    <None Remove="src\components\2d\stage.ts" />
+    <None Remove="src\components\2d\types.ts" />
     <None Remove="src\components\fx\fancy.ts" />
     <None Remove="src\components\fx\hero.ts" />
     <None Remove="src\components\scaffolding\namevalue-list.ts" />
@@ -234,6 +240,16 @@
   <ItemGroup>
     <TypeScriptCompile Include="demo\components\snippet.ts" />
     <TypeScriptCompile Include="index.d.ts" />
+    <TypeScriptCompile Include="src\components\2d\adapters\canvasadapter.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\components\2d\adapters\svgadapter.ts" />
+    <TypeScriptCompile Include="src\components\2d\rect.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\components\2d\circle.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="src\components\3d\detector.ts" />
     <TypeScriptCompile Include="src\components\3d\three.ts" />
     <TypeScriptCompile Include="src\components\3d\types.ts" />
@@ -269,6 +285,8 @@
     <TypeScriptCompile Include="src\components\behaviors\swipe.ts" />
     <TypeScriptCompile Include="src\components\charts\generic.ts" />
     <TypeScriptCompile Include="src\components\charts\pie.ts" />
+    <TypeScriptCompile Include="src\components\2d\stage.ts" />
+    <TypeScriptCompile Include="src\components\2d\types.ts" />
     <TypeScriptCompile Include="src\components\fx\hero.ts" />
     <TypeScriptCompile Include="src\components\fx\fancy.ts" />
     <TypeScriptCompile Include="src\components\logging\console.ts" />

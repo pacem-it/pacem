@@ -68,7 +68,15 @@
 
 .FormFieldItem(@f_height) {
     padding: 0 @input_padding_horiz;
-    .FormFieldItemSize(@f_height);
+
+    &when (@border_field_underline = true) {
+        .FormFieldItemSize(@f_height , @border_field_size);
+    }
+
+    &when (@border_field_underline = false) {
+        .FormFieldItemSize(@f_height , 2 * @border_field_size);
+    }
+
     //background: none;
     box-sizing: border-box;
     color: @field_forecolor;
@@ -97,9 +105,9 @@
     }
 }
 
-.FormFieldItemSize(@f_height) {
+.FormFieldItemSize(@f_height, @brds) {
     .FontStd(1.1 * @f_height / @field_height);
-    min-height: @f_height;
+    min-height: @f_height + @brds;
 }
 
 .FormFieldItemWrapper() {
@@ -182,6 +190,6 @@
         line-height: 1.5 * 1.1 * @font_rem_factor;
         color: @color_input_toggle;
         left: 0;
-        top: 0;// @input_padding_horiz / 1.5;
+        top: 0; // @input_padding_horiz / 1.5;
     }
 }

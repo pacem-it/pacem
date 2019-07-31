@@ -3,22 +3,15 @@
     "noImplicitAny": false,
     "noEmitOnError": true,
     "removeComments": false,
-    "moduleResolution": "node",
     "sourceMap": false,
     "target": "es6",
     "module": "amd",
-    "outFile": "dist/js/pacem-core.js",
+    "outFile": "../../../dist/js/pacem-2d.js",
     "experimentalDecorators": true,
     "declaration": true,
     "lib": [ "es2015", "dom" ],
     "types": [ "@aspnet/signalr" ]
   },
-  "compileOnSave": false,
-  "include": [ "src/core", "src/components/behaviors", "src/components/basic" ],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "wwwroot",
-    "test"
-  ]
+  "compileOnSave": false
+  
 }

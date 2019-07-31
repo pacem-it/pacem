@@ -22,7 +22,7 @@ namespace Pacem.Components.ThreeD {
         }
     }
 
-    export abstract class ThreeDRelevantElement extends PacemEventTarget implements OnViewActivated, OnDisconnected {
+    export abstract class ThreeDRelevantElement extends PacemEventTarget {
 
         get scene(): Pacem3DElement {
             return this['_scene'] = this['_scene'] || CustomElementUtils.findAncestorOfType(this, Pacem3DElement);
@@ -108,14 +108,14 @@ namespace Pacem.Components.ThreeD {
 
         abstract project(point3D: Vector3D): Point;
 
-        /** Gets the native map instance */
+        /** Gets the native scene instance */
         abstract get scene(): any;
     }
 
     @CustomElement({
         tagName: ThreeDConsts.SCENE_SELECTOR
     })
-    export class Pacem3DElement extends PacemEventTarget implements OnViewActivated, OnDisconnected, OnPropertyChanged {
+    export class Pacem3DElement extends PacemEventTarget {
 
         @Watch({ converter: PropertyConverters.Boolean }) interactive: boolean = false;
         @Watch({ converter: PropertyConverters.Boolean }) orbit: boolean = false;
@@ -131,40 +131,40 @@ namespace Pacem.Components.ThreeD {
         register(item: ThreeDRelevantElement) {
             if (!this._bag.has(item)) {
                 this._bag.add(item);
-                this.add(item);
-                item.addEventListener(PropertyChangeEventName, this.addHandler, false);
+                this._add(item);
+                item.addEventListener(PropertyChangeEventName, this._addHandler, false);
             }
         }
 
         unregister(item: ThreeDRelevantElement) {
             if (this._bag.has(item)) {
                 this._bag.delete(item);
-                item.removeEventListener(PropertyChangeEventName, this.addHandler, false);
-                this.erase(item);
+                item.removeEventListener(PropertyChangeEventName, this._addHandler, false);
+                this._erase(item);
             }
         }
 
-        private addHandler = (evt: Event) => {
-            this.add(<ThreeDRelevantElement>evt.target);
+        private _addHandler = (evt: Event) => {
+            this._add(<ThreeDRelevantElement>evt.target);
         }
 
-        private add(item: ThreeDRelevantElement) {
+        private _add(item: ThreeDRelevantElement) {
             this.adapter &&
                 this.adapter.addItem(item);
         }
 
-        private erase(item: ThreeDRelevantElement) {
+        private _erase(item: ThreeDRelevantElement) {
             this.adapter &&
                 this.adapter.removeItem(item);
         }
 
-        private initializeAdapter(old: Pacem3DAdapterElement, val: Pacem3DAdapterElement) {
+        private _initializeAdapter(old: Pacem3DAdapterElement, val: Pacem3DAdapterElement) {
             if (!Utils.isNull(old)) {
                 this._bag.forEach(i => old.removeItem(i));
             }
             if (!Utils.isNull(this._container) && !Utils.isNull(val)) {
                 val.initialize(this);
-                this._bag.forEach(i => this.add(i));
+                this._bag.forEach(i => this._add(i));
                 this.render();
             }
         }
@@ -176,7 +176,7 @@ namespace Pacem.Components.ThreeD {
             if (Utils.isNull(this._container))
                 return;
             if (name === 'adapter') {
-                this.initializeAdapter(old, val);
+                this._initializeAdapter(old, val);
             } else if (name === 'disabled') {
                 this.render();
             }
@@ -198,7 +198,7 @@ namespace Pacem.Components.ThreeD {
             resizer.target = container;
             container.insertAdjacentElement('afterend', resizer);
             // adapter
-            this.initializeAdapter(null, this.adapter);
+            this._initializeAdapter(null, this.adapter);
             //
             container.addEventListener('mousemove', this._moveHandler, false);
             container.addEventListener('click', this._clickHandler, false);
@@ -254,7 +254,7 @@ namespace Pacem.Components.ThreeD {
 
         render() {
             if (!this.disabled) {
-                let cancelable = new CustomEvent('prerender', { detail: { cancel: false, scene: this.adapter.scene }, cancelable: true });
+                let cancelable = new CustomEvent('prerender', { detail: { scene: this.adapter.scene }, cancelable: true });
                 this.dispatchEvent(cancelable);
                 if (!cancelable.defaultPrevented) {
                     this.adapter.render();
