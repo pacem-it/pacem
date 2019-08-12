@@ -1,0 +1,115 @@
+﻿<pacem-markdown value="{{ #content0.textContent }}" class="md-tech" root></pacem-markdown>
+
+<pre pacem hidden id="content0">
+## Nested Entities
+
+Common use-case (or requested feature) relevant to the increasingly popular NoSQL documents/entities and to their front-end UI,
+is the **contextual editing of non-trivial sub-entities** either in single instance mode or in a set of instances.  
+That is a scenario tailored for the `PacemChildFormElement`.
+
+Here's a child-set of instances example:
+</pre>
+
+<pacemjs-snippet>
+    <template>
+
+        <pre id="nested1" pacem hidden>
+[
+    { "prop": "name" },
+    { "prop": "children",
+      "type": "array", 
+      "validators": [ { "type": "required", "errorMessage": "required" } ],
+      "props": { "display": { "cssClass": ["pacem-grid", "grid-novgap", "grid-tiny-colgap", "grid-nospace"] }, "props": [
+            { 
+                "prop": "name", 
+                "display": { "cssClass": ["pacem-cell", "cols-lg-6"] },
+                "validators": [ { "type": "required", "errorMessage": "required" } ] 
+            },
+            { 
+                "prop": "bornWhen",
+                "type": "byte",
+                "display": { "cssClass": ["pacem-cell", "cols-lg-6"] , "name": "born when (age)" } 
+            }]
+        }
+    }
+]
+</pre>
+        <pacem-data id="entity1" model="{ name: 'Leonhard',  children: [{ name: 'Johann', bornWhen: 27 }, { name: 'Christof', bornWhen: 36 }, { name: 'Karl' }]}"></pacem-data>
+        <pacem-form id="form1" autogenerate="true" metadata="{{ JSON.parse(#nested1.textContent) }}" entity="{{ #entity1.model, twoway }}"></pacem-form>
+
+        <pacem-span hide="{{ !#form1.valid }}"><i class="pacem-icon text-success">check_circle</i></pacem-span>
+        <pacem-span hide="{{ #form1.valid }}"><i class="pacem-icon text-danger">clear</i></pacem-span>
+        <code><pacem-text text="{{ JSON.stringify(#entity1.model) }}"></pacem-text></code>
+
+    </template>
+</pacemjs-snippet>
+
+<pacem-markdown value="{{ #content1.textContent }}" class="md-tech" root></pacem-markdown>
+
+<pre pacem hidden id="content1">
+
+Here's a single child-instance example:
+</pre>
+
+<pacemjs-snippet>
+    <template>
+        <pre id="nested2" pacem hidden>{
+  "display": { "cssClass": [ "pacem-grid", "grid-novgap", "grid-tiny-colgap", "grid-nospace" ] },
+  "props": [
+    {
+      "prop": "name",
+      "display": { "cssClass": [ "pacem-cell", "cols-lg-6" ] }
+    },
+    {
+      "prop": "surname",
+      "display": { "cssClass": [ "pacem-cell", "cols-lg-6" ] }
+    },
+    {
+      "prop": "address",
+      "display": { "cssClass": [ "pacem-cell", "cols-12" ] },
+      "type": "object",
+      "props": {
+        "display": { "cssClass": [ "pacem-grid", "grid-novgap", "grid-tiny-colgap", "grid-nospace" ] },
+        "props": [
+          {
+            "prop": "street",
+            "display": { "cssClass": [ "pacem-cell", "cols-lg-8" ] },
+            "validators": [
+              {
+                "type": "required",
+                "errorMessage": "required"
+              }
+            ]
+          },
+          {
+            "prop": "zip",
+            "display": { "cssClass": [ "pacem-cell", "cols-lg-4" ] }
+          },
+          {
+            "prop": "city",
+            "display": { "cssClass": [ "pacem-cell" ] },
+            "validators": [
+              {
+                "type": "required",
+                "errorMessage": "required"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
+</pre>
+        <pacem-data id="entity2" model="{ name: 'Leonhard',  surname: 'Euler', address: { street: 'Seven Bridges Place' , city: 'Koenigsberg' }}"></pacem-data>
+        <pacem-form id="form2" autogenerate="true" metadata="{{ JSON.parse(#nested2.textContent) }}" entity="{{ #entity2.model, twoway }}"></pacem-form>
+
+        <pacem-span hide="{{ !#form2.valid }}"><i class="pacem-icon text-success">check_circle</i></pacem-span>
+        <pacem-span hide="{{ #form2.valid }}"><i class="pacem-icon text-danger">clear</i></pacem-span>
+        <code><pacem-text text="{{ JSON.stringify(#entity2.model) }}"></pacem-text></code>
+
+    </template>
+</pacemjs-snippet>
+
+<pacem-childform id="proto" hidden></pacem-childform>
+<pacemjs-descriptor target="{{ #proto }}"></pacemjs-descriptor>

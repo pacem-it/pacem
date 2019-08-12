@@ -100,7 +100,6 @@
         color: @color_field_label;
         .FontMain(1.05);
         animation: pacem-label-anim .25s ease-in-out both;
-
         // field appearance borrowed from -inline:
         min-height: @field_height;
 
@@ -142,7 +141,7 @@
     }
 
     &.@{PCSS}-invalid {
-        .@{PCSS}-input-container {
+        > .@{PCSS}-input-container > :not(@{P}-childform) /* childform should break the rule */ {
 
             .@{PCSS}-viewfinder,
             .@{PCSS}-input {
@@ -151,9 +150,11 @@
         }
 
         &.@{PCSS}-dirty {
-            .@{PCSS}-viewfinder,
-            .@{PCSS}-input {
-                border-color: @color_danger;
+            > .@{PCSS}-input-container > :not(@{P}-childform) /* childform should break the rule */ {
+                .@{PCSS}-viewfinder,
+                .@{PCSS}-input {
+                    border-color: @color_danger;
+                }
             }
         }
     }
@@ -163,7 +164,8 @@
         &.@{PCSS}-valid {
 
             &.@{PCSS}-dirty {
-                .@{PCSS}-input-container {
+
+                > .@{PCSS}-input-container > :not(@{P}-childform) /* childform should break the rule */ {
 
                     .@{PCSS}-viewfinder,
                     .@{PCSS}-input {
@@ -173,9 +175,12 @@
             }
 
             &.@{PCSS}-pristine {
-                .@{PCSS}-viewfinder,
-                .@{PCSS}-input {
-                    border-color: fade(fade( @color_success, 100), 40);
+
+                > .@{PCSS}-input-container > :not(@{P}-childform) /* childform should break the rule */ {
+                    .@{PCSS}-viewfinder,
+                    .@{PCSS}-input {
+                        border-color: fade(fade( @color_success, 100), 40);
+                    }
                 }
             }
         }
@@ -514,7 +519,6 @@
         border-color: fade(@color_default, 40);
     }
 }
-
 // reset bg for groups nested inside sets
 .@{PCSS}-fieldset {
 
@@ -547,7 +551,6 @@
         }
     }
 }
-
 // ANIMATIONS
 .@{PCSS}-body.@{PCSS}-animations {
     @{P}-form-field > .@{PCSS}-field {

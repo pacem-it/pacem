@@ -248,6 +248,11 @@
         "title": "<pacem-form-field>"
       },
       {
+        "label": "Child-Form",
+        "view": "childform",
+        "title": "<pacem-childform>"
+      },
+      {
         "label": "Select",
         "view": "select",
         "title": "<pacem-select>"

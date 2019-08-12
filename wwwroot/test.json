@@ -1,0 +1,50 @@
+{
+
+  "display": { "cssClass": [ "pacem-grid", "grid-novgap", "grid-tiny-colgap" ] },
+  "props": [
+    {
+      "prop": "name",
+      "display": { "cssClass": [ "pacem-cell", "cols-lg-6" ] }
+    },
+    {
+      "prop": "surname",
+      "display": { "cssClass": [ "pacem-cell", "cols-lg-6" ] }
+    },
+    {
+      "prop": "address",
+      "display": { "cssClass": [ "pacem-cell", "cols-12", ] },
+      "type": "object",
+      "props": {
+        "display": { "cssClass": [ "pacem-grid", "grid-novgap", "grid-tiny-colgap" ] },
+        "props": [
+          {
+            "prop": "street",
+            "display": { "cssClass": [ "pacem-cell", "cols-8", "cols-sm-12" ] },
+            "validators": [
+              {
+                "type": "required",
+                "errorMessage": "required"
+              }
+            ]
+          },
+          {
+            "prop": "zip",
+            "display": { "cssClass": [ "pacem-cell", "cols-4", "cols-sm-12" ] }
+          },
+          {
+            "prop": "city",
+            "display": { "cssClass": [ "pacem-cell" ] },
+            "validators": [
+              {
+                "type": "required",
+                "errorMessage": "required"
+              }
+            ]
+          }
+        ]
+
+      }
+    }
+
+  ]
+}

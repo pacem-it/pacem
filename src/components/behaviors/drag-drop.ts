@@ -128,30 +128,43 @@ namespace Pacem.Components {
             var lastX: number = 0, lastY: number = 0;
             const children = Array.from(target.children),
                 length = children.length;
-            // hover element:
+
+            // first hit tested element
             const hover = document.elementFromPoint(args.currentPosition.x, args.currentPosition.y);
 
+            // hit tested sibling (to spot)
             let hoverElement: Element;
 
+            // 1. hit tested element is the drop target (container)
             if (hover === target) {
                 this._currentHover = hoverElement = args.placeholder;
                 return hoverElement.parentElement === target ? hoverElement.nextElementSibling : null;
             }
 
-            if (hover.parentElement != target || hover === args.placeholder) {
+            // loop until the parent element is the drop target
+            var hoverSibling = hover;
+            while (hoverSibling.parentElement != target && hoverSibling.parentElement != null) {
+                hoverSibling = hoverSibling.parentElement;
+            }
+
+            // 2. hit tested element is the moving placeholder or is outside a drop target
+            if (hoverSibling.parentElement != target || hoverSibling === args.placeholder) {
                 this._currentHover = hoverElement = args.placeholder;
                 return hoverElement.nextElementSibling;
             }
 
-            if (hover != this._currentHover) {
+            // 3. hit tested element has changed
+            if (hoverSibling != this._currentHover) {
                 hoverElement = <Element>this._currentHover;
                 const
                     from = children.indexOf(hoverElement),
-                    to = children.indexOf(hover);
-                this._currentHover = hover;
-                return from > to ? hover : hover.nextElementSibling;
+                    to = children.indexOf(hoverSibling);
+                this._currentHover = hoverSibling;
+                return from > to ? hoverSibling : hoverSibling.nextElementSibling;
             }
 
+            // 4. just return something
+            return hoverSibling;
         }
 
         /**

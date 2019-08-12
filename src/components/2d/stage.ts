@@ -2,6 +2,11 @@
 /// <reference path="types.ts" />
 namespace Pacem.Components.Drawing {
 
+    export declare type ViewBoxAlignment = 'min' | 'mid' | 'max';
+    export declare type ViewBoxAspectRatio = 'none' | {
+        x: ViewBoxAlignment, y: ViewBoxAlignment, slice?: boolean
+    }
+
     @CustomElement({ tagName: P + '-'+ TAG_MIDDLE_NAME, shadow: Defaults.USE_SHADOW_ROOT, template: `<${P}-resize target="{{ ::_stage }}" on-${ ResizeEventName }=":host._resize($event)"></${P}-resize><div class="${PCSS}-2d"></div><pacem-content></pacem-content>` })
     export class Pacem2DElement extends PacemItemsContainerElement<DrawableElement> implements Stage {
 
@@ -14,7 +19,8 @@ namespace Pacem.Components.Drawing {
         }
 
         @Watch({ converter: PropertyConverters.Element }) adapter: Pacem2DAdapterElement;
-        @Watch({ converter: PropertyConverters.Boolean }) interactive: boolean = false;
+        @Watch({ emit: false, reflectBack: true, converter: PropertyConverters.Json }) viewbox: Rect;
+        @Watch({ emit: false, reflectBack: true, converter: PropertyConverters.String }) aspectRatio: ViewBoxAspectRatio;
 
         @ViewChild('.'+ PCSS + '-2d') private _stage: HTMLElement;
 

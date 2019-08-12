@@ -52,6 +52,7 @@
     <None Remove="src\components\2d\types.ts" />
     <None Remove="src\components\fx\fancy.ts" />
     <None Remove="src\components\fx\hero.ts" />
+    <None Remove="src\components\scaffolding\childform.ts" />
     <None Remove="src\components\scaffolding\namevalue-list.ts" />
     <None Remove="src\components\scaffolding\slider.ts" />
     <None Remove="src\components\scaffolding\tags.ts" />
@@ -328,6 +329,7 @@
     <TypeScriptCompile Include="src\components\scaffolding\radio-list.ts" />
     <TypeScriptCompile Include="src\components\scaffolding\radio.ts" />
     <TypeScriptCompile Include="src\components\scaffolding\select.ts" />
+    <TypeScriptCompile Include="src\components\scaffolding\childform.ts" />
     <TypeScriptCompile Include="src\components\scaffolding\suggest.ts" />
     <TypeScriptCompile Include="src\components\scaffolding\tags.ts" />
     <TypeScriptCompile Include="src\components\scaffolding\textarea-markdown.ts" />

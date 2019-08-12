@@ -70,13 +70,12 @@
     padding: 0 @input_padding_horiz;
 
     &when (@border_field_underline = true) {
-        .FormFieldItemSize(@f_height , @border_field_size);
+        .FormFieldItemSize(@f_height, @border_field_size);
     }
 
     &when (@border_field_underline = false) {
-        .FormFieldItemSize(@f_height , 2 * @border_field_size);
+        .FormFieldItemSize(@f_height, 2 * @border_field_size);
     }
-
     //background: none;
     box-sizing: border-box;
     color: @field_forecolor;
@@ -114,10 +113,11 @@
     //
     font-size: 1em;
     position: relative;
-    display: inline-block;
+    display: block;
 
     @media (min-width: @threshold_lg) {
         min-width: @field_min_width;
+        display: inline-block;
     }
 
     .@{PCSS}-viewfinder,

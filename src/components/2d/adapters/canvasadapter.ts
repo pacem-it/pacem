@@ -109,6 +109,32 @@ namespace Pacem.Components.Drawing {
                     canvas = context.canvas;
                 context.clearRect(0, 0, canvas.width, canvas.height);
 
+                // setup viewbox just in case
+                const hasViewboxSpecified = !Utils.isNullOrEmpty(scene.viewbox);
+                if (hasViewboxSpecified) {
+
+                    //TODO: DEAL with x, y != 0
+                    let moveX: number, moveY: number, scaleX: number, scaleY: number;
+                    if (scene.aspectRatio === 'none') {
+
+                        moveX = moveY = 0;
+                        scaleX = canvas.width / scene.viewbox.width;
+                        scaleY = canvas.height / scene.viewbox.height;
+
+                    } else {
+                        const slice = !!scene.aspectRatio.slice;
+                        const wider = scene.viewbox.width / scene.viewbox.height > canvas.width / canvas.height;
+                        const ratio = wider === slice ? canvas.height / scene.viewbox.height : canvas.width / scene.viewbox.width;
+                        const vboxsize: Size = { width: scene.viewbox.width * ratio, height: scene.viewbox.height * ratio };
+
+                        // work in progress...
+                        //switch (scene.aspectRatio.x) {
+                        //    case 'min':
+                        //        moveX = 
+                        //}
+                    }
+                }
+
                 // draw recursively
                 for (let drawable of items) {
                     this._draw(context, drawable);
@@ -201,7 +227,8 @@ namespace Pacem.Components.Drawing {
 
                 var path2D = new Path2D(data);
                 const pointer = this._pointer;
-                if (!Utils.isNull(pointer)) {
+                if (!item.inert /* is hit-test visible? */
+                    && !Utils.isNull(pointer)) {
                     if ((hasFill && ctx.isPointInPath(path2D, pointer.x, pointer.y))
                         || (hasStroke && ctx.isPointInStroke(path2D, pointer.x, pointer.y))) {
 
@@ -227,8 +254,7 @@ namespace Pacem.Components.Drawing {
 
         private _scenes = new WeakMap<Pacem2DElement, CanvasRenderingContext2D>();
         private _handles = new WeakMap<Pacem2DElement, number>();
-
-
+        
     }
 
 }

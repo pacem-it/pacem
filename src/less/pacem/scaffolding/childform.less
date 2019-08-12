@@ -1,0 +1,41 @@
+﻿@import "shared";
+
+@{P}-childform {
+    display: block;
+
+    // remove animations
+    @{P}-repeater.@{PCSS}-animatable-list.@{PCSS}-list-bottom > *{
+        animation: none !important;
+    }
+
+    .@{PCSS}-childform-item {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+
+        > * {
+            flex: 0 0 auto;
+        }
+
+        > @{P}-form {
+            flex: 1 0 auto;
+        }
+    }
+
+    @{P}-button.circular:hover{
+        background-color: fade(@color_default, 10);
+    }
+
+}
+
+.@{PCSS}-childform-item-floater {
+
+    pointer-events: none;
+    opacity: 0;
+    background-color: @color_field_back;
+
+    &.@{PCSS}-drag-floater{
+        opacity: 1;
+    }
+
+}

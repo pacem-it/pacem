@@ -357,7 +357,7 @@ css-class="{{ {'${PCSS}-fetching': ::_fetcher.fetching, '${PCSS}-dirty': this.di
 
                     break;
                 default:
-                    switch ((meta.dataType || meta.type).toLowerCase()) {
+                    switch ((meta.dataType || meta.type || '').toLowerCase()) {
                         case 'imageurl':
                             tagName = P + '-input-image';
                             const f_id = this._fetcher.id = `fetch${this._key}`;
@@ -454,6 +454,13 @@ css-class="{{ {'${PCSS}-fetching': ::_fetcher.fetching, '${PCSS}-dirty': this.di
                                     attrs['step'] = "{{ 'any' }}";
                                     break;
                                 default:
+                                    if ((meta.type === 'array' || meta.type === 'object') && !Utils.isNullOrEmpty(meta.props)) {
+                                        tagName = P + '-childform';
+                                        delete attrs['placeholder'];
+                                        attrs['metadata'] = Utils.Json.stringify(meta.props);
+                                        attrs['mode'] = meta.type;
+                                        attrs['logger'] = '{{ :host.logger }}';
+                                    }
                                     break;
                             }
                             break;

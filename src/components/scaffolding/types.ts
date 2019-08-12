@@ -27,7 +27,7 @@ namespace Pacem.Scaffolding {
 
         // child entities
         /** Either the metadata of an 'object' or the metadata of the single item of an homogeneous 'array'. */
-        props?: PropertyMetadata[]
+        props?: TypeMetadata | PropertyMetadata[]
     };
 
     // It is important that Type- and Property-Metadata match in their core properties in order to allow recursion when rendered.
@@ -81,6 +81,11 @@ namespace Pacem.Components.Scaffolding {
                 this._form = v;
                 this.propertyChangedCallback('form', old, v);
             }
+        }
+
+        disconnectedCallback() {
+            this._form = null;
+            super.disconnectedCallback();
         }
     }
 

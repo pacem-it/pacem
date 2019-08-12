@@ -58,6 +58,8 @@ namespace Pacem.Components.Drawing {
 
     export interface Drawable {
         readonly scene: Pacem2DElement;
+        /** Gets or sets whether the drawable is hit-testable. */
+        inert: boolean;
     }
 
     export abstract class DrawableElement extends PacemCrossItemsContainerElement<DrawableElement> implements Drawable {
@@ -67,6 +69,7 @@ namespace Pacem.Components.Drawing {
         }
 
         @Watch({ emit: false, reflectBack: true, converter: PropertyConverters.String }) tag: string;
+        @Watch({ emit: false, converter: PropertyConverters.Boolean }) inert: boolean;
 
         viewActivatedCallback() {
             super.viewActivatedCallback();

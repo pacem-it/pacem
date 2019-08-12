@@ -8,11 +8,20 @@ namespace Pacem.Components.Scaffolding {
     };
 
     export const FormSubmitEventName = 'submit';
+    export const FormResetEventName = 'reset';
 
     export class FormSubmitEvent extends CustomTypedEvent<FormSubmitEventArgs> {
 
         constructor(args: FormSubmitEventArgs) {
             super(FormSubmitEventName, args, { bubbles: true, cancelable: true });
+        }
+
+    }
+
+    export class FormResetEvent extends Event {
+
+        constructor() {
+            super(FormResetEventName, { bubbles: true, cancelable: true });
         }
 
     }
@@ -233,11 +242,21 @@ namespace Pacem.Components.Scaffolding {
         private _reset = (evt?: Event) => {
             if (!Utils.isNull(evt))
                 Pacem.avoidHandler(evt);
+
+            var resetEvt = new FormResetEvent();
+            this.dispatchEvent(resetEvt);
+            if (resetEvt.defaultPrevented) {
+                return;
+            }
+
+            // reset
+            // fields first
             for (var field in this._fields) {
                 var fld = this._fields[field];
                 if (fld instanceof PacemModelElement)
                     fld.reset();
             }
+            // then sub-forms
             for (var form of this._subForms) {
                 form._reset();
             }
