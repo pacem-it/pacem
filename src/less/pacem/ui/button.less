@@ -409,6 +409,7 @@ a.@{PCSS}-button,
     cursor: default;
     color: fade(@color_button_fore, 30);
     text-shadow: none;
+    pointer-events: none;
 }
 
 .@{PCSS}-button,
@@ -523,8 +524,8 @@ body.pacem-animations {
         &:focus {
 
             &:not(.@{PCSS}-disabled) {
-                background-color: @color_default;
-                color: @color_default_inv;
+                background-color: @color_contextmenu_hover_back;
+                color: @color_contextmenu_hover_fore;
             }
 
             &.@{PCSS}-disabled {

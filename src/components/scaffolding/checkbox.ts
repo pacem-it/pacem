@@ -54,6 +54,8 @@ namespace Pacem.Components.Scaffolding {
         viewActivatedCallback() {
             super.viewActivatedCallback();
             this._checkbox.id = this._label.htmlFor = this._key;
+            this._synchronizeUi();
+
             if (this.value /* weak equality to deal with declarative values and conversions */ == this.trueValue)
                 this.selected = true;
             else if (this.value /* weak equality to deal with declarative values and conversions */ == this.falseValue)
@@ -62,6 +64,12 @@ namespace Pacem.Components.Scaffolding {
 
         propertyChangedCallback(name: string, old: any, val: any, first?: boolean) {
             super.propertyChangedCallback(name, old, val, first);
+
+            if (!this.isReady) {
+                // the following are only UI-relevant modifications
+                return;
+            }
+
             switch (name) {
                 case 'caption':
                     this._label.hidden = Utils.isNullOrEmpty(val);
@@ -70,16 +78,20 @@ namespace Pacem.Components.Scaffolding {
                     this._checkbox.name = val;
                     break;
                 case 'selected':
-                    if (this._checkbox.checked = val) {
-                        this.value = this.trueValue;
-                        Utils.addClass(this, PCSS + '-selected');
-                        this.aria.attributes.set('checked', 'true');
-                    } else {
-                        this.value = this.falseValue;
-                        Utils.removeClass(this, PCSS + '-selected');
-                        this.aria.attributes.set('checked', 'false');
-                    }
+                    this._synchronizeUi();
                     break;
+            }
+        }
+
+        private _synchronizeUi(val = this.selected) {
+            if (this._checkbox.checked = val) {
+                this.value = this.trueValue;
+                Utils.addClass(this, PCSS + '-selected');
+                this.aria.attributes.set('checked', 'true');
+            } else {
+                this.value = this.falseValue;
+                Utils.removeClass(this, PCSS + '-selected');
+                this.aria.attributes.set('checked', 'false');
             }
         }
 

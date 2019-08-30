@@ -1,8 +1,6 @@
 ﻿/// <reference path="form.ts" />
 namespace Pacem.Components.Scaffolding {
 
-    const CHILDFORM_RESET: string = 'pacem:childform-reset:';
-
     /** Represents a sub-form for automatic generation of editing fields for sub-entities.  */
     @CustomElement({
         tagName: P + '-childform', shadow: Defaults.USE_SHADOW_ROOT,

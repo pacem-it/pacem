@@ -102,8 +102,14 @@ css-class="{{ {'${PCSS}-fetching': ::_fetcher.fetching, '${PCSS}-dirty': this.di
         };
 
         private _ensureBalloon(): void {
+
+            var innerText: string;
+            const noBalloon = this.readonly
+                || (this.metadata && this.metadata.extra && this.metadata.extra.tooltip) !== true
+                || Utils.isNullOrEmpty(innerText = this.metadata && this.metadata.display && this.metadata.display.description);
+
             // balloon
-            if (Utils.isNull(this._balloon)) {
+            if (Utils.isNull(this._balloon) && !noBalloon) {
                 let balloon = <UI.PacemBalloonElement>document.createElement(P + '-balloon');
                 balloon.options = {
                     behavior: UI.BalloonBehavior.Tooltip,
@@ -112,20 +118,16 @@ css-class="{{ {'${PCSS}-fetching': ::_fetcher.fetching, '${PCSS}-dirty': this.di
                     align: UI.BalloonAlignment.Start
                 };
                 Utils.addClass(balloon, PCSS + '-field-tooltip');
-                document.body.appendChild(this._balloon = balloon);
+                var shell = CustomElementUtils.findAncestorShell(this);
+                shell.appendChild(this._balloon = balloon);
             }
-            /*
-            <${ P }-balloon
-            target="{{ ::label }}"
-            options="{ 'behavior': 'tooltip' }"><${ P }-text text="{{ :host.metadata && :host.metadata.display && :host.metadata.display.description }}"></${ P }-text></${ P }-balloon>
-            */
+
             const balloon = this._balloon;
-            balloon.target = this.label;
-            var innerText: string;
-            balloon.disabled = this.readonly
-                || (this.metadata && this.metadata.extra && this.metadata.extra.tooltip) !== true
-                || Utils.isNullOrEmpty(innerText = this.metadata && this.metadata.display && this.metadata.display.description);
-            balloon.innerText = innerText || '';
+            if (!Utils.isNull(balloon)) {
+                balloon.target = this.label;
+                balloon.disabled = noBalloon;
+                balloon.innerText = innerText || '';
+            }
         }
 
         private _buildUpLabel(): void {
@@ -140,7 +142,7 @@ css-class="{{ {'${PCSS}-fetching': ::_fetcher.fetching, '${PCSS}-dirty': this.di
             else
                 Utils.removeClass(label, PCSS + '-required');
             //
-            if (!this._balloon.disabled)
+            if (!Utils.isNull(this._balloon) && !this._balloon.disabled)
                 Utils.addClass(label, PCSS + '-tooltip');
             else
                 Utils.removeClass(label, PCSS + '-tooltip');
@@ -264,7 +266,7 @@ css-class="{{ {'${PCSS}-fetching': ::_fetcher.fetching, '${PCSS}-dirty': this.di
             switch (meta.display && meta.display.ui) {
                 case 'expression':
                     // cms context sneak-in (stub)
-                    attrs['value'] = `{{ :host.entity instanceof HTMLElement && :host.entity.getAttribute('${ CustomElementUtils.camelToKebab(meta.prop) }') }}`;
+                    attrs['value'] = `{{ :host.entity instanceof HTMLElement && :host.entity.getAttribute('${CustomElementUtils.camelToKebab(meta.prop)}') }}`;
                     attrs['on-change'] = ':host._handleValueChange($event.target.value)';
                     break;
                 // remove this (use dataType = 'HTML' instead).
@@ -356,6 +358,12 @@ css-class="{{ {'${PCSS}-fetching': ::_fetcher.fetching, '${PCSS}-dirty': this.di
                     // TODO: implement dependsOn
 
                     break;
+                case 'switcher':
+                    if ((meta.type || '').toLowerCase() === 'boolean') {
+                        attrs['class'] = "checkbox-toggle";
+                    } else {
+                        break;
+                    }
                 default:
                     switch ((meta.dataType || meta.type || '').toLowerCase()) {
                         case 'imageurl':
@@ -400,13 +408,11 @@ css-class="{{ {'${PCSS}-fetching': ::_fetcher.fetching, '${PCSS}-dirty': this.di
                         case "datetime":
                             tagName = P + '-datetime-picker';
                             delete attrs['placeholder'];
-                            delete attrs['class'];
                             attrs['precision'] = "minute";
                             break;
                         case "date":
                             tagName = P + '-datetime-picker';
                             delete attrs['placeholder'];
-                            delete attrs['class'];
                             break;
                         case "url":
                             tagName = P + '-input-url';

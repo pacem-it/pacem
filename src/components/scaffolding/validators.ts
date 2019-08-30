@@ -197,7 +197,6 @@ namespace Pacem.Components.Scaffolding {
     })
     export class PacemAsyncValidatorElement extends PacemBaseValidatorElement implements Pacem.Net.OAuthFetchable {
 
-        @Debounce(1000)
         private _fetch(val: any): PromiseLike<boolean> {
             const deferred = this._deferredToken;
             const fetcher = this._fetcher;
@@ -207,32 +206,42 @@ namespace Pacem.Components.Scaffolding {
             fetcher.url = this.url;
             fetcher.as = 'text';
             fetcher.method = this.method;
-            fetcher.fetch().then(_ => {
 
-                const result: string = fetcher.result;
-                switch (result) {
-                    case 'true':
-                        deferred.resolve(true);
-                        break;
-                    case 'false':
-                        deferred.resolve(false);
-                        break;
-                    default: // expect json
-                        try {
-                            let json = JSON.parse(result);
-                            let res = Utils.getApiResult(json);
-                            deferred.resolve(res || false);
-                        } catch{
-                            deferred.resolve(false);
+            // debounce
+            clearTimeout(this._debouncer);
+            this._debouncer = setTimeout(
+                () => {
+                    fetcher.fetch().then(_ => {
+
+                        const result: string = fetcher.result;
+                        switch (result) {
+                            case 'true':
+                                deferred.resolve(true);
+                                break;
+                            case 'false':
+                                deferred.resolve(false);
+                                break;
+                            default: // expect json
+                                try {
+                                    let json = JSON.parse(result);
+                                    let res = Utils.getApiResult(json);
+                                    deferred.resolve(res || false);
+                                } catch{
+                                    deferred.resolve(false);
+                                }
+                                break;
                         }
-                        break;
+                    }, _ => {
+                        deferred.resolve(false);
+                    });
+
                 }
-            }, _ => {
-                deferred.resolve(false);
-            });
+                , 1000
+            );
             return deferred.promise;
         }
 
+        private _debouncer: number;
         private _deferredToken = null;
 
         evaluate(val: any): PromiseLike<boolean> {

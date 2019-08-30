@@ -174,11 +174,22 @@ namespace Pacem.Components.Scaffolding {
             } else {
                 // ...use the output parameters
                 fetcher.parameters = Utils.extend({}, submitEvt.detail.parameters);
-                // fetcher fetchresult event listener
-                const fnResult = (evt: CustomEvent) => {
-                    // remove listeners
-                    fetcher.removeEventListener(Pacem.Net.FetchResultEventName, fnResult, false);
+                // a) fetcher success event listener
+                const fnSuccess = (evt: CustomEvent<Response>) => {
+                    fetcher.removeEventListener(Pacem.Net.FetchSuccessEventName, fnSuccess, false);
                     fetcher.removeEventListener(Pacem.Net.FetchErrorEventName, fnError, false);
+                    const r = evt.detail;
+                    if (r.headers.get("Content-Length") == "0") {
+                        // if (204) then resolve right here (won't enter 'fnResult')
+                        fetcher.removeEventListener(Pacem.Net.FetchResultEventName, fnResult, false);
+                        this.success = true;
+                        deferred.resolve({});
+                    }
+                };
+                // b) fetcher fetchresult event listener
+                const fnResult = (evt: CustomEvent) => {
+                    // remove listeners (others have already been removed in 'fnSuccess')
+                    fetcher.removeEventListener(Pacem.Net.FetchResultEventName, fnResult, false);
                     //
                     var result = evt.detail;
                     if (typeof (result) === 'object' && (<object>result).hasOwnProperty('success')) {
@@ -193,10 +204,11 @@ namespace Pacem.Components.Scaffolding {
                         this.success = true;
                         deferred.resolve(result);
                     }
-                }
-                // fetcher error event listener
+                };
+                // c) fetcher error event listener
                 const fnError = (evt: CustomEvent) => {
                     // remove listeners
+                    fetcher.removeEventListener(Pacem.Net.FetchSuccessEventName, fnSuccess, false);
                     fetcher.removeEventListener(Pacem.Net.FetchResultEventName, fnResult, false);
                     fetcher.removeEventListener(Pacem.Net.FetchErrorEventName, fnError, false);
                     this.fail = true;
@@ -217,10 +229,15 @@ namespace Pacem.Components.Scaffolding {
                     }
                 };
                 fetcher.addEventListener(Pacem.PropertyChangeEventName, fnPropChange, false);
+                fetcher.addEventListener(Pacem.Net.FetchSuccessEventName, fnSuccess, false);
                 fetcher.addEventListener(Pacem.Net.FetchResultEventName, fnResult, false);
                 fetcher.addEventListener(Pacem.Net.FetchErrorEventName, fnError, false);
                 if (!Utils.isNullOrEmpty(this.action)) {
                     fetcher.url = this.action;
+                }
+                // is it an 'inert' PacemFetchElement?
+                if (fetcher instanceof PacemFetchElement && !fetcher.autofetch) {
+                    fetcher.fetch();
                 }
                 this.success = this.fail = false;
             }

@@ -15,11 +15,11 @@ Configure the balloon to behave like a usual tooltip:
     <template>
 
         <div id="tget0" class="pacem-button button">hover me</div>
-        <pacem-body-proxy>
+        <pacem-shell-proxy>
             <pacem-balloon target="{{ #tget0 }}" options='{ "behavior": "tooltip" }'>
                 This balloon has basic tooltip behavior.
             </pacem-balloon>
-        </pacem-body-proxy>
+        </pacem-shell-proxy>
 
     </template>
 </pacemjs-snippet>
@@ -38,14 +38,14 @@ Configure the balloon to behave like a `contextmenu`:
     <template>
 
         <div id="tget1" class="pacem-button button">Right click me</div>
-        <pacem-body-proxy>
+        <pacem-shell-proxy>
             <pacem-balloon class="pacem-contextmenu" target="{{ #tget1 }}" options='{ "trigger": "contextmenu", "position": "right", "align": "start" }'>
                 <div data-icon-glyph="home" class="pacem-button">Item 1</div>
                 <div class="pacem-button pacem-disabled">Item 2</div>
                 <hr />
                 <div data-icon-glyph="clear" class="pacem-button">Item 3</div>
             </pacem-balloon>
-        </pacem-body-proxy>
+        </pacem-shell-proxy>
 
     </template>
 </pacemjs-snippet>
