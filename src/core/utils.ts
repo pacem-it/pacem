@@ -145,11 +145,11 @@ namespace Pacem {
 
         // thanks to @cuixiping: http://stackoverflow.com/questions/23150333
         static blobToDataURL(blob: Blob) {
-            var deferred = DeferPromise.defer<string>();
-            var a = new FileReader();
-            a.onload = function (e) { deferred.resolve(e.target['result']); }
-            a.readAsDataURL(blob);
-            return deferred.promise;
+            return new Promise((resolve, _) => {
+                var a = new FileReader();
+                a.onload =  (e) => { resolve(e.target['result']); }
+                a.readAsDataURL(blob);
+            });
         }
 
         static dataURLToBlob(dataurl: string) {
@@ -320,7 +320,7 @@ namespace Pacem {
 
             }
 
-            var DOMURL = window.URL || window['webkitURL'] || window;
+            var DOMURL: {createObjectURL: (object)=>string} = window.URL || window['webkitURL'] || <any>window;
 
             var img = new Image();
             var svg = new Blob([data], { type: 'image/svg+xml' });
