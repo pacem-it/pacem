@@ -3,13 +3,11 @@ namespace Pacem.Components.UI {
 
     @CustomElement({
         tagName: P + '-marquee', shadow: Defaults.USE_SHADOW_ROOT,
-        template: `<div class="${PCSS}-marquee"><${ P }-content></${ P }-content></div><div class="${PCSS}-marquee-overlap"></div><${ P }-resize target="{{ :host._marquee }}" on-${ResizeEventName}=":host._resize($event)"></${ P }-resize>`
+        template: `<div class="${PCSS}-marquee"><${P}-content></${P}-content></div><div class="${PCSS}-marquee-overlap"></div>
+<${P}-resize target="{{ :host._overlap }}" on-${ResizeEventName}=":host._overlapResize($event)"></${P}-resize>
+<${P}-resize target="{{ :host._marquee }}" on-${ResizeEventName}=":host._contentResize($event)"></${P}-resize>`
     })
     export class PacemMarqueeElement extends PacemElement {
-
-        constructor() {
-            super();
-        }
 
         // TODO: reuse css animation injection
         connectedCallback() {
@@ -21,13 +19,13 @@ namespace Pacem.Components.UI {
         propertyChangedCallback(name: string, old: any, val: any, first?: boolean) {
             super.propertyChangedCallback(name, old, val, first);
             if (name === 'speed') {
-                this._adjust(this._resizer.currentSize);
+                this._adjust();
             }
         }
 
         viewActivatedCallback() {
             super.viewActivatedCallback();
-            this._adjust(this._resizer.currentSize);
+            this._adjust();
         }
 
         disconnectedCallback() {
@@ -36,24 +34,34 @@ namespace Pacem.Components.UI {
             super.disconnectedCallback();
         }
 
-        private _resize(evt: ResizeEvent) {
-            this._adjust(evt.detail);
+        private _overlapResize(evt: ResizeEvent) {
+            this._state.overlap = evt.detail.width;
+            this._adjust();
+        }
+
+        private _contentResize(evt: ResizeEvent) {
+            this._state.content = evt.detail.width;
+            this._adjust();
         }
 
         private _css: HTMLStyleElement;
-        private _state: ResizeEventArgs;
+        private _state = { overlap: 0, content: 0 };
 
         @ViewChild(`.${PCSS}-marquee`) private _marquee: HTMLDivElement;
+        @ViewChild(`.${PCSS}-marquee-overlap`) private _overlap: HTMLDivElement;
         @ViewChild(P + "-resize") private _resizer: PacemResizeElement;
         /** seconds per 1920px */
         @Watch({ converter: PropertyConverters.Number }) speed: number;
 
-        private _adjust(args: ResizeEventArgs) {
-            const m = this._marquee;
-            if (!Utils.isNull(m)) {
+        private _adjust() {
+
+            const state = this._state;
+            if (state.content > 0 && state.overlap > 0) {
+
+                const m = this._marquee;
                 const id = 'marquee-' + Utils.uniqueCode(), // rename the animation every time (Edge bug)
-                    from = Math.round(Utils.offset(this).width),
-                    to = -Math.round(args.width);
+                    from = Math.round(state.overlap),
+                    to = -Math.round(state.content);
                 this._css.innerHTML = `@keyframes ${id} {
     0% {
         transform: translateX(${from}px);

@@ -10,6 +10,9 @@ namespace Pacem.Scaffolding {
 
         // css class
         cssClass?: string[],
+
+        /** Metadata icons are currently managed only at TypeMetadata-level and only in particular scenarios (e.g. CMS). */
+        icon?:string
     }
 
     export declare type ValidatorMetadata = { type: string, errorMessage: string, params?: any };
@@ -30,7 +33,7 @@ namespace Pacem.Scaffolding {
         props?: TypeMetadata | PropertyMetadata[]
     };
 
-    // It is important that Type- and Property-Metadata match in their core properties in order to allow recursion when rendered.
+    // It is important that Type- and Property-Metadata match in their core properties in order to allow nesting forms when rendered.
     export declare type TypeMetadata = {
 
         display?: DisplayMetadata,

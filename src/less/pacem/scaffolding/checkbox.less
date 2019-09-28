@@ -33,105 +33,170 @@
     &.@{PCSS}-selected .@{PCSS}-readonly.@{PCSS}-checkbox::before {
         content: 'check_box';
     }
-    // just the checkbox
-    &.checkbox-naked {
+}
+
+// just the checkbox
+@{P}-form-field.field-minimal @{P}-checkbox,
+@{P}-checkbox.checkbox-naked {
+    min-width: 0;
+    height: @field_height;
+
+    label.@{PCSS}-checkbox {
+        border: 0;
+        padding: 0;
+        background: none;
+        position: static;
+        line-height: 1.5;
         min-width: 0;
-        height: @field_height;
+        min-height: 0;
+        vertical-align: middle;
 
-        label.@{PCSS}-checkbox {
-            border: 0;
-            padding: 0;
-            background: none;
+        &::before {
             position: static;
-            line-height: 1.5;
-            min-width: 0;
-            min-height: 0;
-            vertical-align: middle;
-
-            &::before {
-                position: static;
-                //line-height: 1;
-            }
+            //line-height: 1;
         }
     }
-    // switcher
-    &.checkbox-toggle {
-        @_pad: @grid_spacing / 6;
-        @_h: @field_height - @_pad;
+}
 
+// switcher
+.SwitcherColoring(@back, @fore) {
+    label.@{PCSS}-label.@{PCSS}-checkbox::before {
+        color: @fore;
+    }
+
+    &.@{PCSS}-selected {
         label.@{PCSS}-label.@{PCSS}-checkbox {
-            min-width: 0;
-            min-height: 0;
-            font-size: 0;
+            background: @back;
+        }
+    }
+
+    &.@{PCSS}-selected when (@glows = true) {
+        label.@{PCSS}-label.@{PCSS}-checkbox {
+            box-shadow: 0 0 8px fade(@back, 100);
+        }
+    }
+}
+
+@{P}-form-field.@{PCSS}-switcher @{P}-checkbox,
+@{P}-checkbox.checkbox-toggle,
+@{P}-checkbox.checkbox-switch {
+    // switcher
+
+    @_pad: @grid_spacing / 6;
+    @_h: @field_height - @_pad;
+
+    label.@{PCSS}-label.@{PCSS}-checkbox {
+        min-width: 0;
+        min-height: 0;
+        font-size: 0;
+        height: @_h;
+        border-radius: @_h/2;
+        width: @_h * 2;
+        margin-bottom: @_pad;
+        // remove viewpathfinder border
+        border-color: transparent !important;
+        background: @color_disabled;
+        padding: 0;
+        transition: background linear .25s;
+
+        &::before {
+            .Icon('check', @_h);
+            width: @_h;
             height: @_h;
-            border-radius: @_h/2;
-            width: @_h * 2;
-            margin-bottom: @_pad;
-            // remove viewpathfinder border
-            border-color: transparent !important;
-            background: @color_disabled;
-            padding: 0;
-            transition: background linear .25s;
+            position: absolute;
+            left: @_h;
+            top: 0;
+            opacity: 0;
+            transition: transform @easing_in_out_sine .2s, opacity linear .1s;
+        }
+
+        @_brd: @border_field_size;
+        @_switch_margin: 2px;
+
+        &::after {
+            @_c: @_h / 2;
+            @_r: @_c - @_brd;
+            content: '';
+            position: absolute;
+            left: @_brd;
+            top: @_brd;
+            height: @_h - 2* @_switch_margin;
+            width: @_h - 2* @_switch_margin;
+            transition: transform @easing_in_out_sine .2s;
+            background-color: #fff;
+            border-radius: 50%;
+        }
+
+        &::after when (@shadows = true) {
+            box-shadow: 1px 1px @_brd rgba(0,0,0,1);
+        }
+    }
+
+    label.@{PCSS}-label.@{PCSS}-checkbox when (@shadows = true) {
+        box-shadow: inset 0 2px 2px rgba(0,0,0,0.3333);
+    }
+
+    &.@{PCSS}-selected {
+        label.@{PCSS}-label.@{PCSS}-checkbox {
 
             &::before {
-                .Icon('check', @_h);
-                width: @_h;
-                height: @_h;
-                color: @color_success_inv;
-                position: absolute;
-                left: @_h;
-                top: 0;
-                opacity: 0;
-                transition: transform @easing_in_out_sine .2s, opacity linear .1s;
+                opacity: 1;
+                transform: translateX(-@_h) translateZ(0);
             }
-
-            @_brd: @border_field_size;
-            @_switch_margin: 2px;
 
             &::after {
-                @_c: @_h / 2;
-                @_r: @_c - @_brd;
-                content: '';
-                position: absolute;
-                left: @_brd;
-                top: @_brd;
-                height: @_h - 2* @_switch_margin;
-                width: @_h - 2* @_switch_margin;
-                transition: transform @easing_in_out_sine .2s;
-                background-color: #fff;
-                border-radius: 50%;
-            }
-
-            &::after when (@shadows = true) {
-                box-shadow: 1px 1px @_brd rgba(0,0,0,1);
-            }
-        }
-
-        label.@{PCSS}-label.@{PCSS}-checkbox when (@shadows = true) {
-            box-shadow: inset 0 2px 2px rgba(0,0,0,0.3333);
-        }
-
-        &.@{PCSS}-selected {
-            label.@{PCSS}-label.@{PCSS}-checkbox {
-                background: @color_success;
-
-                &::before {
-                    opacity: 1;
-                    transform: translateX(-@_h) translateZ(0);
-                }
-
-                &::after {
-                    transform: translateX(@_h) translateZ(0);
-                }
-            }
-        }
-
-        &.@{PCSS}-selected when (@glows = true) {
-            label.@{PCSS}-label.@{PCSS}-checkbox {
-                box-shadow: 0 0 8px fade(@color_success, 100);
+                transform: translateX(@_h) translateZ(0);
             }
         }
     }
+
+    .SwitcherColoring(@color_primary, @color_primary_inv);
+}
+
+@{P}-form-field.@{PCSS}-switcher.switcher-primary @{P}-checkbox,
+@{P}-checkbox.checkbox-toggle.checkbox-primary,
+@{P}-checkbox.checkbox-switch.checkbox-primary {
+
+    .SwitcherColoring(@color_primary, @color_primary_inv);
+}
+
+@{P}-form-field.@{PCSS}-switcher.switcher-danger @{P}-checkbox,
+@{P}-checkbox.checkbox-toggle.checkbox-danger,
+@{P}-checkbox.checkbox-switch.checkbox-danger {
+    .SwitcherColoring(@color_danger, @color_danger_inv);
+}
+
+@{P}-form-field.@{PCSS}-switcher.switcher-warning @{P}-checkbox,
+@{P}-checkbox.checkbox-toggle.checkbox-warning,
+@{P}-checkbox.checkbox-switch.checkbox-warning {
+    .SwitcherColoring(@color_warning, @color_warning_inv);
+}
+
+@{P}-form-field.@{PCSS}-switcher.switcher-accent @{P}-checkbox,
+@{P}-checkbox.checkbox-toggle.checkbox-accent,
+@{P}-checkbox.checkbox-switch.checkbox-accent {
+    .SwitcherColoring(@color_accent, @color_accent_inv);
+}
+
+@{P}-form-field.@{PCSS}-switcher.switcher-success @{P}-checkbox,
+@{P}-checkbox.checkbox-toggle.checkbox-success,
+@{P}-checkbox.checkbox-switch.checkbox-success {
+    .SwitcherColoring(@color_success, @color_success_inv);
+}
+
+@{P}-form-field.@{PCSS}-switcher.switcher-default @{P}-checkbox,
+@{P}-checkbox.checkbox-toggle.checkbox-default,
+@{P}-checkbox.checkbox-switch.checkbox-default {
+    .SwitcherColoring(@color_default, @color_default_inv);
+}
+
+@{P}-form-field.@{PCSS}-switcher.switcher-error @{P}-checkbox,
+@{P}-checkbox.checkbox-toggle.checkbox-error,
+@{P}-checkbox.checkbox-switch.checkbox-error {
+    .SwitcherColoring(@color_error, @color_danger_inv);
+}
+
+@{P}-checkbox {
     // coloring
     .CheckboxColoring(@clr) {
         .CheckboxColoring(@clr, #fff);
@@ -198,6 +263,9 @@
 //}
 //}
 @media (min-width: @threshold_lg) {
+
+    @{P}-form-field.field-minimal @{P}-checkbox,
+    @{P}-checkbox.checkbox-naked,
     @{P}-checkbox.checkbox-toggle {
         min-width: 0;
     }

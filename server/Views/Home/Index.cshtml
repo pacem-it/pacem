@@ -42,10 +42,13 @@
             global.Pacem = Object.assign(global.Pacem || {}, { Configuration: { prefix: "pacem" } });
         })(window);
 
-/**/</script>
+        /**/</script>
     <link href="~/dist/css/pacem-dark-shell.min.css?v=@(version)" rel="stylesheet" />
     <link href="~/dist/css/pacem-light-shell.min.css?v=@(version)" rel="stylesheet" />
     <link href="~/dist/css/pacem-phousys-shell.min.css?v=@(version)" rel="stylesheet" />
+    <link href="~/dist/css/pacem-docs-dark-shell.min.css?v=@(version)" rel="stylesheet" />
+    <link href="~/dist/css/pacem-docs-light-shell.min.css?v=@(version)" rel="stylesheet" />
+    <link href="~/dist/css/pacem-docs-phousys-shell.min.css?v=@(version)" rel="stylesheet" />
 
     <meta name="theme-color" content="#090c41" />
     <link href="/manifest.json" rel="manifest" />
@@ -77,7 +80,7 @@
     <pacem-meta-proxy content="{{ #routetitle.model }}" name="twitter:title"></pacem-meta-proxy>
 
     <pacem-style-proxy id="style" src="{{ '/dist/css/pacem-'+ #themename.model +'-content.min.css?v=@(version)' }}"></pacem-style-proxy>
-    <pacem-style-proxy id="styleDocs" src="{{ '/dist/css/pacem-docs-'+ #themename.model +'.min.css?v=@(version)' }}"></pacem-style-proxy>
+    <pacem-style-proxy id="styleDocs" src="{{ '/dist/css/pacem-docs-'+ #themename.model +'-content.min.css?v=@(version)' }}"></pacem-style-proxy>
 
 
     <!-- shell layout -->
@@ -120,7 +123,7 @@
 
         <!-- dropdown balloon and adapter -->
         <pacem-adapter id="adapter" hide="true" orientation="vertical"></pacem-adapter>
-        <pacem-balloon options="{{ { trigger:'click', align: 'start', trackPosition: true, size: 'match' } }}" target="#selector" id="ddl"
+        <pacem-balloon options="{{ { trigger:'click', align: 'start', trackPosition: true, size: 'match', position: 'bottom' } }}" target="#selector" id="ddl"
                        on-popup="#buttonset.index = -1; #buttonset.focus(); #collapse.collapse = false"
                        on-popout="#collapse.collapse = true"
                        class="balloon-border balloon-corners">
@@ -237,6 +240,7 @@
         <script src="~/dist/js/pacem-maps.js"></script>
         <script src="~/dist/js/pacem-charts.js"></script>
         <script src="~/dist/js/pacem-2d.js"></script>
+        <script src="~/dist/js/pacem-cms.js"></script>
     </environment>
     <environment exclude="Development">
         <script src="//pacem.azureedge.net/pacemjs/polyfills/documentfragment.edge.js" pacem-distinct="src"></script>
@@ -250,6 +254,7 @@
         <script src="//pacem.azureedge.net/pacemjs/v@(pacemjs_version)/js/pacem-fx.js" pacem-distinct="src"></script>
         <script src="//pacem.azureedge.net/pacemjs/v@(pacemjs_version)/js/pacem-plus.js" pacem-distinct="src"></script>
         <script src="//pacem.azureedge.net/pacemjs/v@(pacemjs_version)/js/pacem-2d.js" pacem-distinct="src"></script>
+        <script src="//pacem.azureedge.net/pacemjs/v@(pacemjs_version)/js/pacem-cms.js" pacem-distinct="src"></script>
     </environment>
 
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous" />

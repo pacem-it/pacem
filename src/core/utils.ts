@@ -514,6 +514,8 @@ namespace Pacem {
          * @param interval First callback call delay in ms (default 500).
          * @param pace Acceleration in ms per loop (default 5).
          * @param min Minimum loop rate in ms (default 20).
+         * 
+         * Use case/example: while keeping a button pressed, the related callback execution increases in frequency.
          */
         static accelerateCallback(callback: (token: { cancel: boolean }) => void, interval = 500, pace = 5, min = 20) {
             let token = { cancel: false },
@@ -602,7 +604,7 @@ namespace Pacem {
         }
 
         static fromResult<T>(v: T): Promise<T> {
-            return new Promise(resolve => resolve(v));
+            return Promise.resolve(v);
         }
 
         static fromResultAsync<T>(task: () => T): Promise<T> {

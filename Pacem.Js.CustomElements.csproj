@@ -46,14 +46,31 @@
     <None Remove="src\components\basic\html-proxy.ts" />
     <None Remove="src\components\basic\hub-proxy.ts" />
     <None Remove="src\components\basic\layout-proxy.ts" />
+    <None Remove="src\components\basic\resize-observer.d.ts" />
     <None Remove="src\components\basic\style-proxy.ts" />
     <None Remove="src\components\basic\template-proxy.ts" />
     <None Remove="src\components\2d\stage.ts" />
     <None Remove="src\components\2d\types.ts" />
+    <None Remove="src\components\cms\openapi\swagger-cms.ts" />
+    <None Remove="src\components\cms\widgets\helpers\apimanifest.ts" />
+    <None Remove="src\components\cms\widgets\helpers\data.ts" />
+    <None Remove="src\components\cms\widgets\helpers\fetcher.ts" />
+    <None Remove="src\components\cms\widgets\helpers\types.ts" />
+    <None Remove="src\components\cms\widgets\text.ts" />
+    <None Remove="src\components\cms\widgets\translator.ts" />
+    <None Remove="src\components\cms\widgets\types.ts" />
+    <None Remove="src\components\cms\widgets\ui\composite\grid.ts" />
+    <None Remove="src\components\cms\widgets\ui\types.ts" />
     <None Remove="src\components\fx\fancy.ts" />
     <None Remove="src\components\fx\hero.ts" />
     <None Remove="src\components\scaffolding\childform.ts" />
+    <None Remove="src\components\scaffolding\element-picker.ts" />
+    <None Remove="src\components\scaffolding\expression.ts" />
     <None Remove="src\components\scaffolding\namevalue-list.ts" />
+    <None Remove="src\components\scaffolding\openapi\swagger-types.d.ts" />
+    <None Remove="src\components\scaffolding\openapi\swagger.ts" />
+    <None Remove="src\components\scaffolding\openapi\types.ts" />
+    <None Remove="src\components\scaffolding\property-picker.ts" />
     <None Remove="src\components\scaffolding\slider.ts" />
     <None Remove="src\components\scaffolding\tags.ts" />
     <None Remove="src\components\ui\calendar.ts" />
@@ -270,6 +287,7 @@
     <TypeScriptCompile Include="src\components\basic\panel.ts" />
     <TypeScriptCompile Include="src\components\basic\position.ts" />
     <TypeScriptCompile Include="src\components\basic\repeater.ts" />
+    <TypeScriptCompile Include="src\components\basic\resize-observer.d.ts" />
     <TypeScriptCompile Include="src\components\basic\resize.ts" />
     <TypeScriptCompile Include="src\components\basic\scroll-aware.ts" />
     <TypeScriptCompile Include="src\components\basic\span.ts" />
@@ -288,6 +306,16 @@
     <TypeScriptCompile Include="src\components\charts\pie.ts" />
     <TypeScriptCompile Include="src\components\2d\stage.ts" />
     <TypeScriptCompile Include="src\components\2d\types.ts" />
+    <TypeScriptCompile Include="src\components\cms\openapi\swagger-cms.ts" />
+    <TypeScriptCompile Include="src\components\cms\widgets\helpers\apimanifest.ts" />
+    <TypeScriptCompile Include="src\components\cms\widgets\helpers\data.ts" />
+    <TypeScriptCompile Include="src\components\cms\widgets\helpers\fetcher.ts" />
+    <TypeScriptCompile Include="src\components\cms\widgets\helpers\types.ts" />
+    <TypeScriptCompile Include="src\components\cms\widgets\ui\composite\grid.ts" />
+    <TypeScriptCompile Include="src\components\cms\widgets\ui\text.ts" />
+    <TypeScriptCompile Include="src\components\cms\widgets\helpers\translator.ts" />
+    <TypeScriptCompile Include="src\components\cms\widgets\types.ts" />
+    <TypeScriptCompile Include="src\components\cms\widgets\ui\types.ts" />
     <TypeScriptCompile Include="src\components\fx\hero.ts" />
     <TypeScriptCompile Include="src\components\fx\fancy.ts" />
     <TypeScriptCompile Include="src\components\logging\console.ts" />
@@ -309,6 +337,11 @@
     <TypeScriptCompile Include="src\components\scaffolding\checkbox.ts" />
     <TypeScriptCompile Include="src\components\scaffolding\contenteditable.ts" />
     <TypeScriptCompile Include="src\components\scaffolding\datetime-picker.ts" />
+    <TypeScriptCompile Include="src\components\scaffolding\property-picker.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\components\scaffolding\element-picker.ts" />
+    <TypeScriptCompile Include="src\components\scaffolding\expression.ts" />
     <TypeScriptCompile Include="src\components\scaffolding\form.ts" />
     <TypeScriptCompile Include="src\components\scaffolding\formfield.ts" />
     <TypeScriptCompile Include="src\components\scaffolding\input-color.ts" />
@@ -317,6 +350,9 @@
     <TypeScriptCompile Include="src\components\scaffolding\input-hidden.ts" />
     <TypeScriptCompile Include="src\components\scaffolding\input-image.ts" />
     <TypeScriptCompile Include="src\components\scaffolding\namevalue-list.ts" />
+    <TypeScriptCompile Include="src\components\scaffolding\openapi\swagger-types.d.ts" />
+    <TypeScriptCompile Include="src\components\scaffolding\openapi\swagger.ts" />
+    <TypeScriptCompile Include="src\components\scaffolding\openapi\types.ts" />
     <TypeScriptCompile Include="src\components\scaffolding\slider.ts" />
     <TypeScriptCompile Include="src\components\scaffolding\input-number.ts" />
     <TypeScriptCompile Include="src\components\scaffolding\input-password.ts" />
@@ -408,6 +444,9 @@
     <None Include="wwwroot\assets\logo-light.svg" />
     <None Include="wwwroot\assets\logo-phousys.svg" />
     <None Include="wwwroot\assets\logo-dark.svg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="src\components\cms\scaffolding\" />
   </ItemGroup>
 
 </Project>

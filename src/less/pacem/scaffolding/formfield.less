@@ -244,6 +244,10 @@
     .FieldInline();
 }
 
+@{P}-form-field.field-center > .@{PCSS}-field > .@{PCSS}-input-container {
+    text-align:center;
+}
+
 .@{PCSS}-field.@{PCSS}-editable {
 
     &.@{PCSS}-fetching {
@@ -422,8 +426,12 @@
 
         .@{PCSS}-viewfinder,
         .@{PCSS}-input {
-            background: none;
-            border-radius: 0;
+
+            &:not(.@{PCSS}-fieldgroup):not(.input-group) {
+                background: none;
+                border-radius: 0;
+            }
+
         }
 
         > * {
@@ -463,7 +471,6 @@
         &.input-group-prepend,
         &.fieldgroup-append,
         &.input-group-append {
-            .FormFieldItemBorder();
             background-color: @color_input_back;
             color: @color_field_fore;
             min-width: @border_radius;
@@ -487,7 +494,6 @@
         &.fieldgroup-prepend,
         &.input-group-prepend {
             grid-area: prepend;
-            border-right: none;
             border-top-left-radius: @border_radius;
             border-bottom-left-radius: @border_radius;
         }
@@ -495,7 +501,6 @@
         &.fieldgroup-append,
         &.input-group-append {
             grid-area: append;
-            border-left: none;
             border-top-right-radius: @border_radius;
             border-bottom-right-radius: @border_radius;
         }
@@ -510,13 +515,44 @@
     .@{PCSS}-focus ~ .fieldgroup-prepend,
     .@{PCSS}-focus ~ .input-group-prepend {
         color: @color_input_fore_focus;
-        border-color: fade(@color_default, 40);
     }
 
     .@{PCSS}-focus ~ .fieldgroup-append,
     .@{PCSS}-focus ~ .input-group-append {
         color: @color_input_fore_focus;
-        border-color: fade(@color_default, 40);
+    }
+
+    &:not(.@{PCSS}-viewfinder) {
+
+        > * {
+
+            &.fieldgroup-prepend,
+            &.input-group-prepend,
+            &.fieldgroup-append,
+            &.input-group-append {
+                .FormFieldItemBorder();
+            }
+
+            &.fieldgroup-prepend,
+            &.input-group-prepend {
+                border-right: none;
+            }
+
+            &.fieldgroup-append,
+            &.input-group-append {
+                border-left: none;
+            }
+        }
+
+        .@{PCSS}-focus ~ .fieldgroup-prepend,
+        .@{PCSS}-focus ~ .input-group-prepend {
+            border-color: fade(@color_default, 40);
+        }
+
+        .@{PCSS}-focus ~ .fieldgroup-append,
+        .@{PCSS}-focus ~ .input-group-append {
+            border-color: fade(@color_default, 40);
+        }
     }
 }
 // reset bg for groups nested inside sets

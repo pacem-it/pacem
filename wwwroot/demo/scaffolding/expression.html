@@ -1,0 +1,58 @@
+﻿
+
+<pacem-markdown value="{{ #content0.textContent }}" class="md-tech" root></pacem-markdown>
+
+<pre pacem hidden id="content0">
+## Expression composer
+
+The `&lt;pacem-expression>` element is an input element which helps in composing expressions based on the available custom elements around.
+</pre>
+
+<pacemjs-snippet>
+    <template id="demo0">
+
+        <div id="container0" hidden>
+            <pacem-data id="structure0" model="{{ {tree: { trunk: {branch: 'leaf'}, root: 'root' } } }}"></pacem-data>
+            <pacem-data id="structure1" model="{{ {system: { star: 'Sun', planets: { closest: 'Mercury', biggest: 'Jupiter', warmest: 'Venus', furthest: 'Neptune' } } } }}"></pacem-data>
+        </div>
+
+        <pacem-expression value="{{ '{{ #structure1.model.system.planets.biggest }}' }}" readonly="false" id="expr0" selector="#container0 *[pacem]"></pacem-expression>
+
+        <hr />
+        <label>editable</label>
+        <br />
+        <pacem-checkbox class="checkbox-toggle" true-value="false" false-value="true" caption="editable" value="{{ #expr0.readonly, twoway }}"></pacem-checkbox>
+    </template>
+</pacemjs-snippet>
+
+<pacem-markdown value="{{ #content1.textContent }}" class="md-tech" root></pacem-markdown>
+
+<pre pacem hidden id="content1">
+## Use case
+
+This editor might seem involute at a first look, but it is particularly useful in a **CMS** scenario,
+where the entity to be edited is an actual element.  
+In this case the possibility to dynamically establish bindings between elements becomes very handy.
+</pre>
+
+<pacemjs-snippet>
+    <template id="demo1">
+
+        <div id="container1" hidden>
+            <pacem-data id="structure2" model="{{ {system: { star: 'Sun', planets: { closest: 'Mercury', biggest: 'Jupiter', warmest: 'Venus', furthest: 'Neptune' } } } }}"></pacem-data>
+        </div>
+<pre id="meta1" hidden>
+[{  
+"prop": "text", "type": "text", "display": { "name": "text to display", "ui": "expression" },
+"extra": { "selector": "#container1 > *", "filter": "pacem-data" }
+}]
+</pre>
+        <pacem-form entity="{{ #txt1, twoway }}" metadata="{{ JSON.parse(#meta1.textContent) }}" autogenerate="true"></pacem-form>
+        <hr />
+        <span class="text-tech">&lt;text:<pacem-span hide="{{ Pacem.Utils.isNullOrEmpty($this.text) }}" class="bg-accent display-inline-block pacem-pad pad-left-1 pad-right-1 text-bold" id="txt1"></pacem-span>&gt;</span>
+
+    </template>
+</pacemjs-snippet>
+
+<pacem-expression id="proto" hidden></pacem-expression>
+<pacemjs-descriptor target="#proto"></pacemjs-descriptor>

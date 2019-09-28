@@ -18,6 +18,8 @@ namespace Pacem.Components {
 
         @Watch({ emit: false, converter: PropertyConverters.String }) mode: 'cors' | 'no-cors' | 'navigate' | 'same-origin';
 
+        @Watch({ emit: false, converter: PropertyConverters.String }) cache: RequestCache;
+
         @Watch({ converter: PropertyConverters.BooleanStrict }) fetching: boolean;
 
         /** Gets or sets whether to trigger a fetch whenever a significant property has changed (default: true). */
@@ -99,14 +101,15 @@ namespace Pacem.Components {
                     switch (type) {
                         case 'raw':
                             contentType = 'application/x-www-form-urlencoded';
-                            break;
+                            break; 
                     }
                     const method = _me.method || Net.HttpMethod.Get;
                     let options: RequestInit = {
                         headers: Utils.extend({ 'Content-Type': contentType }, _me.headers),
                         method: method,
                         mode: _me.mode || 'cors',
-                        credentials: _me.credentials || 'same-origin'
+                        credentials: _me.credentials || 'same-origin',
+                        cache: _me.cache || 'default'
                     };
                     const parameters = _me.parameters;
                     let query = '';

@@ -57,7 +57,9 @@ namespace Pacem.Components.UI {
         'behavior'?: BalloonBehavior,
         'verticalOffset'?: number,
         'horizontalOffset'?: number,
+        /** Obsolete: use 'track' instead. */
         'trackPosition'?: boolean,
+        'track'?: boolean,
         'moveToRoot'?: boolean, // append/move to body (positioning goes south when the balloon is placed inside e.g. `fixed` elements)
         'hoverDelay'?: number,
         'hoverTimeout'?: number,
@@ -69,8 +71,8 @@ namespace Pacem.Components.UI {
     @CustomElement({
         tagName: P + '-balloon',
         shadow: Defaults.USE_SHADOW_ROOT,
-        template: `<${ P }-position target="{{ :host.target }}" on-${PositionChangeEventName}=":host._onLayoutChange($event)"></${ P }-position>
-<div class="${PCSS}-balloon"><${ P }-resize on-${ResizeEventName}=":host._onLayoutChange($event)"><${ P }-content></${ P }-content></${ P }-resize></div>
+        template: `<${P}-resize target="{{ :host.target }}" watch-position="true" on-${ResizeEventName}=":host._onLayoutChange($event)"></${P}-resize>
+<div class="${PCSS}-balloon"><${P}-resize on-${ResizeEventName}=":host._onLayoutChange($event)" content><${P}-content></${P}-content></${P}-resize></div>
 <div class="corner top-left"></div><div class="corner bottom-left"></div><div class="corner top-right"></div><div class="corner bottom-right"></div>`
     })
     export class PacemBalloonElement extends PacemElement implements OnPropertyChanged, OnViewActivated {
@@ -85,8 +87,8 @@ namespace Pacem.Components.UI {
         private _originalNeighborhood: { parent: Element, nextSibling?: Element } = null;
 
         @ViewChild(`.${PCSS}-balloon`) private container: HTMLElement;
-        @ViewChild(P +'-resize') private _resize: PacemResizeElement;
-        @ViewChild(P +'-position') private _position: PacemPositionElement;
+        @ViewChild(P + '-resize[content]') private _resize: PacemResizeElement;
+        @ViewChild(P + '-resize[watch-position=true]') private _position: PacemResizeElement;
 
         @Watch({ converter: PropertyConverters.Element }) target: HTMLElement;
         @Watch({ emit: false, converter: PropertyConverters.Json }) options: BalloonOptions;
@@ -136,9 +138,11 @@ namespace Pacem.Components.UI {
         private _synchronizeOptions() {
             const popup = this,
                 options = popup.options || {};
-            // trackPosition
-            if (!Utils.isNull(this._resize) && !Utils.isNull(this._position))
-                this._resize.disabled = this._position.disabled = !options.trackPosition;
+            // track position and size
+            if (!Utils.isNull(this._resize)) {
+                this._resize.disabled =
+                    this._position.disabled = !options.track && !options.trackPosition;
+            }
             // moveToRoot
             if (!!options.moveToRoot && Utils.isNull(this._originalNeighborhood)) {
                 this._originalNeighborhood = { parent: popup.parentElement, nextSibling: popup.nextElementSibling };
@@ -251,30 +255,31 @@ namespace Pacem.Components.UI {
             this.popup();
         }
 
-        @Debounce(true)
-        private _onLayoutChange(evt) {
-            if (this._visible)
+        private _onLayoutChange(evt: ResizeEvent) {
+            if (this._visible) {
                 this._adjust();
+            }
         }
 
         private _adjust() {
             var popup = this,
-                el = popup.target;
-            // recompute coords, just in the case...
-            var coords = Utils.offset(el);
+                el = popup.target,
+                coords = Utils.offset(el);
+
+            const vieportSize = Utils.windowSize;
+
             var opts = this._options;
             var chosenPosition = opts.position,
                 chosenAlignment = opts.align;
             if (chosenPosition != BalloonPosition.Top &&
                 chosenPosition != BalloonPosition.Bottom && chosenPosition != BalloonPosition.Left && chosenPosition != BalloonPosition.Right) {
-                let viewportPosition = el.getBoundingClientRect();
-                const vieportSize = Utils.windowSize;
+                let viewportPosition = coords;
                 let viewportHeight = vieportSize.height;
                 let viewportWidth = vieportSize.width;
                 const offsetLeft = viewportPosition.left;
                 const offsetTop = viewportPosition.top;
-                const offsetBottom = viewportHeight - viewportPosition.bottom;
-                const offsetRight = viewportWidth - viewportPosition.right;
+                const offsetBottom = viewportHeight - (viewportPosition.top + viewportPosition.height);
+                const offsetRight = viewportWidth - (viewportPosition.left + viewportPosition.width);
                 // exclude 'left' and 'right' when position is set to 'auto'
                 let maxOffset = Math.max(/*offsetLeft, offsetRight,*/ offsetTop, offsetBottom);
                 switch (maxOffset) {
@@ -298,12 +303,12 @@ namespace Pacem.Components.UI {
                 switch (chosenPosition) {
                     case BalloonPosition.Bottom:
                     case BalloonPosition.Top:
-                        popup.style.minWidth = el.offsetWidth + 'px';
+                        popup.style.minWidth = coords.width + 'px';
                         popup.style.minHeight = '';
                         break;
                     case BalloonPosition.Left:
                     case BalloonPosition.Right:
-                        popup.style.minHeight = el.offsetHeight + 'px';
+                        popup.style.minHeight = coords.height + 'px';
                         popup.style.minWidth = '';
                         break;
                 }
@@ -311,9 +316,10 @@ namespace Pacem.Components.UI {
                 popup.style.minWidth = popup.style.minHeight = '';
             }
 
-            const fullOffsetWidth = el.offsetWidth - popup.offsetWidth,
+            const popupSize = { width: popup.offsetWidth, height: popup.offsetHeight };
+            const fullOffsetWidth = coords.width - popupSize.width,
                 halfOffsetWidth = fullOffsetWidth * .5,
-                fullOffsetHeight = el.offsetHeight - popup.offsetHeight,
+                fullOffsetHeight = coords.height - popupSize.height,
                 halfOffsetHeight = fullOffsetHeight * .5;
 
             switch (chosenAlignment) {
@@ -330,7 +336,7 @@ namespace Pacem.Components.UI {
 
             switch (chosenPosition) {
                 case BalloonPosition.Top:
-                    coords.top -= popup.offsetHeight;
+                    coords.top -= popupSize.height;
                     switch (chosenAlignment) {
                         case BalloonAlignment.Center:
                             coords.left += halfOffsetWidth;
@@ -341,7 +347,7 @@ namespace Pacem.Components.UI {
                     }
                     break;
                 case BalloonPosition.Left:
-                    coords.left -= popup.offsetWidth;
+                    coords.left -= popupSize.width;
                     switch (chosenAlignment) {
                         case BalloonAlignment.Center:
                             coords.top += halfOffsetHeight;
@@ -352,7 +358,7 @@ namespace Pacem.Components.UI {
                     }
                     break;
                 case BalloonPosition.Right:
-                    coords.left += el.offsetWidth;
+                    coords.left += coords.width;
                     switch (chosenAlignment) {
                         case BalloonAlignment.Center:
                             coords.top += halfOffsetHeight;
@@ -363,7 +369,7 @@ namespace Pacem.Components.UI {
                     }
                     break;
                 default:
-                    coords.top += el.offsetHeight;
+                    coords.top += coords.height;
                     switch (chosenAlignment) {
                         case BalloonAlignment.Center:
                             coords.left += halfOffsetWidth;
@@ -374,7 +380,7 @@ namespace Pacem.Components.UI {
                     }
                     break;
             }
-            coords.left = Math.min(Utils.windowSize.width - popup.offsetWidth, Math.max(0, coords.left));
+            coords.left = Math.min(vieportSize.width - popupSize.width, Math.max(0, coords.left));
             //coords.top = Math.max(0, coords.top);
 
             // coords for balloon positioning

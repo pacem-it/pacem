@@ -1,0 +1,54 @@
+﻿<pacem-markdown value="{{ #content0.textContent }}" class="md-tech" root></pacem-markdown>
+
+<pre pacem hidden id="content0">
+## Api Manifest Widget
+
+The Api Manifest Widget eases the scaffolding of some WebApi exposing their OpenApi schema.
+</pre>
+
+<pacemjs-snippet>
+    <template>
+
+        <pacem-widget-apimanifest editable="true" editing="{{ #toggleEdit0.value }}" id="manifest0"></pacem-widget-apimanifest>
+
+        <hr />
+
+        <label>edit</label>
+        <br />
+        <pacem-checkbox class="checkbox-toggle" id="toggleEdit0" true-value="true" false-value="false" value="false"></pacem-checkbox>
+        <br />
+        <pacem-span content="{{ 'yielded endpoints: <code>'+ #manifest0.manifest.endpoints.length +'</code>' }}"></pacem-span>
+
+    </template>
+</pacemjs-snippet>
+
+<pacem-markdown value="{{ #content1.textContent }}" class="md-tech" root></pacem-markdown>
+
+<pre pacem hidden id="content1">
+## Fetch Widget
+
+The Api Manifest Widget can be exploitet to feed a `PacemWidgetFetchElement`> targeting a proper endpoint to retrieve structured data.
+</pre>
+
+<pacemjs-snippet>
+    <template>
+
+        <div class="display-flex">
+            <pacem-widget-apimanifest editable="true" editing="{{ #toggleEdit1.value }}" id="manifest1"></pacem-widget-apimanifest>
+            <pacem-widget-fetch editable="true" editing="{{ #toggleEdit1.value }}" manifest="{{ #manifest1.manifest }}" id="fetch1" class="pacem-margin margin-left-3"></pacem-widget-fetch>
+        </div>
+        <hr />
+
+        <label>edit</label>
+        <br />
+        <pacem-checkbox class="checkbox-toggle" id="toggleEdit1" true-value="true" false-value="false" value="false"></pacem-checkbox>
+        <br />
+        <pacem-span content="{{ 'yielded endpoints: <code>'+ (#manifest1.manifest && #manifest1.manifest.endpoints && #manifest1.manifest.endpoints.length || '0') +'</code>' }}"></pacem-span> |
+        <pacem-span content="{{ 'url to fetch: <code>'+ (#fetch1.manifest && #fetch1.manifest.baseUrl || '') + (#fetch1.endpoint && #fetch1.endpoint.path || '...') +'</code>' }}"></pacem-span>
+
+    </template>
+</pacemjs-snippet>
+
+
+<pacem-widget-apimanifest id="proto" hidden></pacem-widget-apimanifest>
+<pacemjs-descriptor target="{{ #proto }}"></pacemjs-descriptor>

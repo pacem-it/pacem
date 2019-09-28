@@ -253,9 +253,19 @@
         "title": "<pacem-childform>"
       },
       {
+        "label": "Expression",
+        "view": "expression",
+        "title": "<pacem-expression>"
+      },
+      {
         "label": "Select",
         "view": "select",
         "title": "<pacem-select>"
+      },
+      {
+        "label": "Name-Value List / Dictionary",
+        "view": "namevalue",
+        "title": "<pacem-namevalue-list>"
       },
       {
         "label": "Slider",
@@ -271,11 +281,6 @@
         "label": "Tags",
         "view": "tags",
         "title": "<pacem-tags>"
-      },
-      {
-        "label": "Name-Value List / Dictionary",
-        "view": "namevalue",
-        "title": "<pacem-namevalue-list>"
       }
     ]
   },
@@ -286,6 +291,26 @@
       {
         "label": "Canvas",
         "view": "canvas"
+      }
+    ]
+  },
+  {
+    "package": "cms",
+    "label": "CMS",
+    "items": [
+      {
+        "label": "Widgets",
+        "view": "widgets"
+      },
+      {
+        "label": "Data",
+        "view": "data",
+        "title": "<pacem-widget-data>"
+      },
+      {
+        "label": "Api Manifest Scaffolding",
+        "view": "apimanifest",
+        "title": "<pacem-widget-apimanifest>"
       }
     ]
   }

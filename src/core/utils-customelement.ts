@@ -54,6 +54,10 @@ namespace Pacem {
             return properties;
         }
 
+        static getWatchedProperty(target: HTMLElement, name: string): { name: string, config: WatchConfig } {
+            return this.getWatchedProperties(target, true).find(p => p.name === name);
+        }
+
         static importcss(src: string, integrity: string = null, crossorigin: boolean = false) {
             var attrs =
                 { 'rel': 'stylesheet', 'href': src };
@@ -243,6 +247,16 @@ namespace Pacem {
                 if (predicate(n) === true)
                     retval.push(n);
             }
+            return retval;
+        }
+
+        static findAll<T extends Element>(selector: string = '[pacem]', filter: (e: Element) => boolean = (e) => true): T[] {
+            const retval: T[] = [];
+            document.querySelectorAll(selector).forEach((e, i, arr) => {
+                if (filter(e) === true) {
+                    retval.push(e as T);
+                }
+            });
             return retval;
         }
 

@@ -7,10 +7,16 @@ namespace Pacem.Components {
         protected abstract get proxy(): HTMLElement;
 
         private _dom: Node[] = [];
+        private _children: Element[] = [];
+
+        get dom() {
+            return this._children;
+        } 
 
         viewActivatedCallback() {
             super.viewActivatedCallback();
             this._dom = this.moveContent(this, this.proxy);
+            this._children = <Element[]>this._dom.filter(e => e instanceof Element);
         }
 
         protected moveContent(from: Element, to: Element) {

@@ -1,0 +1,30 @@
+﻿namespace Pacem.Components.Cms {
+
+    const DATA_METADATA: Pacem.Scaffolding.TypeMetadata = {
+        display: { icon: 'storage', name: 'Data', description: 'Data object widget.' },
+        props: [
+            {
+                prop: 'model', type: 'object', display: {
+                    name: 'Model', 
+                    ui: 'expression'
+                }, extra: {
+                    selector: '.'+ PCSS + '-widget'
+                }
+            }
+        ]
+    };
+
+    @CustomElement({
+        tagName: P + '-widget-data'
+    })
+    export class PacemWidgetDataElement extends PacemWidgetElement {
+
+        constructor() {
+            super(buildWidgetMetadata(DATA_METADATA));
+        }
+
+        @Watch({ reflectBack: true, converter: PropertyConverters.Json }) model: any;
+
+    }
+
+}

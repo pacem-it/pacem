@@ -6,12 +6,32 @@
             super(type, Utils.extend({ detail: detail }, eventInit || {}));
             CustomEventUtils.fixEdgeCustomEventSubClassInstance(this, this.constructor);
         }
-
-        //get detail(): TDetail {
-        //    return super.detail;
-        //}
     }
-    
+
+    // #region ATTRIBUTE CHANGE
+
+    export interface AttributeChangeEventArgs {
+
+        attributeName: string;
+        oldValue?: string;
+        currentValue: string;
+        firstChange?: boolean;
+    }
+
+    export const AttributeChangeEventName: string = 'attributechange';
+
+    export class AttributeChangeEvent extends CustomTypedEvent<AttributeChangeEventArgs> {
+
+        constructor(args: AttributeChangeEventArgs) {
+            super(AttributeChangeEventName, args);
+        }
+
+    }
+
+    // #endregion
+
+    // #region PROPERTY CHANGE
+
     export interface PropertyChangeEventArgs {
 
         propertyName: string;
@@ -29,6 +49,8 @@
         }
 
     }
+
+    // #endregion
 
     export interface NotifyPropertyChange extends EventTarget {
     }

@@ -93,6 +93,7 @@ namespace Pacem.Components.Plus {
         }
 
         private _cancel(evt: Event) {
+            this._form.reset();
             this.commit(UI.DialogButton.Cancel, evt);
         }
 

@@ -366,6 +366,8 @@ namespace Pacem {
                     value: function attributeChangedCallback(name?: string, old?: string, val?: string) {
                         var _this = this;
 
+                        const ready = GET_VAL(_this, INSTANCE_READY_VAR) === true;
+
                         /*
                         attributeChangedCallback has to fire BEFORE propertyChangedCallback IN THIS CASE
                         */
@@ -373,6 +375,10 @@ namespace Pacem {
                             originalAttributeChangedCallback.value.apply(_this, [name, old, val]);
                         else if (typeof originalAttributeChangedCallback === 'function')
                             originalAttributeChangedCallback.apply(_this, [name, old, val]);
+
+                        // dispatch custom event 'attributechange'
+                        const evt = new AttributeChangeEvent({ attributeName: name, oldValue: old, currentValue: val, firstChange: !ready });
+                        _this.dispatchEvent(evt);
 
                         // binding attribute?
                         const binding = CustomElementUtils.isBindingAttribute(val);
@@ -427,7 +433,8 @@ namespace Pacem {
                                 originalPropertyChangedCallback.value.apply(_this, [name, old, val, !ready]);
                             else if (typeof originalPropertyChangedCallback === 'function')
                                 originalPropertyChangedCallback.apply(_this, [name, old, val, !ready]);
-                            // dispatch custom event
+
+                            // dispatch custom event 'propertychange'
                             if (!options || options.emit !== false) {
                                 const evt = new PropertyChangeEvent({ propertyName: name, oldValue: old, currentValue: val, firstChange: !ready });
                                 _this.dispatchEvent(evt);
@@ -439,7 +446,7 @@ namespace Pacem {
 
                                 if (options
                                     && options.reflectBack === true
-                                    && ready
+                                    // && ready (reflectBack also when not ready yet)
                                     && /* not polyfilled */ !CustomElementUtils.polyfilling
                                 ) {
                                     var attrName = CustomElementUtils.camelToKebab(name),
@@ -522,7 +529,7 @@ namespace Pacem {
                 // does it implement OnPropertyChanged?
                 var propertyChangedCallback: (name: string, old: any, val: any) => void;
                 if (typeof (propertyChangedCallback = _this['propertyChangedCallback']) == 'function') {
-                    var fn = () => propertyChangedCallback.apply(_this, [key, oldValue, GET_VAL(_this, propref), false, config]);
+                    var fn = () => propertyChangedCallback.apply(_this, [key, oldValue, GET_VAL(_this, propref), false /* dummy */, config]);
                     if (debounce > 0) {
                         clearTimeout(this['_handle_' + prop]);
                         this['_handle_' + prop] = setTimeout(fn, <number>debounce);

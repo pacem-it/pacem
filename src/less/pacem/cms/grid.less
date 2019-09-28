@@ -1,0 +1,17 @@
+﻿@import "shared";
+
+@{P}-widget-grid.@{PCSS}-widget.ui-widget {
+    display: grid;
+    padding: 0;
+
+    rect.grid-cell {
+        fill: none;
+        stroke-width: 1px;
+        stroke-dasharray: 4;
+        stroke: fade(@color_default, 25);
+    }
+
+    .@{PCSS}-widget.ui-widget.widget-editing {
+        cursor: move;
+    }
+}

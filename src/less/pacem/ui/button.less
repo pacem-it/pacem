@@ -16,7 +16,7 @@
     line-height: @_h - 2 * @_brd;
     padding: 0 @grid_spacing/1.5;
     //min-width: @_width;
-    background-color: @color_button_back;
+    // background-color: @color_button_back;
     box-sizing: border-box;
     cursor: pointer;
     border: @_brd solid transparent;
@@ -73,11 +73,25 @@
 .@{PCSS}-button,
 a.@{PCSS}-button,
 @{P}-button {
+    background-color: @color_button_back;
+}
+
+.@{PCSS}-balloon {
+
+    .@{PCSS}-button,
+    a.@{PCSS}-button,
+    @{P}-button {
+        background-color: @balloon_color;
+    }
+}
+
+.@{PCSS}-button,
+a.@{PCSS}-button,
+@{P}-button {
     position: relative;
     cursor: pointer;
     display: inline-block;
     vertical-align: middle;
-    background-color: @color_button_back;
     margin: 0 @_margin @_margin 0;
     color: @color_button_fore;
     user-select: none;
@@ -248,6 +262,10 @@ a.@{PCSS}-button,
         font-size: @grid_spacing;
     }
 
+    &.button::before {
+        line-height: @_height - 2 * @_border;
+    }
+
     &.add::before {
         content: 'add';
     }
@@ -383,9 +401,7 @@ a.@{PCSS}-button,
     font-size: @button_fontsize;
     text-align: center;
 }
-
 //:host
-
 .@{PCSS}-button,
 @{P}-button {
     .ButtonText();
@@ -398,7 +414,6 @@ a.@{PCSS}-button,
 .@{PCSS}-button when (@uppercase_buttons = true) {
     text-transform: uppercase;
 }
-
 //:host([disabled]),
 .@{PCSS}-button.@{PCSS}-disabled,
 .@{PCSS}-button[disabled],
@@ -437,7 +452,6 @@ a.@{PCSS}-button,
         border-color: transparent;
     }
 }
-
 /* #endregion */
 body.pacem-animations {
     .@{PCSS}-button, a.@{PCSS}-button, @{P}-button {

@@ -17,6 +17,7 @@
   "include": [ "src/core", "src/components/behaviors", "src/components/basic" ],
   "exclude": [
     "node_modules",
+    "src/components/basic/resize-observer.d.ts",
     "dist",
     "wwwroot",
     "test"

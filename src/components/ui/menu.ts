@@ -1,5 +1,4 @@
 ﻿/// <reference path="../../../dist/js/pacem-core.d.ts" />
-/// <reference path="body.ts" />
 namespace Pacem.Components.UI {
 
     @CustomElement({

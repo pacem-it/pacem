@@ -32,6 +32,7 @@ namespace Pacem.Components {
             window.addEventListener('mouseup', this._endHandler, false);
             window.addEventListener('touchend', this._endHandler, false);
             window.addEventListener('mousemove', this._moveHandler, false);
+            document.addEventListener('wheel', this._moveHandler, false);
             window.addEventListener('touchmove', this._moveHandler, <any>{ passive: false });
             this._dragDropper.dropTargets.forEach(t => {
                 t.addEventListener('mouseenter', this._enterHandler, false);
@@ -78,7 +79,7 @@ namespace Pacem.Components {
                     Utils.addClass(floater, PCSS + '-drag-floater');
                     document.body.appendChild(floater);
                     floater.style.position = 'absolute';
-                    let pos = { left: origin.x + Utils.scrollLeft - floater.clientWidth / 2, top: origin.y + Utils.scrollTop - floater.clientHeight / 2 };
+                    let pos = { left: origin.x + Utils.scrollLeft - this._scroll.x - floater.clientWidth / 2, top: origin.y + Utils.scrollTop - this._scroll.y - floater.clientHeight / 2 };
 
                     // if cloned the original element then preserve dimensions
                     if (src === this._element) {
@@ -256,8 +257,10 @@ namespace Pacem.Components {
             }
         }
 
-        private _moveHandler = (evt: MouseEvent | TouchEvent) => {
-            avoidHandler(evt);
+        private _moveHandler = (evt: MouseEvent | TouchEvent | WheelEvent) => {
+            if (evt.type !== 'wheel') {
+                avoidHandler(evt);
+            }
 
             var el = this._element,
                 dragger = this._dragDropper,
@@ -291,8 +294,8 @@ namespace Pacem.Components {
             if (!Utils.isNull(args)) {
                 this._logFn(Logging.LogLevel.Debug, 'Dragging act ongoing');
                 const isMouseFlag = evt instanceof MouseEvent;
-                if (isMouseFlag)
-                    Pacem.avoidHandler(evt);
+                //if (evt.type !== 'wheel')
+                //    Pacem.avoidHandler(evt);
                 Utils.addClass(CustomElementUtils.findAncestorShell(el), PCSS + '-dragging');
                 const pos = args.currentPosition = getCurrentPosition();
                 let floater = args.floater;
@@ -302,8 +305,8 @@ namespace Pacem.Components {
                 if (!moveEvt.defaultPrevented // obey the - eventual - canceling feedback
                     && (floater instanceof HTMLElement || floater instanceof SVGElement)) {
                     // move
-                    let delta =
-                        floater.style.transform = `translate3d(${moveEvt.detail.delta.x}px, ${moveEvt.detail.delta.y}px, 0)`;
+                    let delta = { x: moveEvt.detail.delta.x + Utils.scrollLeft, y: moveEvt.detail.delta.y + Utils.scrollTop };
+                    floater.style.transform = `translate3d(${delta.x}px, ${delta.y}px, 0)`;
                 }
                 // what am I over?
                 var hover = this._currentTarget;
@@ -469,6 +472,7 @@ namespace Pacem.Components {
             window.removeEventListener('mouseup', this._endHandler, false);
             window.removeEventListener('touchend', this._endHandler, false);
             window.removeEventListener('mousemove', this._moveHandler, false);
+            document.removeEventListener('wheel', this._moveHandler, false);
             window.removeEventListener('touchmove', this._moveHandler, <any>{ passive: false });
         }
     }
@@ -510,7 +514,14 @@ namespace Pacem.Components {
             const lockFn = () => {
                 let element = <HTMLElement | SVGElement>el;
                 let args = UI.DragDropInitEventArgsClass.fromArgs({
-                    element: element, placeholder: null, currentPosition: origin, origin: origin, initialDelta: { x: 0, y: 0 }, startTime: null, floater: null, data: null
+                    element: element,
+                    placeholder: null,
+                    currentPosition: origin,
+                    origin: origin,
+                    initialDelta: { x: 0, y: 0 },
+                    startTime: null,
+                    floater: null,
+                    data: null
                 });
                 this.dispatchEvent(new Pacem.UI.DragDropEvent(Pacem.UI.DragDropEventType.Init, args));
                 this.log(Logging.LogLevel.Info, 'Drag locked!');
@@ -518,7 +529,7 @@ namespace Pacem.Components {
                 el.removeEventListener('touchend', unlockFn, false);
                 SET_VAL(el, MOUSE_DOWN, origin);
                 SET_VAL(el, DELEGATE, new DragElementDelegate({
-                    element: element, dragDrop: this, placeholder: args.placeholder, scrollPosition: {x: 0, y: 0}
+                    element: element, dragDrop: this, placeholder: args.placeholder, scrollPosition: { x: Utils.scrollLeft, y: Utils.scrollTop }
                 }, (level, message, category) => this.log.apply(this, [level, message, category])));
             };
             const unlockFn = (evt?: Event) => {

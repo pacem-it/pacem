@@ -1,4 +1,5 @@
 ﻿/// <reference path="../../core/decorators.ts" />
+/// <reference path="../../../dist/js/resize-observer.d.ts" />
 /// <reference path="types.ts" />
 
 namespace Pacem.Components {
@@ -19,12 +20,13 @@ namespace Pacem.Components {
         }
     }
 
-    @CustomElement({ tagName: P + '-resize' })
-    export class PacemResizeElement extends PacemEventTarget implements OnConnected, OnDisconnected, OnPropertyChanged {
+    /** Might be not the case to switch to native due to the lacks of their APIs */
+    const GO_NATIVE_WHEN_AVAIL = false;
+    const RESIZEOBSERVER_POLYFILLED = !('ResizeObserver' in window) || !GO_NATIVE_WHEN_AVAIL;
+    const BORDER_BOX: { box: 'border-box' | 'content-box' } = { box: 'border-box' };
 
-        constructor() {
-            super();
-        }
+    @CustomElement({ tagName: P + '-resize' })
+    export class PacemResizeElement extends PacemEventTarget {
 
         @Watch({ emit: false, converter: PropertyConverters.Element }) target: Element;
         @Watch({ emit: false, converter: PropertyConverters.Boolean }) watchPosition: boolean;
@@ -37,7 +39,15 @@ namespace Pacem.Components {
             super.propertyChangedCallback(name, old, val, first);
             switch (name) {
                 case 'disabled':
-                    this.start();
+                    this._start();
+                    break;
+                case 'target':
+                    if (!RESIZEOBSERVER_POLYFILLED && !Utils.isNull(this._observer)) {
+                        var oldTarget = old || this;
+                        this._observer.unobserve(oldTarget);
+                        var newTarget = val || this;
+                        this._observer.observe(newTarget, BORDER_BOX);
+                    }
                     break;
             }
         }
@@ -48,22 +58,80 @@ namespace Pacem.Components {
         private _previousWidth: number;
         private _previousTop: number;
         private _previousLeft: number;
+        private _observer: ResizeObserver;
 
-        private start() {
-            let el = this._target;
+        private _start() {
+
+            // disabled? switch to stop
             if (this.disabled) {
-                cancelAnimationFrame(this._timer);
-            } else {
+                this._stop();
+                return;
+            }
+
+            let el = this._target;
+
+
+            if (RESIZEOBSERVER_POLYFILLED) {
+
+                // polyfill
                 const rect = Utils.offset(el);
                 this._previousHeight = rect.height;
                 this._previousWidth = rect.width;
                 this._previousTop = rect.top;
                 this._previousLeft = rect.left;
                 this._timer = requestAnimationFrame(this._check);
+
+
+            } else {
+
+                // native ResizeObserver
+                if (Utils.isNull(this._observer)) {
+                    this._observer = new ResizeObserver(entries => {
+
+                        var changed = false;
+                        for (let entry of entries) {
+                            if (entry.target !== this.target) {
+                                continue;
+                            }
+                            if (entry.contentRect) {
+                                changed = true;
+                                break;
+                            }
+                        }
+                        if (changed) {
+                            // ResizeObserverEntry pieces of info aren't accurate,
+                            // but useful enough to let punctually debounce
+                            // the expensive request
+                            this._assignSizeDebounced();
+                        }
+
+                    });
+                    this._observer.observe(this._target, BORDER_BOX);
+                    window.addEventListener('resize', this._checkSizeHandler, false);
+                }
             }
         }
 
-        private _check = (_?) => {
+        private _stop() {
+            if (RESIZEOBSERVER_POLYFILLED) {
+                cancelAnimationFrame(this._timer);
+            } else if (!Utils.isNull(this._observer)) {
+                window.removeEventListener('resize', this._checkSizeHandler, false);
+                this._observer.disconnect();
+                this._observer = null;
+            }
+        }
+
+        private _checkSizeHandler = (e) => {
+            this._assignSizeDebounced();
+        }
+
+        @Debounce(25)
+        private _assignSizeDebounced() {
+            this._checkSize();
+        }
+
+        private _checkSize() {
             let el = this._target;
             const rect = Utils.offset(el);
             let height = rect.height;
@@ -77,8 +145,12 @@ namespace Pacem.Components {
                 this._previousWidth = width;
                 this._previousLeft = rect.left;
                 this._previousTop = rect.top;
-                this._resize();
+                this._dispatchResize();
             }
+        }
+
+        private _check = (_?) => {
+            this._checkSize();
             if (!this.disabled)
                 this._timer = requestAnimationFrame(this._check);
         }
@@ -92,18 +164,17 @@ namespace Pacem.Components {
             return args;
         }
 
-        //@Debounce()
-        private _resize() {
+        private _dispatchResize() {
             this.dispatchEvent(new ResizeEvent(this.currentSize));
         }
 
         connectedCallback() {
             super.connectedCallback();
-            this.start();
+            this._start();
         }
 
         disconnectedCallback() {
-            cancelAnimationFrame(this._timer);
+            this._stop();
             super.disconnectedCallback();
         }
 

@@ -1,0 +1,52 @@
+﻿<pacem-markdown value="{{ #content0.textContent }}" class="md-tech" root></pacem-markdown>
+
+<pre pacem hidden id="content0">
+## Widget-based CMS
+
+Natural evolution for the listed webcomponents is the enrollment in a full **Content Management System**.  
+The opinionated one proposed by **Pacem JS** is **Widget**-based.
+</pre>
+
+<pacemjs-snippet>
+    <template>
+
+        <pacem-widget-text editable="true" editing="{{ #toggleEdit0.value }}" tag="My Text Widget 01" text="Foo, Bar, Baz"></pacem-widget-text>
+
+        <hr />
+
+        <label>edit</label>
+        <br />
+        <pacem-checkbox class="checkbox-toggle" id="toggleEdit0" true-value="true" false-value="false" value="false"></pacem-checkbox>
+
+    </template>
+</pacemjs-snippet>
+
+<pacem-markdown value="{{ #content1.textContent }}" class="md-tech" root></pacem-markdown>
+<pre pacem hidden id="content1">
+## Composition
+
+Widget are composable, _id est_ they may be nested when possible. Some `CompositeWidget`s allow to arrange the layout of the contained widgets.  
+See the following **Grid** example.
+</pre>
+
+<pacemjs-snippet>
+    <template>
+
+        <pacem-widget-grid editing="{{ #toggleEdit1.value }}" editable="true">
+            <pacem-widget-text text="{{ #data1.model }}" editable="true" editing="{{ #toggleEdit1.value }}" tag="My Text Widget 02"></pacem-widget-text>
+        </pacem-widget-grid>
+
+        <pacem-timer interval="1000" on-tick="#data1.model = Pacem.Utils.parseDate(Date.now(), 'time')"></pacem-timer>
+        <pacem-data id="data1"></pacem-data>
+
+        <hr />
+
+        <label>edit</label>
+        <br />
+        <pacem-checkbox class="checkbox-toggle" id="toggleEdit1" true-value="true" false-value="false" value="false"></pacem-checkbox>
+
+    </template>
+</pacemjs-snippet>
+
+<!--<pacem-childform id="proto" hidden></pacem-childform>
+<pacemjs-descriptor target="{{ #proto }}"></pacemjs-descriptor>-->

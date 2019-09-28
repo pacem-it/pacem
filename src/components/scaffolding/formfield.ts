@@ -162,20 +162,23 @@ css-class="{{ {'${PCSS}-fetching': ::_fetcher.fetching, '${PCSS}-dirty': this.di
          * Reflects the value onto the entity attribute, if the 'entity' is an instance of HTMLElement.
          * @param value
          */
-        private _handleValueChange(value: any) {
-            var prop = this.metadata.prop;
-            if (this.entity instanceof HTMLElement) {
+        private _handleValueChange(evt: PropertyChangeEvent) {
+            if (evt.detail.propertyName === 'value') {
+                const value = evt.detail.currentValue,
+                    prop = this.metadata.prop;
+                if (this.entity instanceof HTMLElement) {
 
-                // handle the entity as an element and modify the attribute
-                let attr = CustomElementUtils.camelToKebab(prop);
-                if (Utils.isNullOrEmpty(value)) {
-                    this.entity.removeAttribute(attr);
+                    // handle the entity as an element and modify the attribute
+                    let attr = CustomElementUtils.camelToKebab(prop);
+                    if (Utils.isNullOrEmpty(value)) {
+                        this.entity.removeAttribute(attr);
+                    } else {
+                        this.entity.setAttribute(attr, value.toString());
+                    }
+
                 } else {
-                    this.entity.setAttribute(attr, value.toString());
+                    this.entity[prop] = value;
                 }
-
-            } else {
-                this.entity[prop] = value;
             }
         }
 
@@ -215,7 +218,7 @@ css-class="{{ {'${PCSS}-fetching': ::_fetcher.fetching, '${PCSS}-dirty': this.di
             };
 
             // fetch data
-            let fetchData: { sourceUrl: string, valueProperty: string, textProperty: string, verb: Pacem.Net.HttpMethod, dependsOn?: { prop: string, alias?: string, value?: any, hide?: boolean }[] } = meta.extra;
+            let fetchData: { source: Function | any[], sourceUrl: string, valueProperty: string, textProperty: string, verb: Pacem.Net.HttpMethod, dependsOn?: { prop: string, alias?: string, value?: any, hide?: boolean }[] } = meta.extra;
             let fetchAttrs: { [key: string]: string } = {};
 
             let disabledAttr = "false";
@@ -262,12 +265,39 @@ css-class="{{ {'${PCSS}-fetching': ::_fetcher.fetching, '${PCSS}-dirty': this.di
                 this.setAttribute('hide', `{{ ${joinClauses(hidingClauses)} }}`);
             }
 
+            const fn = 'fn';
+            const fns: { [key: string]: Function } = this[fn] = this[fn] || {};
+
             // metadata
             switch (meta.display && meta.display.ui) {
                 case 'expression':
-                    // cms context sneak-in (stub)
+                    // cms-relevant (mostly)
                     attrs['value'] = `{{ :host.entity instanceof HTMLElement && :host.entity.getAttribute('${CustomElementUtils.camelToKebab(meta.prop)}') }}`;
-                    attrs['on-change'] = ':host._handleValueChange($event.target.value)';
+                    attrs['on-' + PropertyChangeEventName] = ':host._handleValueChange($event)';
+                    attrs['converter'] = `{{ Pacem.CustomElementUtils.getWatchedProperty(:host.entity, '${meta.prop}').config.converter }}`;
+                    tagName = P + '-expression';
+                    let extra: { selector: string, filter?: string | ((e: Element) => boolean), labeler?: (e: Element) => string } = meta.extra || {};
+                    if (!Utils.isNullOrEmpty(extra.selector)) {
+                        attrs['selector'] = extra.selector;
+                    }
+                    if (!Utils.isNullOrEmpty(extra.filter)) {
+                        switch (typeof extra.filter) {
+                            case 'string':
+                                attrs['filter'] = `{{ (e) => e.constructor.name === "${extra.filter}" || e.localName === "${extra.filter.toLowerCase()}" }}`;
+                                break;
+                            case 'function':
+                                const fnKey = 'fn' + Utils.uniqueCode();
+                                fns[fnKey] = extra.filter;
+                                attrs['filter'] = `{{ :host.${fn}.${fnKey}, once }}`;
+                                break;
+                        }
+                    }
+                    if (typeof extra.labeler === 'function') {
+                        const fnKey = 'fn' + Utils.uniqueCode();
+                        fns[fnKey] = extra.labeler;
+                        attrs['labeler'] = `{{ :host.${fn}.${fnKey}, once }}`;
+                        break;
+                    }
                     break;
                 // remove this (use dataType = 'HTML' instead).
                 case 'contentEditable':
@@ -284,36 +314,61 @@ css-class="{{ {'${PCSS}-fetching': ::_fetcher.fetching, '${PCSS}-dirty': this.di
                     // select
                     tagName = P + '-select';
                     attrs['on-mousewheel'] = '$event.preventDefault()';
-                    if (!Utils.isNullOrEmpty(fetchData.textProperty))
+                    if (!Utils.isNullOrEmpty(fetchData.textProperty)) {
                         attrs['text-property'] = fetchData.textProperty;
+                    }
                     if (!Utils.isNullOrEmpty(fetchData.valueProperty)) {
                         if (!meta.isComplexType)
                             attrs['value-property'] = fetchData.valueProperty;
                         else
                             attrs['compare-by'] = fetchData.valueProperty;
                     }
-                    this._fetcher.id = `fetch${this._key}`;
-                    this._fetcher.url = fetchData.sourceUrl;
-                    this._fetcher.method = fetchData.verb;
-                    //
-                    let dependingClause = '';
-                    //
-                    if (!Utils.isNullOrEmpty(fetchData.dependsOn)) {
-                        let dependsOn = fetchData.dependsOn;
-                        let namesAndPaths = [];
-                        let paths = [];
-                        for (var depends of dependsOn) {
-                            let path = ':host.entity.' + depends.prop;
-                            paths.push(path);
-                            namesAndPaths.push(`${(depends.alias || depends.prop)} : ${path}`);
-                            dependingClause += path + ' && ';
-                        }
 
-                        fetchAttrs['parameters'] = `{{ { ${namesAndPaths.join(', ')} } }}`;
-                        fetchAttrs['disabled'] = disabledAttr;// `{{ Pacem.Utils.isNullOrEmpty(${paths.join(") || Pacem.Utils.isNullOrEmpty(")}) }}`;
+                    if (Utils.isNullOrEmpty(fetchData.source)) {
+
+                        // datasource has to be fetched
+                        this._fetcher.id = `fetch${this._key}`;
+                        this._fetcher.url = fetchData.sourceUrl;
+                        this._fetcher.method = fetchData.verb;
+                        //
+                        let dependingClause = '';
+                        //
+                        if (!Utils.isNullOrEmpty(fetchData.dependsOn)) {
+                            let dependsOn = fetchData.dependsOn;
+                            let namesAndPaths = [];
+                            let paths = [];
+                            for (var depends of dependsOn) {
+                                let path = ':host.entity.' + depends.prop;
+                                paths.push(path);
+                                namesAndPaths.push(`${(depends.alias || depends.prop)} : ${path}`);
+                                dependingClause += path + ' && ';
+                            }
+
+                            fetchAttrs['parameters'] = `{{ { ${namesAndPaths.join(', ')} } }}`;
+                            fetchAttrs['disabled'] = disabledAttr;// `{{ Pacem.Utils.isNullOrEmpty(${paths.join(") || Pacem.Utils.isNullOrEmpty(")}) }}`;
+                        }
+                        //
+                        attrs['datasource'] = `{{ ${dependingClause} Pacem.Utils.getApiResult(#fetch${this._key}.result) }}`;
+                    } else {
+
+                        // static datasource provided
+                        let args: string = (fetchData.dependsOn || []).map(p => ':host.entity.' + p.prop).join(', ');
+                        const fnKey = 'fn' + Utils.uniqueCode();
+
+                        switch (typeof fetchData.source) {
+                            case 'function':
+                                fns[fnKey] = fetchData.source;
+                                break;
+                            default:
+                                if (Utils.isArray(fetchData.source)) {
+                                    fns[fnKey] = () => fetchData.source;
+                                } else {
+                                    throw 'Unsupported source format.';
+                                }
+                                break;
+                        }
+                        attrs['datasource'] = `{{ :host.${fn}.${fnKey}(${args}) }}`;
                     }
-                    //
-                    attrs['datasource'] = `{{ ${dependingClause} Pacem.Utils.getApiResult(#fetch${this._key}.result) }}`;
                     break;
                 case 'manyToMany':
                     // checkboxlist
@@ -465,6 +520,7 @@ css-class="{{ {'${PCSS}-fetching': ::_fetcher.fetching, '${PCSS}-dirty': this.di
                                         delete attrs['placeholder'];
                                         attrs['metadata'] = Utils.Json.stringify(meta.props);
                                         attrs['mode'] = meta.type;
+                                        attrs['lock-items'] = ''+ (meta.extra && meta.extra.lockItems || false);
                                         attrs['logger'] = '{{ :host.logger }}';
                                     }
                                     break;

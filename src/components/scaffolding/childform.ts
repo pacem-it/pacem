@@ -8,18 +8,18 @@ namespace Pacem.Components.Scaffolding {
     <div class="${PCSS}-childform">
     <template>
         <${P}-panel class="${PCSS}-childform-item" behaviors="{{ [::_dragger] }}">
-            <${P}-panel class="${PCSS}-margin margin-right-1" hide="{{ :host.readonly || :host.mode !== 'array' || !(:host._model && :host._model.length > 1) }}"><i class="${PCSS}-icon drag-handle">drag_handle</i></${P}-panel>
+            <${P}-panel class="${PCSS}-margin margin-right-1" hide="{{ :host.lockItems || :host.readonly || :host.mode !== 'array' || !(:host._model && :host._model.length > 1) }}"><i class="${PCSS}-icon drag-handle">drag_handle</i></${P}-panel>
             <${P}-form entity="{{ ^item }}" on-${PropertyChangeEventName}=":host._itemChange(^index, $event)" readonly="{{ :host.readonly }}" metadata="{{ :host.metadata }}" autogenerate="true" logger="{{ :host.logger }}"></${P}-form>
-            <${P}-button tab-order="-1" class="flat circular circle-small clear ${PCSS}-margin margin-left-1" hide="{{ :host.readonly }}" command-name="delete" command-argument="{{ ^index }}"></${P}-button>
+            <${P}-button tab-order="-1" class="flat circular circle-small clear ${PCSS}-margin margin-left-1" hide="{{ (:host.lockItems && :host.mode === 'array') || :host.readonly }}" command-name="delete" command-argument="{{ ^index }}"></${P}-button>
         </${P}-panel>
     </template>
     </div>
-    <${P}-button tab-order="-1" class="flat circular circle-small add" hide="{{ :host.readonly || :host.mode !== 'array' }}" on-click=":host._addItem($event)"></${P}-button>
+    <${P}-button tab-order="-1" class="flat circular circle-small add" hide="{{ :host.lockItems || :host.readonly || :host.mode !== 'array' }}" on-click=":host._addItem($event)"></${P}-button>
 </${P}-repeater>
 <div class="${PCSS}-childform-item-floater ${PCSS}-panel panel-border">
     <div class="corner top-left"></div><div class="corner top-right"></div><div class="corner bottom-left"></div><div class="corner bottom-right"></div>
 </div>
-<${P}-drag-drop floater="{{ ::_floater }}" 
+<${P}-drag-drop floater="{{ ::_floater }}" disabled="{{ :host.lockItems }}"
     on-${Pacem.UI.DragDropEventType.Start}=":host._dragStart($event)"
     on-${Pacem.UI.DragDropEventType.End}=":host._dragEnd($event)" 
     drop-behavior="${Pacem.UI.DropBehavior.InsertChild}" mode="${Pacem.UI.DragDataMode.Alias}" handle-selector=".drag-handle" drop-targets="{{ [::_container] }}"></${P}-drag-drop>`
@@ -59,6 +59,9 @@ namespace Pacem.Components.Scaffolding {
 
         @Watch({ converter: PropertyConverters.String })
         mode: 'array' | 'object';
+
+        @Watch({ converter: PropertyConverters.Boolean })
+        lockItems: boolean;
 
         @Watch({ converter: PropertyConverters.Json })
         metadata: Pacem.Scaffolding.TypeMetadata | PropertyMetadata[];

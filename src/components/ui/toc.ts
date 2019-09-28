@@ -73,8 +73,8 @@ namespace Pacem.Components.UI {
         }
 
         private _scrollTo(selector: string, tween = true) {
-            const dom = document.querySelector(selector),
-                item = this._items.find(i => i.dom === dom);
+            const dom = !Utils.isNullOrEmpty(selector) && document.querySelector(selector),
+                item = !Utils.isNull(dom) && this._items.find(i => i.dom === dom);
             if (item != null) {
                 const tget =  this._getTop(item.dom) - (this.offset || 0);
                 if (tween) {

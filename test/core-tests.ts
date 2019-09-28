@@ -473,6 +473,48 @@ logger="{{ #_RFzKYbi.logger }}" entity="{{ #_RFzKYbi.entity, twoway }}" metadata
                 document.body.appendChild(el);
 
             });
+
+
+            it('PacemEventTarget attributechange event', function (done) {
+
+                var ticker = 0;
+                const el = document.createElement('pacem-a');
+
+                // step
+                const fnStep = function (evt) {
+                    el.removeEventListener('load', fnStep, false);
+                    el.setAttribute('href', 'https://pacem.it');
+                }
+
+                // check / done
+                const fnDone = function (evt: AttributeChangeEvent) {
+                    expect(++ticker).toBeTruthy();
+                    expect(evt.detail.attributeName).toEqual('href');
+                    switch (ticker) {
+                        case 1:
+                            expect(evt.detail.currentValue).toEqual('https://google.com');
+                            expect(evt.detail.oldValue).toBeNull();
+                            expect(evt.detail.firstChange).toBeTruthy();
+                            break;
+                        case 2:
+                            expect(evt.detail.oldValue).toEqual('https://google.com');
+                            expect(evt.detail.currentValue).toEqual('https://pacem.it');
+                            expect(evt.detail.firstChange).toBeFalsy();
+                            break;
+                        default:
+                            throw 'What the hell?!...';
+                    }
+                    if (ticker === 2) {
+                        el.removeEventListener('attributechange', fnDone, false);
+                        done();
+                    }
+                }
+                el.addEventListener('attributechange', fnDone, false);
+                el.addEventListener('load', fnStep, false);
+                el.setAttribute('href', 'https://google.com');
+                document.body.appendChild(el);
+
+            });
         }
     },
 
