@@ -61,6 +61,7 @@ namespace Pacem.Components {
                 case 'mode':
                 case 'credentials':
                 case 'disabled':
+                case 'autofetch':
                     this._delayAndConditionallyFetch();
                     break;
                 case 'parameters':
@@ -81,7 +82,7 @@ namespace Pacem.Components {
             if (this.autofetch) {
                 this._handle = setTimeout(() => {
                     this.fetch();
-                }, this.debounce);
+                }, this.debounce || 0);
             }
         }
 

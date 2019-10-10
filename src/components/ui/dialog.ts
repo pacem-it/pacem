@@ -78,10 +78,10 @@ namespace Pacem.Components.UI {
         @Watch({ reflectBack: true, converter: PropertyConverters.String }) noCaption: string = 'No';
         @Watch({ reflectBack: true, converter: PropertyConverters.String }) cancelCaption: string = 'Cancel';
 
-        @ViewChild(P + '-button.' + PCSS + '-ok') private okButton: PacemButtonElement;
-        @ViewChild(P + '-button.' + PCSS + '-yes') private yesButton: PacemButtonElement;
-        @ViewChild(P + '-button.' + PCSS + '-no') private noButton: PacemButtonElement;
-        @ViewChild(P + '-button.' + PCSS + '-cancel') private cancelButton: PacemButtonElement;
+        @ViewChild(P + '-button.' + PCSS + '-ok') private _okButton: PacemButtonElement;
+        @ViewChild(P + '-button.' + PCSS + '-yes') private _yesButton: PacemButtonElement;
+        @ViewChild(P + '-button.' + PCSS + '-no') private _noButton: PacemButtonElement;
+        @ViewChild(P + '-button.' + PCSS + '-cancel') private _cancelButton: PacemButtonElement;
         @ViewChild(`.${PCSS}-dialog-buttons`) private _buttons: PacemButtonElement;
         @ViewChild(P + '-lightbox') protected lightbox: PacemLightboxElement;
 

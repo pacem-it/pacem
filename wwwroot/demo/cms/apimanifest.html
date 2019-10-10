@@ -34,7 +34,7 @@ The Api Manifest Widget can be exploitet to feed a `PacemWidgetFetchElement`> ta
     <template>
 
         <div class="display-flex">
-            <pacem-widget-apimanifest editable="true" editing="{{ #toggleEdit1.value }}" id="manifest1"></pacem-widget-apimanifest>
+            <pacem-widget-apimanifest editable="true" editing="{{ #toggleEdit1.value }}" id="manifest1" url="https://petstore.swagger.io/v2/swagger.json"></pacem-widget-apimanifest>
             <pacem-widget-fetch editable="true" editing="{{ #toggleEdit1.value }}" manifest="{{ #manifest1.manifest }}" id="fetch1" class="pacem-margin margin-left-3"></pacem-widget-fetch>
         </div>
         <hr />

@@ -47,6 +47,18 @@
     flex-flow: row wrap;
     align-content: stretch;
     align-items: flex-start;
+
+    &.flex-nowrap {
+        flex-wrap: nowrap;
+    }
+
+    &.flex-fill {
+        align-items: stretch;
+
+        > * {
+            flex: 1 0 100%;
+        }
+    }
 }
 
 .display-inline {

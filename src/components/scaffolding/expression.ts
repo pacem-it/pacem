@@ -121,6 +121,8 @@ namespace Pacem.Components.Scaffolding {
             const converter = this.converter;
             if (CustomElementUtils.isBindingAttribute(val) || typeof (converter && converter.convert) !== 'function') {
                 this._eval.setAttribute('text', val);
+            } else if (val === undefined) {
+                this._eval.text = '<undefined>';
             } else {
                 this._eval.text = converter.convert(val);
             }

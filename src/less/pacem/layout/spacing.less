@@ -60,6 +60,10 @@ hr.spacer {
 
 .Spaced(@what, @prefix) {
     .Spaced(@what, @prefix, 2 * @_segmentation, 2 * @_segmentation);
+
+    &.@{prefix}-auto{
+        @{what}: auto;
+    }
 }
 
 .@{PCSS}-margin {
@@ -109,6 +113,10 @@ hr.spacer {
 
 .SpacedThresholded(@what, @prefix, @threshold) {
     .SpacedThresholded(@what, @prefix, @threshold, 2 * @_segmentation, 2 * @_segmentation);
+
+    &.@{prefix}-@{threshold}-auto{
+        @{what}: auto;
+    }
 }
 
 @media (max-width: @threshold_sm - 1) {

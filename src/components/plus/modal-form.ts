@@ -29,7 +29,7 @@ namespace Pacem.Components.Plus {
     })
     export class PacemModalFormElement extends UI.PacemDialogBase implements Pacem.Net.OAuthFetchable {
         
-        @Watch()
+        @Watch({ converter: PropertyConverters.Json })
         metadata: Pacem.Scaffolding.TypeMetadata | Scaffolding.PropertyMetadata[];
 
         @Watch({ converter: PropertyConverters.String })

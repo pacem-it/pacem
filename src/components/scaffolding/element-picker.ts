@@ -71,7 +71,9 @@ namespace Pacem.Components.Scaffolding {
             });
             const retval: { element: Element, label: string }[] = [];
             document.querySelectorAll(this.selector || '[pacem]').forEach((e, i, arr) => {
-                if (Utils.isNull(this.filter) || this.filter(e) === true) {
+                if ((Utils.isNull(this.filter) || this.filter(e) === true)
+                    // let' say 'id' is a must-have...
+                    && !Utils.isNullOrEmpty(e.id)) {
                     retval.push({ element: e, label: project(e) });
                 }
             });

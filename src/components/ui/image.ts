@@ -9,7 +9,7 @@ namespace Pacem.Components.UI {
         @Watch({ emit: false, converter: PropertyConverters.String }) adapt: 'cover' | 'contain' | 'auto';
         @Watch({ emit: false, converter: PropertyConverters.String }) src: string;
         @Watch({ converter: PropertyConverters.Json }) size: { width: number, height: number, weight?: number };
-        @Watch({ converter: PropertyConverters.Boolean }) ready: boolean;
+        @Watch({ converter: PropertyConverters.Boolean }) loading: boolean;
 
         propertyChangedCallback(name: string, old: any, val: any, first?: boolean) {
             super.propertyChangedCallback(name, old, val, first);
@@ -21,8 +21,8 @@ namespace Pacem.Components.UI {
                 case 'adapt':
                     this._setLayout();
                     break;
-                case 'ready':
-                    (!!val ? Utils.addClass : Utils.removeClass)(this, 'img-ready');
+                case 'loading':
+                    (!val ? Utils.addClass : Utils.removeClass)(this, 'img-ready');
                     break;
             }
         }
@@ -46,7 +46,7 @@ namespace Pacem.Components.UI {
             //
             _me.style.backgroundImage = '';
             if (!Utils.isNullOrEmpty(src = _me.src)) {
-                this.ready = false;
+                this.loading = true;
                 Utils.loadImage(src).then(img => {
                     let weight: number, entries: any[], entry: any;
                     if (window.performance
@@ -59,8 +59,11 @@ namespace Pacem.Components.UI {
                         weight: weight
                     };
                     _me._setLayout();
-                    this.ready = true;
+                    this.loading = false;
                     _me.style.backgroundImage = `url("${img.src}")`;
+                }, _ => {
+                    // 404, whatever...
+                    this.loading = false;
                 });
             }
         }

@@ -4,7 +4,10 @@ namespace Pacem.Components.UI {
     @CustomElement({
         tagName: P + '-a'
     })
-    export class PacemAnchorElement extends PacemElement {
+    export class PacemAnchorElement extends PacemElement implements Pacem.Net.OAuthFetchable {
+
+        @Watch({ emit: false, converter: PropertyConverters.String }) fetchCredentials: RequestCredentials;
+        @Watch({ emit: false, converter: PropertyConverters.Json }) fetchHeaders: { [key: string]: string; };
 
         constructor() {
             super('link');
@@ -109,7 +112,7 @@ namespace Pacem.Components.UI {
             this.dispatchEvent(new PropertyChangeEvent({
                 propertyName: 'fetching', oldValue: this._fetching, currentValue: this._fetching = true
             }));
-            var response = await fetch(url);
+            var response = await fetch(url, { credentials: this.fetchCredentials, headers: this.fetchHeaders });
             if (response.ok) {
                 if (Utils.isNullOrEmpty(filename)) {
                     const headerName = 'Content-Disposition';

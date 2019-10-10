@@ -130,24 +130,28 @@ namespace Pacem {
 
         // #region blob/files...
         static loadImage(src: string) {
-            const deferred = DeferPromise.defer<HTMLImageElement>();
-            const img = new Image();
-            img.src = src;
-            if (img.complete)
-                deferred.resolve(img);
-            else {
-                img.onload = (evt) => {
-                    deferred.resolve(img);
-                };
-            }
-            return deferred.promise;
+            return new Promise<HTMLImageElement>((resolve, reject) => {
+                const img = new Image();
+                img.src = src;
+                if (img.complete) {
+                    resolve(img);
+                } else {
+                    img.onload = (evt) => {
+                        resolve(img);
+                    };
+                    img.onerror = (evt) => {
+                        reject();
+                    };
+                }
+
+            });
         }
 
         // thanks to @cuixiping: http://stackoverflow.com/questions/23150333
         static blobToDataURL(blob: Blob) {
             return new Promise((resolve, _) => {
                 var a = new FileReader();
-                a.onload =  (e) => { resolve(e.target['result']); }
+                a.onload = (e) => { resolve(e.target['result']); }
                 a.readAsDataURL(blob);
             });
         }
@@ -217,6 +221,8 @@ namespace Pacem {
                     } else {
                         deferred.resolve(img);
                     }
+                }, _ => {
+                    // image loading error caught...
                 });
             return deferred.promise;
         }
@@ -320,7 +326,7 @@ namespace Pacem {
 
             }
 
-            var DOMURL: {createObjectURL: (object)=>string} = window.URL || window['webkitURL'] || <any>window;
+            var DOMURL: { createObjectURL: (object) => string } = window.URL || window['webkitURL'] || <any>window;
 
             var img = new Image();
             var svg = new Blob([data], { type: 'image/svg+xml' });

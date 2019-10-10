@@ -416,11 +416,17 @@ a.@{PCSS}-button,
 }
 //:host([disabled]),
 .@{PCSS}-button.@{PCSS}-disabled,
-.@{PCSS}-button[disabled],
 @{P}-button.@{PCSS}-disabled,
 .@{PCSS}-button.@{PCSS}-disabled:hover,
-.@{PCSS}-button[disabled]:hover,
-@{P}-button.@{PCSS}-disabled:hover {
+@{P}-button.@{PCSS}-disabled:hover ,
+// non-components
+a.@{PCSS}-button[disabled],
+button.@{PCSS}-button[disabled]:hover,
+input.@{PCSS}-button[disabled],
+a.@{PCSS}-button[disabled]:hover,
+button.@{PCSS}-button[disabled]:hover,
+input.@{PCSS}-button[disabled]:hover
+{
     cursor: default;
     color: fade(@color_button_fore, 30);
     text-shadow: none;

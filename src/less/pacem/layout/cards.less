@@ -8,6 +8,7 @@
     flex-direction: column;
     align-items: stretch;
     position: relative;
+    flex: 1 0 100%;
 
     .card-body {
         flex: 1 0 auto;
@@ -72,7 +73,7 @@
     }
 }
 
-.@{PCSS}-card.card-left//:not(pacem-a),
+.@{PCSS}-card.card-left //:not(pacem-a),
 /*pacem-a.@{PCSS}-card.card-left a*/ {
     display: grid;
     grid-template-columns: 28% 1fr;
@@ -202,9 +203,15 @@
 }
 /* #endregion */
 
-/*#region ANCHOR-FIX*/
+/*#region ANCHOR/BUTTON-FIXES*/
+.@{PCSS}-card {
+    @{P}-button,
+    .@{PCSS}-button {
+        text-shadow: none;
+    }
+}
 
-@{P}-a.@{PCSS}-card a {
+@{P}-a.@{PCSS}-card {
     position: relative;
     color: @color_default;
 

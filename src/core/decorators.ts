@@ -392,6 +392,8 @@ namespace Pacem {
                                 if (value.independent) {
                                     // constant expression, just assign its value
                                     _this[prop] = value.evaluate();
+                                    processBinding(_this, prop /* remove eventual old bindings */);
+
                                 } else {
 
                                     var bindings: string[] = GET_VAL(_this, INSTANCE_BINDINGS_VAR, []);
@@ -408,7 +410,8 @@ namespace Pacem {
                             // retrieve property type and cast coherently...
                             var property = properties.find(p => p.name === prop);
                             if (!Utils.isNull(property)) {
-                                // eventual retry at Ln.286
+                                processBinding(_this, prop /* remove eventual old bindings */);
+                                // eventual retry at Ln.289
                                 _this[prop] = property.config.converter.convert(val, _this);
                             }
                         }
@@ -446,19 +449,27 @@ namespace Pacem {
 
                                 if (options
                                     && options.reflectBack === true
-                                    // && ready (reflectBack also when not ready yet)
                                     && /* not polyfilled */ !CustomElementUtils.polyfilling
-                                ) {
+                                    ) {
                                     var attrName = CustomElementUtils.camelToKebab(name),
                                         attr = _this.attributes.getNamedItem(attrName);
-                                    var config: WatchConfig;
-                                    if (val === undefined || val === null) {
-                                        _this.removeAttribute(attrName);
-                                    } else if (property && (config = property.config) && typeof config.converter.convertBack === 'function') {
-                                        const sval = config.converter.convertBack(val, _this);
-                                        /* ...and the values are different */
-                                        if (attr == null || sval !== attr.value)
-                                            _this.setAttribute(attrName, sval);
+
+                                    // reflectBack only when ready (or you'll lose eventual bindings for attributes with default non-undefined value):
+                                    // e.g. see `autofetch` property for `PacemFetchElement`
+                                    if (ready
+                                        // Allow to reflectBack proprties onto attributes also if the element isn't ready yet,
+                                        // put proved to have relevant attribute empty. (e.g. some widget utils like `PacemWidgetFetchParameterElement` need this)
+                                        || Utils.isNullOrEmpty(attr)) {
+
+                                        var config: WatchConfig;
+                                        if (val === undefined || val === null) {
+                                            _this.removeAttribute(attrName);
+                                        } else if (property && (config = property.config) && typeof config.converter.convertBack === 'function') {
+                                            const sval = config.converter.convertBack(val, _this);
+                                            /* ...and the values are different */
+                                            if (attr == null || sval !== attr.value)
+                                                _this.setAttribute(attrName, sval);
+                                        }
                                     }
                                 }
                             } else if (bindingType === 'twoway') {

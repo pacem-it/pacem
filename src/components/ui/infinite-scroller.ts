@@ -2,7 +2,7 @@
 namespace Pacem.Components.UI {
 
     @CustomElement({ tagName: P + '-infinite-scroller' })
-    export class PacemInfiniteScrollerElement extends PacemEventTarget implements OnPropertyChanged, OnViewActivated, OnDisconnected {
+    export class PacemInfiniteScrollerElement extends PacemEventTarget {
 
         constructor() {
             super();

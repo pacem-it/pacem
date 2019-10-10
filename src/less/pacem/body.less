@@ -11,7 +11,6 @@ body {
     overflow-x: hidden;
     line-height: 1.5;
     font-weight: @font_weight;
-
     .Background();
 }
 
@@ -21,10 +20,9 @@ body {
         .Animatable(.4s);
     }
 
-    h1 {
-        &.@{PCSS}-animatable {
-            .Animatable('header-anim', .2s);
-        }
+    h1.@{PCSS}-animatable,
+    .@{PCSS}-animatable.animatable-header {
+        .Animatable('header-anim', .2s);
     }
 }
 

@@ -11,11 +11,6 @@ namespace Pacem.Components.Scaffolding {
         uid?: string,
         state?: any
     };
-    type UploadResultWrapped = {
-        success: boolean,
-        result?: UploadResult,
-        error?: string
-    };
 
     export const FileUploadEventName = 'fileupload';
 
@@ -41,21 +36,24 @@ namespace Pacem.Components.Scaffolding {
      */
     @CustomElement({
         tagName: P + '-upload', shadow: Defaults.USE_SHADOW_ROOT
-        , template: `<${ P }-panel class="${PCSS}-upload" css-class="{{ {'${PCSS}-progress': :host.showProgress} }}">
-    <${ P }-panel class="${PCSS}-upload-filewrapper" 
-         hide="{{ :host.uploading || :host.failed }}"><input type="file" /></${ P }-panel>
-    <${ P }-button class="${PCSS}-upload-retry flat" 
+        , template: `<${P}-panel class="${PCSS}-upload" css-class="{{ {'${PCSS}-progress': :host.showProgress} }}">
+    <${ P}-panel class="${PCSS}-upload-filewrapper" 
+         hide="{{ :host.uploading || :host.failed }}"><input type="file" /></${ P}-panel>
+    <${ P}-button class="${PCSS}-upload-retry flat" 
             tooltip="{{ :host.retryCaption }}" 
             hide="{{ !:host.failed }}" 
-            on-click=":host.retry($event)"><${ P }-text text="{{ :host.retryCaption }}"></${ P }-text></${ P }-button>
-    <${ P }-button class="${PCSS}-upload-undo flat" 
+            on-click=":host._retry($event)"><${ P}-text text="{{ :host.retryCaption }}"></${P}-text></${P}-button>
+    <${ P}-button class="${PCSS}-upload-undo flat" 
             tooltip="{{ :host.undoCaption }}" 
-            on-click=":host.undo($event)" 
-            hide="{{ !:host.uploading }}"><${ P }-text text="{{ :host.undoCaption }}"></${ P }-text></${ P }-button>
-    <${ P }-tuner hide="{{ !:host.showProgress }}" value="{{ :host.percentage }}" interactive="false"></${ P }-tuner>
-</${ P }-panel>`
+            on-click=":host._undo($event)" 
+            hide="{{ !:host.uploading }}"><${ P}-text text="{{ :host.undoCaption }}"></${P}-text></${P}-button>
+    <${ P}-tuner hide="{{ !:host.showProgress }}" value="{{ :host.percentage }}" interactive="false"></${P}-tuner>
+</${ P}-panel>`
     })
-    export class PacemUploadElement extends PacemBaseElement {
+    export class PacemUploadElement extends PacemBaseElement implements Net.OAuthFetchable {
+
+        @Watch({ emit: false, converter: PropertyConverters.Json }) fetchCredentials: RequestCredentials;
+        @Watch({ emit: false, converter: PropertyConverters.String }) fetchHeaders: { [key: string]: string; };
 
         protected convertValueAttributeToProperty(attr: string) {
             return attr; // better assumptions anyone?
@@ -76,6 +74,7 @@ namespace Pacem.Components.Scaffolding {
 
         @Watch({ emit: false, reflectBack: true, converter: PropertyConverters.Number }) maxImageWidth: number;
         @Watch({ emit: false, reflectBack: true, converter: PropertyConverters.Number }) maxImageHeight: number;
+        @Watch({ emit: false, reflectBack: true, converter: PropertyConverters.Number }) maxSize: number;
 
         @Watch({ converter: PropertyConverters.Boolean }) showProgress: boolean;
         @Watch({ converter: PropertyConverters.Boolean }) uploading: boolean = false;
@@ -86,7 +85,7 @@ namespace Pacem.Components.Scaffolding {
         @Watch({ converter: PropertyConverters.Boolean }) invalidFile = false;
 
         get blob(): Blob {
-            return this.fields.blob;
+            return this._fields.blob;
         }
 
         private _httpClient = new Net.Http();
@@ -108,7 +107,7 @@ namespace Pacem.Components.Scaffolding {
         protected toggleReadonlyView(readonly: boolean) {
         }
 
-        private fields = {
+        private _fields = {
             'parallelism': 3,
             'uid': '',
             'ongoing': 0,
@@ -118,9 +117,9 @@ namespace Pacem.Components.Scaffolding {
             'undone': false
         };
 
-        upload(file: Blob, filename?: string, state?: any) {
+        async upload(file: Blob, filename?: string, state?: any) {
             var Uploader = this,
-                fields = Uploader.fields;
+                fields = Uploader._fields;
             if (!file) return;
             if (!filename && file instanceof File)
                 filename = file.name;
@@ -129,6 +128,15 @@ namespace Pacem.Components.Scaffolding {
             fields.ongoing = 0;
             var blob = file;
             filename = filename.substr(filename.lastIndexOf('\\') + 1);
+
+            // max size exceeded
+            var size = Uploader.maxSize;
+            if (size > 0 && size < blob.size) {
+                Uploader.invalidFile = true;
+                return;
+            }
+
+            // pattern unmatched
             var pattern = Uploader.pattern;
             if (pattern && !(new RegExp(pattern, 'i').test(filename))) {
                 Uploader.invalidFile = true;
@@ -139,29 +147,37 @@ namespace Pacem.Components.Scaffolding {
             Uploader.percentage = .0;
             Uploader.complete = false;
 
-            // TODO: use Pacem.Net.Http + JSON formatted data.
+            //
             var request: UploadRequest = {
                 filename: filename, length: size, action: "start", state: state
             };
-            const formData = JSON.stringify(request);
             //
             Uploader.uploading = true;
-            this._httpClient.post(Uploader.url, request)
-                .success(r => {
-                    var json = <UploadResultWrapped>r.json;
-                    if (!!json.success) {
 
-                        fields.retryFrom = 0;
-                        fields.blob = blob;
-                        fields.uid = json.result.uid;
-                        Uploader.manage();
-                    }
-                    return r;
-                });
+            try {
+
+                var r = await Uploader._fetch(request);
+                if (r.ok) {
+                    var json: UploadResult = await r.json();
+                    fields.retryFrom = 0;
+                    fields.blob = blob;
+                    fields.uid = json.uid;
+                    Uploader._manage();
+                } else {
+                    Uploader.uploading = false;
+                }
+                return r;
+
+            } catch (e) {
+                Uploader.uploading = false;
+            } finally {
+
+            }
+
         }
 
-        private doUpload(blob, skip) {
-            var Uploader = this, fields = Uploader.fields;
+        private _doUpload(blob, skip) {
+            var Uploader = this, fields = Uploader._fields;
             fields.ongoing++;
             //
             var reader = new FileReader();
@@ -174,55 +190,61 @@ namespace Pacem.Components.Scaffolding {
                     action: "do"
                 };
 
-                Uploader._httpClient.post(Uploader.url, request)
-                    .success(r => {
-                        fields.ongoing--;
-                        if (!!fields.undone) return;
+                Uploader._fetch(request)
+                    .then(r => {
 
-                        // Note: .response instead of .responseText
-                        var json = <UploadResultWrapped>r.json;
-                        if (!!json.success) {
-                            const result = json.result;
-                            Uploader.percentage = Math.min(1, result.percentage);
-                            if (Uploader.complete != result.complete) {
-                                Uploader.complete = result.complete;
-                                var fn;
-                                if (Uploader.complete === true) {
-                                    Uploader.uploading = false;
-                                    Uploader.changeHandler(new FileUploadEvent(result));
+                        if (r.ok) {
+
+                            fields.ongoing--;
+                            if (!!fields.undone) return;
+
+                            r.json().then(json => {
+                                const result = json as UploadResult;
+                                Uploader.percentage = Math.round(Math.max(1, result.percentage));
+                                if (Uploader.complete != result.complete) {
+                                    Uploader.complete = result.complete;
+                                    if (Uploader.complete === true) {
+                                        Uploader.uploading = false;
+                                        Uploader.changeHandler(new FileUploadEvent(result));
+                                    }
                                 }
-                            }
+                            });
+
                         } else {
+
+                            // error occurred
                             fields.retryFrom = skip;
                             Uploader.failed = true;
                             Uploader.uploading = false;
-                            //console.error(json.error);
+
                         }
 
-                        return r;
-                    })
-                    .error(err => {
+                    }, _ => {
+
+                        // crash
                         fields.retryFrom = skip;
-                        Uploader.uploading = false;
                         Uploader.failed = true;
+                        Uploader.uploading = false;
+
                     });
+
             }
             reader.readAsDataURL(blob);
         }
 
-        private manage() {
+        private _manage() {
             var Uploader = this;
-            var fields = Uploader.fields;
+            var fields = Uploader._fields;
             var start = fields.retryFrom;
             var size = Uploader.size;
             var blob: Blob = fields.blob;
-            var BYTES_PER_CHUNK = 1024 * 256; // 0.25MB chunk sizes.
+            var BYTES_PER_CHUNK = 1024 * 128; // 0.125MB chunk sizes.
             var end = start + BYTES_PER_CHUNK;
             //
             fields.enqueuer = setInterval(() => {
                 if (start < size && !Uploader.failed) {
                     if (fields.ongoing >= fields.parallelism) return;
-                    this.doUpload(blob.slice(start, end), start);
+                    this._doUpload(blob.slice(start, end), start);
                     start = end;
                     end = start + BYTES_PER_CHUNK;
                 } else {
@@ -259,36 +281,51 @@ namespace Pacem.Components.Scaffolding {
             return deferred.promise;
         }
 
-        private undo(e: Event) {
+        private _fetch(request: UploadRequest) {
+            return fetch(this.url, {
+                method: 'POST', credentials: this.fetchCredentials, headers: Utils.extend({ 'Accept': 'application/json', 'Content-Type': 'application/json' }, this.fetchHeaders || {}), body: JSON.stringify(request)
+            });
+        }
+
+        private async _undo(e: Event) {
             e.preventDefault();
             e.stopPropagation();
-            var Uploader = this, fields = Uploader.fields, input = <HTMLInputElement>Uploader.fileupload;
+            var Uploader = this, fields = Uploader._fields, input = <HTMLInputElement>Uploader.fileupload;
             clearInterval(fields.enqueuer);
 
             var request: UploadRequest = {
                 action: "undo", uid: fields.uid
             };
-            this._httpClient.post(Uploader.url, request)
-                .success(r => {
-                    var json = <UploadResultWrapped>r.json;
-                    if (!!json.success) {
-                        fields.undone = true;
-                        Uploader.size = 0;
-                        Uploader.percentage = .0;
-                    }
-                    return r;
-                })
-                .finally(r => {
-                    input.value = ''; // <- This input element accepts a filename, which may only be programmatically set to the empty string(!)
-                    Uploader.uploading = false;
-                });
+
+            try {
+                var r = await Uploader._fetch(request);
+
+                if (r.ok) {
+
+                    fields.undone = true;
+                    Uploader.size = 0;
+                    Uploader.percentage = .0;
+                }
+
+                return r;
+
+            } catch (e) {
+
+            } finally {
+
+                // This input element accepts a filename, which may only be programmatically set to the empty string(!)
+                input.value = '';
+                Uploader.uploading = false;
+                return r;
+            }
+
         }
 
-        private retry(e: Event) {
+        private _retry(e: Event) {
             e.preventDefault();
             e.stopPropagation();
             this.failed = false;
-            this.manage();
+            this._manage();
         }
 
     }

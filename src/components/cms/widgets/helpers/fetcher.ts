@@ -24,7 +24,7 @@
                 }, validators: [{ type: 'required', errorMessage: 'Api Manifest is a required field.' }],
                 extra: {
                     source: (manifest: Pacem.Scaffolding.OpenApi.ApiManifest) => manifest.endpoints.map(e => Utils.extend(e, { 'fullPath': `[${e.method.toUpperCase()}] ${e.path}` })).sort(),
-                    textProperty: 'fullPath', valueProperty: 'path',
+                    textProperty: 'fullPath', valueProperty: 'fullPath',
                     dependsOn: [{ prop: 'manifest', hide: true }]
                 }
             },
@@ -200,7 +200,8 @@ on-${Pacem.Net.FetchResultEventName}=":host._onresult($event)" on-${Pacem.Net.Fe
             this.method = endpoint.method;
             this.fields = endpoint.response.fields;
 
-            const parameters = this.parameters || [];
+            const parameterTagName = P + '-widget-fetch-parameter',
+                parameters = Array.from(this._itemsElement.children).filter(e => e.localName === parameterTagName) as PacemWidgetFetchParameterElement[];
 
             // remove exceeding
             for (let j = parameters.length - 1; j >= 0; j--) {
@@ -215,7 +216,7 @@ on-${Pacem.Net.FetchResultEventName}=":host._onresult($event)" on-${Pacem.Net.Fe
             for (let param of endpoint.parameters) {
                 let existing = parameters.find(p => p.name === param.name);
                 if (Utils.isNull(existing)) {
-                    let item = existing = document.createElement(P + '-widget-fetch-parameter') as PacemWidgetFetchParameterElement;
+                    let item = existing = document.createElement(parameterTagName) as PacemWidgetFetchParameterElement;
                     item.name = param.name;
                     this._itemsElement.appendChild(item);
                 }

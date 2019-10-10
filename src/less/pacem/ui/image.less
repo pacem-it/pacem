@@ -5,19 +5,23 @@
     display: inline-block;
     position: relative;
 }
-@{P}-img::before {
+
+@{P}-img::before {
+    @_size: 2 * @grid_spacing;
+    @_brd: @grid_spacing/8;
+
     display: block;
     content: '';
-    width: @grid_cell;
-    height: @grid_cell;
+    width: @_size;
+    height: $width;
     border-radius: 50%;
-    border: @grid_spacing/6 solid @color_border;
+    border: @_brd solid @color_border;
     border-top-color: @color_default;
     animation: rotate_anim linear 1s infinite both;
     top: 50%;
     left: 50%;
-    margin-left: -@grid_cell * .5;
-    margin-top: -@grid_cell * .5;
+    margin-left: -@_size * .5;
+    margin-top: $margin-left;
     position: absolute;
     transition: transform .2s @easing_in_out_sine, opacity .2s linear;
     pointer-events: none;

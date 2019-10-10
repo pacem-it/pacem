@@ -84,8 +84,8 @@ namespace Pacem.Cms.OpenApi {
 
                     } else {
 
-                        throw `Swagger entity definition keys must appear in form of absolute url. Their response to a GET request needs to be the entity metadata itself.\nNo other options are currently supported.`;
-
+                        console.warn(`Swagger entity definition keys must appear in form of absolute url. Their response to a GET request needs to be the entity metadata itself.\nNo other options are currently supported.`);
+                        return;
                     }
 
                     if (metadataUrl) {
@@ -136,6 +136,7 @@ namespace Pacem.Cms.OpenApi {
                                 if (api[BAG][key]) {
                                     datafield.props = api[BAG][key];
                                 } else {
+                                    // recursion here
                                     datafield.props = await _fetch(ref);
                                 }
                             }
