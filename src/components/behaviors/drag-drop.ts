@@ -15,7 +15,6 @@ namespace Pacem.Components {
     type DragElementDelegateInitParams = {
         element: DraggableElement,
         dragDrop: UI.DragDropper,
-        scrollPosition: Point,
         placeholder?: DraggableElement
     }
 
@@ -38,7 +37,6 @@ namespace Pacem.Components {
                 t.addEventListener('mouseenter', this._enterHandler, false);
                 t.addEventListener('mouseleave', this._leaveHandler, false);
             });
-            this._scroll = initArgs.scrollPosition;
             // is `_element` a dynamic one belonging to a repeater item?
             this._repeaterItem = <Components.RepeaterItem>Repeater.findItemContext(this._element, 0, null);
             //
@@ -47,7 +45,6 @@ namespace Pacem.Components {
 
         private _dragDropper: UI.DragDropper;
         private _element: DraggableElement;
-        private _scroll: Point;
         private _currentTarget: Element;
         private _currentHover: Node;
         private _repeaterItem: RepeaterItem;
@@ -79,7 +76,7 @@ namespace Pacem.Components {
                     Utils.addClass(floater, PCSS + '-drag-floater');
                     document.body.appendChild(floater);
                     floater.style.position = 'absolute';
-                    let pos = { left: origin.x + Utils.scrollLeft - this._scroll.x - floater.clientWidth / 2, top: origin.y + Utils.scrollTop - this._scroll.y - floater.clientHeight / 2 };
+                    let pos = { left: origin.x + floater.clientWidth / 2, top: origin.y - floater.clientHeight / 2 };
 
                     // if cloned the original element then preserve dimensions
                     if (src === this._element) {
@@ -131,7 +128,7 @@ namespace Pacem.Components {
                 length = children.length;
 
             // first hit tested element
-            const hover = document.elementFromPoint(args.currentPosition.x, args.currentPosition.y);
+            const hover = document.elementFromPoint(args.currentPosition.x - Utils.scrollLeft, args.currentPosition.y - Utils.scrollTop);
 
             // hit tested sibling (to spot)
             let hoverElement: Element;
@@ -269,7 +266,7 @@ namespace Pacem.Components {
 
             //
             function getCurrentPosition() {
-                return currentPosition = currentPosition || (evt instanceof MouseEvent ? { x: evt.clientX, y: evt.clientY } : { x: evt.touches[0].clientX, y: evt.touches[0].clientY });
+                return currentPosition = currentPosition || (evt instanceof MouseEvent ? { x: evt.pageX, y: evt.pageY } : { x: evt.touches[0].pageX, y: evt.touches[0].pageY });
             }
 
             // start
@@ -305,14 +302,16 @@ namespace Pacem.Components {
                 if (!moveEvt.defaultPrevented // obey the - eventual - canceling feedback
                     && (floater instanceof HTMLElement || floater instanceof SVGElement)) {
                     // move
-                    let delta = { x: moveEvt.detail.delta.x + Utils.scrollLeft, y: moveEvt.detail.delta.y + Utils.scrollTop };
+                    let delta = { x: moveEvt.detail.delta.x, y: moveEvt.detail.delta.y };
                     floater.style.transform = `translate3d(${delta.x}px, ${delta.y}px, 0)`;
                 }
                 // what am I over?
                 var hover = this._currentTarget;
                 if (!isMouseFlag && dragger.dropTargets.length > 0) {
                     const doc: any = document; // Workaround. Waiting for TS 2.8.2 bugfix: https://github.com/Microsoft/TypeScript/issues/22943
-                    hover = (<DocumentOrShadowRoot>doc).elementsFromPoint(args.currentPosition.x, args.currentPosition.y).find(e => dragger.dropTargets.indexOf(e) >= 0);
+                    hover = (<DocumentOrShadowRoot>doc)
+                        .elementsFromPoint(args.currentPosition.x - Utils.scrollLeft, args.currentPosition.y - Utils.scrollTop)
+                        .find(e => dragger.dropTargets.indexOf(e) >= 0);
                 }
                 // changed hover element since last time?
                 if (hover !== args.target) {
@@ -504,11 +503,11 @@ namespace Pacem.Components {
                 origin: Point;
 
             if (evt instanceof MouseEvent) {
-                origin = { x: evt.clientX, y: evt.clientY };
+                origin = { x: evt.pageX, y: evt.pageY };
             } else {
                 if (evt.touches.length != 1)
                     return;
-                origin = { x: evt.touches[0].clientX, y: evt.touches[0].clientY };
+                origin = { x: evt.touches[0].pageX, y: evt.touches[0].pageY };
             }
 
             const lockFn = () => {
@@ -529,7 +528,7 @@ namespace Pacem.Components {
                 el.removeEventListener('touchend', unlockFn, false);
                 SET_VAL(el, MOUSE_DOWN, origin);
                 SET_VAL(el, DELEGATE, new DragElementDelegate({
-                    element: element, dragDrop: this, placeholder: args.placeholder, scrollPosition: { x: Utils.scrollLeft, y: Utils.scrollTop }
+                    element: element, dragDrop: this, placeholder: args.placeholder
                 }, (level, message, category) => this.log.apply(this, [level, message, category])));
             };
             const unlockFn = (evt?: Event) => {
