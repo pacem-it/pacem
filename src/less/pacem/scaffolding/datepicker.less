@@ -6,7 +6,6 @@
     .FormFieldItemWrapper();
 
     .@{PCSS}-datetime-picker-fields {
-
         width: 100%;
 
         > div,
@@ -36,6 +35,12 @@
         @{P}-select {
             border: 0;
             min-width: 56px;
+
+            .@{PCSS}-select {
+                // remove borders
+                min-height: @field_height;
+                line-height: $min-height;
+            }
         }
 
         .@{PCSS}-datetime-picker-hours,
