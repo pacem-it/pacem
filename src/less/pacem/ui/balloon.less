@@ -8,20 +8,21 @@
 @_pointer_h: 12px;
 @_scale_off: 0.6667;
 
-.BalloonColorize(@_clr) {
-    .BalloonColorize(@_clr, @_clr, 80);
+.BalloonColorize(@_clr, @clr_inv) {
+    .BalloonColorize(@_clr, @clr_inv, @_clr, 95);
 }
 
-.BalloonColorize(@_clr, @_clr2, @_opacity) {
+.BalloonColorize(@_clr, @clr_inv, @_clr2, @_opacity) {
+    color: @clr_inv;
     background-color: fade(@_clr, @_opacity);
 
     &.balloon-border {
-        border-color: fade(@_clr2, @_opacity+10);
+        border-color: fade(@_clr2, @_opacity);
     }
 
     &::after {
         color: fade(@_clr, @_opacity);
-        text-shadow: 0 0 1px fade(@_clr2, @_opacity+10);
+        text-shadow: 0 0 1px fade(@_clr2, @_opacity);
     }
 
     &.balloon-corners {
@@ -69,7 +70,7 @@
         .Icon('play_arrow');
     }
 
-    .BalloonColorize(@balloon_color, @balloon_color, 100);
+    .BalloonColorize(@balloon_color, @color_default, @balloon_color, 100);
 
     &.balloon-right {
         &::after {
@@ -182,37 +183,37 @@
     // other panel styles
     &.balloon-accent {
         box-shadow: none;
-        .BalloonColorize(@color_accent);
+        .BalloonColorize(@color_accent, @color_accent_inv);
     }
 
     &.balloon-warning {
         box-shadow: none;
-        .BalloonColorize(@color_warning);
+        .BalloonColorize(@color_warning, @color_warning_inv);
     }
 
     &.balloon-success {
         box-shadow: none;
-        .BalloonColorize(@color_success);
+        .BalloonColorize(@color_success, @color_success_inv);
     }
 
     &.balloon-danger {
         box-shadow: none;
-        .BalloonColorize(@color_danger);
+        .BalloonColorize(@color_danger, @color_danger_inv);
     }
 
     &.balloon-primary {
         box-shadow: none;
-        .BalloonColorize(@color_primary);
+        .BalloonColorize(@color_primary, @color_primary_inv);
     }
 
     &.balloon-alternative {
         box-shadow: none;
-        .BalloonColorize(@color_background);
+        .BalloonColorize(@color_background, @color_default);
     }
 
     &.balloon-contrast {
         //box-shadow: none;
-        .BalloonColorize(@balloon_color_contrast, @balloon_color_contrast, 100%);
+        .BalloonColorize(@balloon_color_contrast, @color_default, @balloon_color_contrast, 100);
     }
 }
 /* #endregion */

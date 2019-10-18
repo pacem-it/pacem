@@ -23,7 +23,7 @@
 @grid_spacing: 24px;
 
 @color_dark: #000;
-@color_error: @color_red;
+@color_error: #970828;
 @color_error_fore: #fff;
 @color_highlight: #a7f8ab;
 @color_highlight_fore: @color_blue;
@@ -69,7 +69,7 @@
     .FontStd(1);
 }
 
-.FontMainSize(@rem){
+.FontMainSize(@rem) {
     font-size: 1rem * @rem * @font_rem_factor;
 }
 
@@ -118,11 +118,11 @@
 @color_background_alt: #0e456e;
 @color_default: @color_light;
 @color_default_inv: @color_dark;
-@color_success: @color_highlight;
-@color_success_inv: darken(@color_success, 50); // @color_light;
-@color_warning: #d5d033;
-@color_warning_inv: darken(@color_warning, 35);
-@color_danger: @color_red;
+@color_success: #4dc2b4;
+@color_success_inv: /*darken(@color_success, 50); //*/ @color_light;
+@color_warning: #c5c023;
+@color_warning_inv: /*darken(@color_warning, 35); //*/ @color_light;
+@color_danger: @color_error;
 @color_danger_inv: @color_error_fore;
 @color_accent: @color_red;
 @color_accent_inv: @color_light;
@@ -188,8 +188,8 @@
 @balloon_shadows: @shadows;
 
 // contextmenu
-@color_contextmenu_hover_back: lighten(@color_button_back, @button_hover_percentage); 
-@color_contextmenu_hover_fore: @color_default; 
+@color_contextmenu_hover_back: lighten(@color_button_back, @button_hover_percentage);
+@color_contextmenu_hover_fore: @color_default;
 
 // calendar/schedule/agenda
 @color_calendarday_hover: fade(@color_default, 5);
@@ -269,10 +269,11 @@
 @easing_out_back_custom: cubic-bezier(0.0, 1.6, 1.0, 0.8);
 @easing_out_bump: cubic-bezier(0.0, 1.6, 0.0, 1.0);
 
-.Background(@clr_bg){
+.Background(@clr_bg) {
     .Background();
     background-color: @clr_bg;
 }
+
 .Background() {
 }
 //
@@ -551,6 +552,7 @@
     border: 0;
     border-bottom: @border_field_size solid;
 }
+
 .FormFieldItemBorders() when (@border_field_underline = false) {
     border: @border_field_size solid;
 }

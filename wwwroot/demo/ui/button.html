@@ -1,14 +1,156 @@
 ﻿
 
-<pacem-markdown value="{{ #content0.textContent }}" root></pacem-markdown>
+<pacem-markdown value="{{ #content0.textContent }}" class="md-tech" root></pacem-markdown>
 
 <pre pacem hidden id="content0">
-# `&lt;pacem-button>`
+## Click Event
 
-typing docs...
+The main purpose of a button is being clicked.  
+That may occurs by using a mouse, via a touch device or by hitting the spacebar or the enter key on a keyboard. 
 
 </pre>
 
+<pacemjs-snippet>
+    <template>
+
+        <pacem-button class="button" on-click="#now0.model = Date.now()">Click me now</pacem-button>
+
+        <pacem-data id="now0"></pacem-data>
+        <hr />
+        <pacem-text text="{{ $pacem.date(#now0.model, 'full') }}"></pacem-text>
+
+    </template>
+</pacemjs-snippet>
+
+
+<pacem-markdown value="{{ #content1.textContent }}" class="md-tech" root></pacem-markdown>
+
+<pre pacem hidden id="content1">
+## Styling and Icon
+The usual appearence for a `&lt;pacem-button>` is obtained by adding the **`button`** class.  
+The content of a button can be preceded by a **material icon** glyph (`iconGlyph` property).
+
+Here are other common button-relevant looks:
+</pre>
+
+<pacemjs-snippet>
+    <template>
+
+        <div class="pacem-panel">
+            <div class="panel-body">
+                <!-- button here -->
+                <pacem-button class="button-circular" css-class="{{ [#class1.value] }}" icon-glyph="{{ #icon1.value }}"></pacem-button>
+            </div>
+            <div class="panel-footer pacem-flex">
+
+                <!-- icon selector -->
+                <pacem-select id="icon1" value="send" placeholder="icon-glyph" class="pacem-margin margin-right-2">
+                    <pacem-data-item value="send"></pacem-data-item>
+                    <pacem-data-item value="edit"></pacem-data-item>
+                    <pacem-data-item value="clear"></pacem-data-item>
+                    <pacem-data-item value="thumb_up_alt" caption="thumb up"></pacem-data-item>
+                </pacem-select>
+
+                <!-- style selector -->
+                <pacem-select id="class1" value="button-primary" placeholder="style" class="pacem-margin margin-right-2">
+                    <pacem-data-item value="button-primary" caption="primary"></pacem-data-item>
+                    <pacem-data-item value="button-accent" caption="accent"></pacem-data-item>
+                    <pacem-data-item value="button-success" caption="success"></pacem-data-item>
+                    <pacem-data-item value="button-warning" caption="warning"></pacem-data-item>
+                    <pacem-data-item value="button-danger" caption="danger"></pacem-data-item>
+                    <pacem-data-item value="button-default" caption="default"></pacem-data-item>
+                </pacem-select>
+            </div>
+        </div>
+
+    </template>
+</pacemjs-snippet>
+
+<pacem-markdown value="{{ #content2.textContent }}" class="md-tech" root></pacem-markdown>
+
+<pre pacem hidden id="content2">
+## Confirmation Dialog
+A `PacemButtonElement` can be bound to a dialog, in order to request confirmation before the very execution and discard it, eventually.
+</pre>
+
+<pacemjs-snippet>
+    <template>
+
+        <div>
+            <!-- button -->
+            <pacem-button icon-glyph="error" class="button button-accent"
+                          confirmation-dialog="{{ #dialog2 }}"
+                          confirmation-message="Are you really-really sure?"
+                          on-click="#toast2.show = true">click at your own risk</pacem-button>
+        </div>
+
+        <pacem-shell-proxy>
+
+            <!-- dialog -->
+            <pacem-dialog id="dialog2" buttons="yesno">
+                <i class="pacem-icon text-bigger text-accent">warning</i>
+                <pacem-text text="{{ #dialog2.state }}"></pacem-text>
+            </pacem-dialog>
+
+            <!-- toast (just for feedback) -->
+            <div class="pacem-toaster toaster-bottom toaster-right">
+                <pacem-toast class="toast-primary" id="toast2">
+                    Ok, you've been warned...
+                </pacem-toast>
+            </div>
+        </pacem-shell-proxy>
+
+    </template>
+</pacemjs-snippet>
+
+<pacem-markdown value="{{ #content3.textContent }}" class="md-tech" root></pacem-markdown>
+
+<pre pacem hidden id="content3">
+## Command Pattern
+`PacemButtonElement` implements the command pattern; just manage the relevant observable properties (`commandName`, `commandArgument`)
+and event (`command`).
+</pre>
+
+<pacemjs-snippet>
+    <template>
+
+        <div class="pacem-panel">
+            <div class="panel-body">
+
+                <!-- command-name -->
+                <pacem-input-text id="cmdName3" placeholder="command name" value="Gotta-Love"></pacem-input-text>
+
+                <!-- command-argument -->
+                <pacem-select id="cmdArg3" placeholder="command argument" value="Euler">
+                    <pacem-data-item value="Archimedes"></pacem-data-item>
+                    <pacem-data-item value="Fermat"></pacem-data-item>
+                    <pacem-data-item value="Newton"></pacem-data-item>
+                    <pacem-data-item value="Euler"></pacem-data-item>
+                    <pacem-data-item value="Gauss"></pacem-data-item>
+                    <pacem-data-item value="Poincaré"></pacem-data-item>
+                    <pacem-data-item value="Ramanujan"></pacem-data-item>
+                </pacem-select>
+
+                <!-- button here -->
+                <pacem-button disabled="{{ !(#cmdName3.value && #cmdArg3.value) }}" 
+                              class="button button-primary pacem-margin margin-bottom-0 margin-right-0"
+                              command-name="{{ #cmdName3.value }}" 
+                              command-argument="{{ #cmdArg3.value }}" 
+                              on-command="#txt3.content = 'Command \'<b>'+ $event.detail.commandName +'</b>\' was executed on \'<b>'+ $event.detail.commandArgument +'</b>\''">Execute</pacem-button>
+            </div>
+            <div class="panel-footer">
+
+                <!-- feedback -->
+                <pacem-span id="txt3" text="define command parameters and execute..."></pacem-span>
+            </div>
+        </div>
+
+    </template>
+</pacemjs-snippet>
+
+<p>
+    Command pattern becomes particularly handy when a <pacem-a href="/basic/repeater#item-commands" router="#router">Repeater</pacem-a> is involved.
+</p>
 
 <pacem-button id="proto" hidden></pacem-button>
 <pacemjs-descriptor target="{{ #proto }}"></pacemjs-descriptor>

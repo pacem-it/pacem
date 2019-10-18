@@ -1,5 +1,6 @@
 ﻿/// <reference path="../../../dist/js/pacem-core.d.ts" />
 /// <reference path="../../../dist/js/pacem-ui.d.ts" />
+/// <reference path="types.ts" />
 namespace Pacem.Components.Fx {
 
     const FANCY_CSS = PCSS + "-fancy";
@@ -7,7 +8,7 @@ namespace Pacem.Components.Fx {
     const DEFAULT_GAP = 20;
 
     @CustomElement({ tagName: P + '-fx-fancy' })
-    export class PacemFancyElement extends PacemEventTarget {
+    export class PacemFxFancyElement extends PacemFxElement {
 
 
         private _textNodes: Node[];
@@ -25,7 +26,6 @@ namespace Pacem.Components.Fx {
             return this._started;
         }
 
-        @Watch({ converter: Pacem.PropertyConverters.Element }) target: HTMLElement;
         @Watch({ converter: Pacem.PropertyConverters.Boolean }) fancify: boolean
         @Watch({ converter: Pacem.PropertyConverters.Number }) delay: number;
         @Watch({ converter: Pacem.PropertyConverters.Number }) gap: number;

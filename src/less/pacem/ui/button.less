@@ -572,6 +572,11 @@ body.pacem-animations {
         // will work in a far future
         content: attr(data-icon-url url);
     }
+
+    &.button[data-icon-glyph]::before{
+        vertical-align: bottom;
+        margin-right: @grid_spacing/3;
+    }
 }
 
 @{P}-button.dropdown-toggle {

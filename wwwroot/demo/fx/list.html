@@ -1,0 +1,87 @@
+﻿
+
+<pacem-markdown value="{{ #content0.textContent }}" class="md-tech" root></pacem-markdown>
+
+<pre pacem hidden id="content0">
+
+The `PacemFxListElement` aims to gap the distance between CSS and JavaScript: there are many scenarios (involving `nth-child`, `nth-last-child`, ... selectors)
+that are impossible to manage using a CSS-only approach.  
+This simple webcomponent allows the developer to inject logic on newly added item-elements,
+on both **static** and **dynamic** lists:
+
+</pre>
+
+
+<pacemjs-snippet>
+    <template>
+
+        <style>
+            @keyframes anim000 {
+                0% {
+                    opacity: 0;
+                    transform: scale(0);
+                    font-size: 0;
+                }
+
+                50% {
+                    background-color: var(--color-primary);
+                }
+
+                75% {
+                    transform: scale(1);
+                    background-color: var(--color-primary);
+                    font-size: 0;
+                }
+
+                100% {
+                    opacity: 1;
+                    background-color: transparent;
+                    font-size: 1.25rem;
+                }
+            }
+
+            #container0 {
+                height: 36vh;
+                overflow: hidden;
+            }
+
+                #container0 > div {
+                    height: 9vh;
+                    line-height: 9vh;
+                    animation: anim000 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+                }
+        </style>
+
+        <pre id="datasource0" hidden>
+["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P"]
+        </pre>
+        <pacem-repeater id="repeater0" datasource="{{ JSON.parse(#datasource0.textContent) }}">
+            <div class="pacem-grid grid-nospace grid-nogap" id="container0">
+                <template>
+                    <div class="pacem-cell cols-3">
+                        <pacem-text text="{{ ^item }}" class="text-center display-block"></pacem-text>
+                    </div>
+                </template>
+            </div>
+        </pacem-repeater>
+
+        <!-- PacemFxListElement with cumbersome listener -->
+        <pacem-fx-list target="{{ #container0 }}" on-itemadded="$event.detail.item.style.animationDelay = (.125 + ($event.detail.index % 8 <= 3 ? (($event.detail.index % 8) - 4) : (7 - ($event.detail.index % 8))) * .05)+'s'"></pacem-fx-list>
+
+        <pacem-timer interval="3500" on-tick="$this.interval = 4000; repeater0.datasource = []"></pacem-timer>
+        <pacem-timer interval="4000" on-tick="repeater0.datasource = JSON.parse(#datasource0.textContent)"></pacem-timer>
+
+    </template>
+</pacemjs-snippet>
+
+
+<pacem-markdown value="{{ #content1.textContent }}" class="md-tech" root></pacem-markdown>
+
+<pre pacem hidden id="content1">
+
+> The result above could have been obtained also by intercepting the `PacemRepeaterElement`'s `RepeaterItemCreatedEvent` event.
+
+</pre>
+
+<pacem-fx-list id="proto" hidden></pacem-fx-list>
+<pacemjs-descriptor target="{{ #proto }}"></pacemjs-descriptor>

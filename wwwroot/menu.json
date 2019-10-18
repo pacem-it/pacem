@@ -313,5 +313,17 @@
         "title": "<pacem-widget-apimanifest>"
       }
     ]
+  },
+  {
+    "package": "fx",
+    "label": "Fx",
+    "items": [
+      
+      {
+        "label": "List",
+        "view": "list",
+        "title": "<pacem-lx-list>"
+      }
+    ]
   }
 ]

@@ -71,7 +71,7 @@ Properties available allow to customize the aspect and the behavior of a binder:
         <pacem-binder from="{{ #end1 }}" to="{{ #end4 }}" class="binder-thin"></pacem-binder>
         <pacem-drag-drop id="dnd"></pacem-drag-drop>
 
-        <div style="overflow: hidden">
+        <div style="overflow: hidden" class="pacem-size size-xl pacem-pad pad-y-6">
             <div class="pacem-flex flex-center">
                 <div class="pacem-box pacem-flex flex-center">
                     <pacem-panel id="end1" class="bg-accent text-center binder--circle" behaviors="{{ [ #dnd ] }}"></pacem-panel>
@@ -82,7 +82,7 @@ Properties available allow to customize the aspect and the behavior of a binder:
             </div>
 
 
-            <pacem-checkbox true-value="true" false-value="false" value="{{ #end1.hide, twoway }}" caption="hide big"></pacem-checkbox>
+            <pacem-checkbox true-value="true" false-value="false" value="{{ #end1.hide, twoway }}" caption="hide the big one"></pacem-checkbox>
         </div>
     </template>
 </pacemjs-snippet>

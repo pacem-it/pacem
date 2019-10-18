@@ -1,5 +1,6 @@
 ﻿/// <reference path="../../../dist/js/pacem-core.d.ts" />
 /// <reference path="../../../dist/js/pacem-ui.d.ts" />
+/// <reference path="types.ts" />
 namespace Pacem.Components.Fx {
 
     const HERO_CSS = PCSS + "-hero";
@@ -18,9 +19,8 @@ namespace Pacem.Components.Fx {
     };
 
     @CustomElement({ tagName: P + '-fx-hero' })
-    export class PacemHeroElement extends PacemEventTarget {
+    export class PacemFxHeroElement extends PacemFxElement {
 
-        @Watch({ converter: Pacem.PropertyConverters.Element }) target: HTMLElement;
         @Watch({ converter: Pacem.PropertyConverters.Boolean }) hero: boolean
         @Watch({ converter: rectOrElementConverter, emit: false }) to: Rect | Element;
         @Watch({ converter: rectOrElementConverter, emit: false }) from: Rect | Element;

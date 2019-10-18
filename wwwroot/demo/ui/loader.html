@@ -1,13 +1,159 @@
 ﻿
 
-<pacem-markdown value="{{ #content0.textContent }}" root></pacem-markdown>
+<pacem-markdown value="{{ #content0.textContent }}" class="md-tech" root></pacem-markdown>
 
 <pre pacem hidden id="content0">
-# `&lt;pacem-loader>`
+## Spinners
 
-typing docs...
+`PacemLoaderElement` is a spinner UI webcomponent that hints an invisible task
+running in background.
 
+It gets activated by toggling its watchable `active` property/attribute.
 </pre>
+
+<pacemjs-snippet>
+    <template>
+
+        <div class="pacem-pad pad-3">
+            <div class="pacem-grid">
+                <div class="pacem-cell cols-md-3 cols-sm-6">
+                    <div class="pacem-panel">
+
+                        <div class="panel-footer">
+                            Standard
+                        </div>
+                        <div class="panel-body pacem-relative pacem-size size-lg">
+
+                            <pacem-loader class="pacem-hover" active="{{ #enabled.value }}"></pacem-loader>
+
+                        </div>
+                        <div class="corner top-left"></div>
+
+                    </div>
+                </div>
+
+                <div class="pacem-cell cols-md-3 cols-sm-6">
+                    <div class="pacem-panel">
+
+                        <div class="panel-footer">
+                            Primary Small
+                        </div>
+                        <div class="panel-body pacem-relative pacem-size size-lg">
+
+                            <pacem-loader active="{{ #enabled.value }}" class="pacem-hover loader-primary loader-small"></pacem-loader>
+
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="pacem-cell cols-md-3 cols-sm-6">
+                    <div class="pacem-panel">
+
+                        <div class="panel-footer">
+                            Accent Smaller
+                        </div>
+                        <div class="panel-body pacem-relative pacem-size size-lg">
+
+                            <pacem-loader active="{{ #enabled.value }}" class="pacem-hover loader-accent loader-smaller"></pacem-loader>
+
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="pacem-cell cols-md-3 cols-sm-6">
+                    <div class="pacem-panel">
+
+                        <div class="panel-footer">
+                            Pacem
+                        </div>
+                        <div class="panel-body pacem-relative pacem-size size-lg">
+
+                            <pacem-loader type="pacem" class="pacem-hover" active="{{ #enabled.value }}"></pacem-loader>
+
+                        </div>
+                        <div class="corner top-right"></div>
+
+                    </div>
+                </div>
+
+                <div class="pacem-cell cols-md-3 cols-sm-6">
+                    <div class="pacem-panel">
+
+                        <div class="panel-footer">
+                            Full
+                        </div>
+                        <div class="panel-body pacem-relative pacem-size size-lg">
+
+                            <pacem-loader class="pacem-hover loader-full" active="{{ #enabled.value }}"></pacem-loader>
+
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="pacem-cell cols-md-3 cols-sm-6">
+                    <div class="pacem-panel">
+
+                        <div class="panel-footer">
+                            Full Success Small
+                        </div>
+                        <div class="panel-body pacem-relative pacem-size size-lg">
+
+                            <pacem-loader active="{{ #enabled.value }}" class="pacem-hover loader-full loader-success loader-small"></pacem-loader>
+
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="pacem-cell cols-md-3 cols-sm-6">
+                    <div class="pacem-panel">
+
+                        <div class="panel-footer">
+                            Full Warning Smaller
+                        </div>
+                        <div class="panel-body pacem-relative pacem-size size-lg">
+
+                            <pacem-loader active="{{ #enabled.value }}" class="pacem-hover loader-full loader-warning loader-smaller"></pacem-loader>
+
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="pacem-cell">
+                    <div class="pacem-panel pacem-field">
+                        <div class="panel-body pacem-input-container">
+
+                            <pacem-checkbox id="enabled" true-value="true" false-value="false" selected="true" caption="active" class="checkbox-switch"></pacem-checkbox>
+
+                        </div>
+                        <div class="corner bottom-left"></div>
+                        <div class="corner bottom-right"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </template>
+</pacemjs-snippet>
+
+<pacem-markdown value="{{ #content1.textContent }}" class="md-tech" root></pacem-markdown>
+<pre pacem hidden id="content1">
+## Overlap
+
+Le loader can be overlapped to any element by simply using css classes:
+
+- Use **pacem-relative** for the containing element.
+- Include **pacem-size** (plus **size-lg**, ...) in the containing element to ensure a minimum height.
+- Apply **pacem-hover** to the loader. 
+
+Please lurk into the code-snippet above to see it in action.
+
+> This is not restricted to loaders.</pre>
+
 
 <pacem-loader id="proto" hidden></pacem-loader>
 <pacemjs-descriptor target="{{ #proto }}"></pacemjs-descriptor>

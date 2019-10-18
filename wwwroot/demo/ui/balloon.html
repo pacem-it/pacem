@@ -1,5 +1,4 @@
-﻿
-
+﻿<!-- 1 -->
 <pacem-markdown value="{{ #content0.textContent }}" root class="md-tech"></pacem-markdown>
 
 <pre pacem hidden id="content0">
@@ -14,7 +13,7 @@ Configure the balloon to behave like a usual tooltip:
 <pacemjs-snippet>
     <template>
 
-        <div id="tget0" class="pacem-button button">hover me</div>
+        <div id="tget0" class="pacem-button button">Hover me</div>
         <pacem-shell-proxy>
             <pacem-balloon target="{{ #tget0 }}" options='{ "behavior": "tooltip" }'>
                 This balloon has basic tooltip behavior.
@@ -24,7 +23,91 @@ Configure the balloon to behave like a usual tooltip:
     </template>
 </pacemjs-snippet>
 
+<!-- 2 -->
+<pacem-markdown value="{{ #content2.textContent }}" root class="md-tech"></pacem-markdown>
 
+<pre pacem hidden id="content2">
+
+## Positioning and Alignment
+While the default behavior lets the balloon to compute the best position to show up in,
+You are able to force it, together with the element alignment.
+
+## Trigger
+Also the event that triggers the popup of the balloon can be chosen.
+
+## Style
+You can emphasize the balloon by styling it out.
+
+</pre>
+
+<pacemjs-snippet>
+    <template>
+
+
+        <div class="pacem-grid">
+            <div class="pacem-cell">
+
+                <!-- target -->
+                <div id="tget2" class="pacem-button button"><pacem-text text="{{ #trig2.value }}"></pacem-text> me</div>
+            </div>
+            <div class="pacem-cell cols-lg-3 cols-sm-6">
+
+                <!-- trigger selector -->
+                <pacem-select id="trig2" value="hover" empty-option="false">
+                    <pacem-data-item value="hover" label="trigger: hover"></pacem-data-item>
+                    <pacem-data-item value="click" label="trigger: click"></pacem-data-item>
+                    <pacem-data-item value="focus" label="trigger: focus"></pacem-data-item>
+                    <!-- <pacem-data-item value="contextmenu" caption="trigger: contextmenu"></pacem-data-item>-->
+                </pacem-select>
+            </div>
+            <div class="pacem-cell cols-lg-3 cols-sm-6">
+
+                <!-- position selector -->
+                <pacem-select id="pos2" value="auto" empty-option="false">
+                    <pacem-data-item value="auto" label="position: auto"></pacem-data-item>
+                    <pacem-data-item value="top" label="position: top"></pacem-data-item>
+                    <pacem-data-item value="right" label="position: right"></pacem-data-item>
+                    <pacem-data-item value="bottom" label="position: bottom"></pacem-data-item>
+                    <pacem-data-item value="left" label="position: left"></pacem-data-item>
+                </pacem-select>
+            </div>
+            <div class="pacem-cell cols-lg-3 cols-sm-6">
+
+                <!-- alignment selector -->
+                <pacem-select id="align2" value="center" empty-option="false">
+                    <pacem-data-item value="start" label="alignment: start"></pacem-data-item>
+                    <pacem-data-item value="center" label="alignment: center"></pacem-data-item>
+                    <pacem-data-item value="end" label="alignment: end"></pacem-data-item>
+                </pacem-select>
+            </div>
+            <div class="pacem-cell cols-lg-3 cols-sm-6">
+
+                <!-- style selector -->
+                <pacem-select id="style2" value="default" empty-option="false">
+                    <pacem-data-item value="default" label="style: default"></pacem-data-item>
+                    <pacem-data-item value="primary" label="style: primary"></pacem-data-item>
+                    <pacem-data-item value="accent" label="style: accent"></pacem-data-item>
+                    <pacem-data-item value="success" label="style: success"></pacem-data-item>
+                    <pacem-data-item value="warning" label="style: warning"></pacem-data-item>
+                    <pacem-data-item value="danger" label="style: danger"></pacem-data-item>
+                </pacem-select>
+            </div>
+        </div>
+
+        <pacem-shell-proxy>
+
+            <!-- balloon -->
+            <pacem-balloon target="{{ #tget2 }}" 
+                           css-class="{{ ['balloon-'+ #style2.value] }}"
+                           options="{{ { trigger: #trig2.value, position: #pos2.value, align: #align2.value } }}">
+                Here is your balloon content.
+            </pacem-balloon>
+        </pacem-shell-proxy>
+
+    </template>
+</pacemjs-snippet>
+
+<!-- 3 -->
 <pacem-markdown value="{{ #content1.textContent }}" root class="md-tech"></pacem-markdown>
 
 <pre pacem hidden id="content1">

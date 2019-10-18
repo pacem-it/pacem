@@ -188,7 +188,7 @@ namespace Pacem.Components.Maps {
             switch (mode) {
                 case 'wms':
                     let wms = L.tileLayer.wms(item.url, { layers: (item.include || []).join(','), minZoom: item.minZoom, maxZoom: item.maxZoom, transparent: true, format: 'image/png' }).addTo(map);
-                    bag.set(item, wms);
+                    bag.set(item, wms);                    
                     break;
                 default:
                     let tms = L.tileLayer(item.url, { tms: mode === 'tms', minZoom: item.minZoom, maxZoom: item.maxZoom }).addTo(map);
