@@ -30,7 +30,7 @@ html .@{PCSS}-preloader {
 @full_theme: true;
 
 // variable values that get overridden
-@fonts: "fonts-dark";
+@fonts: "fonts-none"; // <- wasn't able to come up with something that works by exploiting mixin guards
 @theme: "theme-dark";
 
 // theme
@@ -64,6 +64,7 @@ html .@{PCSS}-preloader {
 @{shell} when (@shell_only = false), (@full_theme = true) {
     // fonts
     @import "@{fonts}";
+
     @import "logging/index";
     @import "body";
     @import "icons";

@@ -33,8 +33,8 @@ Array.prototype.cloneFrom = function (this: any[], other: any[]) {
         throw 'Cannot clone array from null object.';
     }
 
-    var changes = false;
     const length = other.length;
+    var changes = this.length !== other.length;
     for (let j = 0; j < length; j++) {
 
         const item = other[j];

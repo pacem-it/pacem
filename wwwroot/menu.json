@@ -318,11 +318,16 @@
     "package": "fx",
     "label": "Fx",
     "items": [
-      
+
       {
         "label": "List",
         "view": "list",
-        "title": "<pacem-lx-list>"
+        "title": "<pacem-fx-list>"
+      },
+      {
+        "label": "Ripple",
+        "view": "ripple",
+        "title": "<pacem-fx-ripple>"
       }
     ]
   }

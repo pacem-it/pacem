@@ -16,12 +16,56 @@ body {
 
 .@{PCSS}-body.@{PCSS}-animations {
 
+    .@{PCSS}-anim,
     .@{PCSS}-animatable {
         .Animatable(.4s);
+
+        &.anim-quick {
+            animation-duration: .2s;
+        }
+
+        &.anim-slow {
+            animation-duration: .8s;
+        }
+
+        &.anim-delay {
+            animation-delay: 1.2s;
+
+            &.delay-slight {
+                animation-delay: .8s;
+            }
+
+            &.delay-fair {
+                animation-delay: 1.6s;
+            }
+        }
+
+        &.anim-alt {
+            animation-name: alt-anim;
+        }
+
+        &.anim-pop {
+            animation-name: pop-anim;
+        }
+
+        &.anim-brightout {
+            animation-name: bright-out;
+        }
+
+        &.anim-alt-inv {
+            animation-name: enhanced-anim;
+        }
+
+        &.anim-reverse {
+            animation-direction: reverse;
+        }
     }
 
     h1.@{PCSS}-animatable,
-    .@{PCSS}-animatable.animatable-header {
+    h1.@{PCSS}-anim,
+    .@{PCSS}-animatable.animatable-header,
+    .@{PCSS}-animatable.anim-header,
+    .@{PCSS}-anim.anim-header {
         .Animatable('header-anim', .2s);
     }
 }

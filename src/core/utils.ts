@@ -494,7 +494,7 @@ namespace Pacem {
         }
 
         /**
-         * Adds a callback at the end of a CSS animation/transition for a given element.
+         * Adds a callback at the end of a CSS animation/transition for a given element (execute once).
          * @param element The very element that has to trigger the animation/transitionend event.
          * @param callback Then callback.
          * @param timeout Fallback timeout (ms) in case the animation/transitionend event won't fire.

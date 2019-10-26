@@ -91,13 +91,30 @@ namespace Pacem.Components.Scaffolding {
     </${P}-panel>
 </${P}-repeater>
 <${P}-fetch logger="{{ #${uid}.logger }}" id="${f_uid}" method="${Pacem.Net.HttpMethod.Post}" credentials="{{ #${uid}.fetchCredentials }}" headers="{{ #${uid}.fetchHeaders }}"></${P}-fetch> 
-<${P}-button logger="{{ #${uid}.logger }}" on-click="#${uid}._submit(#${f_uid}, $event)" type="submit" hide="{{ #${uid}.readonly || Pacem.Utils.isNullOrEmpty(#${uid}.action) || !Pacem.Utils.isNull(#${uid}.form) }}" class="button primary" disabled="{{ !(#${uid}.valid && #${uid}.dirty) || #${f_uid}.fetching }}">Ok</${P}-button>
-<${P}-button logger="{{ #${uid}.logger }}" on-click="#${uid}._reset($event)" type="reset" class="button" hide="{{ #${uid}.readonly || !#${uid}.dirty || !Pacem.Utils.isNull(#${uid}.form) }}" disabled="{{ #${f_uid}.fetching }}">Reset</${P}-button>`;
+<div class="${PCSS}-buttonset buttons">
+    <div class="buttonset-left">
+        <${P}-button logger="{{ #${uid}.logger }}" on-click="#${uid}._submit(#${f_uid}, $event)" type="submit" hide="{{ #${uid}.readonly || Pacem.Utils.isNullOrEmpty(#${uid}.action) || !Pacem.Utils.isNull(#${uid}.form) }}" class="button primary button-size size-small" disabled="{{ !(#${uid}.valid && #${uid}.dirty) || #${f_uid}.fetching }}">Ok</${P}-button>
+        <${P}-button logger="{{ #${uid}.logger }}" on-click="#${uid}._reset($event)" type="reset" class="button button-size size-small" css-class="{{ {'buttonset-first': #${uid}.readonly || Pacem.Utils.isNullOrEmpty(#${uid}.action) || !Pacem.Utils.isNull(#${uid}.form)} }}" hide="{{ #${uid}.readonly || !#${uid}.dirty || !Pacem.Utils.isNull(#${uid}.form) }}" disabled="{{ #${f_uid}.fetching }}">Reset</${P}-button>
+</div></div>`;
             // buttons are kept hidden if 
             form.innerHTML = html;
             this.innerHTML = '';
             this.appendChild(form);
             form.addEventListener('submit', Pacem.avoidHandler, false);
+
+            const old = this._buttons;
+            const val = this._buttons = {
+                submit: form.lastElementChild.firstElementChild.firstElementChild,
+                reset: form.lastElementChild.firstElementChild.lastElementChild
+            }
+            this.dispatchEvent(new PropertyChangeEvent({ propertyName: 'formButtons', currentValue: val, oldValue: old }));
+        }
+
+        private _buttons: { submit: Element, reset: Element } = { submit: undefined, reset: undefined };
+
+        /** Gets the 'submit' and 'reset' form buttons. */
+        get formButtons() {
+            return this._buttons;
         }
 
         private _keyupHandler = (evt: KeyboardEvent) => {

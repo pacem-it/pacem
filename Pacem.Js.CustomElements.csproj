@@ -64,6 +64,7 @@
     <None Remove="src\components\fx\fancy.ts" />
     <None Remove="src\components\fx\hero.ts" />
     <None Remove="src\components\fx\list.ts" />
+    <None Remove="src\components\fx\ripple.ts" />
     <None Remove="src\components\fx\types.ts" />
     <None Remove="src\components\scaffolding\childform.ts" />
     <None Remove="src\components\scaffolding\element-picker.ts" />
@@ -318,6 +319,7 @@
     <TypeScriptCompile Include="src\components\cms\widgets\helpers\translator.ts" />
     <TypeScriptCompile Include="src\components\cms\widgets\types.ts" />
     <TypeScriptCompile Include="src\components\cms\widgets\ui\types.ts" />
+    <TypeScriptCompile Include="src\components\fx\ripple.ts" />
     <TypeScriptCompile Include="src\components\fx\hero.ts" />
     <TypeScriptCompile Include="src\components\fx\fancy.ts" />
     <TypeScriptCompile Include="src\components\fx\list.ts" />

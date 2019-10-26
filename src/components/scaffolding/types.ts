@@ -44,6 +44,12 @@ namespace Pacem.Scaffolding {
         type?: 'object' | 'array'
     }
 
+    export declare type DependsOn = {
+        prop: string,
+        alias?: string,
+        value?: any,
+        hide?: boolean
+    }
 }
 
 namespace Pacem.Components.Scaffolding {
@@ -70,25 +76,32 @@ namespace Pacem.Components.Scaffolding {
 
     export abstract class PacemFormRelevantElement extends PacemElement {
 
-        private _form: PacemFormElement = null;
+        //private _form: PacemFormElement;
 
-        get form(): PacemFormElement {
-            return this._form || (this._form = CustomElementUtils.findAncestor(this, (n) => n instanceof PacemFormElement));
-        }
+        //get form(): PacemFormElement {
+        //    return this._form || (this._form = CustomElementUtils.findAncestor(this, (n) => n instanceof PacemFormElement));
+        //}
 
-        set form(v: PacemFormElement) {
-            if (v == null)
-                throw `Cannot set null ${PacemFormElement.name} instance.`;
-            if (v !== this._form) {
-                let old = this._form;
-                this._form = v;
-                this.propertyChangedCallback('form', old, v);
-            }
-        }
+        //set form(v: PacemFormElement) {
+        //    if (v == null)
+        //        throw `Cannot set null ${PacemFormElement.name} instance.`;
+        //    if (v !== this._form) {
+        //        let old = this._form;
+        //        this._form = v;
+        //        this.propertyChangedCallback('form', old, v);
+        //    }
+        //}
 
-        disconnectedCallback() {
-            this._form = null;
-            super.disconnectedCallback();
+        //disconnectedCallback() {
+        //    this._form = null;
+        //    super.disconnectedCallback();
+        //}
+
+        @Watch({ converter: PropertyConverters.Element }) form: PacemFormElement;
+
+        viewActivatedCallback() {
+            super.viewActivatedCallback();
+            this.form = CustomElementUtils.findAncestorOfType(this, PacemFormElement);
         }
     }
 
@@ -259,14 +272,24 @@ namespace Pacem.Components.Scaffolding {
         }
 
         protected focusHandler = (evt: FocusEvent) => {
-            //cancelAnimationFrame(this._focusHandle);
-            //this._focusHandle = requestAnimationFrame(() => {
+
+            const focusFieldgroup = (add = true) => {
+
+                // TODO: re-think, since this is an ugly workaround just to properly set the outline and borders of the fieldgroup 
+                if (Utils.is(this.parentElement, '.' + PCSS + '-fieldgroup')) {
+                    (add ? Utils.addClass : Utils.removeClass).apply(this, [this.parentElement, PCSS + '-focus']);
+                }
+            };
+            const blurFieldgroup = () => focusFieldgroup(false);
+
             switch (evt.type) {
                 case 'focus':
                     Utils.addClass(this, PCSS + '-focus');
+                    focusFieldgroup();
                     break;
                 case 'blur':
                     Utils.removeClass(this, PCSS + '-focus');
+                    blurFieldgroup();
                     break;
             }
             if (evt.bubbles)

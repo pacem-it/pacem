@@ -5,6 +5,7 @@
 @_side_padding: @grid_spacing / 2;
 @_margin: @grid_spacing/3;
 @_width: 2 * (@grid_cell + @_side_padding);
+@_width_half: @grid_cell + 2 * @_side_padding;
 @_height: @grid_spacing * 1.5;
 @_border: 1px;
 
@@ -28,6 +29,10 @@
     &.button-size {
         padding: 0 @grid_spacing/2;
         min-width: @_width;
+
+        &.size-small{
+            min-width: @_width_half;
+        }
     }
 }
 

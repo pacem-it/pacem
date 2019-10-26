@@ -572,7 +572,7 @@ namespace Pacem {
                         const retval = methods[fn].apply(this, args);
                         // TODO?: specifically notify which items have changed.
                         // .length property risks to not be affected, fire it as well.
-                        SET_VAL(this, ver, new Date().valueOf());
+                        SET_VAL(this, ver, Date.now());
 
                         onChange.call(_this, prop, this, this);
                         return retval;

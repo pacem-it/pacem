@@ -21,12 +21,26 @@
     //font-size: .86em;
 }
 
+.Outline(@clr) when (@field_outline_width > 0) {
+    .Outline(@field_outline_width, @clr);
+}
+
+.Outline(@width, @clr) {
+    // hack: since outline has no outline-radius support
+    box-shadow: 0 0 0 @width @clr;
+}
+
+.NoOutline(){
+    box-shadow: none;
+}
+
 .FormFieldItemFocused() {
     color: @field_focus_forecolor;
 
     .@{PCSS}-input,
     .@{PCSS}-viewfinder {
         border-color: fade(@color_default, 40);
+        .Outline(@color_field_outline);
     }
 }
 
@@ -76,6 +90,7 @@
     &when (@border_field_underline = false) {
         .FormFieldItemSize(@f_height, 2 * @border_field_size);
     }
+
     //background: none;
     box-sizing: border-box;
     color: @field_forecolor;
@@ -114,7 +129,9 @@
     font-size: 1em;
     position: relative;
     display: block;
-
+    /*&when (@field_outline_width > 0) {
+        margin: @field_outline_width;
+    }*/
     @media (min-width: @threshold_lg) {
         min-width: @field_min_width;
         display: inline-block;
@@ -124,7 +141,7 @@
     .@{PCSS}-input {
         .FormFieldItemBorder();
         background-color: @color_input_back;
-        border-radius: @border_radius;
+        border-radius: @border_input_radius;
     }
 
     .@{PCSS}-viewfinder {
@@ -143,6 +160,21 @@
 
     &.@{PCSS}-focus {
         .FormFieldItemFocused();
+
+        &.@{PCSS}-outline when (@field_outline_width = 0) {
+            .@{PCSS}-input,
+            .@{PCSS}-viewfinder {
+                .Outline(2px, @color_default);
+            }
+        }
+
+        .@{PCSS}-viewfinder {
+            // nested .@{PCSS}-input ot .@{PCSS}-viewfinder don't show outline when focused
+            .@{PCSS}-input,
+            .@{PCSS}-viewfinder {
+                .NoOutline();
+            }
+        }
     }
 
     .@{PCSS}-readonly {

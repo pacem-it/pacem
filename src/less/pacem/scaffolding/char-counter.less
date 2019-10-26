@@ -45,8 +45,8 @@
             top: 0;
         }
 
-        & when (@border_radius > 0) {
-            transform: translateX(-@border_radius);
+        & when (@border_input_radius > 0) {
+            transform: translateX(-@border_input_radius);
         }
     }
 
@@ -55,13 +55,13 @@
         color: @color_error_fore;
 
         & when (@border_radius > 0) {
-            padding-left: @grid_spacing/8 + @border_radius;
-            padding-right: @grid_spacing + @border_radius;
-            border-bottom-left-radius: @border_radius * 1;
+            padding-left: @grid_spacing/8 + @border_input_radius;
+            padding-right: @grid_spacing + @border_input_radius;
+            border-bottom-left-radius: @border_input_radius * 1;
             border-bottom-right-radius: $border-bottom-left-radius;
 
             &::after {
-                right: @border_radius;
+                right: @border_input_radius;
             }
         }
     }

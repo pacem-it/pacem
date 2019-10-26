@@ -1,15 +1,73 @@
-﻿/// <reference path="form.ts" />
+﻿/// <reference path="types.ts" />
+/// <reference path="form.ts" />
 namespace Pacem.Components.Scaffolding {
+
+    declare type PropagatedProperty = {
+        prop: string,
+        alias?: string
+    };
+
+
+    /** For internal use ONLY! */
+    @CustomElement({ tagName: P+'-childform-propagator'})
+    export class PacemChildFormPropagatorElement extends PacemEventTarget {
+
+        @Watch({ emit: false, converter: PropertyConverters.String })
+        property: string;
+
+        @Watch({ emit: false })
+        watch: any;
+
+        @Watch({ emit: false /* mandatory twoway binding */ })
+        model: any;
+
+        propertyChangedCallback(name: string, old, val, first?: boolean) {
+            super.propertyChangedCallback(name, old, val, first);
+            if (name === 'watch' || name === 'property' || (name === 'model' && val && val.length > (old && old.length || 0))) {
+                this._synchronize();
+            }
+        }
+
+        viewActivatedCallback() {
+            super.viewActivatedCallback();
+            this._synchronize();
+        }
+
+        private _synchronize() {
+            const model = this.model,
+                propagate = this.property,
+                value = this.watch;
+            if (Utils.isNullOrEmpty(model) || Utils.isNullOrEmpty(propagate)) {
+                return;
+            }
+
+            if (Utils.isArray(model)) {
+                for (let item of model) {
+                    item[propagate] = value;
+                }
+
+                // trigger change
+                model.splice(model.length);
+            } else {
+
+                model[propagate] = value;
+
+                // trigger change
+                this.model = Utils.clone(model);
+            }
+
+        }
+    }
 
     /** Represents a sub-form for automatic generation of editing fields for sub-entities.  */
     @CustomElement({
         tagName: P + '-childform', shadow: Defaults.USE_SHADOW_ROOT,
-        template: `<${P}-repeater datasource="{{ :host._model }}" on-itemdelete=":host._deleteAt($event)" on-${ RepeaterItemCreateEventName }=":host._itemCreate($event)">
+        template: `<${P}-repeater datasource="{{ :host._model }}" on-itemdelete=":host._deleteAt($event)" on-${RepeaterItemCreateEventName}=":host._itemCreate($event)">
     <div class="${PCSS}-childform">
     <template>
         <${P}-panel class="${PCSS}-childform-item" behaviors="{{ [::_dragger] }}">
             <${P}-panel class="${PCSS}-margin margin-right-1" hide="{{ :host.lockItems || :host.readonly || :host.mode !== 'array' || !(:host._model && :host._model.length > 1) }}"><i class="${PCSS}-icon drag-handle">drag_handle</i></${P}-panel>
-            <${P}-form entity="{{ ^item }}" on-${PropertyChangeEventName}=":host._itemChange(^index, $event)" readonly="{{ :host.readonly }}" metadata="{{ :host.metadata }}" autogenerate="true" logger="{{ :host.logger }}"></${P}-form>
+            <${P}-form entity="{{ ^item }}" fetch-headers="{{ :host.fetchHeaders }}" fetch-credentials="{{ :host.fetchCredentials }}" on-${PropertyChangeEventName}=":host._itemChange(^index, $event)" readonly="{{ :host.readonly }}" metadata="{{ :host.metadata }}" autogenerate="true" logger="{{ :host.logger }}"></${P}-form>
             <${P}-button tab-order="-1" class="flat circular circle-small clear ${PCSS}-margin margin-left-1" hide="{{ (:host.lockItems && :host.mode === 'array') || :host.readonly }}" command-name="delete" command-argument="{{ ^index }}"></${P}-button>
         </${P}-panel>
     </template>
@@ -24,7 +82,10 @@ namespace Pacem.Components.Scaffolding {
     on-${Pacem.UI.DragDropEventType.End}=":host._dragEnd($event)" 
     drop-behavior="${Pacem.UI.DropBehavior.InsertChild}" mode="${Pacem.UI.DragDataMode.Alias}" handle-selector=".drag-handle" drop-targets="{{ [::_container] }}"></${P}-drag-drop>`
     })
-    export class PacemChildFormElement extends PacemBaseElement {
+    export class PacemChildFormElement extends PacemBaseElement implements Pacem.Net.OAuthFetchable {
+
+        @Watch({ emit: false, converter: PropertyConverters.String }) fetchCredentials: RequestCredentials;
+        @Watch({ emit: false, converter: PropertyConverters.Json }) fetchHeaders: { [key: string]: string; };
 
         protected get inputFields(): HTMLElement[] {
             return [];
@@ -102,7 +163,7 @@ namespace Pacem.Components.Scaffolding {
             });
         }
 
-        private _subForms : PacemFormElement[] = [];
+        private _subForms: PacemFormElement[] = [];
         private _itemCreate(evt: RepeaterItemCreateEvent) {
             const ndx = evt.detail.index,
                 subForms = this._subForms;
@@ -142,15 +203,16 @@ namespace Pacem.Components.Scaffolding {
         }
 
         private _entityToModel(entity = this.value) {
-            const model = this._model,
-                length = model.length;
             switch (this.mode) {
                 case 'array':
-                    if (Utils.isArray(entity)) {
-                        this._model.cloneFrom(entity);
+                    let arr = entity || [];
+                    if (Utils.isArray(arr)) {
+                        this._model.cloneFrom(arr);
                     }
                     break;
                 default:
+                    const model = this._model,
+                        length = model.length;
                     if (length !== 1 || model[0] !== entity) {
                         model.splice(0, length, entity || {});
                     }

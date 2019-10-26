@@ -86,7 +86,7 @@
     margin-bottom: @grid_spacing / 3;
     padding: @grid_spacing/3 0 @_h 0;
     z-index: 0;
-    border-radius: @border_radius;
+    border-radius: @border_field_radius;
     transition: background linear .3s, border linear .3s;
 
     @_thumb_border: @grid_spacing/12; // 2px
@@ -145,7 +145,7 @@
 
             .@{PCSS}-viewfinder,
             .@{PCSS}-input {
-                border-color: fade(@color_danger, 20);
+                border-color: fade(@color_error, 20);
             }
         }
 
@@ -153,8 +153,16 @@
             > .@{PCSS}-input-container > :not(@{P}-childform) /* childform should break the rule */ {
                 .@{PCSS}-viewfinder,
                 .@{PCSS}-input {
-                    border-color: @color_danger;
+                    border-color: @color_error;
                 }
+            }
+        }
+
+        > .@{PCSS}-input-container > .@{PCSS}-focus:not(@{P}-childform) /* childform should break the rule */ {
+
+            .@{PCSS}-viewfinder,
+            .@{PCSS}-input {
+                .Outline(fade(@color_error, 40));
             }
         }
     }
@@ -179,8 +187,54 @@
                 > .@{PCSS}-input-container > :not(@{P}-childform) /* childform should break the rule */ {
                     .@{PCSS}-viewfinder,
                     .@{PCSS}-input {
-                        border-color: fade(fade( @color_success, 100), 40);
+                        border-color: fade( @color_success, 40);
                     }
+                }
+            }
+
+            > .@{PCSS}-input-container > .@{PCSS}-focus:not(@{P}-childform) /* childform should break the rule */ {
+
+                .@{PCSS}-viewfinder,
+                .@{PCSS}-input {
+                    .Outline(fade(@color_success, 40));
+                }
+            }
+        }
+    }
+}
+
+// force outline
+@{P}-form-field.field-outline when (@field_outline_width = 0) {
+
+    .@{PCSS}-field {
+
+        > .@{PCSS}-input-container > .@{PCSS}-focus:not(@{P}-childform) /* childform should break the rule */ {
+
+            .@{PCSS}-viewfinder,
+            .@{PCSS}-input {
+                .Outline(2px, fade(@color_default, 40));
+            }
+        }
+
+
+        &.@{PCSS}-invalid {
+
+            > .@{PCSS}-input-container > .@{PCSS}-focus:not(@{P}-childform) /* childform should break the rule */ {
+
+                .@{PCSS}-viewfinder,
+                .@{PCSS}-input {
+                    .Outline(2px, fade(@color_error, 40));
+                }
+            }
+        }
+
+        &.@{PCSS}-has-value.@{PCSS}-valid {
+
+            > .@{PCSS}-input-container > .@{PCSS}-focus:not(@{P}-childform) /* childform should break the rule */ {
+
+                .@{PCSS}-viewfinder,
+                .@{PCSS}-input {
+                    .Outline(2px, fade(@color_success, 40));
                 }
             }
         }
@@ -245,7 +299,7 @@
 }
 
 @{P}-form-field.field-center > .@{PCSS}-field > .@{PCSS}-input-container {
-    text-align:center;
+    text-align: center;
 }
 
 .@{PCSS}-field.@{PCSS}-editable {
@@ -422,7 +476,7 @@
     .@{PCSS}-fieldset-left, .@{PCSS}-fieldset-center, .@{PCSS}-fieldset-right, .@{PCSS}-fieldset-auto,
     .fieldset-left, .fieldset-center, .fieldset-right, .fieldset-auto {
         background-color: @color_input_back;
-        border-radius: @border_radius;
+        border-radius: @border_input_radius;
 
         .@{PCSS}-viewfinder,
         .@{PCSS}-input {
@@ -431,22 +485,21 @@
                 background: none;
                 border-radius: 0;
             }
-
         }
 
         > * {
 
-            &:first-child when (@border_radius > 0) {
+            &:first-child when (@border_input_radius > 0) {
                 .@{PCSS}-viewfinder, .@{PCSS}-input {
-                    border-top-left-radius: @border_radius;
-                    border-bottom-left-radius: @border_radius;
+                    border-top-left-radius: @border_input_radius;
+                    border-bottom-left-radius: @border_input_radius;
                 }
             }
 
-            &:last-child when (@border_radius > 0) {
+            &:last-child when (@border_input_radius > 0) {
                 .@{PCSS}-viewfinder, .@{PCSS}-input {
-                    border-top-right-radius: @border_radius;
-                    border-bottom-right-radius: @border_radius;
+                    border-top-right-radius: @border_input_radius;
+                    border-bottom-right-radius: @border_input_radius;
                 }
             }
 
@@ -473,7 +526,7 @@
         &.input-group-append {
             background-color: @color_input_back;
             color: @color_field_fore;
-            min-width: @border_radius;
+            min-width: @border_input_radius;
 
             .@{PCSS}-icon {
                 font-size: @grid_spacing;
@@ -494,15 +547,15 @@
         &.fieldgroup-prepend,
         &.input-group-prepend {
             grid-area: prepend;
-            border-top-left-radius: @border_radius;
-            border-bottom-left-radius: @border_radius;
+            border-top-left-radius: @border_input_radius;
+            border-bottom-left-radius: @border_input_radius;
         }
 
         &.fieldgroup-append,
         &.input-group-append {
             grid-area: append;
-            border-top-right-radius: @border_radius;
-            border-bottom-right-radius: @border_radius;
+            border-top-right-radius: @border_input_radius;
+            border-bottom-right-radius: @border_input_radius;
         }
 
         .@{PCSS}-viewfinder, .@{PCSS}-input {
@@ -552,6 +605,15 @@
         .@{PCSS}-focus ~ .fieldgroup-append,
         .@{PCSS}-focus ~ .input-group-append {
             border-color: fade(@color_default, 40);
+        }
+    }
+    // Remove outline from fields in fieldgroups (they look ugly).
+    // TODO: think about a pure CSS solution.
+    > *.@{PCSS}-focus {
+
+        .@{PCSS}-viewfinder,
+        .@{PCSS}-input {
+            .NoOutline();
         }
     }
 }

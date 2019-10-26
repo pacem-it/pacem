@@ -62,11 +62,13 @@ namespace Pacem.Components.UI {
         tagName: P + '-dialog', shadow: Defaults.USE_SHADOW_ROOT,
         template: `<${P}-lightbox modal="true">
     <${ P}-content></${P}-content>
-    <div class="${PCSS}-dialog-buttons">
-        <${ P}-button class="button primary" on-click=":host.commit('ok', $event)" disabled="{{ :host.disabled || this.hide }}" hide="{{ :host.buttons !== 'ok' && :host.buttons !== 'okcancel' }}" class="${PCSS}-ok"><${P}-text text="{{ :host.okCaption }}"></${P}-text></${P}-button>
-        <${ P}-button class="button" on-click=":host.commit('yes', $event)" disabled="{{ :host.disabled || this.hide }}" hide="{{ :host.buttons === 'ok' || :host.buttons === 'okcancel' }}" class="${PCSS}-yes"><${P}-text text="{{ :host.yesCaption }}"></${P}-text></${P}-button>
-        <${ P}-button class="button" on-click=":host.commit('no', $event)" disabled="{{ :host.disabled || this.hide }}" hide="{{ :host.buttons !== 'yesno' && :host.buttons !== 'yesnocancel' }}" class="${PCSS}-no"><${P}-text text="{{ :host.noCaption }}"></${P}-text></${P}-button>
-        <${ P}-button class="button" on-click=":host.commit('cancel', $event)" disabled="{{ :host.disabled || this.hide }}" hide="{{ :host.buttons !== 'yesnocancel' && :host.buttons !== 'okcancel' }}" class="${PCSS}-cancel"><${P}-text text="{{ :host.cancelCaption }}"></${P}-text></${P}-button>
+    <div class="${PCSS}-dialog-buttons ${PCSS}-buttonset buttons">
+        <div class="buttonset-left">
+            <${ P}-button class="button button-size size-small primary dialog-ok" css-class="{{ {'buttonset-last': :host.buttons === 'ok'} }}" on-click=":host.commit('ok', $event)" disabled="{{ :host.disabled || this.hide }}" hide="{{ :host.buttons !== 'ok' && :host.buttons !== 'okcancel' }}"><${P}-text text="{{ :host.okCaption }}"></${P}-text></${P}-button>
+            <${ P}-button class="button button-size size-small primary dialog-yes" css-class="{{ {'buttonset-first': :host.buttons !== 'ok' || :host.buttons !== 'okcancel'} }}" on-click=":host.commit('yes', $event)" disabled="{{ :host.disabled || this.hide }}" hide="{{ :host.buttons === 'ok' || :host.buttons === 'okcancel' }}"><${P}-text text="{{ :host.yesCaption }}"></${P}-text></${P}-button>
+            <${ P}-button class="button button-size size-small dialog-no" css-class="{{ {'buttonset-last': :host.buttons === 'yesno'} }}" on-click=":host.commit('no', $event)" disabled="{{ :host.disabled || this.hide }}" hide="{{ :host.buttons !== 'yesno' && :host.buttons !== 'yesnocancel' }}"><${P}-text text="{{ :host.noCaption }}"></${P}-text></${P}-button>
+            <${ P}-button class="button button-size size-small dialog-cancel" on-click=":host.commit('cancel', $event)" disabled="{{ :host.disabled || this.hide }}" hide="{{ :host.buttons !== 'yesnocancel' && :host.buttons !== 'okcancel' }}"><${P}-text text="{{ :host.cancelCaption }}"></${P}-text></${P}-button>
+        </div>
     </div>
 </${ P}-lightbox>`
     })
@@ -78,11 +80,7 @@ namespace Pacem.Components.UI {
         @Watch({ reflectBack: true, converter: PropertyConverters.String }) noCaption: string = 'No';
         @Watch({ reflectBack: true, converter: PropertyConverters.String }) cancelCaption: string = 'Cancel';
 
-        @ViewChild(P + '-button.' + PCSS + '-ok') private _okButton: PacemButtonElement;
-        @ViewChild(P + '-button.' + PCSS + '-yes') private _yesButton: PacemButtonElement;
-        @ViewChild(P + '-button.' + PCSS + '-no') private _noButton: PacemButtonElement;
-        @ViewChild(P + '-button.' + PCSS + '-cancel') private _cancelButton: PacemButtonElement;
-        @ViewChild(`.${PCSS}-dialog-buttons`) private _buttons: PacemButtonElement;
+        @ViewChild(`.${PCSS}-dialog-buttons`) private _buttons: HTMLElement;
         @ViewChild(P + '-lightbox') protected lightbox: PacemLightboxElement;
 
         propertyChangedCallback(name: string, old: any, val: any, first?: boolean) {
@@ -94,6 +92,20 @@ namespace Pacem.Components.UI {
             }
         }
 
+        open(state?: any) {
+            const retval = super.open(state);
+            switch (this.buttons) {
+                case DialogButtons.Ok:
+                case DialogButtons.OkCancel:
+                    (<PacemButtonElement>this.dialogButtons.ok).focus();
+                    break;
+                default:
+                    (<PacemButtonElement>this.dialogButtons.yes).focus();
+                    break;
+            }
+            return retval;
+        }
+
         viewActivatedCallback() {
             super.viewActivatedCallback();
             // HACK: move the buttons outside the .pacem-scrollable element in the lightbox
@@ -101,10 +113,22 @@ namespace Pacem.Components.UI {
                 const elFrom = this.lightbox && this.lightbox.container;
                 if (!Utils.isNull(elFrom)) {
                     elFrom.appendChild(this._buttons);
+                    this.dispatchEvent(new PropertyChangeEvent({ propertyName: 'dialogButtons', currentValue: this.dialogButtons }));
                 } else {
                     this.log(Logging.LogLevel.Warn, `Could not find the lightbox container as expected.`);
                 }
             });
+        }
+
+        /** Gets the 'ok', 'yes', 'no' and 'cancel' dialog buttons. */
+        get dialogButtons() {
+            const btns = this._buttons;
+            return {
+                ok: btns && btns.firstElementChild.firstElementChild,
+                yes: btns && btns.firstElementChild.children.item(1),
+                no: btns && btns.firstElementChild.children.item(2),
+                cancel: btns && btns.firstElementChild.lastElementChild
+            }
         }
     }
 

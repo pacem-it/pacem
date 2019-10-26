@@ -598,7 +598,8 @@
 }
 
 .@{PCSS}-animations {
-    @{P}-schedule.@{PCSS}-animatable {
+    @{P}-schedule.@{PCSS}-animatable,
+    @{P}-schedule.@{PCSS}-anim {
 
         @{P}-calendar, @{P}-agenda {
             animation: default-anim .2s @easing_in_out_sine both;
@@ -640,6 +641,8 @@
     }
 
     @{P}-calendar.@{PCSS}-animatable,
+    @{P}-calendar.@{PCSS}-anim,
+    @{P}-agenda.@{PCSS}-anim,
     @{P}-agenda.@{PCSS}-animatable {
         &.viewdate-next {
             animation: list-item-right .2s @easing_out_sine both;

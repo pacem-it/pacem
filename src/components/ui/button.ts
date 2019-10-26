@@ -48,7 +48,9 @@ namespace Pacem.Components.UI {
                     } else {
                         switch (ev.type) {
                             case 'mousedown':
-                                Utils.addClass(this, PCSS + '-active');
+                                if ((<MouseEvent>evt).button === 0) {
+                                    Utils.addClass(this, PCSS + '-active');
+                                }
                                 break;
                             case 'keydown':
                                 if ((<KeyboardEvent>ev).keyCode === 32 || (<KeyboardEvent>ev).keyCode === 13) {
@@ -76,8 +78,9 @@ namespace Pacem.Components.UI {
                     if (r.button === DialogButton.Yes || r.button === DialogButton.Ok)
                         fn(evt);
                 });
-            } else
+            } else if (!(evt instanceof MouseEvent) || evt.button === 0) {
                 fn(evt);
+            }
         }
     }
 }

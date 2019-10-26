@@ -1,11 +1,17 @@
 ﻿@import "shared";
 
+@{P}-childform-propagator{
+    .Inert();
+}
+
 @{P}-childform {
     display: block;
-
     // remove animations
-    @{P}-repeater.@{PCSS}-animatable-list.@{PCSS}-list-bottom > *{
-        animation: none !important;
+    @{P}-repeater.@{PCSS}-animatable-list,
+    @{P}-repeater.@{PCSS}-anim-list {
+        &.@{PCSS}-list-bottom > * {
+            animation: none !important;
+        }
     }
 
     .@{PCSS}-childform-item {
@@ -22,20 +28,17 @@
         }
     }
 
-    @{P}-button.circular:hover{
+    @{P}-button.circular:hover {
         background-color: fade(@color_default, 10);
     }
-
 }
 
 .@{PCSS}-childform-item-floater {
-
     pointer-events: none;
     opacity: 0;
     background-color: @color_field_back;
 
-    &.@{PCSS}-drag-floater{
+    &.@{PCSS}-drag-floater {
         opacity: 1;
     }
-
 }

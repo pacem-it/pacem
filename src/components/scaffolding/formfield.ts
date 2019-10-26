@@ -1,6 +1,11 @@
 ﻿/// <reference path="../../../dist/js/pacem-core.d.ts" />
 /// <reference path="../../../dist/js/pacem-ui.d.ts" />
+/// <reference path="types.ts" />
 namespace Pacem.Components.Scaffolding {
+
+    function getFormId(key: string) {
+        return 'form' + key;
+    }
 
     @CustomElement({
         tagName: P + '-form-field', template: `<${P}-form class="${PCSS}-field" logger="{{ :host.logger }}" 
@@ -193,7 +198,7 @@ css-class="{{ {'${PCSS}-fetching': ::_fetcher.fetching, '${PCSS}-dirty': this.di
         private _buildUpForm(): void {
             // form
             var form = this._form;
-            form.setAttribute('id', 'form' + this._key);
+            form.setAttribute('id', getFormId(this._key));
         }
 
         private _buildUpField() {
@@ -218,7 +223,7 @@ css-class="{{ {'${PCSS}-fetching': ::_fetcher.fetching, '${PCSS}-dirty': this.di
             };
 
             // fetch data
-            let fetchData: { source: Function | any[], sourceUrl: string, valueProperty: string, textProperty: string, verb: Pacem.Net.HttpMethod, dependsOn?: { prop: string, alias?: string, value?: any, hide?: boolean }[] } = meta.extra;
+            let fetchData: { source: Function | any[], sourceUrl: string, valueProperty: string, textProperty: string, verb: Pacem.Net.HttpMethod, dependsOn?: Pacem.Scaffolding.DependsOn[] } = meta.extra;
             let fetchAttrs: { [key: string]: string } = {};
 
             let disabledAttr = "false";
@@ -520,8 +525,18 @@ css-class="{{ {'${PCSS}-fetching': ::_fetcher.fetching, '${PCSS}-dirty': this.di
                                         delete attrs['placeholder'];
                                         attrs['metadata'] = Utils.Json.stringify(meta.props);
                                         attrs['mode'] = meta.type;
-                                        attrs['lock-items'] = ''+ (meta.extra && meta.extra.lockItems || false);
+                                        attrs['lock-items'] = '' + (meta.extra && meta.extra.lockItems || false);
                                         attrs['logger'] = '{{ :host.logger }}';
+                                        if (!Utils.isNullOrEmpty(fetchData && fetchData.dependsOn)) {
+
+                                            var extraDom = '';
+                                            for (let d of fetchData.dependsOn) {
+                                                extraDom += `<${P}-childform-propagator model="${ attrs["value"] }" watch="{{ :host.entity.${ d.prop } }}" property="${ (d.alias || d.prop) }"></${P}-childform-propagator>\n`;
+                                            }
+                                            this._container.innerHTML = extraDom;
+                                        }
+                                        attrs['fetch-credentials'] = '{{ :host.fetchCredentials }}';
+                                        attrs['fetch-headers'] = '{{ :host.fetchHeaders }}';
                                     }
                                     break;
                             }
