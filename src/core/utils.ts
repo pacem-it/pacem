@@ -7,6 +7,7 @@ namespace Pacem {
 
     const JSON_DATE_PATTERN = /^\/Date\([\d]+\)\/$/i;
     const PACEM_CORE_DEFAULT = 'pacem';
+    const DEFAULT_DOWNLOAD_FILENAME = 'download';
 
     export const stopPropagationHandler = (evt: Event) => {
         evt.stopPropagation();
@@ -18,6 +19,10 @@ namespace Pacem {
         evt.preventDefault();
         evt.stopPropagation();
     };
+
+    declare type DownloadOptions = {
+        filename?: string, mime?: string, credentials?: RequestCredentials, headers?: { [key: string]: string }
+    }
 
     export class Utils {
 
@@ -163,6 +168,10 @@ namespace Pacem {
                 u8arr[n] = bstr.charCodeAt(n);
             }
             return new Blob([u8arr], { type: mime });
+        }
+
+        static textToBlob(content: string): Blob {
+            return new Blob([content], { type: 'text/plain' });
         }
 
         /**
@@ -335,18 +344,59 @@ namespace Pacem {
             return img;
         }
 
-        static /*async*/ download(content: string | Blob, filename: string, mime: string = "application/download") {
-            const fanchor = document.createElement('a');
-            fanchor.setAttribute('href', window.URL.createObjectURL(content));
-            fanchor.setAttribute('download', filename);
-            if (document.createEvent) {
-                var event = document.createEvent('MouseEvents');
-                event.initEvent('click', true, true);
-                fanchor.dispatchEvent(event);
+        static download(content: Blob, filename?: string, mime?: string) : PromiseLike<void>;
+        static download(url: string, filename?: string, mime?: string): PromiseLike<void>;
+        static download(url: string, options: DownloadOptions): PromiseLike<void>;
+        static async download(arg0: string | Blob, arg1?: string | DownloadOptions, mime: string = "application/download") {
+
+            if (typeof arg0 === 'string') {
+                const url = arg0;
+                let options: RequestInit = {},
+                    filename: string;
+                if (!Utils.isNullOrEmpty(arg1)) {
+                    if (typeof arg1 === 'object') {
+                        options = { credentials: arg1.credentials, headers: arg1.headers };
+                        filename = arg1.filename || filename;
+                        mime = arg1.mime || mime;
+                    } else {
+                        filename = arg1;
+                    }
+                }
+
+                var response = await fetch(url, options);
+                if (response.ok) {
+                    if (Utils.isNullOrEmpty(filename)) {
+                        const headerName = 'Content-Disposition';
+                        if (response.headers.has(headerName)) {
+                            const header = response.headers.get(headerName),
+                                results = /^attachment; filename=([^;]+)(;|$)/.exec(header);
+                            if (results.length > 1) {
+                                filename = results[1];
+                            }
+                        } else {
+                            filename = DEFAULT_DOWNLOAD_FILENAME;
+                        }
+                    }
+                    var blob = await response.blob();
+                    const fn = filename.split(/[\\\/]/g).join('_');
+                    return Utils.download(blob, fn);
+                }
             } else {
-                fanchor.click();
+                const content = arg0,
+                    filename = (typeof arg1 === 'string' && arg1) || DEFAULT_DOWNLOAD_FILENAME,
+                    fanchor = document.createElement('a');
+                fanchor.setAttribute('href', window.URL.createObjectURL(content));
+                fanchor.setAttribute('download', filename);
+                if (document.createEvent) {
+                    var event = document.createEvent('MouseEvents');
+                    event.initEvent('click', true, true);
+                    fanchor.dispatchEvent(event);
+                } else {
+                    fanchor.click();
+                }
             }
         }
+
         // #endregion
 
         // #endregion
@@ -374,7 +424,7 @@ namespace Pacem {
             for (let j = nodes.length - 1; j >= 0; j--) {
                 let item = nodes.item(j);
                 target.insertBefore(item, ref);
-                dom.push(item);
+                dom.unshift(item);
                 ref = item;
             }
             return dom;

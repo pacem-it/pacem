@@ -1,4 +1,5 @@
 ﻿/// <reference path="../../../dist/js/pacem-core.d.ts" />
+/// <reference path="types.ts" />
 namespace Pacem.Components.Charts {
 
     @CustomElement({ tagName: P + '-pie-slice' })
@@ -41,6 +42,28 @@ namespace Pacem.Components.Charts {
                 this.chart.draw();
         }
 
+        private _ui: Element;
+
+        /** @internal */
+        _assignUi(el: Element) {
+            const ui = this._ui = el;
+            MANAGED_EVENTS.forEach(type => {
+                ui.addEventListener(type, this._broadcastHandler);
+            });
+        }
+
+        /** @internal */
+        _disposeUi() {
+            if (!Utils.isNull(this._ui)) {
+                MANAGED_EVENTS.forEach(type => {
+                    this._ui.addEventListener(type, this._broadcastHandler);
+                });
+            }
+        }
+
+        private _broadcastHandler = (e: Event) => {
+            this.emit(e);
+        };
     }
 
     const TWO_PI = Math.PI * 2;
@@ -92,7 +115,6 @@ namespace Pacem.Components.Charts {
         private _mask: SVGCircleElement;
         private _g: SVGGElement;
         private _div: HTMLElement;
-        private _slices: SVGPathElement[] = [];
 
         disconnectedCallback() {
             this._div && this._div.remove();
@@ -140,12 +162,12 @@ namespace Pacem.Components.Charts {
                 this._div &&
                     this.parentElement.insertBefore(div, this);
             }
-            const cutout = 50.0 * this._ensured_cutout;
+            const cutout = 50.0 * this._safeCutout;
             this._mask.setAttribute('r', `${cutout}`);
             return this._g;
         }
 
-        private get _ensured_cutout() {
+        private get _safeCutout() {
             return Math.min(1, Math.max(0, this.cutout)) || .0;
         }
 
@@ -163,7 +185,7 @@ namespace Pacem.Components.Charts {
             path.setAttribute('transform', `rotate(${rot} 50 50)`);
 
             // set geometry data
-            var c = this._ensured_cutout;
+            var c = this._safeCutout;
             slice.normalizedPolarCoords = { radius: c + Math.SQRT1_2 * (1.0 - c), angle: /* deg to rad */ Math.PI * rot / 180.0 + angle / 2 };
         }
 
@@ -172,41 +194,69 @@ namespace Pacem.Components.Charts {
                 ;
         }
 
+        private _slices = new WeakMap<SVGGElement, PacemPieSliceElement>();
+
         @Debounce(true)
         draw() {
             const g = this._ensureArea(),
-                pCount = g.children.length;
+                pCount = g.children.length,
+                chartArea = this._svg.parentElement;
 
             let ndx = 0, sum = .0, progress = .0;
             if (Utils.isNullOrEmpty(this.items)) {
+
                 g.innerHTML = '';
+                Utils.removeClass(chartArea, 'chart-has-data');
             } else {
+
+                Utils.addClass(chartArea, 'chart-has-data');
                 for (let slice of this.items) {
                     if (!this._isSliceOk(slice))
                         continue;
                     sum += slice.value;
                 }
 
-                for (let slice of this.items) {
-                    if (!this._isSliceOk(slice))
-                        continue;
-                    let p: SVGPathElement;
-                    if (ndx >= pCount) {
-                        const g_n = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-                        g_n.setAttribute('class', 'chart-series pacem-pie-slice' + (Utils.isNullOrEmpty(slice.className) ? '' : (' ' + slice.className)));
-                        p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-                        g_n.appendChild(p);
-                        g.appendChild(g_n);
-                    } else {
-                        p = <SVGPathElement>g.children.item(ndx).firstElementChild;
+                if (sum <= 0) {
+                    g.innerHTML = '';
+                    Utils.removeClass(chartArea, 'chart-has-data');
+
+                } else {
+
+                    for (let slice of this.items) {
+                        if (!this._isSliceOk(slice))
+                            continue;
+                        let p: SVGPathElement;
+                        if (ndx >= pCount) {
+                            const g_n = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+                            g_n.setAttribute('class', 'chart-series pacem-pie-slice' + (Utils.isNullOrEmpty(slice.className) ? '' : (' ' + slice.className)));
+                            p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                            g_n.appendChild(p);
+                            g.appendChild(g_n);
+
+                            // add listeners (click, mouse-..., touch-...)
+                            slice._assignUi(g_n);
+                            this._slices.set(g_n, slice);
+
+                        } else {
+                            p = <SVGPathElement>g.children.item(ndx).firstElementChild;
+                        }
+                        this._drawSlice(p, slice, sum, progress);
+                        progress += slice.value;
+                        ndx++;
                     }
-                    this._drawSlice(p, slice, sum, progress);
-                    progress += slice.value;
-                    ndx++;
                 }
             }
             while (ndx < g.children.length) {
-                g.removeChild(g.children.item(ndx));
+
+                const slices = this._slices,
+                    g_n = g.children.item(ndx) as SVGGElement;
+
+                // remove listeners
+                if (slices.has(g_n)) {
+                    slices.get(g_n)._disposeUi();
+                    slices.delete(g_n);
+                }
+                g.removeChild(g_n);
             }
 
         }

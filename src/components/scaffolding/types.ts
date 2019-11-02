@@ -63,13 +63,15 @@ namespace Pacem.Components.Scaffolding {
         valid: boolean;
         name: string;
         form: PacemFormElement;
-
+        setPristine() : void;
+        setDirty(): void;
     }
 
     export interface PacemModel extends PacemFormOrField {
 
         value: any;
         viewValue: string;
+        reset(): void;
     }
 
     const ORIGINAL_VALUE_FIELD = 'pacem:model:original-value';
@@ -105,7 +107,7 @@ namespace Pacem.Components.Scaffolding {
         }
     }
 
-    export abstract class PacemModelElement extends PacemFormRelevantElement {
+    export abstract class PacemModelElement extends PacemFormRelevantElement implements PacemModel {
 
         viewActivatedCallback() {
             super.viewActivatedCallback();
@@ -180,6 +182,10 @@ namespace Pacem.Components.Scaffolding {
             this._setAsOriginalValue(this.value);
             //
             this.dirty = false;
+        }
+
+        setDirty(): void {
+            this.dirty = true;
         }
 
         protected abstract convertValueAttributeToProperty(attr: string): any;

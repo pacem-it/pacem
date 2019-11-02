@@ -112,26 +112,17 @@ namespace Pacem.Components.UI {
             this.dispatchEvent(new PropertyChangeEvent({
                 propertyName: 'fetching', oldValue: this._fetching, currentValue: this._fetching = true
             }));
-            var response = await fetch(url, { credentials: this.fetchCredentials, headers: this.fetchHeaders });
-            if (response.ok) {
-                if (Utils.isNullOrEmpty(filename)) {
-                    const headerName = 'Content-Disposition';
-                    if (response.headers.has(headerName)) {
-                        const header = response.headers.get(headerName),
-                            results = /^attachment; filename=([^;]+)(;|$)/.exec(header);
-                        if (results.length > 1) {
-                            filename = results[1];
-                        }
-                    } else {
-                        filename = "download";
-                    }
-                }
-                var blob = await response.blob();
-                const fn = filename.split(/[\\\/]/g).join('_');
+
+            try {
+
+                await Utils.download(url, { credentials: this.fetchCredentials, headers: this.fetchHeaders, filename: filename });
+
+            } finally {
+
                 this.dispatchEvent(new PropertyChangeEvent({
                     propertyName: 'fetching', oldValue: this._fetching, currentValue: this._fetching = false
                 }));
-                Utils.download(blob, fn);
+
             }
         }
 

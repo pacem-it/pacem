@@ -48,6 +48,7 @@ namespace Pacem {
     export class Expression {
 
         private _fnBody: string;
+        private _voidBody: string;
         private _pending: boolean = false;
         private _independent: boolean = false;
         private _args: any;
@@ -60,6 +61,10 @@ namespace Pacem {
 
         get functionBody(): string {
             return this._fnBody;
+        }
+
+        get voidBody() {
+            return this._voidBody;
         }
 
         get pending(): boolean {
@@ -92,7 +97,7 @@ namespace Pacem {
                 for (var prop in args)
                     argNames.push(prop);
                 argNames.push('$pacem');
-                this._fn = new Function(argNames.join(', '), this._fnBody);
+                this._fn = new Function(argNames.join(', '), this._voidBody);
             }
             let argValues = [].concat(this._args);
             for (var prop in args)
@@ -242,6 +247,7 @@ namespace Pacem {
                 var constexpr = new Expression();
                 constexpr._independent = true;
                 constexpr._fnBody = `return ${expression};`;
+                constexpr._voidBody = expression;
                 constexpr._dependencies = [];
                 return constexpr;
             }
@@ -266,6 +272,7 @@ namespace Pacem {
             var retexpr = new Expression();
             retexpr._args = args;
             retexpr._fnBody = `try{ var ___$$$r = ${expr}; return ___$$$r; }catch(e){  }`;
+            retexpr._voidBody = `try{ ${expr} }catch(e){  }`;
             retexpr._dependencies = dependencies;
 
             return retexpr;

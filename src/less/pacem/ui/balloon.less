@@ -382,10 +382,14 @@
     @_d: .15s;
     @_d_out: .1s;
 
-   @{P}-balloon {
+    @{P}-balloon {
         // default state
         transition: transform @_d ease-out, opacity @_d;
-        
+
+        &.balloon-on {
+            transition: transform @_d ease-out, opacity @_d, top @_d ease-in-out, left @_d ease-in-out;
+        }
+
         &.balloon-out {
             transition: transform @_d_out ease-in, opacity @_d_out;
         }

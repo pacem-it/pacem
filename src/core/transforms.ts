@@ -55,7 +55,7 @@ namespace Pacem {
                     case 'isodate':
                         return date.toISOString().substr(0, 10);
                     case 'localdate':
-                        return `${ date.getFullYear() }-${ Utils.leftPad(date.getMonth()+1, 2, '0') }-${ Utils.leftPad(date.getDate(), 2, '0') }`;
+                        return `${date.getFullYear()}-${Utils.leftPad(date.getMonth() + 1, 2, '0')}-${Utils.leftPad(date.getDate(), 2, '0')}`;
                     case 'full':
                         const offset = -(date.getTimezoneOffset() / 60);
                         var utc = '';
@@ -71,7 +71,7 @@ namespace Pacem {
         }
 
         @Transformer()
-        static timespan(start: string | Date | number, end: string | Date | number, culture?: string):string {
+        static timespan(start: string | Date | number, end: string | Date | number, culture?: string): string {
             const startDate = Utils.parseDate(start),
                 endDate = Utils.parseDate(end),
                 span = endDate.valueOf() - startDate.valueOf(),
@@ -92,7 +92,16 @@ namespace Pacem {
         }
 
         @Transformer()
-        static filter(src: any[], filter: (e: any, j:number) => boolean): any[] {
+        static number(src: number, formatOrCulture?: Intl.NumberFormatOptions | string, culture?: string) {
+            if (typeof formatOrCulture === 'string') {
+                return new Intl.NumberFormat(formatOrCulture || navigator.language).format(src);
+            }
+            return new Intl.NumberFormat(culture || navigator.language, formatOrCulture).format(src);
+
+        }
+
+        @Transformer()
+        static filter(src: any[], filter: (e: any, j: number) => boolean): any[] {
             return src.filter(filter);
         }
 

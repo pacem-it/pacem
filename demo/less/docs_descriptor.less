@@ -10,12 +10,18 @@ pacemjs-descriptor {
     border-radius: @border_radius;
 
     h2, h4 {
-        font-weight: bold;
-        font-size: 1rem;
         margin: 0 0 .5rem 0;
     }
 
+    h2{
+        .FontMainSize(1.75);
+        position: relative;
+        margin-bottom: @grid_spacing;
+    }
+
     h4 {
+        font-weight: bold;
+        font-size: 1rem;
         padding-left: @grid_spacing / 1.5;
         position: relative;
         color: fade(@color_default, 60);

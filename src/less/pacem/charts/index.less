@@ -1,2 +1,22 @@
-﻿@import "category";
+﻿
+@{P}-chart, @{P}-chart-series {
+    .Inert();
+}
+
+.@{PCSS}-chart-area {
+
+    &.chart-has-data {
+        min-height: 300px;
+
+        &.chart-small {
+            min-height: 240px;
+        }
+
+        &.chart-smaller {
+            min-height: 120px;
+        }
+    }
+}
+
+@import "category";
 @import "pie";

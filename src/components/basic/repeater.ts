@@ -14,23 +14,29 @@ namespace Pacem.Components {
         }
     }
 
-    export class DeleteItemCommandEvent extends CustomTypedEvent<any> {
-        constructor(args: any) {
-            super("itemdelete", args, { bubbles: false, cancelable: true });
+    export class CustomItemCommandEvent extends CustomTypedEvent<any> {
+        constructor(type: string, args: any) {
+            super("item"+ type.toLowerCase(), args, { bubbles: false, cancelable: true });
         }
     }
 
-    export class SelectItemCommandEvent extends CustomTypedEvent<any> {
-        constructor(args: any) {
-            super("itemselect", args, { bubbles: false, cancelable: true });
-        }
-    }
+    //export class DeleteItemCommandEvent extends CustomTypedEvent<any> {
+    //    constructor(args: any) {
+    //        super("itemdelete", args, { bubbles: false, cancelable: true });
+    //    }
+    //}
 
-    export class EditItemCommandEvent extends CustomTypedEvent<any> {
-        constructor(args: any) {
-            super("itemedit", args, { bubbles: false, cancelable: true });
-        }
-    }
+    //export class SelectItemCommandEvent extends CustomTypedEvent<any> {
+    //    constructor(args: any) {
+    //        super("itemselect", args, { bubbles: false, cancelable: true });
+    //    }
+    //}
+
+    //export class EditItemCommandEvent extends CustomTypedEvent<any> {
+    //    constructor(args: any) {
+    //        super("itemedit", args, { bubbles: false, cancelable: true });
+    //    }
+    //}
 
     //
     /**
@@ -123,19 +129,13 @@ namespace Pacem.Components {
 
         private _onCommand(evt: CommandEvent) {
             Pacem.stopPropagationHandler(evt);
-            const cmd = evt.detail.commandName.toLowerCase();
+
+            // 'itemcommand' event fires first
             this.dispatchEvent(new ItemCommandEvent(evt.detail));
-            switch (cmd) {
-                case 'select':
-                    this.dispatchEvent(new SelectItemCommandEvent(evt.detail.commandArgument));
-                    break;
-                case 'edit':
-                    this.dispatchEvent(new EditItemCommandEvent(evt.detail.commandArgument));
-                    break;
-                case 'delete':
-                    this.dispatchEvent(new DeleteItemCommandEvent(evt.detail.commandArgument));
-                    break;
-            }
+
+            // custom 'item<cmd>' event fires next
+            this.dispatchEvent(new CustomItemCommandEvent(evt.detail.commandName, evt.detail.commandArgument));
+            
         }
 
         viewActivatedCallback() {

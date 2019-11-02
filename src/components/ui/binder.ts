@@ -1,4 +1,5 @@
 ﻿/// <reference path="../../../dist/js/pacem-core.d.ts" />
+/// <reference path="types.ts" />
 namespace Pacem.Components.UI {
 
     export enum BinderAnchor {
@@ -69,17 +70,10 @@ namespace Pacem.Components.UI {
 
     }
 
-    export declare type PacemBinderTarget = Element | Point;
-
-    const ElementOrPointPropertyConverter: PropertyConverter = {
-        convert: (attr: string) => {
-            let el = document.querySelector(attr);
-            return el || JSON.parse(attr);
-        }
-    };
+    type PacemBinderTarget = ElementOrPoint;
 
     @CustomElement({ tagName: P + '-binder' })
-    export class PacemBinderElement extends PacemElement implements OnConnected, OnDisconnected, OnPropertyChanged {
+    export class PacemBinderElement extends PacemElement {
 
         @Watch({ emit: false, converter: ElementOrPointPropertyConverter }) from: PacemBinderTarget;
         @Watch({ emit: false, converter: ElementOrPointPropertyConverter }) to: PacemBinderTarget;

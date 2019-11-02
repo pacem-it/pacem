@@ -51,6 +51,7 @@
     <None Remove="src\components\basic\template-proxy.ts" />
     <None Remove="src\components\2d\stage.ts" />
     <None Remove="src\components\2d\types.ts" />
+    <None Remove="src\components\charts\types.ts" />
     <None Remove="src\components\cms\openapi\swagger-cms.ts" />
     <None Remove="src\components\cms\widgets\helpers\apimanifest.ts" />
     <None Remove="src\components\cms\widgets\helpers\data.ts" />
@@ -79,6 +80,7 @@
     <None Remove="src\components\ui\calendar.ts" />
     <None Remove="src\components\ui\pager.ts" />
     <None Remove="src\components\ui\timeline.ts" />
+    <None Remove="src\components\ui\types.ts" />
     <None Remove="src\core\animations\easings.ts" />
     <None Remove="src\core\animations\events.ts" />
     <None Remove="src\core\animations\tween-service.ts" />
@@ -309,6 +311,7 @@
     <TypeScriptCompile Include="src\components\charts\pie.ts" />
     <TypeScriptCompile Include="src\components\2d\stage.ts" />
     <TypeScriptCompile Include="src\components\2d\types.ts" />
+    <TypeScriptCompile Include="src\components\charts\types.ts" />
     <TypeScriptCompile Include="src\components\cms\openapi\swagger-cms.ts" />
     <TypeScriptCompile Include="src\components\cms\widgets\helpers\apimanifest.ts" />
     <TypeScriptCompile Include="src\components\cms\widgets\helpers\data.ts" />
@@ -407,6 +410,7 @@
     <TypeScriptCompile Include="src\components\ui\toast.ts" />
     <TypeScriptCompile Include="src\components\ui\toc.ts" />
     <TypeScriptCompile Include="src\components\ui\tuner.ts" />
+    <TypeScriptCompile Include="src\components\ui\types.ts" />
     <TypeScriptCompile Include="src\components\ui\view.ts" />
     <TypeScriptCompile Include="src\core\adapter.ts" />
     <TypeScriptCompile Include="src\core\animations\easings.ts" />

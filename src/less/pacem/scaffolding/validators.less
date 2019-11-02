@@ -15,8 +15,7 @@
     display: inline-block;
     margin-left: @grid_spacing * .8;
 
-
-    &:before {
+    &::before {
         @_sz: @grid_spacing /1.5;
         .Icon('error', round(@_sz));
         left: @grid_spacing *.125;
@@ -24,3 +23,14 @@
     }
 }
 
+.@{PCSS}-validator.validator-minimal,
+.form-minimal > @{P}-form-field:not(.field-full) .@{PCSS}-validator,
+@{P}-form-field.field-minimal .@{PCSS}-validator {
+    background-color: transparent;
+    color: @color_error;
+    margin-left: 0;
+
+    & when (@dark_theme = true){
+        font-weight: 700;
+    }
+}

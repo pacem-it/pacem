@@ -75,14 +75,13 @@ namespace Pacem.Components.Scaffolding {
             const f_uid = 'fetch' + key;
             //
             const form = document.createElement('form');
-            form.id = "frm_" + uid;
+            form.id = "frm" + uid;
             form.className = PCSS + '-form';
             form.setAttribute('pacem', '');
             form.setAttribute('novalidate', '');
 
-            // TODO: setup recursion
             const html = `<${P}-repeater class="${PCSS}-animatable-list ${PCSS}-list-bottom" datasource="{{ #${uid}.metadata && (#${uid}.metadata.props || #${uid}.metadata) }}">
-    <${P}-panel css="{{ #${uid}.metadata.display && #${uid}.metadata.display.css }}" css-class="{{ #${uid}.metadata.display && #${uid}.metadata.display.cssClass }}">
+    <${P}-panel css="{{ #${uid}.metadata.display && #${uid}.metadata.display.css }}" css-class="{{ (#${uid}.metadata.display && #${uid}.metadata.display.cssClass || []).concat(#${uid}.suddenValidation ? [] : ['lazy-validation']) }}">
         <template>
             <${P}-form-field css-class="{{ ^item.display && ^item.display.cssClass }}" css="{{ ^item.display && ^item.display.css }}"
                              fetch-credentials="{{ #${uid}.fetchCredentials }}" fetch-headers="{{ #${uid}.fetchHeaders }}"
@@ -93,8 +92,8 @@ namespace Pacem.Components.Scaffolding {
 <${P}-fetch logger="{{ #${uid}.logger }}" id="${f_uid}" method="${Pacem.Net.HttpMethod.Post}" credentials="{{ #${uid}.fetchCredentials }}" headers="{{ #${uid}.fetchHeaders }}"></${P}-fetch> 
 <div class="${PCSS}-buttonset buttons">
     <div class="buttonset-left">
-        <${P}-button logger="{{ #${uid}.logger }}" on-click="#${uid}._submit(#${f_uid}, $event)" type="submit" hide="{{ #${uid}.readonly || Pacem.Utils.isNullOrEmpty(#${uid}.action) || !Pacem.Utils.isNull(#${uid}.form) }}" class="button primary button-size size-small" disabled="{{ !(#${uid}.valid && #${uid}.dirty) || #${f_uid}.fetching }}">Ok</${P}-button>
-        <${P}-button logger="{{ #${uid}.logger }}" on-click="#${uid}._reset($event)" type="reset" class="button button-size size-small" css-class="{{ {'buttonset-first': #${uid}.readonly || Pacem.Utils.isNullOrEmpty(#${uid}.action) || !Pacem.Utils.isNull(#${uid}.form)} }}" hide="{{ #${uid}.readonly || !#${uid}.dirty || !Pacem.Utils.isNull(#${uid}.form) }}" disabled="{{ #${f_uid}.fetching }}">Reset</${P}-button>
+        <${P}-button logger="{{ #${uid}.logger }}" on-click="#${uid}._submit(#${f_uid}, $event)" type="submit" hide="{{ #${uid}.readonly || Pacem.Utils.isNullOrEmpty(#${uid}.action) || !Pacem.Utils.isNull(#${uid}.form) }}" class="button primary button-size size-small" css-class="{{ {'buttonset-last': !#${uid}.resettable || !#${uid}.dirty || !Pacem.Utils.isNull(#${uid}.form) } }}" disabled="{{ #${uid}.suddenValidation && (!(#${uid}.valid && #${uid}.dirty) || #${f_uid}.fetching) }}">Ok</${P}-button>
+        <${P}-button logger="{{ #${uid}.logger }}" on-click="#${uid}._reset($event)" type="reset" class="button button-size size-small" css-class="{{ {'buttonset-first': #${uid}.readonly || Pacem.Utils.isNullOrEmpty(#${uid}.action) || !Pacem.Utils.isNull(#${uid}.form)} }}" hide="{{ !#${uid}.resettable || #${uid}.readonly || !#${uid}.dirty || !Pacem.Utils.isNull(#${uid}.form) }}" disabled="{{ #${f_uid}.fetching }}">Reset</${P}-button>
 </div></div>`;
             // buttons are kept hidden if 
             form.innerHTML = html;
@@ -127,16 +126,22 @@ namespace Pacem.Components.Scaffolding {
         };
 
         private _submit = (fetcher: Pacem.Components.PacemFetchElement, evt?: Event) => {
-            if (!Utils.isNull(evt))
+            if (!Utils.isNull(evt)) {
                 Pacem.avoidHandler(evt);
-            var args =
-                this.submit(fetcher).then(_ => {
-                    // successful submission here
-                    this.setPristine();
-                },
-                    _ => {
-                        // catch rejected/canceled
-                    });
+            }
+            Promise.all(this._validateAllFields()).then(p => {
+                if (p.findIndex(f => f === false) === -1) {
+
+                    this.submit(fetcher).then(_ => {
+                        // successful submission here
+                        this.setPristine();
+                    },
+                        _ => {
+                            // catch rejected/canceled
+                        });
+
+                }
+            });
         }
 
         /**
@@ -344,7 +349,7 @@ namespace Pacem.Components.Scaffolding {
 
         private _checkFieldValidity(name) {
             if (name in this._fields)
-                this._validateField(name);
+                this._validateField(name, false);
         }
 
         @Concurrent()
@@ -352,15 +357,24 @@ namespace Pacem.Components.Scaffolding {
             if (!Utils.isNullOrEmpty(name)) {
                 this._checkFieldValidity(name);
             } else {
-                for (let name in this._fields) {
-                    this._validateField(name);
-                }
+                this._validateAllFields();
             }
+        }
+
+        private _validateAllFields(setAsDirty = true) {
+            const tasks: PromiseLike<boolean>[] = [];
+            for (let field in this._fields) {
+                tasks.push(this._validateField(field, setAsDirty));
+            }
+            for (let sub of this._subForms) {
+                Array.prototype.push.apply(tasks, sub._validateAllFields(setAsDirty));
+            }
+            return tasks;
         }
 
         // Remove Concurrent from here, better check the closure for params in @Concurrent
         //@Concurrent()
-        private _validateField(name: string) {
+        private _validateField(name: string, setAsDirty: boolean) {
             var deferred = DeferPromise.defer<boolean>();
             var model: PacemModel = this._fields[name];
             if (model) {
@@ -377,6 +391,9 @@ namespace Pacem.Components.Scaffolding {
                             for (var result of results) {
                                 if (result === false) {
                                     valid = false;
+
+                                    // set dirty only when not valid
+                                    if (setAsDirty) model.setDirty();
                                     break;
                                 }
                             }
@@ -540,6 +557,15 @@ namespace Pacem.Components.Scaffolding {
 
         @Watch({ emit: false, converter: PropertyConverters.Boolean })
         autogenerate: boolean;
+
+        /** Gets or sets whether to hint invalid fields even if still pristine (default 'true').
+         * When 'true' - and form is autogenerated - the submit button status is tightly bound to the form valid state. */
+        @Watch({ emit: false, converter: PropertyConverters.Boolean })
+        suddenValidation: boolean = true;
+
+        /** Gets or sets whether the form should show - when autogenerated - the reset button. */
+        @Watch({ emit: false, converter: PropertyConverters.Boolean })
+        resettable: boolean = true;
 
         @Watch({ converter: PropertyConverters.String })
         action: string;

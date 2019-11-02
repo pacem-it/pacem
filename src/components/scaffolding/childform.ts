@@ -182,7 +182,7 @@ namespace Pacem.Components.Scaffolding {
             }
         }
 
-        private _deleteAt(evt: DeleteItemCommandEvent) {
+        private _deleteAt(evt: CustomItemCommandEvent) {
             if (this.mode === 'array') {
                 this._model.splice(evt.detail, 1);
             } else {

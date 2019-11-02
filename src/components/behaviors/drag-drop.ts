@@ -38,7 +38,13 @@ namespace Pacem.Components {
                 t.addEventListener('mouseleave', this._leaveHandler, false);
             });
             // is `_element` a dynamic one belonging to a repeater item?
-            this._repeaterItem = <Components.RepeaterItem>Repeater.findItemContext(this._element, 0, null);
+            var repItem = <Components.RepeaterItem>Repeater.findItemContext(this._element, 0, null);
+            if (repItem) {
+                if (repItem.dom && repItem.dom.length === 1 && repItem.dom[0] === this._element) {
+                    this._repeaterItem = repItem;
+                }
+                this._sourceRepeater = repItem.repeater;
+            }
             //
             this._bootstrap(initArgs.placeholder);
         }
@@ -48,6 +54,7 @@ namespace Pacem.Components {
         private _currentTarget: Element;
         private _currentHover: Node;
         private _repeaterItem: RepeaterItem;
+        private _sourceRepeater: PacemRepeaterElement;
         private _started = false;
 
         // #region PRIVATE UTILS
@@ -390,30 +397,41 @@ namespace Pacem.Components {
                     const data = args.data,
                         placeholder = args.placeholder,
                         repItem = this._repeaterItem,
-                        sourceRepeater = repItem && repItem.repeater,
+                        sourceRepeater = this._sourceRepeater,
+                        isDraggingRepeaterItem = !Utils.isNull(repItem),
                         targetRepItem = placeholder && this._findTargetRepeaterItem(args.placeholder.parentElement, args.placeholder.nextElementSibling),
-                        targetRepeater = targetRepItem && targetRepItem.repeater;
+                        targetRepeater = targetRepItem && targetRepItem.repeater,
+
+                        // is dropping onto a repeater item?
+                        // true if
+                        // - is effectively dropping onto a repeater
+                        // - AND the target repeater doesn't equal the source one when a whole repeaterItem is involved.
+                        isDroppingRepeaterItem = !Utils.isNull(targetRepeater) && !(Utils.isNull(repItem) && sourceRepeater === targetRepeater);
                     // refresh origin datasource and, eventually, target datasource
 
-
-                    if (!Utils.isNull(sourceRepeater)) {
+                    if (isDraggingRepeaterItem) {
+                        // if (!Utils.isNull(sourceRepeater)) {
                         sourceRepeater.removeItem(repItem.index);
                     }
 
-                    if (!Utils.isNull(targetRepeater)) {
+                    if (isDroppingRepeaterItem) {
+                        // if (!Utils.isNull(targetRepeater)) {
                         args.placeholder.remove();
-                    }
+                        //}
 
-                    if (!Utils.isNull(sourceRepeater) && targetRepeater === sourceRepeater) {
-                        let from = repItem.index, to = targetRepItem.index;
-                        if (to > from) {
-                            // tweak
-                            to--;
+                        //if (isDroppingRepeaterItem) {
+                        // if (!Utils.isNull(sourceRepeater)
+                        if (targetRepeater === sourceRepeater) {
+                            let from = repItem.index, to = targetRepItem.index;
+                            if (to > from) {
+                                // tweak
+                                to--;
+                            }
+                            sourceRepeater.datasource.moveWithin(from, to);
+                        } else {
+                            sourceRepeater && sourceRepeater.datasource.splice(repItem.index, 1);
+                            targetRepeater && (targetRepeater.datasource = targetRepeater.datasource || []).splice(targetRepItem.index, 0, data);
                         }
-                        sourceRepeater.datasource.moveWithin(from, to);
-                    } else {
-                        sourceRepeater && sourceRepeater.datasource.splice(repItem.index, 1);
-                        targetRepeater && (targetRepeater.datasource = targetRepeater.datasource || []).splice(targetRepItem.index, 0, data);
                     }
 
                     // TODO: check spill behavior

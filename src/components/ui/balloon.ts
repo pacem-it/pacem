@@ -1,4 +1,5 @@
 ﻿/// <reference path="../../../dist/js/pacem-core.d.ts" />
+/// <reference path="types.ts" />
 namespace Pacem.Components.UI {
 
     export enum BalloonBehavior {
@@ -17,7 +18,8 @@ namespace Pacem.Components.UI {
     export enum BalloonAlignment {
         Start = 'start',
         Center = 'center',
-        End = 'end'
+        End = 'end',
+        Auto = 'auto'
     }
 
     export enum BalloonPosition {
@@ -90,7 +92,7 @@ namespace Pacem.Components.UI {
         @ViewChild(P + '-resize[content]') private _resize: PacemResizeElement;
         @ViewChild(P + '-resize[watch-position=true]') private _position: PacemResizeElement;
 
-        @Watch({ converter: PropertyConverters.Element }) target: HTMLElement;
+        @Watch({ converter: ElementOrPointPropertyConverter }) target: ElementOrPoint;
         @Watch({ emit: false, converter: PropertyConverters.Json }) options: BalloonOptions;
 
         /** Gets whether the balloon is open and visible. */
@@ -102,18 +104,24 @@ namespace Pacem.Components.UI {
 
         propertyChangedCallback(name: string, old: any, val: any, first?: boolean) {
             super.propertyChangedCallback(name, old, val, first);
-            if (name === 'target' && !Utils.isNull(old)) {
-                this._removeHandlers(old);
+            if (name === 'target') {
+                if (old instanceof Element) {
+                    this._removeHandlers(old);
+                }
+                if (!(val instanceof Element)) {
+                    this._adjust();
+                }
             } else if (name === 'options') {
-                if (this.target)
+                if (this.target instanceof Element) {
                     this._removeHandlers(this.target);
+                }
                 this._options = Utils.extend({}, Utils.clone(balloonConsts.defaults), val);
                 this._synchronizeOptions();
             } else if (name === 'disabled') {
                 //this.container.style.visibility = val ? 'hidden' : 'visible';
             }
 
-            if (this.target && name !== 'disabled') {
+            if (this.target instanceof Element && name !== 'disabled') {
                 this._setHandlers(this.target);
             }
         }
@@ -128,7 +136,9 @@ namespace Pacem.Components.UI {
         disconnectedCallback() {
             super.disconnectedCallback();
             this._destroyPopup();
-            this._removeHandlers(this.target);
+            if (this.target instanceof Element) {
+                this._removeHandlers(this.target);
+            }
         }
 
         // #endregion
@@ -264,7 +274,7 @@ namespace Pacem.Components.UI {
         private _adjust() {
             var popup = this,
                 el = popup.target,
-                coords = Utils.offset(el);
+                coords = el instanceof Element ? Utils.offset(el) : { top: el.y, left: el.x, width: 0, height: 0 };
 
             const vieportSize = Utils.windowSize;
 
@@ -327,8 +337,32 @@ namespace Pacem.Components.UI {
                 case BalloonAlignment.Start:
                 case BalloonAlignment.End:
                     break;
+                case BalloonAlignment.Auto:
+                    chosenAlignment = BalloonAlignment.Center;
+                    switch (chosenPosition) {
+                        case BalloonPosition.Right:
+                        case BalloonPosition.Left:
+                            const halfHeight = Utils.scrollTop + vieportSize.height / 2;
+                            if /* completely inside the first half of the screen */((coords.top + coords.height) < halfHeight) {
+                                chosenAlignment = BalloonAlignment.Start;
+                            } else if /* completely beyond the half line of the screen */ (coords.top > halfHeight) {
+                                chosenAlignment = BalloonAlignment.End;
+                            }
+                            break;
+                        case BalloonPosition.Top:
+                        case BalloonPosition.Bottom:
+                            const halfWidth = Utils.scrollLeft + vieportSize.width / 2;
+                            if /* completely inside the first half of the screen */((coords.left + coords.width) < halfWidth) {
+                                chosenAlignment = BalloonAlignment.Start;
+                            } else if /* completely beyond the half line of the screen */ (coords.left > halfWidth) {
+                                chosenAlignment = BalloonAlignment.End;
+                            }
+                            break;
+                    }
+                    break;
                 default:
                     chosenAlignment = balloonConsts.defaults.align;
+                    break;
             }
 
             Utils.addClass(popup, 'balloon-' + chosenPosition);
@@ -388,6 +422,7 @@ namespace Pacem.Components.UI {
             coords.left += opts.horizontalOffset;
             popup.style.top = Math.round(coords.top) + 'px';
             popup.style.left = Math.round(coords.left) + 'px';
+            // popup.style.transform = `translateX(${Math.round(coords.left)}px) translateY(${Math.round(coords.top)}px) translateZ(0)`;
             //popup.style.visibility = 'visible';
         }
 
@@ -481,7 +516,7 @@ namespace Pacem.Components.UI {
             else this._hoverDelegate(evt);
         }
 
-        private _removeHandlers(el: HTMLElement) {
+        private _removeHandlers(el: Element) {
             if (Utils.isNull(el)) return;
             el.removeEventListener('mouseenter', this._hoverDelegate, false);
             el.removeEventListener('mouseleave', this._outDelegate, false);
@@ -493,7 +528,7 @@ namespace Pacem.Components.UI {
             el.removeEventListener('contextmenu', this._toggleDelegate, false);
         }
 
-        private _setHandlers(el: HTMLElement) {
+        private _setHandlers(el: Element) {
             this.popout();
             // regenerate opts popup
             var opts = this._options;

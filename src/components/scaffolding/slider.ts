@@ -76,6 +76,7 @@ namespace Pacem.Components.Scaffolding {
                 }, convertBack: (v) => (v || '').toString()
             }
         }) step: 'any' | number;
+        @Watch({ emit: false, converter: PropertyConverters.String }) changePolicy: 'drag'|'end';
 
 
         @ViewChild(`.slider-track`) private _track: HTMLElement;
@@ -97,7 +98,7 @@ namespace Pacem.Components.Scaffolding {
             this._draw(this.value);
         }
 
-        private _computeAndAssignValue(x: number) {
+        private _computeAndAssignValue(x: number, triggerChange: boolean) {
             // constraint to track size to compute the slider value
             const constraint = this._trackSize,
                 step = this.step;
@@ -106,7 +107,12 @@ namespace Pacem.Components.Scaffolding {
             if (typeof step === 'number') {
                 v = Math.round(v / step) * step;
             }
-            this._setValue(v);
+
+            if (triggerChange) {
+                this._setValue(v);
+            } else {
+                this._draw(v);
+            }
         }
 
         private _setValue(v: number) {
@@ -116,7 +122,12 @@ namespace Pacem.Components.Scaffolding {
 
         private _dragHandler = (evt: Pacem.UI.DragDropEvent) => {
             evt.preventDefault();
-            this._computeAndAssignValue(evt.detail.currentPosition.x);
+            this._computeAndAssignValue(evt.detail.currentPosition.x, this.changePolicy !== 'end');
+        }
+
+        private _endHandler = (evt: Pacem.UI.DragDropEvent) => {
+            evt.preventDefault();
+            this._computeAndAssignValue(evt.detail.currentPosition.x, this.changePolicy === 'end');
         }
 
         private _startHandler = (evt: Pacem.UI.DragDropEvent) => {
@@ -127,7 +138,7 @@ namespace Pacem.Components.Scaffolding {
             const x = evt instanceof MouseEvent ? evt.clientX : evt.touches && evt.touches.length && evt.touches[0].clientX,
                 trackSize = this._trackSize;
             if (!Utils.isNullOrEmpty(trackSize)) {
-                this._computeAndAssignValue(x);
+                this._computeAndAssignValue(x, true);
             }
         };
 
@@ -165,6 +176,7 @@ namespace Pacem.Components.Scaffolding {
             super.viewActivatedCallback();
             this._dragger.addEventListener(Pacem.UI.DragDropEventType.Init, this._startHandler, false);
             this._dragger.addEventListener(Pacem.UI.DragDropEventType.Drag, this._dragHandler, false);
+            this._dragger.addEventListener(Pacem.UI.DragDropEventType.End, this._endHandler, false);
             this._thumb.addEventListener('keydown', this._keydownHandler, false);
             this._min.text = this._format(this.min);
             this._max.text = this._format(this.max);
@@ -188,6 +200,7 @@ namespace Pacem.Components.Scaffolding {
             this.removeEventListener('mousedown', this._downHandler, false);
             this.removeEventListener('touchstart', this._downHandler, false);
             if (!Utils.isNull(this._dragger)) {
+                this._dragger.removeEventListener(Pacem.UI.DragDropEventType.End, this._endHandler, false);
                 this._dragger.removeEventListener(Pacem.UI.DragDropEventType.Drag, this._dragHandler, false);
                 this._dragger.removeEventListener(Pacem.UI.DragDropEventType.Init, this._startHandler, false);
             }

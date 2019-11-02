@@ -51,7 +51,7 @@
 
 /* #region font mixins: adjust font sizes for homogeneous sight*/
 .FontStdSize(@rem) {
-    font-size: 1rem * @rem * @font_rem_factor;
+    font-size: 1rem * @rem; // * @font_rem_factor;
 }
 
 .FontStd(@rem, @weight) {
@@ -241,7 +241,8 @@
 @color_field_back: @color_lightblue;
 @color_field_label: @color_teal;
 @field_outline_width: 0;
-@color_field_outline: fade(@color_default, 40);
+@field_minimal_fontsize: .9142857;
+@color_field_outline: fade(@color_teal, 40);
 @border_field_size: 2px;
 @border_field_underline: true;
 @border_field_radius: @border_radius;

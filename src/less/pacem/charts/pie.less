@@ -1,7 +1,7 @@
 ﻿@import "../../shared";
 @import "../theme-dark";
 
-@{P}-pie-chart,@{P}-pie-slice {
+@{P}-pie-chart, @{P}-pie-slice {
     .Inert();
 }
 
@@ -35,10 +35,107 @@ svg.@{PCSS}-pie-chart {
     }
 }
 
-.@{PCSS}-chart-area > svg.@{PCSS}-pie-chart {
-    max-height: 30vh;
+.@{PCSS}-chart-area {
+    > svg.@{PCSS}-pie-chart {
+        display: none;
+        max-height: 30vh;
+
+        g.chart-series {
+
+            path {
+                stroke: none;
+                opacity: .8;
+                fill: @color_default;
+
+                &:hover {
+                    opacity: 1;
+                }
+            }
+
+            &.series-light {
+                path {
+                    opacity: .5;
+
+                    &:hover {
+                        opacity: .8;
+                    }
+                }
+            }
+        }
+    }
+
+    &.chart-has-data {
+        > svg.@{PCSS}-pie-chart {
+            display: block;
+        }
+    }
+
+    &.chart-error,
+    &.chart-disabled,
+    &.chart-danger,
+    &.chart-warning,
+    &.chart-success,
+    &.chart-primary,
+    &.chart-accent,
+    &.chart-default {
+        > svg.@{PCSS}-pie-chart g.chart-series {
+            .PieSliceGradient(20, 1);
+        }
+    }
+
+    &.chart-default {
+        .PieSliceGradient(@color_default);
+    }
+
+    &.chart-accent {
+        .PieSliceGradient(@color_accent);
+    }
+
+    &.chart-primary {
+        .PieSliceGradient(@color_primary);
+    }
+
+    &.chart-success {
+        .PieSliceGradient(@color_success);
+    }
+
+    &.chart-warning {
+        .PieSliceGradient(@color_warning);
+    }
+
+    &.chart-danger {
+        .PieSliceGradient(@color_danger);
+    }
+
+    &.chart-error {
+        .PieSliceGradient(@color_error);
+    }
+
+    &.chart-disabled {
+        .PieSliceGradient(@color_disabled);
+    }
 }
 
+.PieSliceGradient(@count, @index) when (@index < @count + 1) {
+    &:nth-child(@{index}) > path {
+        opacity: .8 - (@index - 1) * ((.9-.1) / @count);
+    }
+
+    .PieSliceGradient(@count, @index + 1);
+}
+
+.PieSliceGradient(@clr) {
+    > svg.@{PCSS}-pie-chart {
+
+        g.chart-series > path {
+            fill: @clr;
+
+            &:hover {
+                opacity: 1;
+            }
+        }
+    }
+}
 
 .PieSlice (@count, @index) when (@index > 0) {
     &:nth-child(@{index}) {
@@ -55,13 +152,6 @@ svg.@{PCSS}-pie-chart {
 .PieChartSeries(@clr) {
     path {
         fill: @clr;
-        stroke: none;
-    }
-
-    &.series-light {
-        path {
-            fill: fade(@clr, 50);
-        }
     }
 }
 
@@ -79,7 +169,10 @@ svg.@{PCSS}-pie-chart {
         }
 
         g.chart-series {
-            .PieChartSeries(@color_default);
+
+            &.series-default {
+                .PieChartSeries(@color_default);
+            }
 
             &.series-accent {
                 .PieChartSeries(@color_accent);
@@ -99,6 +192,14 @@ svg.@{PCSS}-pie-chart {
 
             &.series-danger {
                 .PieChartSeries(@color_danger);
+            }
+
+            &.series-error {
+                .PieChartSeries(@color_error);
+            }
+
+            &.series-disabled {
+                .PieChartSeries(@color_disabled);
             }
         }
     }

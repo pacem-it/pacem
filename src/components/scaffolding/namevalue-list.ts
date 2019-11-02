@@ -138,7 +138,7 @@
             return !Utils.isNullOrEmpty(bag) ? bag : [pullEmpty()];
         }
 
-        private _deleteAt(evt: DeleteItemCommandEvent) {
+        private _deleteAt(evt: CustomItemCommandEvent) {
             this._bag.splice(evt.detail, 1);
             this.changeHandler(evt);
         }

@@ -203,6 +203,15 @@
     }
 }
 
+// lazy-validation
+.lazy-validation > @{P}-form-field > .@{PCSS}-field.@{PCSS}-pristine {
+    .@{PCSS}-viewfinder,
+    .@{PCSS}-input {
+        .Outline(@color_field_outline);
+        border-color: @color_border;
+    }
+}
+
 // force outline
 @{P}-form-field.field-outline when (@field_outline_width = 0) {
 
@@ -212,7 +221,7 @@
 
             .@{PCSS}-viewfinder,
             .@{PCSS}-input {
-                .Outline(2px, fade(@color_default, 40));
+                .Outline(2px, @color_field_outline);
             }
         }
 
@@ -235,6 +244,21 @@
                 .@{PCSS}-viewfinder,
                 .@{PCSS}-input {
                     .Outline(2px, fade(@color_success, 40));
+                }
+            }
+        }
+    }
+}
+
+.lazy-validation > @{P}-form-field.field-outline when (@field_outline_width = 0) {
+    .@{PCSS}-field.@{PCSS}-valid,
+    .@{PCSS}-field.@{PCSS}-invalid {
+        &.@{PCSS}-pristine {
+            > .@{PCSS}-input-container > .@{PCSS}-focus:not(@{P}-childform) /* childform should break the rule */ {
+
+                .@{PCSS}-viewfinder,
+                .@{PCSS}-input {
+                    .Outline(2px, @color_field_outline);
                 }
             }
         }
@@ -365,16 +389,89 @@
         }
     }
 }
-/*@{P}-form-field.field-inline > .@{PCSS}-field.@{PCSS}-editable {
 
-    > label.@{PCSS}-label {
+.@{PCSS}-form {
+    .@{PCSS}-buttonset.buttons {
+        padding-top: 0;
     }
-}*/
+}
+
+.form-minimal > @{P}-form-field:not(.field-full),
+@{P}-form-field.field-minimal {
+
+    > @{P}-form.@{PCSS}-field {
+        background-color: transparent;
+        box-shadow: none;
+        border: 0;
+        margin: 0;
+        padding-top: 0;
+        padding-bottom: @grid_spacing/3;
+
+        > label.@{PCSS}-label {
+            margin: 0;
+            .FontMainSize(@field_minimal_fontsize);
+            min-height: 0;
+            height: @field_minimal_fontsize * @font_size * 1.5625;
+            line-height: $height;
+            padding: 0;
+
+            &::before, &::after {
+                display: none;
+            }
+        }
+
+        > .@{PCSS}-input-container {
+            padding-left: 0;
+            padding-right: 0;
+            padding-top: 0;
+        }
+    }
+}
+// no label
+.form-nolabels > @{P}-form-field:not(.field-label),
+@{P}-form-field.field-nolabel {
+    > .@{PCSS}-field > label.@{PCSS}-label {
+        display: none;
+    }
+}
+
+@media (min-width: @threshold_lg) {
+    // stretch
+    @{P}-form-field.field-stretch {
+
+        @{P}-input-text,
+        @{P}-input-password,
+        @{P}-input-tel,
+        @{P}-input-url,
+        @{P}-input-email,
+        @{P}-input-search,
+        @{P}-suggest,
+        @{P}-checkbox,
+        @{P}-radio,
+        @{P}-textarea,
+        @{P}-textarea-markdown,
+        @{P}-input-number {
+            // min-width: @field_min_width;
+            display: block;
+        }
+    }
+}
 // #region screen sizes
 @media (max-width: @threshold_sm - 1) {
 
     @{P}-form-field.field-xs-inline > .@{PCSS}-field {
         .FieldInline();
+    }
+
+    .form-xs-nolabels > @{P}-form-field:not(.field-label),
+    @{P}-form-field.field-xs-nolabel {
+        > .@{PCSS}-field > label.@{PCSS}-label {
+            display: none;
+        }
+    }
+
+    @{P}-form-field.field-xs-label > .@{PCSS}-field > label.@{PCSS}-label {
+        display: inherit;
     }
 }
 
@@ -383,12 +480,34 @@
     @{P}-form-field.field-sm-inline > .@{PCSS}-field {
         .FieldInline();
     }
+
+    .form-sm-nolabels > @{P}-form-field:not(.field-label),
+    @{P}-form-field.field-sm-nolabel {
+        > .@{PCSS}-field > label.@{PCSS}-label {
+            display: none;
+        }
+    }
+
+    @{P}-form-field.field-sm-label > .@{PCSS}-field > label.@{PCSS}-label {
+        display: inherit;
+    }
 }
 
 @media (min-width: @threshold_md) {
 
     @{P}-form-field.field-md-inline > .@{PCSS}-field {
         .FieldInline();
+    }
+
+    .form-md-nolabels > @{P}-form-field:not(.field-label),
+    @{P}-form-field.field-md-nolabel {
+        > .@{PCSS}-field > label.@{PCSS}-label {
+            display: none;
+        }
+    }
+
+    @{P}-form-field.field-md-label > .@{PCSS}-field > label.@{PCSS}-label {
+        display: inherit;
     }
 }
 
@@ -397,12 +516,34 @@
     @{P}-form-field.field-lg-inline > .@{PCSS}-field {
         .FieldInline();
     }
+
+    .form-lg-nolabels > @{P}-form-field:not(.field-label),
+    @{P}-form-field.field-lg-nolabel {
+        > .@{PCSS}-field > label.@{PCSS}-label {
+            display: none;
+        }
+    }
+
+    @{P}-form-field.field-lg-label > .@{PCSS}-field > label.@{PCSS}-label {
+        display: inherit;
+    }
 }
 
 @media (min-width: @threshold_xl) {
 
     @{P}-form-field.field-xl-inline > .@{PCSS}-field {
         .FieldInline();
+    }
+
+    .form-xl-nolabels > @{P}-form-field:not(.field-label),
+    @{P}-form-field.field-xl-nolabel {
+        > .@{PCSS}-field > label.@{PCSS}-label {
+            display: none;
+        }
+    }
+
+    @{P}-form-field.field-xl-label > .@{PCSS}-field > label.@{PCSS}-label {
+        display: inherit;
     }
 }
 
@@ -411,12 +552,34 @@
     @{P}-form-field.field-hd-inline > .@{PCSS}-field {
         .FieldInline();
     }
+
+    .form-hd-nolabels > @{P}-form-field:not(.field-label),
+    @{P}-form-field.field-hd-nolabel {
+        > .@{PCSS}-field > label.@{PCSS}-label {
+            display: none;
+        }
+    }
+
+    @{P}-form-field.field-hd-label > .@{PCSS}-field > label.@{PCSS}-label {
+        display: inherit;
+    }
 }
 
 @media (min-width: @threshold_uhd) {
 
     @{P}-form-field.field-uhd-inline > .@{PCSS}-field {
         .FieldInline();
+    }
+
+    .form-uhd-nolabels > @{P}-form-field:not(.field-label),
+    @{P}-form-field.field-uhd-nolabel {
+        > .@{PCSS}-field > label.@{PCSS}-label {
+            display: none;
+        }
+    }
+
+    @{P}-form-field.field-uhd-label > .@{PCSS}-field > label.@{PCSS}-label {
+        display: inherit;
     }
 }
 
@@ -425,12 +588,52 @@
     @{P}-form-field.field-4k-inline > .@{PCSS}-field {
         .FieldInline();
     }
+
+    .form-4k-nolabels > @{P}-form-field:not(.field-label),
+    @{P}-form-field.field-4k-nolabel {
+        > .@{PCSS}-field > label.@{PCSS}-label {
+            display: none;
+        }
+    }
+
+    @{P}-form-field.field-4k-label > .@{PCSS}-field > label.@{PCSS}-label {
+        display: inherit;
+    }
 }
 
 @media (orientation: landscape) {
 
     @{P}-form-field.field-h-inline > .@{PCSS}-field {
         .FieldInline();
+    }
+
+    .form-h-nolabels > @{P}-form-field:not(.field-label),
+    @{P}-form-field.field-h-nolabel {
+        > .@{PCSS}-field > label.@{PCSS}-label {
+            display: none;
+        }
+    }
+
+    @{P}-form-field.field-h-label > .@{PCSS}-field > label.@{PCSS}-label {
+        display: inherit;
+    }
+}
+
+@media (orientation: portrait) {
+
+    @{P}-form-field.field-v-inline > .@{PCSS}-field {
+        .FieldInline();
+    }
+
+    .form-v-nolabels > @{P}-form-field:not(.field-label),
+    @{P}-form-field.field-v-nolabel {
+        > .@{PCSS}-field > label.@{PCSS}-label {
+            display: none;
+        }
+    }
+
+    @{P}-form-field.field-v-label > .@{PCSS}-field > label.@{PCSS}-label {
+        display: inherit;
     }
 }
 // #endregion
