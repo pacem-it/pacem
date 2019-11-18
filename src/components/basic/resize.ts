@@ -42,14 +42,21 @@ namespace Pacem.Components {
                     this._start();
                     break;
                 case 'target':
-                    if (!RESIZEOBSERVER_POLYFILLED && !Utils.isNull(this._observer)) {
+                    if (!Utils.isNull(this._observer)) {
                         var oldTarget = old || this;
                         this._observer.unobserve(oldTarget);
+                    }
+                case 'watchPosition':
+                    if (!this._usePolyfill) {
                         var newTarget = val || this;
                         this._observer.observe(newTarget, BORDER_BOX);
                     }
                     break;
             }
+        }
+
+        private get _usePolyfill(): boolean {
+            return RESIZEOBSERVER_POLYFILLED || this.watchPosition;
         }
 
         private _timer: number;
@@ -69,7 +76,6 @@ namespace Pacem.Components {
             }
 
             let el = this._target;
-
 
             if (RESIZEOBSERVER_POLYFILLED) {
 

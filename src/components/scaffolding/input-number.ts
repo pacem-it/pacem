@@ -6,12 +6,10 @@ namespace Pacem.Components.Scaffolding {
     @CustomElement({ tagName: P + '-input-number', template: `<input type="number" class="${PCSS}-input ${PCSS}-viewfinder" /><span class="${PCSS}-readonly"><${ P }-text text="{{ :host.viewValue }}"></${ P }-text></span>`, shadow: Defaults.USE_SHADOW_ROOT })
     export class PacemNumberInputElement extends PacemOrdinalInputElement {
 
-        constructor() {
-            super();
-        }
-
         @ViewChild('input[type=number]') private _input: HTMLInputElement;
         @ViewChild(`span.${PCSS}-readonly`) private _span: HTMLSpanElement;
+
+        @Watch({ emit: false, converter: PropertyConverters.Json }) format: Intl.NumberFormatOptions;
 
         protected toggleReadonlyView(readonly: boolean) {
             this._span.hidden = !readonly;
@@ -23,7 +21,15 @@ namespace Pacem.Components.Scaffolding {
         }
 
         getViewValue(val: any): string {
-            return this.value != null ? this.value.toString() : undefined;
+            return this.value != null ? this._format( this.value) : undefined;
+        }
+
+        private _format(v = this.value): string {
+            const intl = this.format;
+            if (!Utils.isNullOrEmpty(intl)) {
+                return new Intl.NumberFormat(Utils.lang(this), intl).format(v);
+            }
+            return v.toString();
         }
 
         getValue(val: string): number {

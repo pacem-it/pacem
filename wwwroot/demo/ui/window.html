@@ -1,0 +1,48 @@
+﻿
+
+<pacem-markdown value="{{ #content0.textContent }}" class="md-tech" root></pacem-markdown>
+
+<pre pacem hidden id="content0">
+## Segregated Content
+
+</pre>
+
+<pacemjs-snippet>
+    <template>
+
+        <pacem-window caption="Hello World!" class="window-corners window-border window-filled">
+            <div>
+                Lorem ipsum dolor sit amet...
+            </div>
+        </pacem-window>
+
+    </template>
+</pacemjs-snippet>
+
+
+<pacem-markdown value="{{ #content1.textContent }}" class="md-tech" root></pacem-markdown>
+
+<pre pacem hidden id="content1">
+## Floating and Docking
+
+</pre>
+
+<pacem-shell-proxy>
+    <pacem-window-area>
+        <pacem-window caption="Hello World!" class="window-corners" floating="true">
+            <div>
+                Lorem ipsum dolor sit amet...
+            </div>
+        </pacem-window>
+        <pacem-window caption="YOLO!" class="window-corners" floating="true">
+            <div>
+                Lorem ipsum dolor sit amet...
+            </div>
+        </pacem-window>
+    </pacem-window-area>
+</pacem-shell-proxy>
+
+
+
+<pacem-window id="proto" hidden></pacem-window>
+<pacemjs-descriptor target="{{ #proto }}"></pacemjs-descriptor>

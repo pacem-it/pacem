@@ -191,6 +191,35 @@ namespace Pacem.Components.Scaffolding {
 
     // #endregion
 
+    @CustomElement({ tagName: P + '-binary-validator', template: BASIC_VALIDATOR_TEMPLATE, shadow: Defaults.USE_SHADOW_ROOT })
+    export class PacemBinaryValidatorElement extends PacemBaseValidatorElement {
+
+        @Watch({ converter: PropertyConverters.String }) pattern: string | RegExp;
+        @Watch({ converter: PropertyConverters.String }) maxSize: number;
+
+        protected evaluate(val: string | BinaryValue): PromiseLike<boolean> {
+            let retval = true,
+                pattern = this.pattern,
+                maxSize = this.maxSize;
+            if (!isValueEmpty(val)) {
+
+                // file name
+                let filename = typeof val === 'string' ? val : val.name;
+                if (pattern instanceof RegExp)
+                    retval = pattern.test(filename);
+                else if (!isValueEmpty(pattern)) {
+                    retval = new RegExp(pattern, 'i').test(filename);
+                }
+
+                // max size
+                if (!Utils.isNull(maxSize) && typeof val === 'object' && val.size > 0) {
+                    retval = retval && val.size <= maxSize;
+                }
+            }
+            return Utils.fromResult(retval);
+        }
+    }
+
     @CustomElement({
         tagName: P + '-async-validator',
         template: BASIC_VALIDATOR_TEMPLATE + `<${P}-fetch autofetch="false" credentials="{{ :host.fetchCredentials }}" headers="{{ :host.fetchHeaders }}"></${P}-fetch>`, shadow: Defaults.USE_SHADOW_ROOT

@@ -1,88 +1,115 @@
 ﻿@import "../../shared";
+@import "shared";
 @import "../theme-dark";
 
 @{P}-upload {
+    display: inline-block;
 
-    .@{PCSS}-upload {
-        width: @grid_spacing;
-        height: @grid_spacing;
-        position: relative;
+    > .@{PCSS}-upload.@{PCSS}-viewfinder {
 
-        .UploadButton() {
-            width: 100%;
-            height: 100%;
-            display: block;
-            overflow: hidden;
-            position: absolute;
-            cursor: pointer;
-            z-index: 1;
+        @_sz: @grid_cell;
+
+        // overflow: hidden;
+        height: @_sz;
+        width: @_sz;
+        display: grid;
+        align-items: center;
+        justify-content: stretch;
+        max-width: @field_min_width_wide;
+
+        @_brd: 1px;
+        @_grd_sz: @_sz - (2 * @_brd);
+        grid-template-columns: @_grd_sz auto;
+        grid-template-rows: @_grd_sz;
+        border: @_brd dashed @color_border;
+        border-radius: @_sz / 2;
+        box-sizing: border-box;
+
+        > * {
+            grid-row: 1;
+            grid-column: 2;
         }
 
-        input[type=file] {
-            border: none;
-            background: none;
-            color: @color_light;
-            opacity: 0;
-            .UploadButton();
+        > .upload-progress,
+        > .upload-button {
+            // overlapped content
+            grid-column: 1;
+            display: flex;
+            justify-content: center;
         }
 
-        .@{PCSS}-upload-filewrapper,
-       @{P}-button {
-            .UploadButton();
-            width: @grid_spacing;
-            height: @grid_spacing;
+        > .upload-button {
 
-            &:before {
-                .UploadButton();
-                top: 0;
-                left: 0;
+            > @{P}-button {
+                margin: 0;
+
+                &.circular,
+                &.button-circular {
+
+                    // force tp 48px...
+                    width: min(2 * @grid_spacing, @_sz - 28px);
+                    height: $width;
+                }
             }
         }
 
-        .@{PCSS}-upload-filewrapper:before {
-            .Icon('file_upload');
+        > .upload-progress {
+            transform: scale(.9);
         }
 
-       @{P}-button {
-            font-size: 0;
-            min-width: 0;
+        &.upload-chosen {
+            width: auto;
+            border-color: @color_success;
+            border-style: solid;
 
-            &.@{PCSS}-upload-retry:before {
-                .Icon('refresh');
+            &.upload-error {
+                border-color: @color_error;
             }
+        }
 
-            &.@{PCSS}-upload-undo:before {
-                .Icon('cancel');
-            }
+        &.upload-readonly {
+            border-width: 0;
+            grid-template-columns: auto auto;
+            grid-gap: @grid_spacing * 2 / 3;
         }
     }
 }
-
-@{P}-upload .@{PCSS}-upload.@{PCSS}-progress {
-    height: @grid_cell;
-    width: @grid_cell;
-
-   @{P}-tuner {
-        pointer-events: none;
-        position: absolute;
-        top: 0;
-        left: 0;
-        z-index: 0;
-        width: @grid_cell;
-        height: @grid_cell;
-    }
-
-    .@{PCSS}-upload-filewrapper,
-   @{P}-button {
-        top: .5 * (@grid_cell - @grid_spacing);
-        left: .5 *(@grid_cell - @grid_spacing);
-    }
-}
-
 
 .@{PCSS}-animations {
 
-   @{P}-upload .@{PCSS}-upload-filewrapper {
-        .Animatable(pop-anim, .55s, @easing_out_back);
+    @{P}-upload {
+        > .@{PCSS}-upload.@{PCSS}-viewfinder {
+
+            > .upload-button {
+                .Animatable(pop-anim, .55s, @easing_out_back);
+            }
+        }
+    }
+}
+
+// inside form field
+.@{PCSS}-field {
+
+    > .@{PCSS}-input-container > :not(@{P}-childform) .@{PCSS}-viewfinder.upload-readonly {
+        border-radius: @border_input_radius;
+
+        & when (@border_field_underline = false) {
+            padding: 0 @grid_spacing * 2/3;
+            border-width: @border_field_size;
+        }
+
+        & when (@border_field_underline = true) {
+            border-top: 0;
+            border-left: 0;
+            border-right: 0;
+            border-bottom-width: @border_field_size;
+            border-bottom-style: solid;
+        }
+    }
+
+    &:not(.@{PCSS}-has-value) {
+        > .@{PCSS}-input-container > :not(@{P}-childform) .@{PCSS}-viewfinder.upload-readonly {
+            border-color: transparent;
+        }
     }
 }

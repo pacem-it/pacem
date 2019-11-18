@@ -27,7 +27,7 @@
     }
 
     .@{PCSS}-readonly.@{PCSS}-checkbox {
-        .FormFieldLabelIcon('check_box_outline');
+        .FormFieldLabelIcon('check_box_outline_blank');
     }
 
     &.@{PCSS}-selected .@{PCSS}-readonly.@{PCSS}-checkbox::before {
@@ -261,6 +261,11 @@
 
     &.@{PCSS}-disabled {
         .CheckboxColoring(@color_disabled);
+
+        .@{PCSS}-readonly.@{PCSS}-checkbox,
+        label.@{PCSS}-label.@{PCSS}-checkbox {
+            color: @color_disabled;
+        }
     }
 }
 //}

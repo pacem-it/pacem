@@ -74,6 +74,10 @@ namespace Pacem.Components.Scaffolding {
         reset(): void;
     }
 
+    export declare type BinaryValue = {
+        name: string, size: number, type: string, lastModified: number | string | Date, /** base64 binary string */content: string
+    };
+
     const ORIGINAL_VALUE_FIELD = 'pacem:model:original-value';
 
     export abstract class PacemFormRelevantElement extends PacemElement {
@@ -379,7 +383,7 @@ namespace Pacem.Components.Scaffolding {
         }
     }
 
-    export declare type DataSourceItem = { value: any, viewValue: string };
+    export declare type DataSourceItem = { value: any, viewValue: string, disabled?: boolean };
     export declare type DataSource = DataSourceItem[];
 
     @CustomElement({ tagName: P + '-data-item' })
@@ -403,6 +407,7 @@ namespace Pacem.Components.Scaffolding {
             }
         }) value: any;
         @Watch({ converter: PropertyConverters.String }) label: string;
+        @Watch({ converter: PropertyConverters.Boolean }) disabled: boolean;
 
         private _container: PacemDataSourceElement;
 
@@ -439,6 +444,9 @@ namespace Pacem.Components.Scaffolding {
 
         @Watch({ emit: false, converter: PropertyConverters.String })
         textProperty: string;
+
+        @Watch({ emit: false, converter: PropertyConverters.String })
+        disabledProperty: string;
 
         @Watch({ emit: false, converter: PropertyConverters.String })
         compareBy: string;
@@ -526,8 +534,12 @@ namespace Pacem.Components.Scaffolding {
          * @param value {any} value to match
          */
         protected isDataSourceItemSelected(item: DataSourceItem, value: any = this.value) {
-            if (Utils.isNullOrEmpty(value))
+            if (Utils.isNullOrEmpty(value)) {
                 return false;
+            }
+            if (item.disabled) {
+                return false;
+            }
             const c = this.compareBy;
             if (this.multipleChoice && Utils.isArray(value)) {
                 // caution: numbers and strings might be compared, ease the comparison by loosing equality constraints: `===` to `==`.
@@ -572,10 +584,15 @@ namespace Pacem.Components.Scaffolding {
                 throw 'entity cannot be null';
             // declared
             if (entity instanceof PacemDataItemElement) {
-                return { value: entity.value, viewValue: entity.label || entity.value };
+                return { value: entity.value, viewValue: entity.label || entity.value, disabled: entity.disabled };
             }
             // databound
-            return { value: this.mapEntityToValue(entity), viewValue: this.mapEntityToViewValue(entity) };
+            let disabled = false;
+            const disabledProp = this.disabledProperty;
+            if (!Utils.isNullOrEmpty(disabledProp)) {
+                disabled = entity[disabledProp] || false;
+            }
+            return { value: this.mapEntityToValue(entity), viewValue: this.mapEntityToViewValue(entity), disabled: disabled };
         }
 
         private _handle: number;
@@ -586,6 +603,7 @@ namespace Pacem.Components.Scaffolding {
             switch (name) {
                 case 'datasource':
                 case 'textProperty':
+                case 'disabledProperty':
                 case 'valueProperty':
                     cancelAnimationFrame(this._handle);
                     this._handle = requestAnimationFrame(() => {

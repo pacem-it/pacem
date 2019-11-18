@@ -22,6 +22,19 @@ It provides nonetheless **databinding capabilities** for handy connects against 
     </template>
 </pacemjs-snippet>
 
+<pacemjs-snippet>
+    <template>
+
+        <pacem-select id="fruit00" placeholder="pick a fruit..." datasource="{{ [{name: 'apples'}, {name: 'bananas'}, {name: 'cucumbers'}, {name: 'dates', disabled: true}, {name: 'elderberries'}, {name: 'figs'}, {name: 'grapefruits'}, {name: 'hackberries'}] }}"
+                      value-property="name" text-property="name" disabled-property="disabled"></pacem-select>
+
+        <div class="pacem-margin margin-top-3">
+            value:
+            <code><pacem-text text="{{ #fruit00.value }}"></pacem-text></code>
+        </div>
+    </template>
+</pacemjs-snippet>
+
 <pacem-markdown value="{{ #content1.textContent }}" root class="md-tech"></pacem-markdown>
 
 <pre pacem hidden id="content1">
@@ -37,7 +50,7 @@ Same results can be achieved in a more declarative way by wrapping a list of `&l
             <pacem-data-item value="apples"></pacem-data-item>
             <pacem-data-item value="bananas"></pacem-data-item>
             <pacem-data-item value="cucumbers"></pacem-data-item>
-            <pacem-data-item value="dates"></pacem-data-item>
+            <pacem-data-item disabled="true" value="dates"></pacem-data-item>
             <pacem-data-item value="elderberries"></pacem-data-item>
             <pacem-data-item value="figs"></pacem-data-item>
             <pacem-data-item value="grapefruits"></pacem-data-item>

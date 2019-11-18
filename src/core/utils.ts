@@ -133,6 +133,8 @@ namespace Pacem {
             return retval;
         }
 
+        // #endregion
+
         // #region blob/files...
         static loadImage(src: string) {
             return new Promise<HTMLImageElement>((resolve, reject) => {
@@ -153,10 +155,10 @@ namespace Pacem {
         }
 
         // thanks to @cuixiping: http://stackoverflow.com/questions/23150333
-        static blobToDataURL(blob: Blob) {
+        static blobToDataURL(blob: Blob): Promise<string | ArrayBuffer> {
             return new Promise((resolve, _) => {
                 var a = new FileReader();
-                a.onload = (e) => { resolve(e.target['result']); }
+                a.onload = (e) => { resolve(e.target.result); }
                 a.readAsDataURL(blob);
             });
         }
@@ -344,7 +346,7 @@ namespace Pacem {
             return img;
         }
 
-        static download(content: Blob, filename?: string, mime?: string) : PromiseLike<void>;
+        static download(content: Blob, filename?: string, mime?: string): PromiseLike<void>;
         static download(url: string, filename?: string, mime?: string): PromiseLike<void>;
         static download(url: string, options: DownloadOptions): PromiseLike<void>;
         static async download(arg0: string | Blob, arg1?: string | DownloadOptions, mime: string = "application/download") {
@@ -399,8 +401,6 @@ namespace Pacem {
 
         // #endregion
 
-        // #endregion
-
         // #region DOM
 
         static isDOMReady() {
@@ -418,11 +418,19 @@ namespace Pacem {
          * @param target Target element.
          */
         static moveChildren(source: Element, target: Element): Node[] {
+            return Utils.moveItems(source.childNodes, target);
+        }
+
+        /**
+         * Moves specific nodes to the target element and returns them as an array of nodes.
+         * @param nodes Nodes to move.
+         * @param target Target element.
+         */
+        static moveItems(nodes: Node[]|NodeList, target: Element) {
             let dom: Node[] = [],
-                nodes = source.childNodes,
                 ref: Node;
             for (let j = nodes.length - 1; j >= 0; j--) {
-                let item = nodes.item(j);
+                let item = nodes instanceof NodeList ? nodes.item(j) : nodes[j];
                 target.insertBefore(item, ref);
                 dom.unshift(item);
                 ref = item;
@@ -565,6 +573,29 @@ namespace Pacem {
         }
 
         /**
+         * Promisifies the addAnimationEndCallback function.
+         * @param element The very element that has to trigger the animation/transitionend event.
+         * @param timeout Fallback timeout (ms) in case the animation/transitionend event won't fire.
+         */
+        static waitForAnimationEnd(element: HTMLElement | SVGElement, timeout: number = 500): Promise<void> {
+            return new Promise((resolve, _) => {
+                Utils.addAnimationEndCallback(element, () => {
+                    resolve();
+                }, timeout);
+            });
+        }
+
+        /**
+         * Waits until the provided timespan elapses.
+         * @param msecs timespan in milliseconds
+         */
+        static idle(msecs: number): Promise<void> {
+            return new Promise((resolve, _) => {
+                setTimeout(() => resolve(), msecs);
+            });
+        }
+
+        /**
          * Increases a callback loop call until cancelation is called.
          * @param callback Callback looped.
          * @param interval First callback call delay in ms (default 500).
@@ -607,11 +638,11 @@ namespace Pacem {
             }
         }
 
-        static isNull(val: any) {
+        static isNull(val: any): val is null | undefined {
             return val === null || val === undefined;
         }
 
-        static isArray(val: any) {
+        static isArray(val: any): val is any[] {
             return Array.isArray(val);
         }
 
@@ -654,7 +685,7 @@ namespace Pacem {
             return target;
         }
 
-        static clone(obj: any) {
+        static clone<T>(obj: T): T {
             if (obj === undefined) return undefined;
             return DeepCloner.clone(obj);
         }
@@ -670,6 +701,46 @@ namespace Pacem {
         //#endregion
 
         //#region Net
+
+        static URIs = {
+            format: function (url: string, parameters: { [name: string]: string }, removeMatchedParameters?: boolean) {
+
+                // replace segments
+                for (let name in parameters || {}) {
+                    let tmpl = new RegExp("(^|\\/)\\{" + name + "\\??\\}(\\/|$)");
+                    let arr = tmpl.exec(url);
+                    if (arr && arr.length) {
+                        let rpl = new RegExp("\\{" + name + "\\??\\}"),
+                            ndx = arr.index;
+                        url = url.substr(0, ndx) + url.substr(ndx).replace(rpl, encodeURIComponent(parameters[name]));
+                        if (removeMatchedParameters) {
+                            delete parameters[name];
+                        }
+                    }
+                }
+
+                // clean-up optional
+                const optPattern = /(^|\/)\{[\w]+\?\}(\/|$)/;
+                var optArr: RegExpExecArray;
+                while ((optArr = optPattern.exec(url)) && optArr.length > 0) {
+                    let wholeMatch = optArr[0];
+                    url = url.replace(wholeMatch, wholeMatch.endsWith('/') ? "/" : "");
+                }
+
+                return url;
+            },
+            appendQuery: function (url: string, parameters: { [name: string]: string }) {
+                const query = (/\?/.test(url) ? '&' : '?') + Object.keys(parameters).map(
+                    k => encodeURIComponent(k) + '=' + encodeURIComponent(parameters[k])
+                ).join('&');
+                return url + query;
+            },
+            hasMandatoryTemplateSegments: function (url) {
+                return /(^|\/)\{\.*\}(\/|$)/.test(url);
+            }
+        };
+
+
 
         static getApiResult(json: any): any {
             if (typeof json === 'object'

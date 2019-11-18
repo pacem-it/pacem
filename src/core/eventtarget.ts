@@ -11,7 +11,7 @@ namespace Pacem.Components {
         }
 
         /**
-         * Dispatches the provided event and executes the relevant handler defined in the `on-{evt.type}` attribute, if any.
+         * Executes the relevant handler defined in the `on-{evt.type}` attribute, if any.
          * @param evt {Event} the event to be fired
          */
         protected emit(evt: Event) {

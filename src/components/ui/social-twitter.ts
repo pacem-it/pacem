@@ -24,7 +24,7 @@ namespace Pacem.Components.UI.Social {
 
         private _render() {
             if (this.tweetid && this._scriptsLoaded) {
-                twttr.widgets.createTweet(this.tweetid, this);
+                twttr.ready(tw => tw.widgets.createTweet(this.tweetid, this));
             }
         }
     }

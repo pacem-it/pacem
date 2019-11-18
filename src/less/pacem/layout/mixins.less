@@ -2,13 +2,32 @@
 @import "../theme-dark";
 @import "../ui/shared";
 
-.Corners() {
-    .Corners(@grid_spacing/4;);
+.PanelColorize(@prefix, @_clr) {
+    .@{prefix}-heading {
+        color: @_clr;
+    }
+
+    &.@{prefix}-border {
+        border-color: fade(@_clr, 20);
+    }
+
+    &.@{prefix}-filled {
+        background-color: fade(@_clr, 10);
+    }
+
+    &.@{prefix}-corners when (@border_radius = 0) {
+        .Corners(@_clr);
+    }
+
+    .CornersColorize(@_clr);
 }
 
-.Corners(@_sz) {
-    border: 1px solid transparent;
-    position: relative;
+
+.CornersSize() {
+    .CornersSize(@grid_spacing/4;);
+}
+
+.CornersSize(@_sz) when (@border_radius = 0) {
 
     .corner {
         width: @_sz;
@@ -48,7 +67,7 @@
     }
 }
 
-.CornersColorize(@_clr) {
+.CornersColorize(@_clr) when (@border_radius = 0) {
     .corner {
         &.top-left {
             border-top-color: @_clr;
@@ -72,27 +91,14 @@
     }
 }
 
-.PanelColorize(@prefix, @_clr) {
-    .@{prefix}-heading {
-        color: @_clr;
-    }
-
-    &.@{prefix}-border {
-        border-color: fade(@_clr, 20);
-    }
-
-    &.@{prefix}-filled {
-        background-color: fade(@_clr, 10);
-    }
-
-    .CornersColorize(@_clr);
-}
-
 .Panel(@prefix) {
     padding: 0 /*0 @grid_spacing/4 0*/;
     text-rendering: optimizeSpeed;
     border-radius: @border_radius;
-    .Corners();
+    border: 1px solid transparent;
+    position: relative;
+    .CornersSize();
+    .CornersColorize(@color_default);
 
     @_min_height: @grid_spacing;
 
@@ -148,7 +154,6 @@
     }
 
     .PanelColorize(@prefix, @color_default);
-
     /* other panel styles*/
     &.@{prefix}-accent {
         .PanelColorize(@prefix, @color_accent);
@@ -175,16 +180,25 @@
         position: absolute;
         top: @grid_spacing/2;
         right: @grid_spacing/1.5;
+        z-index: 1;
 
         .@{PCSS}-button,
-       @{P}-button {
+        @{P}-button {
             width: @_min_height * 1.3333;
             height: @_min_height;
             margin: 0;
 
-            &.circular {
+            &.circular,
+            &.button-circle,
+            &.button-circular {
                 width: @_min_height;
                 margin: 0 @_min_height * .3333 * .5;
+
+                &::before {
+                    font-size: @_min_height * 2 / 3;
+                    line-height: @_min_height;
+                    width: $line-height;
+                }
             }
         }
     }

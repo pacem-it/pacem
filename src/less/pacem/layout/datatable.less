@@ -11,9 +11,14 @@
     }
 }
 
+@_cell_crnr_unit: unit(round(@grid_spacing/8));
+
 .DataCellColorize(@_clr) {
     border-color: fade(@_clr, 20);
-    .CornersColorize(fade(@_clr, 25));
+
+    &.datacell-corners {
+        .Corners(fade(@_clr, 25), @_cell_crnr_unit);
+    }
 
     &.datacell-filled {
         background-color: fade(@_clr, 10);
@@ -37,7 +42,11 @@ table.@{PCSS}-datatable {
     }
 
     th, td {
-        .Corners(round(@grid_spacing/8));
+
+        &.datacell-corners {
+            .Corners(fade(@color_border, 100), @_cell_crnr_unit);
+        }
+
         border-left: none;
         border-right: none;
         border-top: 1px solid @color_border;
@@ -131,7 +140,10 @@ table.@{PCSS}-datatable {
 }
 
 .DataCellColorize2(@_clr) {
-    .CornersColorize(fade(@_clr, 12.5));
+
+    &.headcell-corners, &.datacell-corners {
+        .Corners(fade(@_clr, 12.5), @_cell_crnr_unit);
+    }
 
     &.headcell-filled, &.datacell-filled {
         background-color: fade(@_clr, 10);
@@ -141,7 +153,11 @@ table.@{PCSS}-datatable {
 }
 
 .DataCell(@prefix) {
-    .Corners(@grid_spacing/8);
+
+    &.@{prefix}-corners {
+        .Corners(@color_border, @_cell_crnr_unit);
+    }
+
     display: flex;
     box-sizing: border-box;
     padding: @grid_spacing/3 @grid_spacing/2;
@@ -151,12 +167,24 @@ table.@{PCSS}-datatable {
         justify-content: flex-end;
     }
 
+    &.@{prefix}-left {
+        justify-content: flex-start;
+    }
+
     &.@{prefix}-center {
         justify-content: center;
     }
 
     &.@{prefix}-middle {
         align-items: center;
+    }
+
+    &.@{prefix}-top {
+        align-items: flex-start;
+    }
+
+    &.@{prefix}-bottom {
+        align-items: flex-end;
     }
 
     &.@{prefix}-accent {
@@ -192,9 +220,15 @@ table.@{PCSS}-datatable {
     border-top: 1px solid @color_border;
     position: relative;
 
+    @_clr_row_alt: fade(@color_background_alt, 20);
+
     .@{PCSS}-datarow {
         z-index: 0;
         pointer-events: none;
+
+        &.datarow-alt {
+            background-color: @_clr_row_alt;
+        }
     }
 
     .@{PCSS}-headcell {
@@ -217,6 +251,10 @@ table.@{PCSS}-datatable {
 
         + .@{PCSS}-datacell ~ .@{PCSS}-datarow {
             background-color: transparent;
+        }
+
+        &.datarow-alt {
+            background-color: @_clr_row_alt;
         }
     }
 

@@ -20,8 +20,20 @@ body {
     .@{PCSS}-animatable {
         .Animatable(.4s);
 
+        &.anim-rotate{
+            animation-name: rotate-anim;
+            animation-duration: 1s;
+            animation-timing-function: @easing_in_out_sine;
+            animation-delay: 0;
+            animation-iteration-count: infinite;
+        }
+
         &.anim-quick {
             animation-duration: .2s;
+        }
+
+        &.anim-sudden {
+            animation-delay: .0s;
         }
 
         &.anim-slow {
@@ -46,6 +58,7 @@ body {
 
         &.anim-pop {
             animation-name: pop-anim;
+            animation-timing-function: @easing_out_back;
         }
 
         &.anim-brightout {

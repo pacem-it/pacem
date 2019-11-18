@@ -222,6 +222,10 @@ html .@{PCSS}-preloader {
         white-space: nowrap !important;
     }
 
+    .text-pre {
+        white-space: pre !important;
+    }
+
     .text-truncate, // < bootstrap compat
     .text-ellipsed {
         white-space: nowrap;
@@ -249,10 +253,24 @@ html .@{PCSS}-preloader {
         font-family: @font_tech !important;
     }
 
+    .text-std {
+        font-family: @font_std !important;
+    }
+
+    .text-main {
+        font-family: @font_main !important;
+    }
+
     .text-normal {
         text-transform: none !important;
         font-style: normal !important;
         font-weight: normal !important;
+    }
+
+    .text-reset{
+        .text-normal();
+        .text-std();
+        .FontStdSize(1);
     }
     /* #endregion */
 }

@@ -59,7 +59,7 @@ namespace Pacem.Components.Scaffolding {
         </div>
     </${ P}-panel>`
     })
-    export class PacemEditImageElement extends PacemElement implements OnPropertyChanged {
+    export class PacemEditImageElement extends PacemElement {
 
         private _uploaderPropertyChangedCallback(evt: PropertyChangeEvent) {
             const val = evt.detail.currentValue;

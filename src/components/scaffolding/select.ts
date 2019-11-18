@@ -35,11 +35,13 @@ namespace Pacem.Components.Scaffolding {
         }
 
         private _manageDom(evt: RepeaterItemEvent) {
-            const args = evt.detail;
+            const args = evt.detail,
+                item = <DataSourceItem>args.item;
             let option = <HTMLOptionElement>args.dom.find(o => o instanceof HTMLOptionElement);
-            option.value = args.item.value;
-            option.textContent = args.item.viewValue;
-            option.selected = this.isDataSourceItemSelected(args.item);
+            option.value = item.value;
+            option.textContent = item.viewValue;
+            option.disabled = item.disabled;
+            option.selected = this.isDataSourceItemSelected(item);
             (Utils.isNullOrEmpty(option.value) ? Utils.addClass : Utils.removeClass).apply(this, [option, PCSS + '-watermark']);
         }
 

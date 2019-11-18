@@ -26,7 +26,7 @@ namespace Pacem.Components.Maps {
         markers = new Map<PacemMapMarkerElement, google.maps.Marker>();
         infoWindows = new Map<PacemMapMarkerElement, google.maps.InfoWindow>();
 
-        private _onDragEnd(item: PacemMapMarkerElement, evt: MouseEvent) {
+        private _onDragEnd(item: PacemMapMarkerElement, evt?: google.maps.MouseEvent) {
             const pos = this.markers.get(item).getPosition(),
                 dpos = { lat: pos.lat(), lng: pos.lng() };
             item.onDragEnd(dpos);

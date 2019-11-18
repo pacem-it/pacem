@@ -1,4 +1,5 @@
 ﻿@import "../theme-dark";
+@import "../../shared";
 
 .DialogWithFixedButtons() {
     .@{PCSS}-lightbox {
@@ -12,14 +13,21 @@
         bottom: 0;
         left: 0;
         position: fixed;
-        background: @color_background;
+        // background: @color_background;
         width: 100%;
         box-sizing: border-box;
-        z-index: @lightbox-z-index;
+        z-index: @lightbox_z_index;
         border-bottom-left-radius: @border_radius;
         border-bottom-right-radius: @border_radius;
     }
 
-   @{P}-button {
+    @{P}-button {
+    }
+
+    &.modal-corners,
+    &.dialog-corners {
+        .@{PCSS}-lightbox  when (@border_radius = 0){
+            .Corners(fade(@color_border, 100));
+        }
     }
 }

@@ -11,20 +11,26 @@ namespace Pacem.Components {
 
         get dom() {
             return this._children;
-        } 
+        }
 
         viewActivatedCallback() {
             super.viewActivatedCallback();
-            this._dom = this.moveContent(this, this.proxy);
-            this._children = <Element[]>this._dom.filter(e => e instanceof Element);
+            this.moveContent(this.proxy);
         }
 
-        protected moveContent(from: Element, to: Element) {
-            return Utils.moveChildren(from, to);
+        protected moveContent(to: Element) {
+            if (!Utils.isNull(to)) {
+                if (Utils.isNullOrEmpty(this._dom)) {
+                    this._dom = Utils.moveItems(this.childNodes, to);
+                    this._children = <Element[]>this._dom.filter(e => e instanceof Element);
+                } else {
+                    Utils.moveItems(this._dom, to);
+                }
+            }
         }
 
         disconnectedCallback() {
-            for (let item of this._dom.splice(0)) {
+            for (let item of (this._dom || []).splice(0)) {
                 item instanceof Element && item.remove();
             }
             super.disconnectedCallback();
@@ -51,6 +57,26 @@ namespace Pacem.Components {
 
         protected get proxy(): HTMLElement {
             return CustomElementUtils.findAncestorShell(this);
+        }
+
+    }
+
+    @CustomElement({
+        tagName: P + '-element-proxy'
+    })
+    export class PacemElementProxyElement extends PacemTransferProxyElement {
+
+        protected get proxy(): HTMLElement {
+            return this.target;
+        }
+
+        @Watch({ converter: PropertyConverters.Element }) target: HTMLElement;
+
+        propertyChangedCallback(name: string, old, val, first?: boolean) {
+            super.propertyChangedCallback(name, old, val, first);
+            if (name === 'selector' && !first) {
+                this.moveContent(this.proxy);
+            }
         }
 
     }

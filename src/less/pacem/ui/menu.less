@@ -209,10 +209,10 @@
     border: none;
     top: 0;
     cursor: pointer;
-    width: @grid_cell;
-    height: @grid_cell;
+    height: @layout_header_height;
+    width: $height;
     background: center center no-repeat;
-    background-size: .8 * @grid_cell;
+    background-size: .8 * @layout_header_height;
     margin: 0;
 
     button.@{PCSS}-button {
@@ -221,8 +221,9 @@
 }
 
 @{P}-button.@{PCSS}-menu {
-    @_sz: round(.5 * @grid_cell);
-    @_pad: round(.5 * (@grid_cell - @_sz));
+    @_avail: @layout_header_height;
+    @_sz: round(.5 * @_avail);
+    @_pad: round(.5 * (@_avail - @_sz));
 
     &.@{PCSS}-hamburger,
     &.@{PCSS}-back {
@@ -238,8 +239,8 @@
     }
 
     &.@{PCSS}-back {
-        left: @_w - @grid_cell;
-        transform: translateX(-@grid_cell - @_w);
+        left: @_w - @_avail;
+        transform: translateX(-@_avail - @_w);
         transition: transform .25s ease-out .075s, opacity .3s;
 
         &::before {
@@ -277,11 +278,9 @@
 }
 
 .@{PCSS}-body {
-
     // Toolbar on top of the layout? Hamburger button IS dependent from it.
     &[headbar]:not([header]),
     &[headbar-prepend] {
-
         // Shift it down.
         @{P}-button.@{PCSS}-menu.@{PCSS}-hamburger {
             top: @_toolbar_height;
@@ -319,7 +318,7 @@
                 background: none;
                 grid-row: ~"1/9";
                 width: @_w;
-                padding-top: @grid_spacing + @grid_cell;
+                padding-top: @grid_spacing + @layout_header_height;
             }
         }
     }
@@ -328,11 +327,11 @@
         /* #region all grid row template configurations*/
         .@{PCSS}-hamburger-menu {
             grid-template-rows: @_toolbar_height // 1 header 1/2
-            @_header_height - @_toolbar_height // 2 header 2/2
+            max(0, @_header_height - @_toolbar_height) // 2 header 2/2
             @_toolbar_height // 3 toolbar
             1fr // 4 main
             @_toolbar_height // 5 toolbar
-            @_footer_height - @_toolbar_height // 6 footer 1/3
+            max(0, @_footer_height - @_toolbar_height) // 6 footer 1/3
             @_toolbar_height // 7 footer 2/3
             auto; // 8 footer 3/3
         }
@@ -432,6 +431,19 @@
             }
         }
     }
+
+    @{P}-button.@{PCSS}-menu.@{PCSS}-hamburger {
+        @_avail: @grid_cell;
+        @_sz: round(.5 * @_header_height);
+        @_pad: round(.5 * (@_avail - @_sz));
+
+        width: @_avail;
+
+        &::before {
+            left: @_pad;
+        }
+    }
+
     /* #endregion */
     // see body modifications in `../body.less`
     .@{PCSS}-animations {

@@ -1,0 +1,88 @@
+﻿
+
+<pacem-markdown value="{{ #content0.textContent }}" class="md-tech" root></pacem-markdown>
+<pre pacem hidden id="content0">
+## Binary Input
+`PacemUploadElement` is the suggested webcomponent for file uploads. 
+</pre>
+
+<pacemjs-snippet>
+    <template>
+
+        <div class="pacem-panel">
+            <div class="panel-body">
+                <pacem-form id="frm0">
+                    <pacem-upload name="upload" on-download="#toast0.show = true" readonly="{{ #frm0.readonly }}" id="file0" max-size="1048576"></pacem-upload>
+                </pacem-form>
+            </div>
+            <div class="panel-footer display-flex">
+                <pacem-span on-click="#frm0.reset()" hide="{{ !#frm0.dirty }}" class="pacem-clickable  pacem-margin margin-right-1">
+                    <i class="pacem-icon text-success text-big">undo</i>
+                </pacem-span>
+                <label class="pacem-margin margin-right-2">readonly</label>
+                <pacem-checkbox class="checkbox-switch" true-value="true" false-value="false" value="{{ #frm0.readonly, twoway }}"></pacem-checkbox>
+            </div>
+        </div>
+
+        <pacem-shell-proxy>
+            <div class="pacem-toaster toaster-bottom toaster-right">
+                <pacem-toast id="toast0" class="toast-accent"><div><i class="pacem-icon">file_download</i> Downloading...</div></pacem-toast>
+            </div>
+        </pacem-shell-proxy>
+
+    </template>
+</pacemjs-snippet>
+
+
+<pacem-markdown value="{{ #content1.textContent }}" class="md-tech" root></pacem-markdown>
+<pre pacem hidden id="content1">
+## Metadata
+`PacemUploadElement` can be included in form auto-generation via proper metadata. 
+</pre>
+
+<pacemjs-snippet>
+    <template>
+
+        <pre pacem hidden id="pre1">
+{
+"display": { "cssClass": ["form-minimale"] },
+"props": [
+    {
+        "prop": "file", "display": { "name": "File (upload)" }, "type": "file", "dataType": "upload",
+        "validators": [
+            { "type": "binary", "errorMessage": "Invalid file", "params":
+                {
+                    "pattern": "\\.(pdf|docx?|xlsx?|jpe?g|png)$", "maxSize": 1048576
+                }
+            }
+        ]
+    }
+]}
+</pre>
+        <pacem-data model="{{ JSON.parse(#pre1.textContent) }}" id="metadata1"></pacem-data>
+
+        <div class="pacem-panel">
+            <div class="panel-tools">
+                <pacem-checkbox class="checkbox-switch" true-value="true" false-value="false" value="{{ #frm1.readonly, twoway }}"></pacem-checkbox>
+            </div>
+            <div class="panel-body">
+                <pacem-form id="frm1" on-download="#toast1.show = true" autogenerate="true" metadata="{{ #metadata1.model }}" entity="{}"></pacem-form>
+            </div>
+            <div class="panel-footer">
+                <code><pacem-text text="{{ #frm1.entity.file && #frm1.entity.file.name || '<filename>' }}"></pacem-text></code>
+            </div>
+        </div>
+
+        <pacem-shell-proxy>
+            <div class="pacem-toaster toaster-bottom toaster-right">
+                <pacem-toast id="toast1" class="toast-accent"><div class="text-ellipsed"><i class="pacem-icon">file_download</i> <pacem-text class="text-pre" text="{{ 'Downloading\n'+ #frm1.entity.file.name +'...' }}"></pacem-text></div></pacem-toast>
+            </div>
+        </pacem-shell-proxy>
+
+
+    </template>
+</pacemjs-snippet>
+
+
+<pacem-upload id="proto" hidden></pacem-upload>
+<pacemjs-descriptor target="#proto"></pacemjs-descriptor>

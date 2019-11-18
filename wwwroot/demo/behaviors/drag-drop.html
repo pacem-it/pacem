@@ -7,6 +7,7 @@
 <style type="text/css">
     #droptarget01, #droptarget02 {
         border: 1px solid transparent;
+        padding: 1px;
     }
 
         #droptarget01.pacem-dropping, #droptarget02.pacem-dropping {
@@ -24,15 +25,15 @@
 
 <!-- shared template -->
 <template id="tmpl0">
-    <pacem-panel class="pacem-panel panel-border draggable01 pacem-margin margin-bottom-1" behaviors="{{ [#dnd0] }}">
+    <pacem-panel class="pacem-panel panel-corners panel-border draggable01 pacem-margin margin-bottom-1" behaviors="{{ [#dnd0] }}">
         <div class="panel-body">
             <i class="pacem-icon drag-handle">drag_indicator</i>
             <pacem-text text="{{ 'col '+ ^item.col +' / row '+ ^item.row }}"></pacem-text>
         </div>
-        <div class="corner top-left"></div>
+        <!--<div class="corner top-left"></div>
         <div class="corner top-right"></div>
         <div class="corner bottom-left"></div>
-        <div class="corner bottom-right"></div>
+        <div class="corner bottom-right"></div>-->
     </pacem-panel>
 </template>
 
@@ -167,7 +168,7 @@ By setting the drag data **mode** to `Pacem.UI.DragDataMode.Copy` the drag sourc
             <div class="pacem-row">
                 <div class="pacem-column col-4">
 
-                    <div class="pacem-panel panel-border">
+                    <div class="pacem-panel panel-border panel-corners">
                         <div class="panel-heading">
                             Source
                         </div>
@@ -179,8 +180,8 @@ By setting the drag data **mode** to `Pacem.UI.DragDataMode.Copy` the drag sourc
                             <pacem-panel behaviors="{{ [#dragger2] }}" class="draggable2">3</pacem-panel>
                             <pacem-panel behaviors="{{ [#dragger2] }}" class="draggable2">4</pacem-panel>
                         </div>
-                        <div class="corner bottom-right"></div>
-                        <div class="corner bottom-left"></div>
+                        <!--<div class="corner bottom-right"></div>
+                        <div class="corner bottom-left"></div>-->
                     </div>
                 </div>
                 <div class="pacem-column col-4">
@@ -188,7 +189,7 @@ By setting the drag data **mode** to `Pacem.UI.DragDataMode.Copy` the drag sourc
                 <div class="pacem-column col-4">
 
 
-                    <div class="pacem-panel panel-border">
+                    <div class="pacem-panel panel-border panel-corners">
                         <div class="panel-heading">
                             Target
                         </div>
@@ -196,8 +197,8 @@ By setting the drag data **mode** to `Pacem.UI.DragDataMode.Copy` the drag sourc
                         <!-- target container -->
                         <div class="panel-body" id="columnD">
                         </div>
-                        <div class="corner bottom-right"></div>
-                        <div class="corner bottom-left"></div>
+                        <!--<div class="corner bottom-right"></div>
+                        <div class="corner bottom-left"></div>-->
                     </div>
 
                 </div>

@@ -2,7 +2,7 @@
 @import "shared";
 @import "../theme-dark";
 
-@keyframes rotate_anim {
+@keyframes rotate-anim {
 
     0% {
         transform: rotate(0deg);
@@ -99,19 +99,25 @@
         }
     }
 
+    &.loader-thin{
+        div.@{PCSS}-spinner{
+            border-width: @grid_spacing/8;
+        }
+    }
+
     div.@{PCSS}-spinner,
     &.loader-full div.@{PCSS}-spinner {
         border-top-color: @color_default;
-        animation: rotate_anim linear 1s infinite both;
+        animation: rotate-anim linear 1s infinite both;
 
         > div:nth-child(1) {
             border-top-color: @color_default;
-            animation: rotate_anim linear 2s infinite both;
+            animation: rotate-anim linear 2s infinite both;
         }
 
         > div:nth-child(2) {
             border-top-color: @color_default;
-            animation: rotate_anim linear 3s infinite both;
+            animation: rotate-anim linear 3s infinite both;
         }
     }
 
@@ -164,7 +170,7 @@
                 fill: @color_default;
             }
 
-            animation: rotate_anim cubic-bezier(0.86, 0, 0.07, 1) 1.7s infinite both;
+            animation: rotate-anim cubic-bezier(0.86, 0, 0.07, 1) 1.7s infinite both;
         }
 
         g.bounds {
@@ -174,7 +180,7 @@
                 fill: transparent;
             }
 
-            animation: rotate_anim cubic-bezier(0.645, 0.045, 0.355, 1) 2.3s infinite reverse both;
+            animation: rotate-anim cubic-bezier(0.645, 0.045, 0.355, 1) 2.3s infinite reverse both;
         }
 
         g {

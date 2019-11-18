@@ -1,57 +1,78 @@
-﻿
-@import "../theme-dark";
+﻿@import "../theme-dark";
 @import "../../shared";
 
 @{P}-progressbar {
-    display: block;
+    display: grid;
+    grid-template-areas: 'caption' 'bar';
+    align-items: center;
+    justify-content: stretch;
+
+    @_glow_sz: @grid_spacing / 4;
+
+    & when (@glows = true) {
+        padding: @_glow_sz;
+    }
 
     .ProgressBar(@_thickness) {
-        @_overall: 22px + @_thickness;
-        @_clr: fade(@color_default, 10);
 
-        .@{PCSS}-progressbar {
-            //height: @_overall;
-            //.GradientVertical(0, @_overall - @_thickness, @_overall - @_thickness, @_overall, transparent, transparent, rgba(255,255,255,0.1), rgba(255,255,255,0.1));
-            .GradientVertical(0, 0, @_thickness, @_thickness, transparent, @_clr, @_clr, transparent);
-            background-position: 0 @_overall - @_thickness;
+        .@{PCSS}-track {
+
+            & when (@border_radius > 0) {
+                border-radius: min(@_thickness / 2, @border_radius );
+            }
 
             .@{PCSS}-bar {
                 height: @_thickness;
-                //box-shadow: inset 0 0 @grid_spacing/2 rgba(0,0,0,0.5);
-                margin-top: @_overall - @_thickness;
-            }
-
-            .@{PCSS}-caption {
-                line-height: @_overall - @_thickness;
             }
         }
     }
 
-    .@{PCSS}-progressbar {
-        overflow: hidden;
-        overflow: hidden;
-        //box-shadow: inset 0 0 @grid_spacing/3 rgba(0,0,0,0.5);
-        //background: rgba(255,255,255,0.1);
+    .ProgressBarColoring(@clr) {
+
+        .@{PCSS}-bar when (@gradients = false) {
+            background-color: @clr;
+        }
+
+        .@{PCSS}-bar when (@gradients = true) {
+            .GradientVertical(0%, 33%, 67%, 100%, lighten(@clr, 10), @clr, @clr, darken(@clr, 10));
+        }
+
+        .@{PCSS}-bar when (@glows = true) {
+            box-shadow: 0 0 @_glow_sz @clr;
+        }
+    }
+
+    .@{PCSS}-track {
+        // overflow: hidden;
+        grid-area: bar;
         position: relative;
 
-        .@{PCSS}-bar {
-            transition: transform ease-out .3s;
-            transform: translateX(-100%);
-            background: @color_default;
-            //box-shadow: inset 0 0 @grid_spacing/2 rgba(0,0,0,0.5);
+        & when (@dark_theme = true) {
+            background-color: fade(@color_light, 10);
         }
 
-        .@{PCSS}-caption {
-            display: block;
-            text-align: center;
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
+        & when (@dark_theme = false) {
+            background-color: fade(@color_dark, 5);
+        }
+
+        & when (@shadows = true) {
+            .GradientVertical(0%, 100%, rgba(0,0,0,0.25), rgba(255,255,255,0.05));
+        }
+
+        .@{PCSS}-bar {
+            transform-origin: left center;
         }
     }
 
-    .ProgressBar(10px);
+    .@{PCSS}-caption {
+        grid-area: caption;
+        display: block;
+        text-align: center;
+        .FontTech(1rem);
+    }
+
+    .ProgressBar(@grid_spacing/2);
+    .ProgressBarColoring(@color_default);
 
     &.progressbar-large {
         .ProgressBar(@grid_spacing);
@@ -62,50 +83,75 @@
     }
 
     &.progressbar-smaller {
+        .ProgressBar(@grid_spacing/6);
+    }
+
+    &.progressbar-thin {
         .ProgressBar(1px);
     }
     // coloring
     &.progressbar-accent {
-        .@{PCSS}-bar {
-            background: @color_accent;
-        }
+        .ProgressBarColoring(@color_accent);
     }
 
     &.progressbar-danger {
-        .@{PCSS}-bar {
-            background: @color_danger;
-        }
+        .ProgressBarColoring(@color_danger);
+    }
+
+    &.progressbar-error {
+        .ProgressBarColoring(@color_error);
     }
 
     &.progressbar-success {
-        .@{PCSS}-bar {
-            background: @color_success;
-        }
+        .ProgressBarColoring(@color_success);
     }
 
     &.progressbar-primary {
-        .@{PCSS}-bar {
-            background: @color_primary;
-        }
+        .ProgressBarColoring(@color_primary);
     }
 
     &.progressbar-warning {
-        .@{PCSS}-bar {
-            background: @color_warning;
+        .ProgressBarColoring(@color_warning);
+    }
+
+    &.progressbar-disabled {
+        .ProgressBarColoring(@color_disabled);
+    }
+    // caption positioning
+    &.caption-left {
+        grid-template-columns: auto 1fr;
+        grid-template-areas: 'caption bar';
+
+        .@{PCSS}-caption {
+            padding-right: @grid_spacing/3;
         }
+    }
+
+    &.caption-right {
+        grid-template-columns: 1fr auto;
+        grid-template-areas: 'bar caption';
+
+        .@{PCSS}-caption {
+            padding-left: @grid_spacing/3;
+        }
+    }
+
+    &.caption-bottom {
+        grid-template-areas: 'bar' 'caption';
     }
 
     &.progressbar-nocaption {
 
-        .@{PCSS}-progressbar {
+        .@{PCSS}-caption {
+            display: none !important;
+        }
+    }
+}
 
-            .@{PCSS}-bar {
-                margin-top: 0;
-            }
-
-            .@{PCSS}-caption {
-                display: none !important;
-            }
+.@{PCSS}-animations {
+    @{P}-progressbar {
+        .@{PCSS}-bar {
+            transition: transform ease-out .3s;
         }
     }
 }

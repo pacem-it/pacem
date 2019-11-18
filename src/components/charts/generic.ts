@@ -136,13 +136,19 @@ namespace Pacem.Components.Charts {
         @Watch({ converter: PropertyConverters.String }) xAxisPosition: 'bottom' | 'top' | 'none';
 
         register(item: PacemChartSeriesElement) {
-            super.register(item);
-            item.addEventListener(PropertyChangeEventName, this._itemPropertyChangedCallback, false);
+            if (super.register(item)) {
+                item.addEventListener(PropertyChangeEventName, this._itemPropertyChangedCallback, false);
+                return true;
+            }
+            return false;
         }
 
         unregister(item: PacemChartSeriesElement) {
-            item.removeEventListener(PropertyChangeEventName, this._itemPropertyChangedCallback, false);
-            super.unregister(item);
+            if (super.unregister(item)) {
+                item.removeEventListener(PropertyChangeEventName, this._itemPropertyChangedCallback, false);
+                return true;
+            }
+            return false;
         }
 
         private _itemPropertyChangedCallback = (evt: PropertyChangeEvent) => {

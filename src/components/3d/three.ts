@@ -74,7 +74,7 @@ namespace Pacem.Components.ThreeD {
 
             //if (!ctrl.renderer)
             let parameters: THREE.WebGLRendererParameters = {
-                canvas: stage, antialias: true, stencil: false, alpha: true, clearAlpha: 1
+                canvas: stage, antialias: true, stencil: false, alpha: true //, clearAlpha: 1
             };
             this._renderer = new THREE.WebGLRenderer(parameters);
             this._renderer.setSize(w, h);

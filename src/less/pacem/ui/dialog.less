@@ -1,15 +1,14 @@
 ﻿@import "dialog-vars";
-@{P}-dialog {
 
+@{P}-dialog {
     .DialogWithFixedButtons();
-
     display: none;
 
-    &[pacem]{
+    &[pacem] {
         display: block;
     }
 
-    &[pacem][cloak]{
+    &[pacem][cloak] {
         display: none !important;
     }
 }

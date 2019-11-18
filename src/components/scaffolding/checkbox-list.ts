@@ -7,7 +7,7 @@ namespace Pacem.Components.Scaffolding {
         tagName: P + '-checkbox-list', template: `<${ P }-repeater datasource="{{ :host.adaptedDatasource }}">
     <ol class="${PCSS}-checkbox-list ${PCSS}-viewfinder" pacem>
         <template>
-            <li><${ P }-checkbox disabled="{{ ::_disable.model }}" name="{{ :host.key, once }}" caption="{{ ^item.viewValue }}" true-value="{{ ^item.value }}" selected="{{ :host.isDataSourceItemSelected(^item, :host.value) }}"
+            <li><${ P }-checkbox disabled="{{ ::_disable.model || ^item.disabled }}" name="{{ :host.key, once }}" caption="{{ ^item.viewValue }}" true-value="{{ ^item.value }}" selected="{{ :host.isDataSourceItemSelected(^item, :host.value) }}"
 on-focus=":host.focusHandler($event)" on-blur=":host.focusHandler($event)"
 on-${ PropertyChangeEventName}=":host._selectionChanged($event, ^index, ^item)" on-change=":host.changeHandler($event)"></${ P }-checkbox></li>
         </template>

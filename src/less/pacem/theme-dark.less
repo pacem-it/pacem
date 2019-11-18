@@ -4,6 +4,16 @@
 @class_prefix: @tag_prefix;
 @PCSS: @class_prefix;
 
+// screen sizes
+@threshold_xs: 0;
+@threshold_sm: 768px;
+@threshold_md: 992px;
+@threshold_lg: 1200px;
+@threshold_xl: 1824px;
+@threshold_hd: 1920px;
+@threshold_uhd: 2880px;
+@threshold_4k: 3840px;
+
 // NEXT: class prefix
 // @css_prefix: pacem;
 // @CP: @css_prefix;
@@ -144,6 +154,7 @@
 @shadows: true;
 @gradients: true;
 @glows: false;
+@blur: false;
 @border_radius: 0;
 @menuitem_borders: false;
 @color_border: fade(@color_default, 10);
@@ -186,6 +197,9 @@
 @balloon_color: darken(@color_lightblue, 2);
 @balloon_color_contrast: @color_background;
 @balloon_shadows: @shadows;
+
+// window
+@window_color: @balloon_color;
 
 // contextmenu
 @color_contextmenu_hover_back: lighten(@color_button_back, @button_hover_percentage);

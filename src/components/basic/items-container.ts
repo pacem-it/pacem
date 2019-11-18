@@ -55,27 +55,35 @@ namespace Pacem.Components {
             }
         }
 
-        register(item: TItem) {
+        register(item: TItem) : boolean {
             const container = this._container;
+            var retval = false;
             if (!container.validate(item)) {
                 container.logger && container.logger.log(Pacem.Logging.LogLevel.Debug, `${(item && item.localName)} element couldn't be registered in a ${container.localName} element.`);
-                return;
+            } else {
+                if (Utils.isNull(container.items)) {
+                    container.items = [item];
+                    retval = true;
+                } else if (container.items.indexOf(item) === -1) {
+                    container.items.push(item);
+                    retval = true;
+                }
             }
-            if (Utils.isNull(container.items)) {
-                container.items = [item];
-            } else if (container.items.indexOf(item) === -1) {
-                container.items.push(item);
+            if (retval) {
                 container.dispatchEvent(new ItemRegisterEvent(item));
             }
+            return retval;
         }
 
-        unregister(item: TItem) {
+        unregister(item: TItem) : boolean {
             const container = this._container;
             const ndx = !Utils.isNull(container.items) && container.items.indexOf(item);
             if (ndx >= 0) {
                 let item = container.items.splice(ndx, 1);
                 container.dispatchEvent(new ItemUnregisterEvent(item[0]));
+                return true;
             }
+            return false;
         }
     }
 
@@ -100,7 +108,7 @@ namespace Pacem.Components {
          * @param item {TItem} Item to be enrolled
          */
         register(item: TItem) {
-            this._registrar.register(item);
+            return this._registrar.register(item);
         }
 
         /**
@@ -108,7 +116,7 @@ namespace Pacem.Components {
          * @param item {TItem} Item to be removed
          */
         unregister(item: TItem) {
-            this._registrar.unregister(item);
+            return this._registrar.unregister(item);
         }
     }
 
@@ -117,7 +125,7 @@ namespace Pacem.Components {
         implements ItemsContainer<TItem> {
 
         constructor(role?: string, aria?: { [name: string]: string }) {
-            super(role, aria)
+            super(role, aria);
             this._registrar = new ItemsContainerRegistrar(this);
         }
 
@@ -132,7 +140,7 @@ namespace Pacem.Components {
          * @param item {TItem} Item to be enrolled
          */
         register(item: TItem) {
-            this._registrar.register(item);
+            return this._registrar.register(item);
         }
 
         /**
@@ -140,7 +148,7 @@ namespace Pacem.Components {
          * @param item {TItem} Item to be removed
          */
         unregister(item: TItem) {
-            this._registrar.unregister(item);
+            return this._registrar.unregister(item);
         }
 
     }

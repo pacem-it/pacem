@@ -223,7 +223,7 @@ css-class="{{ {'${PCSS}-fetching': ::_fetcher.fetching, '${PCSS}-dirty': this.di
             };
 
             // fetch data
-            let fetchData: { source: Function | any[], sourceUrl: string, valueProperty: string, textProperty: string, verb: Pacem.Net.HttpMethod, dependsOn?: Pacem.Scaffolding.DependsOn[] } = meta.extra;
+            let fetchData: { source: Function | any[], sourceUrl: string, valueProperty: string, textProperty: string, disabledProperty?: string, verb: Pacem.Net.HttpMethod, dependsOn?: Pacem.Scaffolding.DependsOn[] } = meta.extra;
             let fetchAttrs: { [key: string]: string } = {};
 
             let disabledAttr = "false";
@@ -322,6 +322,9 @@ css-class="{{ {'${PCSS}-fetching': ::_fetcher.fetching, '${PCSS}-dirty': this.di
                     if (!Utils.isNullOrEmpty(fetchData.textProperty)) {
                         attrs['text-property'] = fetchData.textProperty;
                     }
+                    if (!Utils.isNullOrEmpty(fetchData.disabledProperty)) {
+                        attrs['disabled-property'] = fetchData.disabledProperty;
+                    }
                     if (!Utils.isNullOrEmpty(fetchData.valueProperty)) {
                         if (!meta.isComplexType)
                             attrs['value-property'] = fetchData.valueProperty;
@@ -382,6 +385,8 @@ css-class="{{ {'${PCSS}-fetching': ::_fetcher.fetching, '${PCSS}-dirty': this.di
                     attrs['datasource'] = `{{ Pacem.Utils.getApiResult(#fetch${this._key}.result) }}`;
                     if (!Utils.isNullOrEmpty(fetchData.textProperty))
                         attrs['text-property'] = fetchData.textProperty;
+                    if (!Utils.isNullOrEmpty(fetchData.disabledProperty))
+                        attrs['disabled-property'] = fetchData.disabledProperty;
                     if (!Utils.isNullOrEmpty(fetchData.valueProperty))
                         attrs['compare-by'] = fetchData.valueProperty;
                     this._fetcher.id = `fetch${this._key}`;
@@ -439,6 +444,8 @@ css-class="{{ {'${PCSS}-fetching': ::_fetcher.fetching, '${PCSS}-dirty': this.di
                             attrs['allow-snapshot'] = meta.extra.snapshot;
                             break;
                         case 'upload':
+                            // upload
+                            tagName = P + '-upload';
                             break;
                         case 'html':
                             // contenteditable
@@ -489,6 +496,10 @@ css-class="{{ {'${PCSS}-fetching': ::_fetcher.fetching, '${PCSS}-dirty': this.di
                         case 'latlng':
                             tagName = P + '-latlng';
                             break;
+                        case 'currency':
+                            tagName = P + '-input-number';
+                            let intl: Intl.NumberFormatOptions = Object.assign({ style: 'currency', currency: 'EUR' }, meta.extra);
+                            attrs['format'] = JSON.stringify(intl);
                         default:
                             switch ((meta.type || '').toLowerCase()) {
                                 case "boolean":
@@ -531,7 +542,7 @@ css-class="{{ {'${PCSS}-fetching': ::_fetcher.fetching, '${PCSS}-dirty': this.di
 
                                             var extraDom = '';
                                             for (let d of fetchData.dependsOn) {
-                                                extraDom += `<${P}-childform-propagator model="${ attrs["value"] }" watch="{{ :host.entity.${ d.prop } }}" property="${ (d.alias || d.prop) }"></${P}-childform-propagator>\n`;
+                                                extraDom += `<${P}-childform-propagator model="${attrs["value"]}" watch="{{ :host.entity.${d.prop} }}" property="${(d.alias || d.prop)}"></${P}-childform-propagator>\n`;
                                             }
                                             this._container.innerHTML = extraDom;
                                         }
@@ -592,6 +603,20 @@ css-class="{{ {'${PCSS}-fetching': ::_fetcher.fetching, '${PCSS}-dirty': this.di
                             let pattern = validator.params['pattern'];
                             attrs['pattern'] = pattern.replace('\\', '\\\\');
                             regexValidator.pattern = pattern;
+                            break;
+                        case 'binary':
+                            let binaryValidator = <PacemBinaryValidatorElement>document.createElement(P + '-binary-validator');
+                            validatorElement = binaryValidator;
+                            let filePattern = validator.params['pattern'];
+                            if (filePattern != null) {
+                                attrs['pattern'] = filePattern; //.replace('\\', '\\\\');
+                                binaryValidator.pattern = filePattern;
+                            }
+                            let maxSize = validator.params && validator.params['maxSize'];
+                            if (maxSize != null) {
+                                binaryValidator.maxSize = maxSize;
+                                attrs['max-size'] = '' + maxSize;
+                            }
                             break;
                         case 'compare':
                             let compareValidator = <PacemCompareValidatorElement>document.createElement(P + '-compare-validator');

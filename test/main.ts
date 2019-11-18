@@ -4,6 +4,7 @@
 /// <reference path="geom-tests.ts" />
 /// <reference path="deepclone-tests.ts" />
 /// <reference path="json-tests.ts" />
+/// <reference path="uri-tests.ts" />
 /// <reference path="transformer-tests.ts" />
 
 namespace Pacem.Tests {
@@ -27,6 +28,12 @@ namespace Pacem.Tests {
     });
 
     deepCloneTests.forEach(test => {
+
+        describe(test.name, test.test);
+
+    });
+
+    uriTests.forEach(test => {
 
         describe(test.name, test.test);
 

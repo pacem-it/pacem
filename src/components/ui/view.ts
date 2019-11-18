@@ -6,7 +6,7 @@ namespace Pacem.Components.UI {
     @CustomElement({
         tagName: P + '-view'
     })
-    export class PacemViewElement extends PacemEventTarget implements OnPropertyChanged, OnViewActivated {
+    export class PacemViewElement extends PacemEventTarget {
 
         @Watch({ reflectBack: true, converter: PropertyConverters.String }) url: string;
         @Watch({ converter: PropertyConverters.Boolean }) fetching: boolean;

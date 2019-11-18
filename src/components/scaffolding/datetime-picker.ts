@@ -7,11 +7,11 @@ namespace Pacem.Components.Scaffolding {
     type MonthSelectDataItem = { value: number, date: Date, label: string };
     type DateSelectDataItem = { value: number, date: Date, label: string, disabled: boolean };
 
-    class DatetimeChangeEvent extends CustomTypedEvent<{ date: Date }> {
-        constructor(date: Date) {
-            super('datetimechange', { date: date });
-        }
-    }
+    //class DatetimeChangeEvent extends CustomTypedEvent<{ date: Date }> {
+    //    constructor(date: Date) {
+    //        super('datetimechange', { date: date });
+    //    }
+    //}
 
     @CustomElement({
         tagName: P + '-datetime-picker', shadow: Defaults.USE_SHADOW_ROOT,
@@ -52,7 +52,7 @@ namespace Pacem.Components.Scaffolding {
     <${ P}-span class="${PCSS}-readonly" css-class="{{ { 'date': :host.precision === 'day', 'datetime': :host.precision !== 'day' } }}" content="{{ :host.viewValue }}" hide="{{ !:host.readonly }}"></${P}-span>
 </div>`
     })
-    export class PacemDatetimePickerElement extends PacemBaseElement implements OnConnected, OnPropertyChanged {
+    export class PacemDatetimePickerElement extends PacemBaseElement {
 
         constructor() {
             super();
@@ -83,6 +83,7 @@ namespace Pacem.Components.Scaffolding {
         @Watch({ converter: PropertyConverters.Datetime }) min: string | Date;
         @Watch({ converter: PropertyConverters.Datetime }) max: string | Date;
         @Watch({ converter: PropertyConverters.String }) precision: 'day' | 'minute' | 'second' = 'day';
+        @Watch({ emit: false, converter: PropertyConverters.Json }) format: Intl.DateTimeFormatOptions;
 
         connectedCallback() {
             super.connectedCallback();
@@ -120,7 +121,7 @@ namespace Pacem.Components.Scaffolding {
                 case 'dateValue':
                     this.log(Logging.LogLevel.Log, `dateValue changed from ${old} to ${val}`);
                     this._disassembleDate(val);
-                    this.changeHandler(new DatetimeChangeEvent(val));
+                    // this.changeHandler(new DatetimeChangeEvent(val));
                     break;
                 case 'min':
                 case 'max':
@@ -185,13 +186,15 @@ namespace Pacem.Components.Scaffolding {
         }
 
         protected onChange(evt?: Event) {
-            var deferred = DeferPromise.defer<Date>();
-            if (CustomEventUtils.isInstanceOf(evt, DatetimeChangeEvent)) {
-                const date = this.value = (<DatetimeChangeEvent>evt).detail.date;
-                deferred.resolve(date); // keep same type (Date or string equivalent)
-            } else
-                deferred.resolve(this.value);
-            return <PromiseLike<Date>>deferred.promise;
+            return new Promise((resolve, reject) => {
+                //if (CustomEventUtils.isInstanceOf(evt, DatetimeChangeEvent)) {
+                //    const date = (<DatetimeChangeEvent>evt).detail.date;
+                //    resolve(this.value = date); // keep same type (Date or string equivalent)
+                //} else {
+                //    resolve(this.value = Utils.parseDate(this.value));
+                //}
+                resolve(this.value = this._computeValue());
+            });
         }
 
         private _buildupDates(evt?: Event) {
@@ -222,15 +225,13 @@ namespace Pacem.Components.Scaffolding {
                 this._buildup();
         }
 
-        @Debounce(10)
-        private _buildup(evt?: Event) {
-            if (evt) evt.stopPropagation();
-            //
+        private _computeValue(): Date {
             const v = this;
-            let year = '', month = '', date = '';
-            if (Utils.isNullOrEmpty(v.year) || Utils.isNullOrEmpty(v.month) || Utils.isNullOrEmpty(v.date))
-                this.dateValue = null;
-            else
+            if (Utils.isNullOrEmpty(v.year)
+                || Utils.isNullOrEmpty(v.month)
+                || Utils.isNullOrEmpty(v.date)) {
+                return null;
+            } else {
                 //
                 try {
 
@@ -240,13 +241,20 @@ namespace Pacem.Components.Scaffolding {
                     value.setSeconds(+v.seconds);
                     value.setMilliseconds(0);
                     if (!Number.isNaN(value.valueOf())) {
-                        this.dateValue = value;
+                        return value;
                     }
-                    else
-                        this.dateValue = null;
+                    else return null;
                 } catch (e) {
-                    this.dateValue = null;
+                    return null;
                 }
+            }
+        }
+
+        @Debounce(10)
+        private _buildup(evt?: Event) {
+            if (evt) evt.stopPropagation();
+            //
+            this.dateValue = this._computeValue();
         }
 
         protected getViewValue(val: any): string {

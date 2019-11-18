@@ -1,10 +1,23 @@
-﻿// kept names from known bootstrap classes
+﻿@import "../theme-dark";
+// kept names from known bootstrap classes
 .pull-right {
     float: right;
 }
+
 .pull-left {
     float: left;
 }
+
 .clearfix {
     clear: both;
+}
+
+.@{PCSS}-badge,
+.badge {
+    display: inline-block;
+    padding: 0 @grid_spacing/4;
+
+    & when (@border_radius > 0) {
+        border-radius: .25em;
+    }
 }

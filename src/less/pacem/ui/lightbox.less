@@ -1,5 +1,6 @@
 ﻿@import "shared";
 @import "../theme-dark";
+@import "../../shared";
 
 /*#region LIGHTBOX*/
 
@@ -45,10 +46,13 @@
     }
 }
 
+@{P}-lightbox.lightbox-corners .@{PCSS}-lightbox when (@border_radius = 0){
+    .Corners(fade(@color_border, 100));
+}
+
 .@{PCSS}-lightbox {
     @_clr: @color_background;
     @_fore_clr: @color_default;
-    background: @_clr;
     color: @_fore_clr;
     max-width: 80vw;
     max-height: 80vh;
@@ -56,11 +60,21 @@
     box-shadow: 0 2px 4px rgba(0,0,0,0.25);
     border-radius: @border_radius;
 
+
+    & when (@blur = false) {
+        background-color: @_clr;
+    }
+
+    & when (@blur = true) {
+        .Blur(6px, @_clr);
+    }
+
+
     > .@{PCSS}-scrollable {
         position: relative;
         max-width: 80vw;
         max-height: 80vh;
-        border: 1em solid @_clr;
+        border: 1em solid transparent; // @_clr;
         border-top-left-radius: @border_radius;
         border-top-right-radius: @border_radius;
     }

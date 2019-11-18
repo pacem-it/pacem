@@ -1,0 +1,59 @@
+﻿
+
+<pacem-markdown value="{{ #content0.textContent }}" root class="md-tech"></pacem-markdown>
+
+<pre pacem hidden id="content0">
+
+## Radio Lists
+The radio-list scaffolding component (`PacemRadioListElement`) iterates radio buttons for single-choice input.  
+It provides nonetheless **databinding capabilities** for handy connects against datasources:
+
+</pre>
+
+<pacemjs-snippet>
+    <template>
+
+        <pacem-radio-list id="fruit0" placeholder="pick a fruit..." datasource="{{ ['apples', 'bananas', 'cucumbers', 'dates', 'elderberries', 'figs', 'grapefruits', 'hackberries'] }}"></pacem-radio-list>
+
+        <div class="pacem-margin margin-top-3">
+            value:
+            <code><pacem-text text="{{ #fruit0.value }}"></pacem-text></code>
+        </div>
+    </template>
+</pacemjs-snippet>
+
+<pacem-markdown value="{{ #content1.textContent }}" root class="md-tech"></pacem-markdown>
+
+<pre pacem hidden id="content1">
+
+## Declarative usage
+Same results can be achieved in a more declarative way by wrapping a list of `&lt;pacem-data-item>` elements.
+>  Any `PacemDatasourceElement` can wrap `&lt;pacem-data-item>` elements as a datasource.
+</pre>
+
+<pacemjs-snippet>
+    <template>
+        <pacem-radio-list id="fruit1" placeholder="pick a fruit...">
+            <pacem-data-item value="apples"></pacem-data-item>
+            <pacem-data-item value="bananas"></pacem-data-item>
+            <pacem-data-item value="cucumbers"></pacem-data-item>
+            <pacem-data-item disabled="true" value="dates"></pacem-data-item>
+            <pacem-data-item value="elderberries"></pacem-data-item>
+            <pacem-data-item value="figs"></pacem-data-item>
+            <pacem-data-item value="grapefruits"></pacem-data-item>
+            <pacem-data-item value="hackberries"></pacem-data-item>
+        </pacem-radio-list>
+
+        <div class="pacem-margin margin-top-3">
+            value:
+            <code><pacem-text text="{{ #fruit1.value }}"></pacem-text></code>
+        </div>
+    </template>
+</pacemjs-snippet>
+
+
+<pacem-radio id="proto" hidden></pacem-radio>
+<pacemjs-descriptor target="#proto"></pacemjs-descriptor>
+
+<pacem-radio-list id="proto1" hidden></pacem-radio-list>
+<pacemjs-descriptor target="#proto1"></pacemjs-descriptor>

@@ -45,7 +45,7 @@ namespace Pacem {
         }
 
         @Transformer()
-        static date(src: string | Date | number, format: 'short' | 'full' | 'iso' | 'isodate' | Intl.DateTimeFormatOptions, culture?: string) {
+        static date(src: string | Date | number, format: 'short' | 'full' | 'iso' | 'isodate' | 'localdate' | Intl.DateTimeFormatOptions, culture?: string) {
             var date = Utils.parseDate(src),
                 lang = culture || navigator.language;
             if (Utils.isNull(format) || typeof format === 'string') {

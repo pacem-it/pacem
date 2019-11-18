@@ -64,6 +64,11 @@
         "label": "Localization",
         "view": "l10n",
         "title": "Localization"
+      },
+      {
+        "label": "DataTable",
+        "view": "datatable",
+        "title": "DataTable"
       }
     ]
   },
@@ -194,7 +199,13 @@
       },
       {
         "label": "View",
-        "view": "view"
+        "view": "view",
+        "title": "<pacem-view>"
+      },
+      {
+        "label": "Window",
+        "view": "window",
+        "title": "<pacem-window>"
       }
     ]
   },
@@ -253,14 +264,34 @@
         "title": "<pacem-childform>"
       },
       {
-        "label": "Expression",
-        "view": "expression",
-        "title": "<pacem-expression>"
+        "label": "Numeric",
+        "view": "input-number",
+        "title": "<pacem-input-number>"
       },
       {
         "label": "Select",
         "view": "select",
         "title": "<pacem-select>"
+      },
+      {
+        "label": "Checkbox/List",
+        "view": "checkbox",
+        "title": "<pacem-checkbox>"
+      },
+      {
+        "label": "Radio/List",
+        "view": "radio",
+        "title": "<pacem-radio>"
+      },
+      {
+        "label": "Datetime",
+        "view": "datetime-picker",
+        "title": "<pacem-datetime-picker>"
+      },
+      {
+        "label": "Expression",
+        "view": "expression",
+        "title": "<pacem-expression>"
       },
       {
         "label": "Name-Value List / Dictionary",
@@ -281,6 +312,11 @@
         "label": "Tags",
         "view": "tags",
         "title": "<pacem-tags>"
+      },
+      {
+        "label": "File",
+        "view": "upload",
+        "title": "<pacem-upload>"
       }
     ]
   },

@@ -26,6 +26,7 @@ namespace Pacem.Components.Scaffolding {
 
     }
 
+    const EMITTABLE_EVENT_TYPES = ['download' /* upload element */]
     const SUBMIT_CANCELLATION_TOKEN = false;
 
     @CustomElement({ tagName: P + '-form' })
@@ -58,10 +59,12 @@ namespace Pacem.Components.Scaffolding {
             this._checkValidity();
 
             this.addEventListener('keyup', this._keyupHandler, false);
+            EMITTABLE_EVENT_TYPES.forEach(t => this.addEventListener(t, this.emitHandler, false));
         }
 
         disconnectedCallback() {
 
+            EMITTABLE_EVENT_TYPES.forEach(t => this.removeEventListener(t, this.emitHandler, false));
             this.removeEventListener('keyup', this._keyupHandler, false);
 
             this.form && this.form.unregisterSubForm(this);

@@ -8,9 +8,40 @@
     max-width: @max-width;
 }
 
-.Inert(){
+.Inert() {
     pointer-events: none !important;
     display: none !important;
+}
+
+.Blur(@radius) {
+    -webkit-backdrop-filter: blur(@radius);
+    backdrop-filter: blur(@radius);
+}
+
+.Blur(@radius, @bgcolor) {
+    background-color: fade(@bgcolor, 50);
+    .Blur(@radius);
+}
+
+.Corners(@clr) {
+    .Corners(@clr, 6);
+}
+
+.Corners(@clr, @sz) {
+    @sz2: unit(@sz + .5);
+    @brd2: rgba(red(@clr), green(@clr), blue(@clr), min(.99, alpha(@clr)));
+    @render: /*'geometricPrecision';*/ 'crispEdges';
+
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 @{sz2} @{sz2}'%3E%3Cpath shape-rendering='@{render}' stroke='@{brd2}' fill='transparent' stroke-width='1' d='M0,@{sz2} V0 H@{sz2}'%3E%3C/path%3E%3C/svg%3E"), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 @{sz2} @{sz2}'%3E%3Cpath shape-rendering='@{render}' stroke='@{brd2}' fill='transparent' stroke-width='1' d='M0,0 H@{sz2} V@{sz2}'%3E%3C/path%3E%3C/svg%3E"), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 @{sz2} @{sz2}'%3E%3Cpath shape-rendering='@{render}' stroke='@{brd2}' fill='transparent' stroke-width='1' d='M@{sz2},0 V@{sz2} H0'%3E%3C/path%3E%3C/svg%3E"), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 @{sz2} @{sz2}'%3E%3Cpath shape-rendering='@{render}' stroke='@{brd2}' fill='transparent' stroke-width='1' d='M@{sz2},@{sz2} H0 V0'%3E%3C/path%3E%3C/svg%3E");
+    background-position: top left, top right, bottom right, bottom left;
+    background-repeat: no-repeat;
+    background-size: unit(@sz, px);
+    background-origin: border-box;
+
+    &.corners-safe {
+        // margin to avoid corners disappearing
+        margin: 1px;
+    }
 }
 
 .GradientBorderVertical(@size, @from, @to, @color1, @color2) {

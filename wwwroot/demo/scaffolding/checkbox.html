@@ -1,0 +1,75 @@
+﻿
+<pacem-markdown value="{{ #content2.textContent }}" root class="md-tech"></pacem-markdown>
+
+<pre pacem hidden id="content2">
+
+## Checkbox
+The checkbox component (`PacemCheckboxElement`) identifies a choice between a `true-` and a `false-value`:
+
+</pre>
+
+<pacemjs-snippet>
+    <template>
+
+        <pacem-checkbox id="choice2" caption="{{ $this.value ? 'I\'m happy today' : 'I\'m grumpy today' }}" value="{{ true }}" true-value="true" false-value="false"></pacem-checkbox>
+
+    </template>
+</pacemjs-snippet>
+
+<pacem-markdown value="{{ #content0.textContent }}" root class="md-tech"></pacem-markdown>
+
+<pre pacem hidden id="content0">
+
+## Checkbox Lists
+The checkbox-list scaffolding component (`PacemCheckboxListElement`) iterates checkboxes for multichoice input.  
+It provides nonetheless **databinding capabilities** for handy connects against datasources:
+
+</pre>
+
+<pacemjs-snippet>
+    <template>
+
+        <pacem-checkbox-list id="fruit0" placeholder="pick some fruit..." datasource="{{ ['apples', 'bananas', 'cucumbers', 'dates', 'elderberries', 'figs', 'grapefruits', 'hackberries'] }}"></pacem-checkbox-list>
+
+        <div class="pacem-margin margin-top-3">
+            value:
+            <code><pacem-text text="{{ #fruit0.value }}"></pacem-text></code>
+        </div>
+    </template>
+</pacemjs-snippet>
+
+<pacem-markdown value="{{ #content1.textContent }}" root class="md-tech"></pacem-markdown>
+
+<pre pacem hidden id="content1">
+
+## Declarative usage
+Same results can be achieved in a more declarative way by wrapping a list of `&lt;pacem-data-item>` elements.
+>  Any `PacemDatasourceElement` can wrap `&lt;pacem-data-item>` elements as a datasource.
+</pre>
+
+<pacemjs-snippet>
+    <template>
+        <pacem-checkbox-list id="fruit1" placeholder="pick some fruit...">
+            <pacem-data-item value="apples"></pacem-data-item>
+            <pacem-data-item value="bananas"></pacem-data-item>
+            <pacem-data-item value="cucumbers"></pacem-data-item>
+            <pacem-data-item disabled="true" value="dates"></pacem-data-item>
+            <pacem-data-item value="elderberries"></pacem-data-item>
+            <pacem-data-item value="figs"></pacem-data-item>
+            <pacem-data-item value="grapefruits"></pacem-data-item>
+            <pacem-data-item value="hackberries"></pacem-data-item>
+        </pacem-checkbox-list>
+
+        <div class="pacem-margin margin-top-3">
+            value:
+            <code><pacem-text text="{{ #fruit1.value }}"></pacem-text></code>
+        </div>
+    </template>
+</pacemjs-snippet>
+
+
+<pacem-checkbox id="proto" hidden></pacem-checkbox>
+<pacemjs-descriptor target="#proto"></pacemjs-descriptor>
+
+<pacem-checkbox-list id="proto1" hidden></pacem-checkbox-list>
+<pacemjs-descriptor target="#proto1"></pacemjs-descriptor>

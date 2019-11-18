@@ -31,6 +31,7 @@ namespace Pacem.Components.UI {
             super.viewActivatedCallback();
             this._container.addEventListener('click', Pacem.stopPropagationHandler, false);
             this._container.addEventListener("scroll", Pacem.stopPropagationHandler, false);
+            this._sync();
         }
 
         disconnectedCallback() {
