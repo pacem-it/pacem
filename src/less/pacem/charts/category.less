@@ -6,15 +6,26 @@
         stroke: @clr;
     }
 
+    &.series-fill {
+        path {
+            fill: fade(@clr, 50);
+        }
+    }
+
     &.series-light {
         path {
             stroke: fade(@clr, 50);
+        }
+
+        &.series-fill {
+            path {
+                fill: fade(@clr, 20);
+            }
         }
     }
 }
 
 .@{PCSS}-chart-area {
-
     position: relative;
 
     .@{PCSS}-category-chart {

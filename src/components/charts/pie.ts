@@ -240,8 +240,11 @@ namespace Pacem.Components.Charts {
                         } else {
                             p = <SVGPathElement>g.children.item(ndx).firstElementChild;
                         }
-                        this._drawSlice(p, slice, sum, progress);
-                        progress += slice.value;
+
+                        if (slice.value > 0) {
+                            this._drawSlice(p, slice, sum, progress);
+                            progress += slice.value;
+                        }
                         ndx++;
                     }
                 }

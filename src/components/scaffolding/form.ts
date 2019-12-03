@@ -26,7 +26,7 @@ namespace Pacem.Components.Scaffolding {
 
     }
 
-    const EMITTABLE_EVENT_TYPES = ['download' /* upload element */]
+    const EMITTABLE_EVENT_TYPES = ['download' /* upload element */, CommandEventName]
     const SUBMIT_CANCELLATION_TOKEN = false;
 
     @CustomElement({ tagName: P + '-form' })
@@ -34,6 +34,7 @@ namespace Pacem.Components.Scaffolding {
 
         @Watch({ emit: false, converter: PropertyConverters.String }) fetchCredentials: RequestCredentials;
         @Watch({ emit: false, converter: PropertyConverters.Json }) fetchHeaders: { [key: string]: string; };
+        @Watch({ reflectBack: true, converter: PropertyConverters.String }) method: Pacem.Net.HttpMethod = Pacem.Net.HttpMethod.Post;
 
         constructor() {
             super('form');
@@ -41,7 +42,8 @@ namespace Pacem.Components.Scaffolding {
 
         propertyChangedCallback(name: string, old: any, val: any, first: boolean) {
             super.propertyChangedCallback(name, old, val, first);
-            if ((name === 'metadata' && this.autogenerate === true) ||
+            if ((name === 'method' && this.autogenerate === true && !Utils.isNullOrEmpty(this.metadata)) ||
+                (name === 'metadata' && this.autogenerate === true) ||
                 (name === 'autogenerate' && val === true && this.metadata && (this.metadata['props'] || this.metadata).length > 0)) {
                 this._buildUpForm();
             } else {
@@ -59,16 +61,24 @@ namespace Pacem.Components.Scaffolding {
             this._checkValidity();
 
             this.addEventListener('keyup', this._keyupHandler, false);
-            EMITTABLE_EVENT_TYPES.forEach(t => this.addEventListener(t, this.emitHandler, false));
+            EMITTABLE_EVENT_TYPES.forEach(t => this.addEventListener(t, this._itemEmitHandler, false));
         }
 
         disconnectedCallback() {
 
-            EMITTABLE_EVENT_TYPES.forEach(t => this.removeEventListener(t, this.emitHandler, false));
+            EMITTABLE_EVENT_TYPES.forEach(t => this.removeEventListener(t, this._itemEmitHandler, false));
             this.removeEventListener('keyup', this._keyupHandler, false);
 
             this.form && this.form.unregisterSubForm(this);
             super.disconnectedCallback();
+        }
+
+        private _itemEmitHandler = (e: Event) => {
+            this.emitHandler(e);
+            if (e.type === CommandEventName) {
+                const evt = e as CommandEvent;
+                this.emit(new CustomEvent('item' + evt.detail.commandName.toLowerCase(), {detail: evt.detail.commandArgument }));
+            }
         }
 
         @Debounce(100)
@@ -88,11 +98,11 @@ namespace Pacem.Components.Scaffolding {
         <template>
             <${P}-form-field css-class="{{ ^item.display && ^item.display.cssClass }}" css="{{ ^item.display && ^item.display.css }}"
                              fetch-credentials="{{ #${uid}.fetchCredentials }}" fetch-headers="{{ #${uid}.fetchHeaders }}"
-                             logger="{{ #${uid}.logger }}" entity="{{ #${uid}.entity, twoway }}" metadata="{{ ^item }}" readonly="{{ #${uid}.readonly }}"></${P}-form-field>
+                             logger="{{ #${uid}.logger }}" entity="{{ #${uid}.entity, twoway }}" metadata="{{ ^item }}" readonly="{{ #${uid}.readonly || ^item.isReadOnly }}"></${P}-form-field>
         </template>
     </${P}-panel>
 </${P}-repeater>
-<${P}-fetch logger="{{ #${uid}.logger }}" id="${f_uid}" method="${Pacem.Net.HttpMethod.Post}" credentials="{{ #${uid}.fetchCredentials }}" headers="{{ #${uid}.fetchHeaders }}"></${P}-fetch> 
+<${P}-fetch logger="{{ #${uid}.logger }}" id="${f_uid}" method="${this.method}" credentials="{{ #${uid}.fetchCredentials }}" headers="{{ #${uid}.fetchHeaders }}"></${P}-fetch> 
 <div class="${PCSS}-buttonset buttons">
     <div class="buttonset-left">
         <${P}-button logger="{{ #${uid}.logger }}" on-click="#${uid}._submit(#${f_uid}, $event)" type="submit" hide="{{ #${uid}.readonly || Pacem.Utils.isNullOrEmpty(#${uid}.action) || !Pacem.Utils.isNull(#${uid}.form) }}" class="button primary button-size size-small" css-class="{{ {'buttonset-last': !#${uid}.resettable || !#${uid}.dirty || !Pacem.Utils.isNull(#${uid}.form) } }}" disabled="{{ #${uid}.suddenValidation && (!(#${uid}.valid && #${uid}.dirty) || #${f_uid}.fetching) }}">Ok</${P}-button>

@@ -5,6 +5,7 @@
 <pre pacem hidden id="content0">
 ## Segregated Content
 
+Windows are useful to segregate content into a well-defined area in the UI.
 </pre>
 
 <pacemjs-snippet>
@@ -25,22 +26,56 @@
 <pre pacem hidden id="content1">
 ## Floating and Docking
 
+Windows usually float.  
+That is what they're meant for: flexibly move content across the screen so that you can arrange content as you please. That is how you're accostumed to.
+
+`PacemWindowElement` can be dragged (and rescaled as well) when you put them inside a `PacemWindowAreaElement`. 
+
+> But wait! **There's more**! 
+
+You can even dock the window on the side of the screen and use them like full-height drawers. See the example below:
 </pre>
 
-<pacem-shell-proxy>
-    <pacem-window-area>
-        <pacem-window caption="Hello World!" class="window-corners" floating="true">
-            <div>
-                Lorem ipsum dolor sit amet...
-            </div>
-        </pacem-window>
-        <pacem-window caption="YOLO!" class="window-corners" floating="true">
-            <div>
-                Lorem ipsum dolor sit amet...
-            </div>
-        </pacem-window>
-    </pacem-window-area>
-</pacem-shell-proxy>
+<pacemjs-snippet>
+    <template>
+
+        <p>Change the second window's title:</p>
+        <pacem-input-text value="{{ #win2.caption, twoway }}" id="txt2"></pacem-input-text>
+        <pacem-timer on-tick="#series1.datasource.unshift({ label: Date.now(), value: Math.random() * 2 * Math.sin(Date.now() * .005) }); #series1.datasource.splice(50)" interval="20"></pacem-timer>
+
+        <pacem-shell-proxy>
+            <pacem-window-area>
+                <pacem-window id="win1" caption="Hello World!" css-class="{{ {'window-corners window-border': $this.floating} }}" floating="true">
+                    <div class="pacem-grid full-height grid-nospace">
+                        <div class="pacem-panel pacem-cell panel-lonely">
+                            <div id="chart1" class="panel-body"></div>
+                            <span class="panel-footer">
+                                This is a purely pretextuous dynamic chart.
+                            </span>
+                        </div>
+                    </div>
+                    <pacem-chart x-axis-type="date" type="spline" target="#chart1">
+                        <pacem-chart-series id="series1" class="series-light series-accent series-bold" datasource="[]"></pacem-chart-series>
+                    </pacem-chart>
+
+                </pacem-window>
+                <pacem-window id="win2" caption="You Only Live Once!" style="transform: translate3d(24px, 24px, 0)" css-class="{{ {'window-corners window-border': $this.floating} }}" floating="true">
+
+                    <div class="pacem-card full-height">
+                        <pacem-img adapt="cover" class="card-img img-blend blend-default" src="https://www.jpl.nasa.gov/spaceimages/images/largesize/PIA03519_hires.jpg"></pacem-img>
+                        <div class="card-heading">
+                            Cassiopeia A
+                        </div>
+                        <div class="card-body">
+                            This is an image of the Supernova Remnant Cassiopeia A.
+                        </div>
+                    </div>
+
+                </pacem-window>
+            </pacem-window-area>
+        </pacem-shell-proxy>
+    </template>
+</pacemjs-snippet>
 
 
 

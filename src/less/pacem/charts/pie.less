@@ -116,6 +116,17 @@ svg.@{PCSS}-pie-chart {
     }
 }
 
+.@{PCSS}-chart-area.chart-has-data {
+
+    &.chart-small > svg.@{PCSS}-pie-chart {
+        height: @grid_spacing * 8;
+    }
+
+    &.chart-smaller > svg.@{PCSS}-pie-chart {
+        height: @grid_spacing * 5;
+    }
+}
+
 .PieSliceGradient(@count, @index) when (@index < @count + 1) {
     &:nth-child(@{index}) > path {
         opacity: .8 - (@index - 1) * ((.9-.1) / @count);

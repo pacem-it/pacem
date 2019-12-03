@@ -13,10 +13,16 @@ pacemjs-descriptor {
         margin: 0 0 .5rem 0;
     }
 
-    h2{
+    .@{PCSS}-panel > h2.panel-heading {
         .FontMainSize(1.75);
         position: relative;
         margin-bottom: @grid_spacing;
+        text-transform: none;
+        padding-top: 0;
+
+        &:not(:hover) {
+            padding-left: 0;
+        }
     }
 
     h4 {
@@ -41,18 +47,18 @@ pacemjs-descriptor {
         }
     }
 
-    .pull-right small {
+    .panel-tools small {
         vertical-align: top;
         display: inline-block;
         line-height: 28px;
     }
 
     .property,
-    .method{
+    .method {
         list-style-type: none;
         margin-left: -30px;
 
-        &::before{
+        &::before {
             display: inline-block;
             margin-right: @grid_spacing/6;
         }
@@ -64,7 +70,8 @@ pacemjs-descriptor {
 
     .method {
         .FaIconSolid('\f1b2');
-        &::before{
+
+        &::before {
             color: @color_teal;
         }
     }

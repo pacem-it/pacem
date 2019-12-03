@@ -2,6 +2,8 @@
 @import "shared";
 @import "../../shared";
 
+@window_dock_width: @grid_spacing;
+
 @{P}-window-area {
     position: fixed;
     top: 0;
@@ -13,9 +15,10 @@
     overflow: hidden;
     pointer-events: none;
     display: grid;
-    grid-template-columns: 1fr @grid_spacing;
+    grid-template-columns: 1fr @window_dock_width;
     grid-gap: 0;
     grid-template-areas: 'float dock';
+    grid-auto-rows: min-content;
     z-index: @balloon_z_index - 2;
 }
 
@@ -23,7 +26,7 @@
     background-color: fade(@bg, 80);
     color: @clr;
 
-    &:hover{
+    &:hover {
         background-color: @bg;
     }
 }
@@ -44,7 +47,9 @@
     border-radius: @border_radius;
     box-sizing: border-box;
 
-    border: 1px solid @color_border;
+    &.window-border {
+        border: 1px solid @color_window_border;
+    }
 
     & when (@blur = false) {
         background-color: @color_background;
@@ -55,7 +60,7 @@
     }
 
     &.window-corners when (@border_radius = 0) {
-        .Corners(fade(@color_border, 100));
+        .Corners(fade(@color_window_border, 100));
     }
 
     > .window-title {
@@ -128,7 +133,7 @@
         padding: 0 @grid_spacing/3;
     }
 
-    &.window-min {
+    &.window-min:not(.window-dock) {
         padding-bottom: @_pad - @_gap;
         height: @_h + 2 * @_pad !important;
 
@@ -142,6 +147,8 @@
 }
 
 @{P}-window-area > @{P}-window {
+    @_pad: @grid_spacing/2;
+
     grid-area: float;
     position: absolute;
     top: @layout_header_height + @grid_spacing;
@@ -151,7 +158,23 @@
     pointer-events: auto;
 
     &.window-dock {
-        grid-area: dock;
+        position: fixed;
+        transform: translateX(@layout_aside_width) !important;
+        z-index: 1 !important;
+        width: @layout_aside_width !important;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        left: auto;
+        height: auto !important;
+        padding-right: @_pad + @window_dock_width;
+        opacity: 0;
+
+        &.dock-open:not(.docking-in) {
+            transform: matrix(1,0,0,1,0,0) !important;
+            z-index: 2 !important;
+            opacity: 1;
+        }
     }
 
     & when (@shadows = true) {
@@ -163,10 +186,130 @@
     }
 }
 
-.@{PCSS}-animations @{P}-window:not(.window-rescaling) {
-    transition: height @easing_in_out_sine .15s;
+// adapter
+@{P}-window-area > @{P}-adapter.windows-adapter {
+    grid-area: dock;
+    z-index: 2;
+
+    > @{P}-button.@{PCSS}-adapter-previous,
+    > @{P}-button.@{PCSS}-adapter-next {
+        .Inert();
+    }
+
+    ol.@{PCSS}-adapter-dashboard {
+        display: grid;
+        grid-row-gap: @window_dock_width / 10;
+        padding: 0;
+        margin: 0;
+
+        > li {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+
+            > @{P}-button.@{PCSS}-adapter-page {
+                pointer-events: auto;
+                padding: 0 0 0 @window_dock_width/6;
+                height: @grid_cell;
+                box-sizing: border-box;
+
+                & when (@shadows = true) {
+                    box-shadow: 0 @grid_spacing/8 @grid_spacing/4 rgba(0,0,0,.3333);
+                }
+
+                > @{P}-span {
+                    .WinTitle(@color_button_back, @color_button_fore);
+                    display: block;
+                    writing-mode: vertical-lr;
+                    text-align: start;
+                    padding: @window_dock_width/6 0;
+                    box-sizing: border-box;
+                    height: 100%;
+                    width: @window_dock_width * 5/6;
+                    line-height: $width;
+                    font-size: @window_dock_width * 2/3;
+                    .Ellipsed();
+                }
+
+                &.@{PCSS}-adapter-active {
+                    > @{P}-span {
+                        .WinTitle(@color_primary, @color_primary_inv);
+                    }
+                }
+            }
+        }
+    }
+}
+
+.@{PCSS}-body {
+
+    &[footer] {
+        @{P}-window-area > @{P}-window.window-dock {
+            bottom: @layout_footer_height;
+        }
+
+        @{P}-window-area > @{P}-adapter.windows-adapter ol.@{PCSS}-adapter-dashboard {
+            padding-bottom: @layout_footer_height;
+        }
+    }
+
+    &[bigfooter] {
+        @{P}-window-area > @{P}-window.window-dock {
+            bottom: @layout_bigfooter_height;
+        }
+
+        @{P}-window-area > @{P}-adapter.windows-adapter ol.@{PCSS}-adapter-dashboard {
+            padding-bottom: @layout_bigfooter_height;
+        }
+    }
+
+    &[header] {
+
+        @{P}-window-area > @{P}-window.window-dock {
+            top: @layout_header_height;
+        }
+
+        @{P}-window-area > @{P}-adapter.windows-adapter ol.@{PCSS}-adapter-dashboard {
+            padding-top: @layout_header_height;
+        }
+    }
+}
+
+.@{PCSS}-animations @{P}-window:not(.window-dock) {
+    animation: fade-in @easing_out_sine .2s;
 
     .window-content {
         transition: opacity linear .2s;
+    }
+
+    &:not(.window-rescaling) {
+        transition: height @easing_in_out_sine .15s;
+    }
+}
+
+.@{PCSS}-animations @{P}-window.window-dock:not(.docking-in) {
+    transition: transform @easing_in_out_sine .3s, opacity linear .2s .1s;
+
+    &.dock-open {
+        transition: transform @easing_in_out_sine .3s, opacity linear .2s;
+    }
+}
+
+.@{PCSS}-animations {
+    @{P}-window-area > @{P}-adapter.windows-adapter {
+
+        ol.@{PCSS}-adapter-dashboard {
+
+            > li {
+
+                > @{P}-button.@{PCSS}-adapter-page {
+                    animation: list-item-right @easing_out_sine .35s;
+
+                    > @{P}-span {
+                        transition: background-color linear .3s;
+                    }
+                }
+            }
+        }
     }
 }

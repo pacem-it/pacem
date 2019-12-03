@@ -277,26 +277,36 @@ namespace Pacem.Components {
 
         protected abstract cleanup(html: string): string;
 
+        @Watch({ emit: false, converter: PropertyConverters.String })
+        content: string;
+
         private _original: string;
 
-        propertyChangedCallback(name: string, old: any, val: any, first: boolean) {
+        propertyChangedCallback(name: string, old: any, val: any, first?: boolean) {
             super.propertyChangedCallback(name, old, val, first);
-            if (name === 'content') {
-                if (Utils.isNull(this._original))
-                    this._original = this.innerHTML;
-                this.innerHTML = this.cleanup(val);
+            if (name === 'content' && !first) {
+                this._fillContent(val);
+            }
+        }
+
+        viewActivatedCallback() {
+            super.viewActivatedCallback();
+            this._original = this.innerHTML;
+            if (!Utils.isNullOrEmpty(this.content)) {
+                this._fillContent();
             }
         }
 
         disconnectedCallback() {
-            if (!Utils.isNull(this._original))
+            if (!Utils.isNull(this._original)) {
                 this.innerHTML = this._original;
+            }
             super.disconnectedCallback();
         }
 
-        @Watch({ emit: false, converter: PropertyConverters.String })
-        content: string;
-
+        private _fillContent(val = this.content) {
+            this.innerHTML = this.cleanup(val);
+        }
     }
 
     export class PacemUnsafeContentElement extends PacemContentElement {

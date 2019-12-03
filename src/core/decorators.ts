@@ -158,6 +158,7 @@ namespace Pacem {
                     attrs.unshift(a);
                 }
 
+                // set static `observedAttributes` property
                 Object.defineProperty(target, OBS_ATTR_PROP, {
                     get: function () {
                         return attrs;
@@ -168,6 +169,7 @@ namespace Pacem {
             }
             {
                 const proto = target.prototype;
+
                 // connectedCallback override
                 const originalConnectedCallback = Object.getOwnPropertyDescriptor(proto, 'connectedCallback') || proto.connectedCallback;
                 const originalViewActivatedCallback = Object.getOwnPropertyDescriptor(proto, 'viewActivatedCallback') || proto.viewActivatedCallback;

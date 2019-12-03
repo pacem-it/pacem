@@ -10,19 +10,14 @@ namespace Pacem.Components {
             return CustomElementUtils.findAncestor(this, n => n instanceof PacemIterativeElement);
         }
 
-        viewActivatedCallback() {
-            super.viewActivatedCallback();
-            const iter: PacemIterativeElement<any> = <any>this.container;
-            if (!Utils.isNull(iter))
-                iter.register(this);
-        }
-
         propertyChangedCallback(name: string, old: any, val: any, first?: boolean) {
             super.propertyChangedCallback(name, old, val, first);
             const iter: PacemIterativeElement<any> = <any>this.container;
-            iter
+            const index = (iter && iter.items || []).indexOf(this);
+            index >= 0
+                && iter
                 && iter.adapter
-                && iter.adapter.itemPropertyChangedCallback(iter.items.indexOf(this), name, old, val, first);
+                && iter.adapter.itemPropertyChangedCallback(index, name, old, val, first);
         }
     }
 
@@ -39,8 +34,12 @@ namespace Pacem.Components {
 
             switch (name) {
                 case 'adapter':
-                    if (!Utils.isNull(val))
+                    if (!Utils.isNull(old)) {
+                        (<PacemAdapter<PacemIterativeElement<TItem>, TItem>>old).destroy();
+                    }
+                    if (!Utils.isNull(val)) {
                         this.adapter.initialize(this);
+                    }
                     break;
                 case 'items':
                     let ndx = 0;

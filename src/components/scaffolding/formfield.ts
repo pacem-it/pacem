@@ -7,13 +7,17 @@ namespace Pacem.Components.Scaffolding {
         return 'form' + key;
     }
 
+    function patternToString(pattern: string | RegExp) {
+        return new RegExp(pattern/*.split('\\').join('\\\\')*/).source;
+    }
+
     @CustomElement({
         tagName: P + '-form-field', template: `<${P}-form class="${PCSS}-field" logger="{{ :host.logger }}" 
 css-class="{{ {'${PCSS}-fetching': ::_fetcher.fetching, '${PCSS}-dirty': this.dirty, '${PCSS}-invalid': !this.valid, '${PCSS}-editable': !:host.readonly, '${PCSS}-readonly': :host.readonly, '${PCSS}-pristine': !this.dirty, '${PCSS}-valid': this.valid, '${PCSS}-has-value': !:host._isValueNullOrEmpty(:host.entity, :host.metadata) } }}">
     <label class="${PCSS}-label"></label>
     <div class="${PCSS}-input-container"></div>
     <${ P}-fetch debounce="50" logger="{{ :host.logger }}" credentials="{{ :host.fetchCredentials }}" headers="{{ :host.fetchHeaders }}" diff-by-values="true"></${P}-fetch>
-    <${ P}-panel class="${PCSS}-validators" hide="{{ ::_form.valid || !::_form.dirty }}"></${P}-panel>
+    <${ P}-panel class="${PCSS}-validators" hide="{{ ::_form.valid || !::_form.dirty || :host.readonly }}"></${P}-panel>
 </${ P}-form>`
     })
     export class PacemFormFieldElement extends PacemElement implements Pacem.Net.OAuthFetchable {
@@ -227,13 +231,21 @@ css-class="{{ {'${PCSS}-fetching': ::_fetcher.fetching, '${PCSS}-dirty': this.di
             let fetchAttrs: { [key: string]: string } = {};
 
             let disabledAttr = "false";
+            let dependingClause = '';
+            let dependingDisabling = '';
+            let dependingParameters = '';
 
-            // dependency from other props
+            // #region dependency from other props
             if (!Utils.isNullOrEmpty(fetchData && fetchData.dependsOn)) {
                 let dependsOn = fetchData.dependsOn;
                 // there is a better way...
                 let disablingClauses: { empty: string[], notEqual: string[] } = { empty: [], notEqual: [] };
                 let hidingClauses: { empty: string[], notEqual: string[] } = { empty: [], notEqual: [] };
+
+                // fetch
+                let namesAndPaths = [];
+                let paths = [];
+
                 for (var depends of dependsOn) {
                     let path = ':host.entity.' + depends.prop,
                         path2 = '$this.entity.' + depends.prop;
@@ -250,7 +262,14 @@ css-class="{{ {'${PCSS}-fetching': ::_fetcher.fetching, '${PCSS}-dirty': this.di
                             hidingClauses.empty.push(clause(path2));
                         }
                     }
+
+                    // fetch
+                    paths.push(path);
+                    namesAndPaths.push(`${(depends.alias || depends.prop)} : ${path}`);
+                    dependingClause += path + ' && ';
                 }
+
+                dependingParameters = namesAndPaths.join(', ');
 
                 let joinClauses = (d: { empty: string[], notEqual: string[] }) => {
                     let ne: string = 'false',
@@ -264,11 +283,13 @@ css-class="{{ {'${PCSS}-fetching': ::_fetcher.fetching, '${PCSS}-dirty': this.di
                     return ne + ' || ' + emp;
                 };
 
-                disabledAttr = `{{ ${joinClauses(disablingClauses)} }}`;
+                dependingDisabling = joinClauses(disablingClauses);
+                disabledAttr = `{{ ${dependingDisabling} }}`;
                 // never disable the form-field, NEVER!
                 // attrs['disabled'] = disabledAttr; // * BUG
                 this.setAttribute('hide', `{{ ${joinClauses(hidingClauses)} }}`);
             }
+            // #endregion
 
             const fn = 'fn';
             const fns: { [key: string]: Function } = this[fn] = this[fn] || {};
@@ -339,24 +360,10 @@ css-class="{{ {'${PCSS}-fetching': ::_fetcher.fetching, '${PCSS}-dirty': this.di
                         this._fetcher.url = fetchData.sourceUrl;
                         this._fetcher.method = fetchData.verb;
                         //
-                        let dependingClause = '';
-                        //
-                        if (!Utils.isNullOrEmpty(fetchData.dependsOn)) {
-                            let dependsOn = fetchData.dependsOn;
-                            let namesAndPaths = [];
-                            let paths = [];
-                            for (var depends of dependsOn) {
-                                let path = ':host.entity.' + depends.prop;
-                                paths.push(path);
-                                namesAndPaths.push(`${(depends.alias || depends.prop)} : ${path}`);
-                                dependingClause += path + ' && ';
-                            }
+                        fetchAttrs['parameters'] = `{{ { ${dependingParameters} } }}`;
+                        fetchAttrs['disabled'] = disabledAttr;
+                        attrs['datasource'] = `{{ ${dependingClause}Pacem.Utils.getApiResult(#fetch${this._key}.result) }}`;
 
-                            fetchAttrs['parameters'] = `{{ { ${namesAndPaths.join(', ')} } }}`;
-                            fetchAttrs['disabled'] = disabledAttr;// `{{ Pacem.Utils.isNullOrEmpty(${paths.join(") || Pacem.Utils.isNullOrEmpty(")}) }}`;
-                        }
-                        //
-                        attrs['datasource'] = `{{ ${dependingClause} Pacem.Utils.getApiResult(#fetch${this._key}.result) }}`;
                     } else {
 
                         // static datasource provided
@@ -402,7 +409,7 @@ css-class="{{ {'${PCSS}-fetching': ::_fetcher.fetching, '${PCSS}-dirty': this.di
                     const tags = meta.display.ui === 'tags';
                     tagName = P + (tags ? '-tags' : '-suggest');
                     this._fetcher.id = `fetch${this._key}`;
-                    attrs['datasource'] = `{{ Pacem.Utils.getApiResult(#fetch${this._key}.result) }}`;
+
                     if (!Utils.isNullOrEmpty(fetchData.textProperty))
                         attrs['text-property'] = fetchData.textProperty;
 
@@ -415,12 +422,20 @@ css-class="{{ {'${PCSS}-fetching': ::_fetcher.fetching, '${PCSS}-dirty': this.di
                             attrs['value-property'] = fetchData.valueProperty;
                         }
                     }
-                    // fairly complicated (any way of simplifying it?)
-                    fetchAttrs['parameters'] = `{{ {q: #${this._key}.hint || '', ${(fetchData.valueProperty || 'value')}: ${itemValue} } }}`;
-                    //fetchAttrs['disabled'] = `{{ !(#${this._key}.hint || (#${this._key}.value && !#${this._key}.dirty)) }}`;
-                    fetchAttrs['url'] = `${fetchData.sourceUrl}`; //`{{ (#${this._key}.hint || (#${this._key}.value && !#${this._key}.dirty)) ? '${fetchData.sourceUrl}' : '' }}`;
+
+                    fetchAttrs['url'] = `${fetchData.sourceUrl}`;
                     this._fetcher.method = fetchData.verb;
-                    // TODO: implement dependsOn
+
+                    //
+                    if (!Utils.isNullOrEmpty(fetchData.dependsOn)) {
+                        // deps
+                        fetchAttrs['parameters'] = `{{ { ${dependingParameters}, q: #${this._key}.hint || '', ${(fetchData.valueProperty || 'value')}: ${itemValue} || '' } }}`;
+                        fetchAttrs['disabled'] = disabledAttr;
+                    } else {
+                        // no deps
+                        fetchAttrs['parameters'] = `{{ {q: #${this._key}.hint || '', ${(fetchData.valueProperty || 'value')}: ${itemValue} || '' } }}`;
+                    }
+                    attrs['datasource'] = `{{ ${dependingClause}Pacem.Utils.getApiResult(#fetch${this._key}.result) }}`;
 
                     break;
                 case 'switcher':
@@ -556,8 +571,34 @@ css-class="{{ {'${PCSS}-fetching': ::_fetcher.fetching, '${PCSS}-dirty': this.di
                     break;
             }
 
+            // commands
+            if (!Utils.isNullOrEmpty(meta.commands)) {
+                Utils.addClass(this._container, PCSS + '-fieldgroup');
+                const prepend = this._container.appendChild(document.createElement('div')),
+                    append = this._container.appendChild(document.createElement('div'));
+                Utils.addClass(prepend, `fieldgroup-prepend ${PCSS}-buttonset buttons`);
+                Utils.addClass(append, `fieldgroup-append ${PCSS}-buttonset buttons`);
+
+                meta.commands.forEach(cmd => {
+                    const btn = document.createElement(P + '-button');
+                    btn.setAttribute('icon-glyph', cmd.icon);
+                    btn.setAttribute('command-name', cmd.name);
+                    if (cmd.dependsOnValue) {
+                        btn.setAttribute('disabled', `{{ (${dependingDisabling}) || !::_form.valid || Pacem.Utils.isNullOrEmpty(:host.entity.${meta.prop}) }}`);
+                        btn.setAttribute('command-argument', `{{ :host.entity.${meta.prop} }}`);
+                    } else {
+                        btn.setAttribute('disabled', disabledAttr);
+                    }
+                    btn.setAttribute('tooltip', cmd.tooltip);
+                    if (!Utils.isNullOrEmpty(cmd.cssClass)) {
+                        Utils.addClass(btn, cmd.cssClass.join(' '));
+                    }
+                    (cmd.prepend ? prepend : append).appendChild(btn);
+                });
+            }
+
             // validators
-            if (meta.validators && meta.validators.length) {
+            if (!Utils.isNullOrEmpty(meta.validators)) {
                 meta.validators.forEach((validator) => {
                     var validatorElement: PacemBaseValidatorElement;
                     switch (validator.type) {
@@ -595,21 +636,21 @@ css-class="{{ {'${PCSS}-fetching': ::_fetcher.fetching, '${PCSS}-dirty': this.di
                         case 'email':
                             let emailValidator = <PacemRegexValidatorElement>document.createElement(P + '-regex-validator');
                             validatorElement = emailValidator;
-                            attrs['pattern'] = emailValidator.pattern = "[\\w\\.-]+@[\\w\\.-]+\\.[a-zA-Z0-9]{2,6}";
+                            attrs['pattern'] = patternToString(emailValidator.pattern = "[\\w\\.-]+@[\\w\\.-]+\\.[a-zA-Z0-9]{2,6}");
                             break;
                         case 'regex':
                             let regexValidator = <PacemRegexValidatorElement>document.createElement(P + '-regex-validator');
                             validatorElement = regexValidator;
-                            let pattern = validator.params['pattern'];
-                            attrs['pattern'] = pattern.replace('\\', '\\\\');
+                            let pattern: string | RegExp = validator.params['pattern'];
+                            attrs['pattern'] = patternToString(pattern);
                             regexValidator.pattern = pattern;
                             break;
                         case 'binary':
                             let binaryValidator = <PacemBinaryValidatorElement>document.createElement(P + '-binary-validator');
                             validatorElement = binaryValidator;
-                            let filePattern = validator.params['pattern'];
+                            let filePattern: string | RegExp = validator.params['pattern'];
                             if (filePattern != null) {
-                                attrs['pattern'] = filePattern; //.replace('\\', '\\\\');
+                                attrs['pattern'] = patternToString(filePattern);
                                 binaryValidator.pattern = filePattern;
                             }
                             let maxSize = validator.params && validator.params['maxSize'];
@@ -674,7 +715,7 @@ css-class="{{ {'${PCSS}-fetching': ::_fetcher.fetching, '${PCSS}-dirty': this.di
                     field.setAttribute(name, attr);
             }
             this._field = field;
-            this._container.appendChild(field);
+            this._container.insertBefore(field, this._container.firstElementChild);
 
             for (var name in fetchAttrs) {
                 let attr: string;

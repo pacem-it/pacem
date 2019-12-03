@@ -2,16 +2,20 @@
 namespace Pacem.Components {
 
     @CustomElement({ tagName: P + '-span' })
-    export class PacemSpanElement extends PacemSafeContentElement implements OnPropertyChanged {
+    export class PacemSpanElement extends PacemSafeContentElement {
 
-        constructor() {
-            super();
+        propertyChangedCallback(name: string, old: any, val: any, first?: boolean) {
+            super.propertyChangedCallback(name, old, val, first);
+            if (name === 'text' && !first) {
+                this.textContent = val;
+            }
         }
 
-        propertyChangedCallback(name: string, old: any, val: any, first: boolean) {
-            super.propertyChangedCallback(name, old, val, first);
-            if (name == 'text')
-                this.textContent = val;
+        viewActivatedCallback() {
+            super.viewActivatedCallback();
+            if (!Utils.isNull(this.text)) {
+                this.textContent = this.text;
+            }
         }
 
         @Watch({ converter: PropertyConverters.String }) text: string;

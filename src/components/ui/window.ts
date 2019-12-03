@@ -38,6 +38,7 @@ namespace Pacem.Components.UI {
 
         connectedCallback() {
             super.connectedCallback();
+
             let shell = CustomElementUtils.findAncestorShell(this);
             this._behaviors = [
                 shell.appendChild(this._dragDrop = document.createElement(P + '-drag-drop') as PacemDragDropElement),
@@ -49,7 +50,29 @@ namespace Pacem.Components.UI {
             this._rescale.addEventListener(Pacem.UI.RescaleEventType.End, this._blurHandler, false);
         }
 
+        viewActivatedCallback() {
+            super.viewActivatedCallback();
+            // adapter (reuse)
+            if (Utils.isNull(this.adapter)) {
+                const adapter = this.adapter = this.appendChild(document.createElement(P + '-adapter') as PacemAdapterElement);
+                Utils.addClass(adapter, 'windows-adapter');
+                adapter.labelCallback = (item: PacemWindowElement, _) => {
+                    return item.caption;
+                };
+                adapter.swipeEnabled = false;
+                adapter.deselectable = true;
+                adapter.initialize(this);
+            }
+            this.adapter.addEventListener(AdapterPageButtonRefreshEventName, this._adapterPagerCallback, false);
+        }
+
         disconnectedCallback() {
+            if (!Utils.isNull(this.adapter)) {
+                this.adapter.removeEventListener(AdapterPageButtonRefreshEventName, this._adapterPagerCallback, false);
+                this.adapter.remove();
+                this.adapter = null;
+            }
+
             //this._dragDrop.removeEventListener(Pacem.UI.DragDropEventType.Init, this._focusHandler, false);
             this._rescale.removeEventListener(Pacem.UI.RescaleEventType.End, this._blurHandler, false);
             this._rescale.removeEventListener(Pacem.UI.RescaleEventType.Start, this._startHandler, false);
@@ -59,11 +82,24 @@ namespace Pacem.Components.UI {
             super.disconnectedCallback();
         }
 
+        propertyChangedCallback(name: string, old, val, first?: boolean) {
+            super.propertyChangedCallback(name, old, val, first);
+            if (name === 'index') {
+                this._syncVisibility();
+            }
+        }
+
         register(item: PacemWindowElement) {
             const retval = super.register(item);
             if (retval) {
+                item.addEventListener(PropertyChangeEventName, this._itemPropertyChangeHandler, false);
                 item.addEventListener('mousedown', this._focusHandler, false);
-                item.behaviors = this._behaviors;
+                for (let b of this._behaviors) {
+                    const ndx = item.behaviors.indexOf(b);
+                    if (ndx === -1) {
+                        item.behaviors.push(b);
+                    }
+                }
             }
             return retval;
         }
@@ -71,10 +107,47 @@ namespace Pacem.Components.UI {
         unregister(item: PacemWindowElement) {
             const retval = super.unregister(item);
             if (retval) {
+                item.removeEventListener(PropertyChangeEventName, this._itemPropertyChangeHandler, false);
                 item.removeEventListener('mousedown', this._focusHandler, false);
-                item.behaviors = [];
+                for (let b of this._behaviors) {
+                    const ndx = item.behaviors.indexOf(b);
+                    if (ndx >= 0) {
+                        item.behaviors.splice(ndx, 1);
+                    }
+                }
             }
             return retval;
+        }
+
+        private _itemPropertyChangeHandler = (evt: PropertyChangeEvent) => {
+            if (evt.detail.propertyName === 'floating' && evt.detail.currentValue === false) {
+                const item = evt.currentTarget as PacemWindowElement,
+                    ndx = this.items.indexOf(item);
+                Utils.addClass(item, 'docking-in');
+                this.adapter.select(ndx);
+                Utils.addAnimationEndCallback(item, (e) => {
+                    Utils.removeClass(e, 'docking-in');
+                }, 150);
+            }
+        }
+
+        private _adapterPagerCallback = (evt: AdapterPageButtonRefreshEvent) => {
+            const index = evt.detail.index,
+                item = this.items[index];
+
+            evt.detail.hide = item.hide || item.floating;
+        }
+
+        private _syncVisibility() {
+            let ndx = 0;
+            for (let item of this.items) {
+                if (ndx === this.index) {
+                    Utils.addClass(item, 'dock-open');
+                } else {
+                    Utils.removeClass(item, 'dock-open');
+                }
+                ndx++;
+            }
         }
     }
 
@@ -83,9 +156,9 @@ namespace Pacem.Components.UI {
         template: `<div class="${HANDLE_CSS}">
     <${P}-text text="{{ :host.caption || 'Window' }}"></${P}-text>
 </div>
-<div class="window-buttons ${PCSS}-buttonset buttons"><div class="buttonset-right">
-    <${P}-button class="button" on-click=":host.minimized = !:host.minimized" icon-glyph="{{ :host.minimized ? 'maximize' : 'minimize' }}"></${P}-button>
-    <${P}-button class="button" on-click=":host.floating = !:host.floating" icon-glyph="{{ :host.floating? 'lock' : 'lock_open' }}"></${P}-button>
+<div class="window-buttons ${PCSS}-buttonset"><div class="buttonset-right">
+    <${P}-button class="button" on-click=":host.minimized = !:host.minimized" icon-glyph="{{ :host.minimized ? 'maximize' : 'minimize' }}" hide="{{ !:host.floating }}"></${P}-button>
+    <${P}-button class="button" on-click=":host.floating = !:host.floating" css-class="{{ {'buttonset-first': !:host.floating} }}" icon-glyph="{{ :host.floating? 'lock_open' : 'lock' }}"></${P}-button>
 </div></div>
 <div class="window-content"><${P}-content></${P}-content></div>`
     })
@@ -100,6 +173,7 @@ namespace Pacem.Components.UI {
             if (name === 'minimized' || name === 'floating') {
                 this._syncLayout();
             }
+
         }
 
         viewActivatedCallback() {

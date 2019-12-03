@@ -141,28 +141,46 @@
     }
 
     &.@{PCSS}-invalid {
-        > .@{PCSS}-input-container > :not(@{P}-childform) /* childform should break the rule */ {
+        > .@{PCSS}-input-container {
+            > :not(@{P}-childform) /* childform should break the rule */ {
 
-            .@{PCSS}-viewfinder,
-            .@{PCSS}-input {
-                border-color: fade(@color_error, 20);
-            }
-        }
-
-        &.@{PCSS}-dirty {
-            > .@{PCSS}-input-container > :not(@{P}-childform) /* childform should break the rule */ {
                 .@{PCSS}-viewfinder,
                 .@{PCSS}-input {
-                    border-color: @color_error;
+                    border-color: fade(@color_error, 20);
+                }
+            }
+
+            &.@{PCSS}-fieldgroup {
+                > .fieldgroup-prepend, > .fieldgroup-append {
+                    border-color: fade(@color_error, 20);
                 }
             }
         }
 
-        > .@{PCSS}-input-container > .@{PCSS}-focus:not(@{P}-childform) /* childform should break the rule */ {
+        &.@{PCSS}-dirty {
+            > .@{PCSS}-input-container {
+                > :not(@{P}-childform) /* childform should break the rule */ {
+                    .@{PCSS}-viewfinder,
+                    .@{PCSS}-input {
+                        border-color: @color_error;
+                    }
+                }
 
-            .@{PCSS}-viewfinder,
-            .@{PCSS}-input {
-                .Outline(fade(@color_error, 40));
+                &.@{PCSS}-fieldgroup {
+                    > .fieldgroup-prepend, > .fieldgroup-append {
+                        border-color: @color_error;
+                    }
+                }
+            }
+        }
+
+        > .@{PCSS}-input-container {
+            > .@{PCSS}-focus:not(@{P}-childform) /* childform should break the rule */ {
+
+                .@{PCSS}-viewfinder,
+                .@{PCSS}-input {
+                    .Outline(fade(@color_error, 40));
+                }
             }
         }
     }
@@ -173,30 +191,48 @@
 
             &.@{PCSS}-dirty {
 
-                > .@{PCSS}-input-container > :not(@{P}-childform) /* childform should break the rule */ {
+                > .@{PCSS}-input-container {
+                    > :not(@{P}-childform) /* childform should break the rule */ {
 
-                    .@{PCSS}-viewfinder,
-                    .@{PCSS}-input {
-                        border-color: fade( @color_success, 100);
+                        .@{PCSS}-viewfinder,
+                        .@{PCSS}-input {
+                            border-color: fade( @color_success, 100);
+                        }
+                    }
+
+                    &.@{PCSS}-fieldgroup {
+                        > .fieldgroup-prepend, > .fieldgroup-append {
+                            border-color: fade( @color_success, 100);
+                        }
                     }
                 }
             }
 
             &.@{PCSS}-pristine {
 
-                > .@{PCSS}-input-container > :not(@{P}-childform) /* childform should break the rule */ {
-                    .@{PCSS}-viewfinder,
-                    .@{PCSS}-input {
-                        border-color: fade( @color_success, 40);
+                > .@{PCSS}-input-container {
+                    > :not(@{P}-childform) /* childform should break the rule */ {
+                        .@{PCSS}-viewfinder,
+                        .@{PCSS}-input {
+                            border-color: fade( @color_success, 40);
+                        }
+                    }
+
+                    &.@{PCSS}-fieldgroup {
+                        > .fieldgroup-prepend, > .fieldgroup-append {
+                            border-color: fade(@color_success, 40);
+                        }
                     }
                 }
             }
 
-            > .@{PCSS}-input-container > .@{PCSS}-focus:not(@{P}-childform) /* childform should break the rule */ {
+            > .@{PCSS}-input-container {
+                > .@{PCSS}-focus:not(@{P}-childform) /* childform should break the rule */ {
 
-                .@{PCSS}-viewfinder,
-                .@{PCSS}-input {
-                    .Outline(fade(@color_success, 40));
+                    .@{PCSS}-viewfinder,
+                    .@{PCSS}-input {
+                        .Outline(fade(@color_success, 40));
+                    }
                 }
             }
         }
@@ -328,13 +364,6 @@
 
 .@{PCSS}-field.@{PCSS}-editable {
 
-    &.@{PCSS}-fetching {
-        label.@{PCSS}-label::before {
-            .Icon('refresh', @grid_spacing / 1.5);
-            animation: pacem-rotate-anim .67s linear infinite;
-        }
-    }
-
     &:not(.@{PCSS}-has-value) {
 
         select.@{PCSS}-select:not(:focus) /*,
@@ -415,7 +444,8 @@
             line-height: $height;
             padding: 0;
 
-            &::before, &::after {
+            &::before,
+            &::after {
                 display: none;
             }
         }
@@ -426,10 +456,42 @@
         }
 
         &.@{PCSS}-readonly > .@{PCSS}-input-container {
-            padding-top: 0;
+            // padding-top: @grid_spacing/3;
+            .@{PCSS}-readonly:not(@{P}-childform) {
+                .@{PCSS}-readonly {
+                    display: flex;
+                    align-items: center;
+                }
+            }
+
+            .@{PCSS}-readonly::before {
+                line-height: @field_height;
+            }
         }
     }
 }
+
+// fetching
+.@{PCSS}-field.@{PCSS}-editable {
+
+    &.@{PCSS}-fetching {
+        label.@{PCSS}-label::before {
+            .Icon('refresh', @grid_spacing / 1.5);
+            animation: pacem-rotate-anim .67s linear infinite;
+        }
+    }
+}
+
+.form-minimal > @{P}-form-field:not(.field-full),
+@{P}-form-field.field-minimal {
+    > @{P}-form.@{PCSS}-field.@{PCSS}-editable.@{PCSS}-fetching {
+        label.@{PCSS}-label::after {
+            .Icon('refresh', @grid_spacing / 1.5);
+            animation: pacem-rotate-anim .67s linear infinite;
+        }
+    }
+}
+
 // no label
 .form-nolabels > @{P}-form-field:not(.field-label),
 @{P}-form-field.field-nolabel {
@@ -568,20 +630,20 @@
     }
 }
 
-@media (min-width: @threshold_uhd) {
+@media (min-width: @threshold_2k) {
 
-    @{P}-form-field.field-uhd-inline > .@{PCSS}-field {
+    @{P}-form-field.field-2k-inline > .@{PCSS}-field {
         .FieldInline();
     }
 
-    .form-uhd-nolabels > @{P}-form-field:not(.field-label),
-    @{P}-form-field.field-uhd-nolabel {
+    .form-2k-nolabels > @{P}-form-field:not(.field-label),
+    @{P}-form-field.field-2k-nolabel {
         > .@{PCSS}-field > label.@{PCSS}-label {
             display: none;
         }
     }
 
-    @{P}-form-field.field-uhd-label > .@{PCSS}-field > label.@{PCSS}-label {
+    @{P}-form-field.field-2k-label > .@{PCSS}-field > label.@{PCSS}-label {
         display: inherit;
     }
 }
@@ -675,6 +737,7 @@
     box-shadow: none;
     border-color: fade(@color_default, 5);
 }
+
 // FieldSet
 .@{PCSS}-fieldset {
     .HorizontalItemSet(field);
@@ -719,7 +782,8 @@
 .@{PCSS}-fieldgroup,
 .input-group {
     display: grid;
-    grid-template-columns: auto 1fr auto;
+    grid-template-columns: repeat(3, auto);
+    justify-content: start;
     grid-template-areas: "prepend main append";
 
     > * {
@@ -855,6 +919,143 @@
         }
     }
 }
+
+
+.@{PCSS}-field {
+
+    > .@{PCSS}-input-container.@{PCSS}-fieldgroup {
+        justify-content: start;
+
+        .fieldgroup-append,
+        //.input-group-prepend,
+        //.input-group-append,
+        .fieldgroup-prepend {
+            display: flex;
+            flex: 0 0 auto;
+            flex-wrap: nowrap;
+            align-items: center;
+
+            > @{P}-button {
+                box-sizing: border-box;
+                height: @field_height;
+                margin: 0;
+                display: block;
+
+                &::before {
+                    font-size: 1.1rem;
+                    line-height: @field_height;
+                }
+                //&.button {
+                padding: 0 @grid_spacing/3;
+
+                &::before {
+                    margin: 0;
+                }
+                //}
+            }
+        }
+
+        .fieldgroup-prepend.@{PCSS}-buttonset {
+            /*& when (@border_field_underline = false) {
+                padding-left: @border_field_size;
+            }*/
+            > @{P}-button {
+                &:first-of-type {
+                    border-top-left-radius: @border_input_radius;
+                    border-bottom-left-radius: @border_input_radius;
+                }
+
+                &:last-of-type {
+                    border-top-right-radius: 0;
+                    border-bottom-right-radius: 0;
+                }
+            }
+        }
+
+        .fieldgroup-append.@{PCSS}-buttonset {
+            /*& when (@border_field_underline = false) {
+                padding-right: @border_field_size;
+            }*/
+            > @{P}-button {
+
+                &:last-of-type {
+                    border-top-right-radius: @border_input_radius;
+                    border-bottom-right-radius: @border_input_radius;
+                }
+
+                &:first-of-type {
+                    border-top-left-radius: 0;
+                    border-bottom-left-radius: 0;
+                }
+            }
+        }
+    }
+
+    &.@{PCSS}-readonly {
+        &.@{PCSS}-invalid,
+        &.@{PCSS}-valid,
+        &.@{PCSS}-has-value {
+            > .@{PCSS}-input-container.@{PCSS}-fieldgroup {
+
+                @_bdr_grp_clr: @color_border;
+                @_grp_bckgrnd: none;
+
+                > .fieldgroup-append,
+                //.input-group-prepend,
+                //.input-group-append,
+                > .fieldgroup-prepend {
+                    border-color: @_bdr_grp_clr !important;
+                    border-style: dashed;
+                    background: @_grp_bckgrnd;
+                }
+
+                > .fieldgroup-prepend {
+                    border-right: 0;
+                    padding-right: @grid_spacing/4;
+                }
+
+                > .fieldgroup-append {
+                    border-left: 0;
+                    padding-left: @grid_spacing/4;
+                }
+
+                .@{PCSS}-readonly when (@border_field_underline = false) {
+                    border-top: @border_field_size dashed @_bdr_grp_clr;
+                    border-bottom: $border-top;
+                }
+
+                .@{PCSS}-readonly when (@border_field_underline = true) {
+                    border-bottom: @border_field_size dashed @_bdr_grp_clr;
+                }
+                // nested readonly (remove border)
+                .@{PCSS}-readonly {
+                    background: @_grp_bckgrnd;
+
+                    .@{PCSS}-readonly {
+                        border: 0;
+                        background: none;
+                        // TODO: review this
+                        line-height: @field_height;
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+@media (min-width: @threshold_lg) {
+    // stretch
+    @{P}-form-field.field-stretch {
+
+        > .@{PCSS}-input-container.@{PCSS}-fieldgroup {
+            grid-template-columns: auto 1fr auto;
+            justify-content: stretch;
+        }
+    }
+}
+
+
 // ANIMATIONS
 .@{PCSS}-body.@{PCSS}-animations {
     @{P}-form-field > .@{PCSS}-field {

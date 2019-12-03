@@ -2,6 +2,7 @@
 /// <reference path="promise.ts" />
 /// <reference path="trees/json.ts" />
 /// <reference path="number_extensions.ts" />
+/// <reference path="maths/colors.ts" />
 
 namespace Pacem {
 
@@ -123,6 +124,35 @@ namespace Pacem {
             },
             addDays: function (input: Date, value: number): Date {
                 return new Date(input.valueOf() + value * 86400000)
+            }
+        }
+
+        // css-color-dedicted
+        static colorize(element: HTMLElement, rgb: string | [number, number, number]): void;
+        static colorize(rgb: string | [number, number, number]): string;
+        static colorize(elementOrRgb: HTMLElement | string | [number, number, number], rgb?: string | [number, number, number]): void | string {
+            const hsl0: Hsla = /*Colors.hsl(Colors.parse('#000'))*/ { h: 38, s: .245, l: .6 };
+            var realRgb: string | [number, number, number], rgba: Rgba, filter: string, element: HTMLElement;
+
+            if (elementOrRgb instanceof HTMLElement) {
+                realRgb = rgb;
+            } else {
+                realRgb = elementOrRgb;
+            }
+
+            // rgba
+            if (typeof realRgb === 'string') {
+                rgba = Colors.parse(realRgb);
+            } else {
+                rgba = { r: realRgb[0], g: realRgb[1], b: realRgb[2] };
+            }
+            const hsl = Colors.hsl(rgba);
+            filter = `brightness(50%) sepia(1) hue-rotate(${(hsl.h - hsl0.h)}deg) saturate(${(1.0 + (hsl.s - hsl0.s))}) brightness(${(1.0 + (hsl.l - hsl0.l))})`;
+
+            if (realRgb === rgb) {
+                element.style.filter = filter;
+            } else {
+                return filter;
             }
         }
 
@@ -426,7 +456,7 @@ namespace Pacem {
          * @param nodes Nodes to move.
          * @param target Target element.
          */
-        static moveItems(nodes: Node[]|NodeList, target: Element) {
+        static moveItems(nodes: Node[] | NodeList, target: Element) {
             let dom: Node[] = [],
                 ref: Node;
             for (let j = nodes.length - 1; j >= 0; j--) {
@@ -740,8 +770,9 @@ namespace Pacem {
             }
         };
 
-
-
+        /**
+         * Ensures the proper parsing of Web API results, including deprecated Pacem wrapped results.
+         */
         static getApiResult(json: any): any {
             if (typeof json === 'object'
                 && !Utils.isNull(json)
@@ -764,6 +795,37 @@ namespace Pacem {
         }
 
         //#endregion
+
+        /**
+         * Returns a formatted HTML string coherent with the provided input string (might be inline-svg, font-awesome class, image url (.png, .jpg) or material-icon ligature.
+         * @param icon
+         */
+        static renderHtmlIcon(icon: string): string {
+            const SVG = /^\s*<svg\s/;
+            const FA = /^fa[brs]?\s+fa-/;
+            const URL = /^(https?:\/\/|\/\/)?.+\.(png|jpe?g)$/;
+
+            // svg?
+            if (SVG.test(icon)) {
+                return icon;
+            }
+
+            // font-awesome?
+            if (FA.test(icon)) {
+                return `<i class="${icon}"></i>`;
+            }
+
+            // image url?
+            if (URL.test(icon)) {
+                return `<img src="${icon}" />`;
+            }
+
+            // assume material icon as default
+            const parts = icon.trim().split(' ');
+            const ligature = parts[0];
+            const css = parts.length > 1 ? ' ' + parts.slice(1).join(' ') : '';
+            return `<i class="${PCSS}-icon${css}">${ligature}</i>`;
+        }
     }
 
 }

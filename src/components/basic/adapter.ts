@@ -58,6 +58,7 @@ namespace Pacem.Components {
             // empty implementation
         }
 
+        /** Called righat after the adapter 'initialize'. */
         initializeCallback() {
             // empty implementation
         }

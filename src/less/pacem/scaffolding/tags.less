@@ -65,7 +65,7 @@
             flex: 0 1 auto;
             margin: 0;
 
-           @{P}-tag {
+            @{P}-tag {
                 margin: @_spacing 0 @_spacing @_spacing;
                 padding: @_spacing;
                 line-height: 1rem;
@@ -76,11 +76,11 @@
                 overflow: hidden;
                 transform-origin: 0 50%;
 
-               @{P}-text {
+                @{P}-text {
                     display: inline-block;
                 }
 
-               @{P}-button {
+                @{P}-button {
                     margin: 0 0 0 @_spacing;
                     background: none;
 
@@ -113,9 +113,15 @@
                 }
             }
 
-           @{P}-tag when (@shadows = true) {
+            @{P}-tag when (@shadows = true) {
                 box-shadow: 0 2px 4px rgba(0,0,0,0.5);
             }
+        }
+    }
+
+    &.@{PCSS}-disabled {
+        ul.@{PCSS}-tags > li.@{PCSS}-tag @{P}-tag {
+            background-color: @color_disabled;
         }
     }
 }

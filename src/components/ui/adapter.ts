@@ -6,29 +6,42 @@ namespace Pacem.Components.UI {
         Horizontal = 'horizontal'
     }
 
+    export interface AdapterPageButtonRefreshEventArgs {
+        index: number,
+        hide: boolean,
+        disabled: boolean,
+        content: string
+    }
+
+    export const AdapterPageButtonRefreshEventName = 'pagerefresh';
+
+    export class AdapterPageButtonRefreshEvent extends CustomEvent<AdapterPageButtonRefreshEventArgs>{
+        constructor(args: AdapterPageButtonRefreshEventArgs) {
+            super(AdapterPageButtonRefreshEventName, { detail: args, bubbles: false, cancelable: false });
+        }
+    }
+
     @CustomElement({
         tagName: P + '-adapter', shadow: Defaults.USE_SHADOW_ROOT,
         template: `<${P}-button class="${PCSS}-adapter-previous" on-click=":host._previous($event)">&lt;</${P}-button>
-    <${ P}-button class="${PCSS}-adapter-next" on-click=":host._next($event)">&gt;</${P}-button>
-    <${ P}-swipe on-swipeleft=":host._next($event)" on-swiperight=":host._previous($event)"></${P}-swipe>
-    <${ P}-panel tabindex="0">
-    <${ P}-repeater>
+    <${P}-button class="${PCSS}-adapter-next" on-click=":host._next($event)">&gt;</${P}-button>
+    <${P}-swipe on-swipeleft=":host._next($event)" on-swiperight=":host._previous($event)"></${P}-swipe>
+    <${P}-panel tabindex="0">
+    <${P}-repeater>
     <ol class="${PCSS}-adapter-dashboard">
         <li pacem hidden>
-            <${ P}-button class="${PCSS}-play-pause"
+            <${P}-button class="${PCSS}-play-pause"
                           css-class="{{ {'paused' : :host._paused, 'playing': !:host._paused } }}" 
-                          disabled="{{ !:host.pausable }}" on-click=":host._toggle($event)"></${ P}-button>
+                          disabled="{{ !:host.pausable }}" on-click=":host._toggle($event)"></${P}-button>
         </li>
         <template>
         <li>
-            <${ P}-button on-click=":host._select(^index, $event)" 
-                    disabled="{{ :host._isDisabled(^item, ^index, ^item.disabled, :host._v) }}" hide="{{ :host._isHidden(^item, ^index, ^item.hide, :host._v) }}"
-                    class="${PCSS}-adapter-page" css-class="{{ { '${PCSS}-adapter-active': ^index === :host._index } }}">
-                <${ P}-span content="{{ :host._labelCallback(^item, ^index, :host._v) }}"></${P}-span>
-            </${ P}-button>
+            <${P}-button on-click=":host._select(^index, $event)" class="${PCSS}-adapter-page" css-class="{{ { '${PCSS}-adapter-active': ^index === :host._index } }}">
+                <${P}-span></${P}-span>
+            </${P}-button>
         </li>
         </template>
-    </ol></${ P}-repeater></${P}-panel>`
+    </ol></${P}-repeater></${P}-panel>`
     })
     export class PacemAdapterElement extends PacemAdapter<PacemIterativeElement<any>, any> {
 
@@ -53,7 +66,15 @@ namespace Pacem.Components.UI {
 
         viewActivatedCallback() {
             super.viewActivatedCallback();
+            this._repeater.addEventListener(RepeaterItemCreateEventName, this._itemCreatedHandler, false);
             this._syncViewWithItems();
+        }
+
+        disconnectedCallback() {
+            if (this._repeater) {
+                this._repeater.removeEventListener(RepeaterItemCreateEventName, this._itemCreatedHandler, false);
+            }
+            super.disconnectedCallback();
         }
 
         private _previousTabIndex: number;
@@ -75,14 +96,23 @@ namespace Pacem.Components.UI {
 
         destroyCallback() {
             const el = this.master;
-            if (el) {
-                const behaviors = el.behaviors, ndx = behaviors.indexOf(this._swiper);
-                behaviors.splice(ndx, 1);
+            this.removeEventListener('keydown', this._keydownHandler, false);
+            el.removeEventListener('keydown', this._keydownHandler, false);
+            el.removeEventListener(Pacem.Components.ItemRegisterEventName, this._itemRegisterHandler, false);
+            el.removeEventListener(Pacem.Components.ItemUnregisterEventName, this._itemUnregisterHandler, false);
 
-                el.tabIndex = this._previousTabIndex;
-                this.removeEventListener('keydown', this._keydownHandler, false);
-                el.removeEventListener('keydown', this._keydownHandler, false);
+            if (!Utils.isNullOrEmpty(el.items)) {
+                for (let item of el.items) {
+
+                    const behaviors = item.behaviors, ndx = behaviors.indexOf(this._swiper);
+                    if (ndx >= 0) {
+                        behaviors.splice(ndx, 1);
+                    }
+                }
             }
+
+            el.tabIndex = this._previousTabIndex;
+
             super.destroyCallback();
         }
 
@@ -90,6 +120,53 @@ namespace Pacem.Components.UI {
             super.itemPropertyChangedCallback(index, name, old, val, first);
             // tick overall version
             this._tickVersion();
+            this._fireAdapterPageRefreshCallback(index);
+        }
+
+        private _itemCreatedHandler = (evt: RepeaterItemCreateEvent) => {
+            const index = evt.detail.index;
+            this._pageMap.set(index, (<HTMLLIElement>evt.detail.dom[0]).firstElementChild as PacemButtonElement);
+            this._fireAdapterPageRefreshCallback(index, evt.detail.item);
+        };
+
+        private _pageMap = new Map<number, PacemButtonElement>();
+
+        private _fireAdapterPageRefreshCallback(index: number, item?: any) {
+            item = item || this.master.items[index];
+            var hide: boolean = item.hide || false,
+                disable: boolean = item.disabled || false,
+                caption:string = this._labelCallback(item, index);
+            const evt = new AdapterPageButtonRefreshEvent({ index: index, hide: hide, disabled: disable, content: caption });
+            this.dispatchEvent(evt);
+            // receive/accept changes
+            hide = this._isHidden(item, index, evt.detail.hide);
+            disable = this._isDisabled(item, index, evt.detail.disabled);
+            caption = evt.detail.content;
+
+            // pick target button
+            const pagers = this._pageMap;
+            if (pagers.has(index)) {
+                const pager = pagers.get(index),
+                    span = pager.firstElementChild as PacemSpanElement;
+
+                let fn = (e?: Event) => {
+                    if (e) {
+                        pager.removeEventListener('load', fn, false);
+                    }
+                    pager.hide = hide;
+                    pager.disabled = disable;
+                    span.content = caption;
+                }
+                // *careful here*: TODO: TO BE STUDIED
+                // if setting the property before it's connected
+                // the @Watch configuration and the get+set injection gets lost!
+                if (pager.isReady) {
+                    // does not work for properties(?)...
+                    fn();
+                } else {
+                    pager.addEventListener('load', fn, false);
+                }
+            }
         }
 
         @Debounce()
@@ -104,6 +181,8 @@ namespace Pacem.Components.UI {
         @Watch({ emit: false, reflectBack: true, converter: PropertyConverters.Boolean }) interactive: boolean = true;
         /** Gets or sets whether swipe gesture is enabled for navigation (also depends on the 'interactive' flag being set to 'true') */
         @Watch({ emit: false, reflectBack: true, converter: PropertyConverters.Boolean }) swipeEnabled: boolean = true;
+        /** Gets or sets whether, by selecting twice an item, you will de-select it and obtain an overall unselected state. */
+        @Watch({ emit: false, reflectBack: true, converter: PropertyConverters.Boolean }) deselectable: boolean;
 
         @Watch({ emit: false }) labelCallback: (item: any, index: number) => string = (item, index) => (index + 1).toString();
 
@@ -136,7 +215,8 @@ namespace Pacem.Components.UI {
         }
 
         private _syncViewWithItems() {
-            if (Utils.isNull(this.master)
+            if (!this.isReady
+                || Utils.isNull(this.master)
                 || Utils.isNull(this._prevBtn)
                 || Utils.isNull(this._nextBtn)
                 || Utils.isNull(this._repeater))
@@ -145,8 +225,8 @@ namespace Pacem.Components.UI {
             this._prevBtn.hide = this._nextBtn.hide = this._panel.hide = !(val && val.length > 1);
             this._repeater.datasource = val;
             this._index = this.master.index;
-            if (!Utils.isNullOrEmpty(this.master.items)) {
-                for (let item of this.master.items) {
+            if (!Utils.isNullOrEmpty(val)) {
+                for (let item of val) {
                     if (item instanceof PacemElement && item.behaviors.indexOf(this._swiper) == -1)
                         item.behaviors.push(this._swiper);
                 }
@@ -190,18 +270,22 @@ namespace Pacem.Components.UI {
         private _select(ndx: number, evt: Event) {
             Pacem.avoidHandler(evt);
             this._resetTimer(this.interval);
-            super.select(ndx);
+            if (!this.deselectable || ndx !== this._index) {
+                super.select(ndx);
+            } else {
+                this.master.index = this._index = -1;
+            }
         }
 
         private _itemRegisterHandler = (evt: ItemRegisterEvent<any>) => {
             let item = evt.detail;
-            if (item instanceof PacemElement && item.behaviors.indexOf(this._swiper) == -1)
+            if (!Utils.isNull(this._swiper) && item instanceof PacemElement && item.behaviors.indexOf(this._swiper) == -1)
                 item.behaviors.push(this._swiper);
         };
 
         private _itemUnregisterHandler = (evt: ItemUnregisterEvent<any>) => {
             let item = evt.detail, index: number;
-            if (item instanceof PacemElement && (index = item.behaviors.indexOf(this._swiper)) >= 0)
+            if (!Utils.isNull(this._swiper) && item instanceof PacemElement && (index = item.behaviors.indexOf(this._swiper)) >= 0)
                 item.behaviors.splice(index, 1);
         };
 
@@ -234,21 +318,27 @@ namespace Pacem.Components.UI {
             }
         }
 
-        private _isDisabled(item: any, index: number, disabled: boolean, v: number) {
-            const retval: boolean = item instanceof PacemEventTarget && disabled === true;
-            if ((this._index === -1 && retval === false) || (retval === true && index === this._index))
-                super.select(index);
+        private _isDisabled(item: any, index: number, disabled: boolean, v?: number) {
+            return this._disableOrHide(item, index, disabled);
+        }
+
+        private _isHidden(item: any, index: number, hide: boolean, v?: number) {
+            return this._disableOrHide(item, index, hide);
+        }
+
+        private _disableOrHide(item: any, index: number, disabledOrHidden: boolean) {
+            const retval: boolean = item instanceof PacemElement && disabledOrHidden === true;
+            if ((this._index === -1 && retval === false) || (retval === true && index === this._index)) {
+                if (this.deselectable) {
+                    this.master.index = this._index = -1;
+                } else {
+                    super.select(index);
+                }
+            }
             return retval;
         }
 
-        private _isHidden(item: any, index: number, hide: boolean, v: number) {
-            const retval: boolean = item instanceof PacemElement && hide === true;
-            if ((this._index === -1 && retval === false) || (retval === true && index === this._index))
-                super.select(index);
-            return retval;
-        }
-
-        private _labelCallback(item: any, index: any, v: number) {
+        private _labelCallback(item: any, index: any, v?: number) {
             return this.labelCallback(item, index);
         }
     }

@@ -134,19 +134,22 @@
     align-items: center;
     justify-content: center;
 
+    &.ribbon-border,
     &.border {
         top: @_padding;
         border: @_brd solid fade( /*@color_default*/ #fff, 50);
     }
 
+    &.ribbon-rise,
     &.rise {
         box-shadow: 0 2px @_brd rgba(0,0,0,.5);
-    }
 
-    &.rise when (@gradients = true) {
-        //box-shadow: 0 2px @grid_spacing/3 rgba(0,0,0,.5), inset 0 -@grid_spacing/4 @grid_spacing * 4/3 rgba(0,0,0,0.25);
-        &.border {
-            box-shadow: 0 2px @_brd rgba(0,0,0,.5), inset 0 @_brd / 2 round(@_size / 4) rgba(0,0,0,0.5);
+        & when (@gradients = true) {
+            //box-shadow: 0 2px @grid_spacing/3 rgba(0,0,0,.5), inset 0 -@grid_spacing/4 @grid_spacing * 4/3 rgba(0,0,0,0.25);
+            &.ribbon-border,
+            &.border {
+                box-shadow: 0 2px @_brd rgba(0,0,0,.5), inset 0 @_brd / 2 round(@_size / 4) rgba(0,0,0,0.5);
+            }
         }
     }
 }
@@ -160,33 +163,46 @@
     background-color: @color_lightblue;
     z-index: 2;
     .CardRibbon();
+    border-radius: @border_radius;
 
-    &.circular {
+    &.circular,
+    &.ribbon-circle {
         border-radius: 50%;
     }
 
-    &.border {
+    &.border,
+    &.ribbon-border {
         box-sizing: border-box;
     }
 
-    &.accent {
+    &.accent,
+    &.ribbon-accent {
         background-color: @color_accent;
+        color: @color_accent_inv;
     }
 
-    &.danger {
+    &.danger,
+    &.ribbon-danger {
         background-color: @color_danger;
+        color: @color_danger_inv;
     }
 
-    &.primary {
+    &.primary,
+    &.ribbon-primary {
         background-color: @color_primary;
+        color: @color_primary_inv;
     }
 
-    &.success {
+    &.success,
+    &.ribbon-success {
         background-color: @color_success;
+        color: @color_success_inv;
     }
 
-    &.warning {
+    &.warning,
+    &.ribbon-warning {
         background-color: @color_warning;
+        color: @color_warning_inv;
     }
 
     &.ribbon-md {

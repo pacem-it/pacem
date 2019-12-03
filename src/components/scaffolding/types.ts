@@ -17,6 +17,8 @@ namespace Pacem.Scaffolding {
 
     export declare type ValidatorMetadata = { type: string, errorMessage: string, params?: any };
 
+    export declare type CommandMetadata = { name: string, tooltip?: string, icon: string, cssClass?: string[], prepend?: boolean, dependsOnValue?: boolean };
+
     export declare type PropertyMetadata = {
         prop: string,
         type: 'object' | 'array' | string,
@@ -27,7 +29,7 @@ namespace Pacem.Scaffolding {
         isComplexType?: boolean,
         isNullable?: boolean,
         validators?: ValidatorMetadata[]
-
+        commands?: CommandMetadata[],
         // child entities
         /** Either the metadata of an 'object' or the metadata of the single item of an homogeneous 'array'. */
         props?: TypeMetadata | PropertyMetadata[]

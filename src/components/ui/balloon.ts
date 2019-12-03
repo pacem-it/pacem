@@ -77,7 +77,7 @@ namespace Pacem.Components.UI {
 <div class="${PCSS}-balloon"><${P}-resize on-${ResizeEventName}=":host._onLayoutChange($event)" content><${P}-content></${P}-content></${P}-resize></div>
 <div class="corner top-left"></div><div class="corner bottom-left"></div><div class="corner top-right"></div><div class="corner bottom-right"></div>`
     })
-    export class PacemBalloonElement extends PacemElement implements OnPropertyChanged, OnViewActivated {
+    export class PacemBalloonElement extends PacemElement {
 
         constructor() {
             super();

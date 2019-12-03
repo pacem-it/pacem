@@ -6,12 +6,12 @@ namespace Pacem.Components.Js {
         tagName: 'pacemjs-descriptor', shadow: false,
         template: `<${ P }-repeater>
     <template>
-        <${ P }-if match="{{ ^index == 0 }}" class="clearfix">
+        <${ P }-if match="{{ ^index == 0 }}" class="${PCSS}-panel">
             
-            <div class="pull-right"><${ P }-checkbox value="{{ :host.showInherited, twoway }}" class="checkbox-toggle"
+            <div class="panel-tools"><${ P }-checkbox value="{{ :host.showInherited, twoway }}" class="checkbox-toggle"
                                     true-value="true"
                                     false-value="false"></${ P }-checkbox> <small>inherited</small></div>
-            <h2><${ P }-text text="{{ ^item.type }}"></${ P }-text></h2>
+            <h2 class="panel-heading"><${ P }-text text="{{ ^item.type }}"></${ P }-text></h2>
             
         </${ P }-if>
         <${ P }-if match="{{ ^index != 0 }}">

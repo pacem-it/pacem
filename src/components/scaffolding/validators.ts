@@ -84,11 +84,8 @@ namespace Pacem.Components.Scaffolding {
             let retval = true,
                 pattern = this.pattern;
             if (!isValueEmpty(val)) {
-                if (pattern instanceof RegExp)
-                    retval = pattern.test(val);
-                else if (!isValueEmpty(pattern)) {
-                    retval = new RegExp(pattern).test(val);
-                }
+
+                retval = new RegExp(pattern).test(val);
             }
             return Utils.fromResult(retval);
         }
@@ -204,10 +201,8 @@ namespace Pacem.Components.Scaffolding {
             if (!isValueEmpty(val)) {
 
                 // file name
-                let filename = typeof val === 'string' ? val : val.name;
-                if (pattern instanceof RegExp)
-                    retval = pattern.test(filename);
-                else if (!isValueEmpty(pattern)) {
+                if (!Utils.isNullOrEmpty(pattern)) {
+                    let filename = typeof val === 'string' ? val : val.name;
                     retval = new RegExp(pattern, 'i').test(filename);
                 }
 

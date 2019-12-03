@@ -127,10 +127,10 @@ Here's the _mise en place_:
             "errorMessage": "field is required"
           },
           {
-            "type": "regex",
+            "type": "email",
             "errorMessage": "field is not well formed",
             "params": {
-              "pattern": "^[a-zA-Z'_-]+$"
+              "pattern": "^[\\w\\.-]+$"
             }
           },
           {
@@ -146,7 +146,7 @@ Here's the _mise en place_:
       {
         "prop": "Password",
         "type": "password",
-        "display": { "cssClass": ["pacem-cell", "cols-6", "cols-xs-12"] },
+        "display": { "cssClass": ["pacem-cell", "cols-6", "cols-xs-12"] }, 
         "validators": [
           {
             "type": "required",
@@ -161,6 +161,11 @@ Here's the _mise en place_:
             "name": "Password (confirm)",
             "cssClass": ["pacem-cell", "cols-6", "cols-xs-12"]
         },
+        "extra": { "dependsOn": [{ "prop": "Password"}]},
+        "commands": [
+            { "name": "copy", "icon": "file_copy", "tooltip": "copy to clipboard", "cssClass": ["button"], "dependsOnValue": true },
+            { "name": "go", "icon": "keyboard_arrow_right", "tooltip": "dummy", "cssClass": ["button"], "prepend": false }
+        ],
         "validators": [
           {
             "type": "compare",
@@ -194,10 +199,14 @@ Here's the _mise en place_:
 }
         </pre>
 
-        <pacem-data id="entity2" model="{}"></pacem-data>
+        <pacem-data id="entity2" model="{ Password: 'password' }"></pacem-data>
 
-        <pacem-form entity="{{ #entity2.model }}" metadata="{{ JSON.parse(#metajson2.textContent) }}" autogenerate="true"></pacem-form>
+        <pacem-form readonly="{{ #chk0.value }}" entity="{{ #entity2.model }}" on-itemcopy="#toast2.textContent = $event.detail; #toast2.show = true" metadata="{{ JSON.parse(#metajson2.textContent) }}" autogenerate="true"></pacem-form>
 
+        <pacem-checkbox hide="false" true-value="true" false-value="false" class="checkbox-naked" id="chk0" caption="readonly"></pacem-checkbox>
+        <pacem-shell-proxy>
+            <div class="pacem-toaster toaster-bottom toaster-right"><pacem-toast id="toast2" class="toast-primary">Foo!</pacem-toast></div>
+        </pacem-shell-proxy>
     </template>
 </pacemjs-snippet>
 

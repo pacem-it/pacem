@@ -6,30 +6,33 @@ namespace Pacem.Components.Plus {
     @CustomElement({
         tagName: P + '-modal-form', shadow: Defaults.USE_SHADOW_ROOT,
         template: `<${P}-lightbox modal="true">
-        <${ P}-form on-submit=":host._onSubmit($event)" readonly="{{ :host.readonly }}" action="{{ :host.action }}" entity="{{ :host.state }}" on-success=":host._broadcast($event)" on-fail=":host._broadcast($event)"
+        <${P}-form on-submit=":host._onSubmit($event)" readonly="{{ :host.readonly }}" action="{{ :host.action }}" entity="{{ :host.state }}" on-success=":host._broadcast($event)" on-fail=":host._broadcast($event)"
             success="{{ :host.success, twoway }}" fail="{{ :host.fail, twoway }}">
-            <${ P}-repeater datasource="{{ :host.metadata && (:host.metadata.props || :host.metadata) }}" class="${PCSS}-animatable-list ${PCSS}-list-bottom">
+            <${P}-repeater datasource="{{ :host.metadata && (:host.metadata.props || :host.metadata) }}" class="${PCSS}-animatable-list ${PCSS}-list-bottom">
                 <${P}-panel css="{{ :host.metadata && :host.metadata.display && :host.metadata.display.css }}" css-class="{{ :host.metadata && :host.metadata.display && :host.metadata.display.cssClass }}">
                     <template>
-                        <${ P}-form-field readonly="{{ :host.readonly }}" css-class="{{ ^item.display && ^item.display.cssClass }}" css="{{ ^item.display && ^item.display.css }}"
-                                          fetch-headers="{{ :host.fetchHeaders }}" fetch-credentials="{{ :host.fetchCredentials }}"
-                                          entity="{{ :host.state, twoway }}" metadata="{{ ^item }}"></${ P}-form-field>
+                        <${P}-form-field readonly="{{ :host.readonly }}" css-class="{{ ^item.display && ^item.display.cssClass }}" css="{{ ^item.display && ^item.display.css }}"
+                                          fetch-headers="{{ :host.fetchHeaders }}" fetch-credentials="{{ :host.fetchCredentials }}" disabled="{{ Pacem.Utils.isNull(:host.state) }}"
+                                          entity="{{ :host.state, twoway }}" metadata="{{ ^item }}"></${P}-form-field>
                     </template>
                 </${P}-panel>
-            </${ P}-repeater>
-        </${ P}-form>
-        <${ P}-fetch method="${Pacem.Net.HttpMethod.Post}" headers="{{ :host.fetchHeaders }}" credentials="{{ :host.fetchCredentials }}"></${P}-fetch> 
+            </${P}-repeater>
+        </${P}-form>
+        <${P}-fetch method="{{ :host.method }}" headers="{{ :host.fetchHeaders }}" credentials="{{ :host.fetchCredentials }}"></${P}-fetch> 
     <div class="${PCSS}-dialog-buttons ${PCSS}-buttonset buttons">
         <div class="buttonset-left">
-        <${ P}-button on-click=":host.commit('${UI.DialogButton.Ok}', $event)" hide="{{ !:host.readonly }}" class="button primary button-size size-small">Ok</${ P}-button>
-        <${ P}-button on-click=":host._submit($event)" hide="{{ :host.readonly }}"
-            class="button primary button-size size-small" disabled="{{ !(::_form.valid && ::_form.dirty) || ::_fetcher.fetching }}">Ok</${ P}-button>
-        <${ P}-button on-click=":host._cancel($event)" hide="{{ :host.readonly }}" class="button button-size size-small" disabled="{{ ::_fetcher.fetching }}">Cancel</${P}-button>
+        <${P}-button on-click=":host._submit($event)"
+            class="button primary button-size size-small" disabled="{{ !:host.readonly && (!(::_form.valid && ::_form.dirty) || ::_fetcher.fetching) }}"><${P}-text text="{{ :host.okCaption }}"></${P}-text></${P}-button>
+        <${P}-button on-click=":host._cancel($event)" hide="{{ :host.readonly }}" class="button button-size size-small" disabled="{{ ::_fetcher.fetching }}"><${P}-text text="{{ :host.cancelCaption }}"></${P}-text></${P}-button>
     </div></div>
-    <${ P}-loader type="{{ :host.loaderType }}" class="${PCSS}-hover loader-primary loader-small" active="{{ ::_fetcher.fetching }}"></${P}-loader>
-</${ P}-lightbox>`
+    <${P}-loader type="{{ :host.loaderType }}" class="${PCSS}-hover loader-primary loader-small" active="{{ ::_fetcher.fetching }}"></${P}-loader>
+</${P}-lightbox>`
     })
     export class PacemModalFormElement extends UI.PacemDialogBase implements Pacem.Net.OAuthFetchable {
+
+        @Watch({ reflectBack: true, converter: PropertyConverters.String }) okCaption: string = 'OK';
+        @Watch({ reflectBack: true, converter: PropertyConverters.String }) cancelCaption: string = 'Cancel';
+        @Watch({ reflectBack: true, converter: PropertyConverters.String }) method: Pacem.Net.HttpMethod = Pacem.Net.HttpMethod.Post;
 
         @Watch({ converter: PropertyConverters.Json })
         metadata: Pacem.Scaffolding.TypeMetadata | Scaffolding.PropertyMetadata[];
@@ -73,16 +76,21 @@ namespace Pacem.Components.Plus {
         }
 
         private _submit(evt: Event) {
-            Pacem.avoidHandler(evt);
-            if (Utils.isNullOrEmpty(this.action)) {
+            if (this.readonly) {
                 this.commit(UI.DialogButton.Ok, evt);
             } else {
-                this._form.submit(this._fetcher).then(v => {
-                    this.state = v;
+
+                Pacem.avoidHandler(evt);
+                if (Utils.isNullOrEmpty(this.action)) {
                     this.commit(UI.DialogButton.Ok, evt);
-                }, r => {
-                    // do nothing
-                });
+                } else {
+                    this._form.submit(this._fetcher).then(v => {
+                        this.state = v;
+                        this.commit(UI.DialogButton.Ok, evt);
+                    }, r => {
+                        // do nothing
+                    });
+                }
             }
         }
 
@@ -99,8 +107,8 @@ namespace Pacem.Components.Plus {
         }
 
         private _cancel(evt: Event) {
-            this._form.reset();
             this.commit(UI.DialogButton.Cancel, evt);
+            this._form.reset();
         }
 
         private _broadcast(evt: CustomEvent) {

@@ -468,8 +468,9 @@ namespace Pacem {
          */
         static findItemContext(element: Element, upLevels: number = 0, logFn: (message?: string) => void = console.warn): Pacem.RepeaterItem {
             let retval = RepeaterItem.findUpwards(element, upLevels, logFn);
-            if (retval == null && logFn && element instanceof HTMLElement && element['isConnected'])
+            if (retval == null && logFn && element instanceof HTMLElement && element['isConnected']) {
                 logFn(`Couldn't find a ${RepeaterItem.name} up ${upLevels} level${((upLevels === 1) ? "" : "s")} from element "${element.constructor.name}".`);
+            }
             return retval;
         }
     }
@@ -477,13 +478,15 @@ namespace Pacem {
     export abstract class RepeaterItem {
 
         static findUpwards(element: Element, upLevels: number = 0, logFn: (message?: string) => void = console.warn) {
-            if (Utils.isNull(element) || element.localName === 'template' || element instanceof /* template-like element? */ TemplateElement)
+            if (Utils.isNull(element) || element.localName === 'template' || element instanceof /* template-like element? */ TemplateElement) {
                 return null;
+            }
             let item: /* repeater-item core */ Pacem.RepeaterItem = null;
             let predicate: (node: any) => boolean = (node) => !Utils.isNull(item = RepeaterItem.getRepeaterItem(node));
             let retval: Node = CustomElementUtils.findPreviousSiblingOrAncestor(element, predicate, upLevels);
-            if (retval == null && logFn && element instanceof HTMLElement && element['isConnected'])
+            if (retval == null && logFn && element instanceof HTMLElement && element['isConnected']) {
                 logFn(`Couldn't find a ${RepeaterItem.name} up ${upLevels} level${((upLevels === 1) ? "" : "s")} from element "${element.constructor.name}".`);
+            }
             return item;
         }
 

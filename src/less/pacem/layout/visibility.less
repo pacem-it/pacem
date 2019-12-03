@@ -2,6 +2,10 @@
 @import "../../shared";
 @import "../theme-dark";
 
+.full-height{
+    height: 100%;
+}
+
 /* #region overflow-specific*/
 
 .overflow-visible {
@@ -186,20 +190,20 @@
 }
 
 // hide when at most 'hd' wide
-@media (max-width: @threshold_uhd - 1) {
-    .HideWhenLessThan(uhd);
+@media (max-width: @threshold_2k - 1) {
+    .HideWhenLessThan(2k);
     .HideWhenAtMost(hd);
 }
 
-// show when at least 'uhd' wide
-@media (min-width: @threshold_uhd) {
-    .ShowWhenAtLeast(uhd);
+// show when at least '2k' wide
+@media (min-width: @threshold_2k) {
+    .ShowWhenAtLeast(2k);
 }
 
-// hide when at most 'hd' wide
+// hide when at most '2k' wide
 @media (max-width: @threshold_4k - 1) {
     .HideWhenLessThan(4k);
-    .HideWhenAtMost(uhd);
+    .HideWhenAtMost(2k);
 }
 
 // show when at least '4k' wide

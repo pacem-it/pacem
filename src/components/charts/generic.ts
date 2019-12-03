@@ -294,7 +294,7 @@ namespace Pacem.Components.Charts {
             series.splice(0);
         }
 
-        @Debounce()
+        @Throttle()
         draw() {
             if (!this.isReady)
                 return;
@@ -413,7 +413,15 @@ namespace Pacem.Components.Charts {
                  |   |             pad                |
                  --------------------------------------
                  */
-                svg.setAttribute('class', 'chart-series' + (Utils.isNullOrEmpty(series.className) ? '' : (' ' + series.className)));
+                var className = 'chart-series';
+                var fill = type === 'area' || type === 'splinearea';
+                if (fill) {
+                    className += ' series-fill';
+                };
+                if (!Utils.isNullOrEmpty(series.className)) {
+                    className += ' ' + series.className;
+                }
+                svg.setAttribute('class', className);
                 svg.setAttribute('x', padding.toString());
                 svg.setAttribute('y', seriesY.toString());
                 svg.setAttribute('width', seriesWidth.toString());
@@ -422,9 +430,9 @@ namespace Pacem.Components.Charts {
                 // pick path as single child element for the series.
                 let path: SVGPathElement = <SVGPathElement>svg.firstElementChild;
                 path.style.stroke = series.color;
-                if (this.type === 'area' || this.type === 'splinearea') {
+                if (fill) {
                     let css = getComputedStyle(path);
-                    path.style.fill = css.stroke;
+                    path.style.fill = series.color || css.fill;
                 } else
                     path.style.fill = 'none';
 
@@ -469,7 +477,7 @@ namespace Pacem.Components.Charts {
                         // #endregion
                     }
 
-                    if (this.type === 'area' || this.type === 'splinearea') {
+                    if (fill) {
                         d += `V${(-minY * normY)} H0 Z`;
                     }
                 }

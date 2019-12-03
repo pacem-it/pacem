@@ -1,4 +1,5 @@
 ﻿@import "theme-dark";
+
 @keyframes core-anim {
     0% {
         transform: translateY(@grid_spacing * 2);
@@ -62,6 +63,16 @@
         transform: rotate(360deg);
     }
 }*/
+
+@keyframes fade-in {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
 
 @keyframes list-item {
     0% {
@@ -177,4 +188,3 @@
         filter: brightness(1);
     }
 }
-

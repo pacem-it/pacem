@@ -20,7 +20,7 @@ body {
     .@{PCSS}-animatable {
         .Animatable(.4s);
 
-        &.anim-rotate{
+        &.anim-rotate {
             animation-name: rotate-anim;
             animation-duration: 1s;
             animation-timing-function: @easing_in_out_sine;
@@ -52,6 +52,15 @@ body {
             }
         }
 
+        &.anim-fade-in {
+            animation-name: fade-in;
+        }
+
+        &.anim-fade-out {
+            animation-name: fade-in;
+            animation-direction: reverse;
+        }
+
         &.anim-alt {
             animation-name: alt-anim;
         }
@@ -59,6 +68,16 @@ body {
         &.anim-pop {
             animation-name: pop-anim;
             animation-timing-function: @easing_out_back;
+        }
+
+        &.anim-right-in {
+            animation-name: list-item-right;
+            animation-timing-function: @easing_out_sine;
+        }
+
+        &.anim-left-in {
+            animation-name: list-item-left;
+            animation-timing-function: @easing_out_sine;
         }
 
         &.anim-brightout {
@@ -110,4 +129,10 @@ body {
 }
 
 ::-webkit-resizer {
+}
+
+// gecko
+&, * {
+    scrollbar-color: @color_scrollbar_thumb @color_scrollbar_track;
+    scrollbar-width: thin;
 }

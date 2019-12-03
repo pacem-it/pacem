@@ -32,6 +32,7 @@ namespace Pacem.Components.UI {
 
     export abstract class PacemDialogBase extends PacemEventTarget {
 
+        /** Not to be set declaratively. */
         @Watch() state: any;
 
         protected abstract get lightbox(): PacemLightboxElement;
@@ -50,11 +51,15 @@ namespace Pacem.Components.UI {
 
         protected commit(btn: DialogButton, evt: Event) {
             Pacem.avoidHandler(evt);
-            var drevt = new DialogResultEvent({ button: btn, state: this.state });
+            const state = this.state;
+            var drevt = new DialogResultEvent({ button: btn, state: state });
             this.lightbox.show = false;
             this._deferred.resolve(drevt.detail);
             this._deferred = null;
             this.dispatchEvent(drevt);
+
+            // BOLD change: state destroyed when dialog committed
+            this.state = undefined;
         }
     }
 
