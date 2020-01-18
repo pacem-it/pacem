@@ -62,6 +62,11 @@ namespace Pacem.Components.UI {
 
         protected emit(evt: Event) {
             super.emit(evt);
+
+            if (this.disabled) {
+                return;
+            }
+
             switch (evt.type) {
                 case 'mousedown':
                     Utils.addClass(this, PCSS + '-active');

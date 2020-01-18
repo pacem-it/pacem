@@ -225,9 +225,10 @@ table.@{PCSS}-datatable {
     .@{PCSS}-datarow {
         z-index: 0;
         pointer-events: none;
+        background-color: @datarow_color;
 
         &.datarow-alt {
-            background-color: @_clr_row_alt;
+            background-color: @datarow_alt_color;
         }
     }
 
@@ -247,14 +248,14 @@ table.@{PCSS}-datatable {
     }
 
     .@{PCSS}-datacell:hover ~ .@{PCSS}-datarow {
-        background-color: fade(@color_border, 5);
+        background-color: @datarow_hover_color;
 
         + .@{PCSS}-datacell ~ .@{PCSS}-datarow {
-            background-color: transparent;
-        }
+            background-color: @datarow_color;
 
-        &.datarow-alt {
-            background-color: @_clr_row_alt;
+            &.datarow-alt {
+                background-color: @datarow_alt_color;
+            }
         }
     }
 

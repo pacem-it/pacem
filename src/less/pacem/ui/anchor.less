@@ -8,7 +8,8 @@
     margin-left: .1em; //.1rem * @font_rem_factor;
     line-height: 1;
 }
-@{P}-a {
+
+@{P}-a {
     display: inline-block;
     color: @color_link;
     cursor: default;
@@ -27,5 +28,18 @@
 
     &.a-download::after {
         .IconA('vertical_align_bottom');
+    }
+
+    // disabled link
+    &.@{PCSS}-disabled {
+        color: @color_disabled;
+
+        &:hover {
+            color: @color_disabled;
+        }
+
+        &.a-url {
+            cursor: default;
+        }
     }
 }

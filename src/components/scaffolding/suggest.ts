@@ -263,7 +263,7 @@ namespace Pacem.Components.Scaffolding {
         private _createBalloon(): UI.PacemBalloonElement {
             /*<${ P }-balloon target="{{ ::_input }}" options="{ position: 'bottom', align: 'left', behavior: 'inert', hoverDelay: 0 }"
 disabled="{{ :host.readonly || Pacem.Utils.isNullOrEmpty(:host.adaptedDatasource) }}">*/
-            const balloon = <UI.PacemBalloonElement>document.createElement('pacem-balloon');
+            const balloon = <UI.PacemBalloonElement>document.createElement(P +'-balloon');
             Utils.addClass(balloon, 'suggest dropdown');
             balloon.options = {
                 trackPosition: true,

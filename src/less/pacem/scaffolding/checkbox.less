@@ -93,6 +93,7 @@
         min-height: 0;
         font-size: 0;
         height: @_h;
+        // box-sizing: padding-box;
         border-radius: @_h/2;
         width: @_h * 2;
         margin-bottom: @_pad;
@@ -101,6 +102,7 @@
         background: @color_disabled;
         padding: 0;
         transition: background linear .25s;
+        border: 0;
 
         &::before {
             .Icon('check', @_h);
@@ -117,14 +119,14 @@
         @_switch_margin: 2px;
 
         &::after {
-            @_c: @_h / 2;
-            @_r: @_c - @_brd;
+            /*@_c: @_h / 2;
+            @_r: @_c - @_brd;*/
             content: '';
             position: absolute;
-            left: @_switch_margin; //@_brd;
-            top: @_switch_margin; // @_brd;
+            left: @_switch_margin;
+            top: $left;
             height: @_h - 2* @_switch_margin;
-            width: @_h - 2* @_switch_margin;
+            width: $height;
             transition: transform @easing_in_out_sine .2s;
             background-color: #fff;
             border-radius: 50%;
@@ -159,7 +161,6 @@
 @{P}-form-field.@{PCSS}-switcher.switcher-primary @{P}-checkbox,
 @{P}-checkbox.checkbox-toggle.checkbox-primary,
 @{P}-checkbox.checkbox-switch.checkbox-primary {
-
     .SwitcherColoring(@color_primary, @color_primary_inv);
 }
 
@@ -274,7 +275,8 @@
 
     @{P}-form-field.field-minimal @{P}-checkbox,
     @{P}-checkbox.checkbox-naked,
-    @{P}-checkbox.checkbox-toggle {
+    @{P}-checkbox.checkbox-toggle,
+    @{P}-checkbox.checkbox-switch {
         min-width: 0;
     }
 }

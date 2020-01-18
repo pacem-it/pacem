@@ -118,9 +118,11 @@
                                 text="{{ #routetitle.model }}"></pacem-span>
                 </pacem-panel>
             </div>
+
+            <pacem-panel class="fetch-feedback feedback-primary" css-class="{{ {'fetching': #view.fetching} }}"></pacem-panel>
         </header>
         <div class="pacem-toolbar toolbar-header toolbar-border"></div>
-
+        
         <!-- dropdown balloon and adapter -->
         <pacem-adapter id="adapter" hide="true" orientation="vertical"></pacem-adapter>
         <pacem-balloon options="{{ { trigger:'click', align: 'start', trackPosition: true, size: 'match', position: 'bottom' } }}" target="#selector" id="ddl"
@@ -193,7 +195,7 @@
             </pacem-menu>
         </pacem-repeater>
 
-        <pacem-router template="/{package}/{view}" path="/@(Model.Package ?? "intro")/@(Model.View ?? "welcome")" id="router"></pacem-router>
+        <pacem-router template="/{package}/{view}" path="{{ '/@(Model.Package ?? "intro")/@(Model.View ?? "welcome")@(Context.Request.QueryString)' + location.hash }}" id="router"></pacem-router>
 
         <h1 class="text-accent show-v text-ellipsed" id="heading">
             <pacem-span css-class="{{ {'text-tech': #routetitle.model && #routetitle.model.startsWith('<') } }}" text="{{ #routetitle.model }}">Pacem JS -@Model.Title</pacem-span>
@@ -206,7 +208,9 @@
         </div>
 
         <footer class="footer-border" pacem>
-            <span>Copyright @(DateTime.UtcNow.Year) - <a href="https://pacem.it" target="_blank">Pacem</a></span>
+            <span>Copyright @(DateTime.UtcNow.Year) - <a href="https://pacem.it" target="_blank">Pacem</a> 
+            @*- <pacem-text text="{{ #router.state.$query.foo }}"></pacem-text> - <pacem-text text="{{ #router.state.$hash }}"></pacem-text>*@
+            </span>
         </footer>
         <div class="pacem-toolbar toolbar-footer toolbar-border">
             <div class="bg-invert"></div>

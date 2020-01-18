@@ -68,7 +68,7 @@ namespace Pacem.Components.Maps {
             } else
                 marker = ctrl.markers.get(item);
 
-            let popupOptions: atlas.PopupOptions = { position: position };
+            let popupOptions: atlas.PopupOptions = { position: position, pixelOffset: [0, -36 /* default marker size */] };
             let options: atlas.HtmlMarkerOptions = { position: position, draggable: item.draggable, popup: new atlas.Popup() };
 
             let fnIcon = (icon: string, w?: number, h?: number) => `<img width="${(w || 'auto')}" height="${(h || 'auto')}" style="pointer-events: none" src="${icon}" />`;//item.icon.url;
@@ -117,7 +117,7 @@ namespace Pacem.Components.Maps {
 
                 ctrl._onInfo(item);
 
-                ctrl.map.map.events.addOnce('open', popup, (e) => {
+                ctrl.map.map.events.addOnce('close', popup, (e) => {
                     popup.setOptions({ content: '' });
                     ctrl._onClose(item);
                 });

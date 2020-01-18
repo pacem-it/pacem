@@ -69,7 +69,7 @@ namespace Pacem {
         private _inparagraph = false;
 
         // TODO: error prone and NOT safe. Process content line by line using encoding, regexes /m and scope variables. Try to keep it clean as well
-        toHtml(md: string) {
+        toHtml(md: string = '') {
 
             const _this = this,
                 escapedMd = md.replace(/</g, '&lt;').replace(/>/g, '&gt;'),

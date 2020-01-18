@@ -17,14 +17,20 @@
         list-style-type: none;
         margin: 0;
         padding: 0;
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-content: flex-start;
 
         > li {
+            flex: 1 1 auto;
             display: inline-block;
-            padding: 0 @_pad;
+            padding: 0 2 * @_pad 0 0;
 
-            &:first-child {
+            /*&:first-child {
                 padding-left: 0;
-            }
+            }*/
 
             &:last-child {
                 padding-right: 0;

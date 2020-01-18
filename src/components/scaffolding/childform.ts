@@ -9,7 +9,7 @@ namespace Pacem.Components.Scaffolding {
 
 
     /** For internal use ONLY! */
-    @CustomElement({ tagName: P+'-childform-propagator'})
+    @CustomElement({ tagName: P + '-childform-propagator' })
     export class PacemChildFormPropagatorElement extends PacemEventTarget {
 
         @Watch({ emit: false, converter: PropertyConverters.String })
@@ -168,7 +168,7 @@ namespace Pacem.Components.Scaffolding {
             const ndx = evt.detail.index,
                 subForms = this._subForms;
             evt.detail.dom[0].childNodes.forEach(e => {
-                if (e instanceof Element && e.localName === 'pacem-form') {
+                if (e instanceof Element && e.localName === (P + '-form')) {
                     subForms.splice(ndx, subForms.length - ndx, e as PacemFormElement);
                 }
             });

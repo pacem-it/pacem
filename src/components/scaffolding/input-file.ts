@@ -60,7 +60,7 @@ namespace Pacem.Components.Scaffolding {
         <${P}-span hide="{{ Pacem.Utils.isNullOrEmpty(:host.value) || :host.uploading }}" class="readonly text-reset display-block ${PCSS}-anim text-truncate text-left text-pre ${PCSS}-pad pad-right-3" text="{{ :host.viewValue }}"></${P}-span>
 
         <${P}-panel class="upload-progress hit-none" hide="{{ :host.readonly || (!Pacem.Utils.isNullOrEmpty(:host.value) && !:host.uploading) }}">
-            <${P}-tuner value="{{ :host.percentage }}" css-class="{{ {'tuner-success': !:host.invalidFile, 'tuner-danger': :host.invalidFile} }}" interactive="false" class="tuner-small"></${P}-tuner>
+            <${P}-tuner value="{{ :host.percentage }}" css-class="{{ {'tuner-success': !:host.invalidFile, 'tuner-danger': :host.invalidFile} }}" interactive="false"></${P}-tuner>
         </${P}-panel>
 
 </${P}-button>`

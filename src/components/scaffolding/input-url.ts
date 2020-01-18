@@ -4,7 +4,7 @@
 /// <reference path="char-counter.ts" />
 namespace Pacem.Components.Scaffolding {
     
-    @CustomElement({ tagName: P + '-input-url', template: `<input type="url" class="${PCSS}-input" />${ CHAR_COUNTER_CHILD }<${ P }-a class="${PCSS}-readonly" href="{{ :host.value }}" target="_blank"><${ P }-text text="{{ :host.viewValue }}"></${ P }-text></${ P }-a>`, shadow: Defaults.USE_SHADOW_ROOT })
+    @CustomElement({ tagName: P + '-input-url', template: `<input type="url" class="${PCSS}-input" />${CHAR_COUNTER_CHILD}<${P}-a class="${PCSS}-readonly" disabled="{{ $pacem.isNullOrEmpty(:host.value) }}" href="{{ :host.value }}" target="_blank"><${ P }-text text="{{ :host.viewValue }}"></${ P }-text></${ P }-a>`, shadow: Defaults.USE_SHADOW_ROOT })
     export class PacemUrlInputElement extends PacemTextualInputElement {
 
         constructor() {

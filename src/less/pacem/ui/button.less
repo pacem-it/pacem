@@ -30,7 +30,7 @@
         padding: 0 @grid_spacing/2;
         min-width: @_width;
 
-        &.size-small{
+        &.size-small {
             min-width: @_width_half;
         }
     }
@@ -127,124 +127,53 @@ a.@{PCSS}-button,
         background-color: lighten(@color_button_back, @_darken_perc);
     }
 
-    &.accent,
-    &.button-accent {
-        background: @color_accent;
-        color: @color_accent_inv;
+    .ButtonColorize(@clr, @clr_fore) {
+        background: @clr;
+        color: @clr_fore;
 
         &:focus,
         &:hover {
-            background: darken(@color_accent, @_darken_perc);
-            color: @color_accent_inv;
+            background: darken(@clr, @_darken_perc);
+            color: @clr_fore;
         }
 
         &:focus when (@glows = true) {
-            text-shadow: 0 0 8px @color_accent_inv;
+            text-shadow: 0 0 8px @clr_fore;
         }
 
         &:hover when (@glows = true) {
-            text-shadow: 0 0 8px @color_accent_inv;
+            text-shadow: 0 0 8px @clr_fore;
         }
+    }
+
+    &.accent,
+    &.button-accent {
+        .ButtonColorize(@color_accent, @color_accent_inv);
     }
 
     &.primary,
     &.button-primary {
-        background: @color_primary;
-        color: @color_primary_inv;
-
-        &:focus,
-        &:hover {
-            color: @color_primary_inv;
-            background: darken(@color_primary, @_darken_perc);
-        }
-
-        &:focus when (@glows = true) {
-            text-shadow: 0 0 8px @color_primary_inv;
-        }
-
-        &:hover when (@glows = true) {
-            text-shadow: 0 0 8px @color_primary_inv;
-        }
+        .ButtonColorize(@color_primary, @color_primary_inv);
     }
 
     &.danger,
     &.button-danger {
-        background: @color_danger;
-        color: @color_danger_inv;
-
-        &:focus,
-        &:hover {
-            color: @color_danger_inv;
-            background: darken(@color_danger, @_darken_perc);
-        }
-
-        &:focus when (@glows = true) {
-            text-shadow: 0 0 8px @color_danger_inv;
-        }
-
-        &:hover when (@glows = true) {
-            text-shadow: 0 0 8px @color_danger_inv;
-        }
+        .ButtonColorize(@color_danger, @color_danger_inv);
     }
 
     &.success,
     &.button-success {
-        background: @color_success;
-        color: @color_success_inv;
-
-        &:focus,
-        &:hover {
-            color: @color_success_inv;
-            background: darken(@color_success, @_darken_perc);
-        }
-
-        &:focus when (@glows = true) {
-            text-shadow: 0 0 8px @color_success_inv;
-        }
-
-        &:hover when (@glows = true) {
-            text-shadow: 0 0 8px @color_success_inv;
-        }
+        .ButtonColorize(@color_success, @color_success_inv);
     }
 
     &.warning,
     &.button-warning {
-        background: @color_warning;
-        color: @color_warning_inv;
-
-        &:focus,
-        &:hover {
-            color: @color_warning_inv;
-            background: darken(@color_warning, @_darken_perc);
-        }
-
-        &:focus when (@glows = true) {
-            text-shadow: 0 0 8px @color_warning_inv;
-        }
-
-        &:hover when (@glows = true) {
-            text-shadow: 0 0 8px @color_warning_inv;
-        }
+        .ButtonColorize(@color_warning, @color_warning_inv);
     }
 
     &.exhalt,
     &.button-exhalt {
-        background: @color_highlight;
-        color: @color_highlight_fore;
-
-        &:focus,
-        &:hover {
-            color: @color_highlight_fore;
-            background: darken(@color_highlight, @_darken_perc);
-        }
-
-        &:focus when (@glows = true) {
-            text-shadow: 0 0 8px @color_highlight_fore;
-        }
-
-        &:hover when (@glows = true) {
-            text-shadow: 0 0 8px @color_highlight_fore;
-        }
+        .ButtonColorize(@color_highlight, @color_highlight_fore);
     }
 
     &.flat,
@@ -382,20 +311,22 @@ a.@{PCSS}-button,
     &:focus when (@gradients = false) {
         border-bottom-color: @color_button_border_dark;
     }
+    // '.button-firm' class prevents the 'active' state (alongside with the 'disabled' state).
+    &:not(.@{PCSS}-disabled):not(.button-firm) {
+        &.@{PCSS}-active {
+            //border-image: none;
+            transform: translateY(@_border);
+            box-shadow: none;
+        }
 
-    &.@{PCSS}-active {
-        //border-image: none;
-        transform: translateY(@_border);
-        box-shadow: none;
-    }
+        &.@{PCSS}-active when (@gradients = true) {
+            .GradientBorderVertical(1, 0, 100%, fade(@color_button_border_dark, 10), fade(@color_button_border_light, 10));
+        }
 
-    &.@{PCSS}-active when (@gradients = true) {
-        .GradientBorderVertical(1, 0, 100%, fade(@color_button_border_dark, 10), fade(@color_button_border_light, 10));
-    }
-
-    &.@{PCSS}-active when (@gradients = false) {
-        border-top-color: @color_button_border;
-        border-bottom-color: @color_button_border_light;
+        &.@{PCSS}-active when (@gradients = false) {
+            border-top-color: @color_button_border;
+            border-bottom-color: @color_button_border_light;
+        }
     }
 }
 
@@ -423,15 +354,14 @@ a.@{PCSS}-button,
 .@{PCSS}-button.@{PCSS}-disabled,
 @{P}-button.@{PCSS}-disabled,
 .@{PCSS}-button.@{PCSS}-disabled:hover,
-@{P}-button.@{PCSS}-disabled:hover ,
+@{P}-button.@{PCSS}-disabled:hover,
 // non-components
 a.@{PCSS}-button[disabled],
 button.@{PCSS}-button[disabled]:hover,
 input.@{PCSS}-button[disabled],
 a.@{PCSS}-button[disabled]:hover,
 button.@{PCSS}-button[disabled]:hover,
-input.@{PCSS}-button[disabled]:hover
-{
+input.@{PCSS}-button[disabled]:hover {
     cursor: default;
     color: fade(@color_button_fore, 30);
     text-shadow: none;
@@ -463,6 +393,7 @@ input.@{PCSS}-button[disabled]:hover
         border-color: transparent;
     }
 }
+
 /* #endregion */
 body.pacem-animations {
     .@{PCSS}-button, a.@{PCSS}-button, @{P}-button {
@@ -565,6 +496,7 @@ body.pacem-animations {
         margin: @grid_spacing / 6 @grid_spacing / 8;
     }
 }
+
 // icon injection
 @{P}-button,
 .@{PCSS}-button {
@@ -578,7 +510,7 @@ body.pacem-animations {
         content: attr(data-icon-url url);
     }
 
-    &.button[data-icon-glyph]::before{
+    &.button[data-icon-glyph]::before {
         vertical-align: bottom;
         margin-right: @grid_spacing/3;
     }

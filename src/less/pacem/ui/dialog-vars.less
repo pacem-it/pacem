@@ -1,32 +1,48 @@
 ﻿@import "../theme-dark";
 @import "../../shared";
+@import "shared";
 
 .DialogWithFixedButtons() {
     .@{PCSS}-lightbox {
-        padding-bottom: @grid_cell;
+        display: flex;
+        flex-direction: column;
         transform: translateZ(0);
-    }
 
-    .@{PCSS}-dialog-buttons {
-        //min-height: @grid_cell;
-        padding: @grid_spacing / 2 1em 1em 1em;
-        bottom: 0;
-        left: 0;
-        position: fixed;
-        // background: @color_background;
-        width: 100%;
-        box-sizing: border-box;
-        z-index: @lightbox_z_index;
-        border-bottom-left-radius: @border_radius;
-        border-bottom-right-radius: @border_radius;
-    }
+        > * {
+            flex: 1 1 auto;
+        }
 
-    @{P}-button {
+        > .@{PCSS}-dialog-buttons {
+            order: 2;
+            padding: 0 /*@grid_spacing / 2*/ @lightbox_padding @lightbox_padding @lightbox_padding;
+            box-sizing: border-box;
+            z-index: @lightbox_z_index;
+            border-bottom-left-radius: @border_radius;
+            border-bottom-right-radius: @border_radius;
+            grid-row: 2;
+        }
+
+        > .@{PCSS}-dialog-heading {
+            order: 0;
+            // padding: @lightbox_padding @lightbox_padding 0 /*@grid_spacing / 2*/ @lightbox_padding;
+
+            > * {
+                margin: 0 @lightbox_padding;
+
+                &:first-child{
+                    margin-top: @lightbox_padding;
+                }
+            }
+        }
+
+        > .@{PCSS}-scrollable {
+            order: 1;
+        }
     }
 
     &.modal-corners,
     &.dialog-corners {
-        .@{PCSS}-lightbox  when (@border_radius = 0){
+        .@{PCSS}-lightbox when (@border_radius = 0) {
             .Corners(fade(@color_border, 100));
         }
     }

@@ -3,7 +3,7 @@
 /// <reference path="input.ts" />
 namespace Pacem.Components.Scaffolding {
     
-    @CustomElement({ tagName: P + '-input-tel', template: `<input type="tel" class="pacem-input" /><${ P }-a class="pacem-readonly" href="{{ 'tel:'+ :host.value }}"><${ P }-text text="{{ :host.viewValue }}"></${ P }-text></${ P }-a>`, shadow: Defaults.USE_SHADOW_ROOT })
+    @CustomElement({ tagName: P + '-input-tel', template: `<input type="tel" class="${PCSS}-input" /><${P}-a class="${PCSS}-readonly" disabled="{{ $pacem.isNullOrEmpty(:host.value) }}" href="{{ 'tel:'+ :host.value }}"><${P}-text text="{{ :host.viewValue }}"></${P}-text></${P}-a>`, shadow: Defaults.USE_SHADOW_ROOT })
     export class PacemTelInputElement extends PacemTextualInputElement {
 
         constructor() {

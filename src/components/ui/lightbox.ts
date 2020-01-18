@@ -7,7 +7,7 @@ namespace Pacem.Components.UI {
         template: `<${P}-panel class="${PCSS}-lightbox-wrapper" css-class="{{ {'${PCSS}-shown': :host.show } }}" hidden>
         <div class="${PCSS}-lightbox ${PCSS}-relative" style="transform: translateY(50vh)">
             <div class="${PCSS}-scrollable"><${P}-content></${P}-content></div>
-        </div><${ P}-resize on-resize=":host._resize($event)" disabled="{{ !:host.show }}" target="{{ ::container }}"></${P}-resize>
+        </div><${ P}-resize logger="{{ :host.logger }}" on-resize=":host._resize($event)" disabled="{{ !:host.show }}" target="{{ ::container }}"></${P}-resize>
     <${ P}-button hide="{{ :host.modal }}" class="${PCSS}-close" on-click=":host._close($event)">X</${P}-button>
 </${ P}-panel>`
     })

@@ -445,7 +445,8 @@ css-class="{{ {'${PCSS}-fetching': ::_fetcher.fetching, '${PCSS}-dirty': this.di
                         break;
                     }
                 default:
-                    switch ((meta.dataType || meta.type || '').toLowerCase()) {
+                    let dataType = (meta.dataType || meta.type || '').toLowerCase();
+                    switch (dataType) {
                         case 'imageurl':
                             tagName = P + '-input-image';
                             const f_id = this._fetcher.id = `fetch${this._key}`;
@@ -511,9 +512,11 @@ css-class="{{ {'${PCSS}-fetching': ::_fetcher.fetching, '${PCSS}-dirty': this.di
                         case 'latlng':
                             tagName = P + '-latlng';
                             break;
+                        case 'percent':
+                        case 'percentage':
                         case 'currency':
-                            tagName = P + '-input-number';
-                            let intl: Intl.NumberFormatOptions = Object.assign({ style: 'currency', currency: 'EUR' }, meta.extra);
+                            let baseOptions = dataType === 'currency' ? { style: 'currency', currency: 'EUR' } : { style: 'percent', maximumFractionDigits: 2 };
+                            let intl: Intl.NumberFormatOptions = Object.assign(baseOptions, meta.extra);
                             attrs['format'] = JSON.stringify(intl);
                         default:
                             switch ((meta.type || '').toLowerCase()) {

@@ -40,7 +40,7 @@ namespace Pacem.Components.Js {
         <${ P}-button class="hide-md flat circular copy pos-absolute absolute-top absolute-right" on-click=":host._copy()" tooltip="copy code snippet"></${P}-button>
     </${ P}-tab>
 </${ P}-tabs>
-    <div class="pacem-toaster toaster-bottom">
+    <div class="${PCSS}-toaster toaster-bottom">
         <${ P}-toast timeout="1250" class="toast-primary"><span>Copied!</span></${P}-toast>
     </div>`
     })
@@ -67,7 +67,7 @@ namespace Pacem.Components.Js {
             var toaster = COPY_TOASTER_SINGLETON;
             if (Utils.isNull(toaster)) {
                 toaster = COPY_TOASTER_SINGLETON = document.createElement('div');
-                Utils.addClass(toaster, 'pacem-toaster toaster-bottom');
+                Utils.addClass(toaster, PCSS + '-toaster toaster-bottom');
                 var toast = COPY_TOAST_SINGLETON = <UI.PacemToastElement>document.createElement(P + '-toast');
                 toast.timeout = 1250;
                 Utils.addClass(toast, 'toast-primary');

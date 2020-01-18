@@ -116,6 +116,24 @@ namespace Pacem {
             });
         }
 
+        // #region shortcuts from 'Utils'
+
+        @Transformer()
+        static isEmpty(obj: any): boolean {
+            return Utils.isEmpty(obj);
+        }
+
+        @Transformer()
+        static isNull(obj: any): boolean {
+            return Utils.isNull(obj);
+        }
+
+        @Transformer()
+        static isNullOrEmpty(obj: any): boolean {
+            return Utils.isNullOrEmpty(obj);
+        }
+
+        // #endregion
     }
 
 }

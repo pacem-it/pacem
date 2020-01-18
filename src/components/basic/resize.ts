@@ -20,6 +20,8 @@ namespace Pacem.Components {
         }
     }
 
+    const MUTATION_OBSERVER_INIT: MutationObserverInit = { subtree: true, childList: true };
+
     /** Might be not the case to switch to native due to the lacks of their APIs */
     const GO_NATIVE_WHEN_AVAIL = false;
     const RESIZEOBSERVER_POLYFILLED = !('ResizeObserver' in window) || !GO_NATIVE_WHEN_AVAIL;
@@ -47,9 +49,15 @@ namespace Pacem.Components {
                         this._observer.unobserve(oldTarget);
                     }
                 case 'watchPosition':
-                    if (!this._usePolyfill) {
-                        var newTarget = val || this;
-                        this._observer.observe(newTarget, BORDER_BOX);
+                    var newTarget = this.target || this;
+                    if (this._usePolyfill) {
+                        if (!Utils.isNull(this._mutationObserver)) {
+                            this._mutationObserver.observe(newTarget, MUTATION_OBSERVER_INIT);
+                        }
+                    } else {
+                        if (!Utils.isNull(this._observer)) {
+                            this._observer.observe(newTarget, BORDER_BOX);
+                        }
                     }
                     break;
             }
@@ -59,13 +67,12 @@ namespace Pacem.Components {
             return RESIZEOBSERVER_POLYFILLED || this.watchPosition;
         }
 
-        private _timer: number;
-
         private _previousHeight: number;
         private _previousWidth: number;
         private _previousTop: number;
         private _previousLeft: number;
         private _observer: ResizeObserver;
+        private _mutationObserver: MutationObserver;
 
         private _start() {
 
@@ -80,12 +87,15 @@ namespace Pacem.Components {
             if (RESIZEOBSERVER_POLYFILLED) {
 
                 // polyfill
-                const rect = Utils.offset(el);
-                this._previousHeight = rect.height;
-                this._previousWidth = rect.width;
-                this._previousTop = rect.top;
-                this._previousLeft = rect.left;
-                this._timer = requestAnimationFrame(this._check);
+                //const rect = Utils.offset(el);
+                //this._previousHeight = rect.height;
+                //this._previousWidth = rect.width;
+                //this._previousTop = rect.top;
+                //this._previousLeft = rect.left;
+                this._mutationObserver = new MutationObserver(_ => {
+                    this._check();
+                });
+                this._mutationObserver.observe(el, MUTATION_OBSERVER_INIT);
 
 
             } else {
@@ -112,17 +122,20 @@ namespace Pacem.Components {
                         }
 
                     });
-                    this._observer.observe(this._target, BORDER_BOX);
-                    window.addEventListener('resize', this._checkSizeHandler, false);
+                    this._observer.observe(el, BORDER_BOX);
                 }
             }
+            window.addEventListener('resize', this._checkSizeHandler, false);
         }
 
         private _stop() {
+            window.removeEventListener('resize', this._checkSizeHandler, false);
             if (RESIZEOBSERVER_POLYFILLED) {
-                cancelAnimationFrame(this._timer);
+                if (!Utils.isNull(this._mutationObserver)) {
+                    this._mutationObserver.disconnect();
+                    this._mutationObserver = null;
+                }
             } else if (!Utils.isNull(this._observer)) {
-                window.removeEventListener('resize', this._checkSizeHandler, false);
                 this._observer.disconnect();
                 this._observer = null;
             }
@@ -132,12 +145,13 @@ namespace Pacem.Components {
             this._assignSizeDebounced();
         }
 
-        @Debounce(25)
+        @Debounce(50)
         private _assignSizeDebounced() {
             this._checkSize();
         }
 
         private _checkSize() {
+            this.log(Logging.LogLevel.Log, 'Resize flow triggered.');
             let el = this._target;
             const rect = Utils.offset(el);
             let height = rect.height;
@@ -156,9 +170,7 @@ namespace Pacem.Components {
         }
 
         private _check = (_?) => {
-            this._checkSize();
-            if (!this.disabled)
-                this._timer = requestAnimationFrame(this._check);
+            this._assignSizeDebounced();
         }
 
         get currentSize() {

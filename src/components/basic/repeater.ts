@@ -122,9 +122,10 @@ namespace Pacem.Components {
             }
             if (index < items.length) {
                 this._removeItems(index, items.length - 1);
-            } else
+            } else if (!Utils.isNull(holder && holder.parentNode)) {
                 // flush added items
                 holder.parentNode.insertBefore(this._fragment, holder);
+            }
         }
 
         private _onCommand(evt: CommandEvent) {
@@ -241,7 +242,7 @@ namespace Pacem.Components {
         remove(): void {
             let tmplParent = this._holder.parentElement;
             for (var alterEgo of this._alterEgos) {
-                if (alterEgo.parentElement === tmplParent) {
+                if (alterEgo.parentElement === tmplParent && !Utils.isNull(tmplParent)) {
                     tmplParent.removeChild(alterEgo);
                 }
             }

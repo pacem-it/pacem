@@ -16,7 +16,7 @@ namespace Pacem.Components.UI {
             </div>
             <svg class="${PCSS}-spinner" pacem hidden xmlns="http://www.w3.org/2000/svg" 
                  xmlns:xlink="http://www.w3.org/1999/xlink"
-                 viewBox="-18,-18,108,108" preserveAspectRatio="yes">
+                 viewBox="-18,-18,108,108" preserveAspectRatio="xMidYMid">
             </svg>
         </div>`
     })

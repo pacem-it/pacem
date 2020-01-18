@@ -11,8 +11,8 @@ namespace Pacem.Components.Scaffolding {
         <div class="thumb-label"></div>
     </${P}-panel>
     <${P}-text text="{{ :host._format(:host.max) }}" max></${P}-text>
-<${P}-drag-drop lock-timeout="0"></${P}-drag-drop><pacem-resize watch-position="true" on-${ResizeEventName}=":host._setTrackSize($event)" target="{{ ::_track }}"></pacem-resize>
-<${P}-balloon class="text-center"><pacem-text text="{{ :host.viewValue }}"></pacem-text></${P}-balloon><${P}-body-proxy></${P}-body-proxy>
+<${P}-drag-drop lock-timeout="0"></${P}-drag-drop><${P}-resize watch-position="true" on-${ResizeEventName}=":host._setTrackSize($event)" target="{{ ::_track }}"></${P}-resize>
+<${P}-balloon class="text-center"><${P}-text text="{{ :host.viewValue }}"></${P}-text></${P}-balloon><${P}-body-proxy></${P}-body-proxy>
 `,
         shadow: Defaults.USE_SHADOW_ROOT
     })

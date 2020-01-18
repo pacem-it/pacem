@@ -1,6 +1,7 @@
 ﻿@import "../../shared";
 @import "shared";
 @import "../theme-dark";
+@import "../ui/tuner";
 
 @{P}-upload {
     display: inline-block;
@@ -45,7 +46,6 @@
 
                 &.circular,
                 &.button-circular {
-
                     // force tp 48px...
                     width: min(2 * @grid_spacing, @_sz - 28px);
                     height: $width;
@@ -54,7 +54,10 @@
         }
 
         > .upload-progress {
-            transform: scale(.9);
+            // transform: scale(.9);
+            @{P}-tuner {
+                .Tuner(@_grd_sz - 2 * @_brd);
+            }
         }
 
         &.upload-chosen {

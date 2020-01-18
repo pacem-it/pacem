@@ -9,7 +9,7 @@
 }
 
 .@{PCSS}-lightbox-wrapper {
-    z-index: @lightbox-z-index;
+    z-index: @lightbox_z_index;
     box-sizing: border-box;
     background-color: transparent;
 
@@ -74,7 +74,7 @@
         position: relative;
         max-width: 80vw;
         max-height: 80vh;
-        border: 1em solid transparent; // @_clr;
+        border: @lightbox_padding solid transparent; // @_clr;
         border-top-left-radius: @border_radius;
         border-top-right-radius: @border_radius;
     }

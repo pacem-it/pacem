@@ -782,7 +782,7 @@
 .@{PCSS}-fieldgroup,
 .input-group {
     display: grid;
-    grid-template-columns: repeat(3, auto);
+    grid-template-columns: auto 1fr auto;
     justify-content: start;
     grid-template-areas: "prepend main append";
 
@@ -925,6 +925,7 @@
 
     > .@{PCSS}-input-container.@{PCSS}-fieldgroup {
         justify-content: start;
+        grid-template-columns: repeat(3, auto);
 
         .fieldgroup-append,
         //.input-group-prepend,

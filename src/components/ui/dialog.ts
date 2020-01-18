@@ -59,13 +59,13 @@ namespace Pacem.Components.UI {
             this.dispatchEvent(drevt);
 
             // BOLD change: state destroyed when dialog committed
-            this.state = undefined;
+            this.state = {};
         }
     }
 
     @CustomElement({
         tagName: P + '-dialog', shadow: Defaults.USE_SHADOW_ROOT,
-        template: `<${P}-lightbox modal="true">
+        template: `<${P}-lightbox modal="true" logger="{{ :host.logger }}">
     <${ P}-content></${P}-content>
     <div class="${PCSS}-dialog-buttons ${PCSS}-buttonset buttons">
         <div class="buttonset-left">

@@ -10,6 +10,8 @@ namespace Pacem {
 
     // {{ binding.expression }}
     const bindingPattern = /^\{\{(.|\n)+\}\}$/;
+    // TODO: CSP-proof binding (no unsafe-eval)
+    // binding syntax example: `{ binding: { source: ^item.property.path, binder: $pacem.func, parameters: [ ^index, 'foo', : host._baz], mode: 'twoway' } }`
 
     export class CustomElementUtils {
 
