@@ -2,15 +2,13 @@
 namespace Pacem.Components.UI {
 
     @CustomElement({
-        tagName: P +'-collapse', shadow: Defaults.USE_SHADOW_ROOT,
-        template: `<div class="${PCSS}-collapse"><${ P }-resize on-${ResizeEventName}=":host._resize($event)">
-    <${ P }-content></${ P }-content>
-</${ P }-resize></div>`
+        tagName: P + '-collapse', shadow: Defaults.USE_SHADOW_ROOT,
+        template: `<div class="${PCSS}-collapse"><${P}-resize on-${ResizeEventName}=":host._resize($event)"><${P}-content></${P}-content></${P}-resize></div>`
     })
     export class PacemCollapseElement extends PacemEventTarget implements OnPropertyChanged, OnViewActivated {
 
         @ViewChild(`.${PCSS}-collapse`) private _container: HTMLDivElement;
-        @ViewChild(P +'-resize') private _resizer: PacemResizeElement;
+        @ViewChild(P + '-resize') private _resizer: PacemResizeElement;
         @Watch({ converter: PropertyConverters.Boolean }) collapse: boolean;
         @Watch({ emit: false, converter: PropertyConverters.Boolean }) horizontal: boolean;
         private _state: ResizeEventArgs;

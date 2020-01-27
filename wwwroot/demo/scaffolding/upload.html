@@ -37,7 +37,12 @@
 <pacem-markdown value="{{ #content1.textContent }}" class="md-tech" root></pacem-markdown>
 <pre pacem hidden id="content1">
 ## Metadata
-`PacemUploadElement` can be included in form auto-generation via proper metadata. 
+
+The `PacemUploadElement` can be included in an autogenerating form using the proper metadata.
+
+In the following example, the `url` attribute for a **chunked upload** is provided via the _extra_'s `uploadUrl` property.  
+It is important to say that the provided endpoint on the server-side is expected to obey an **optionated schema**, moreover the
+resulting value is the `string` yielded by the endpoint when the upload process comes to completion.
 </pre>
 
 <pacemjs-snippet>
@@ -49,8 +54,9 @@
 "props": [
     {
         "prop": "file", "display": { "name": "File (upload)" }, "type": "file", "dataType": "upload",
+        "extra": { "uploadUrl": "/pacem.js/upload" },
         "validators": [
-            { "type": "binary", "errorMessage": "Invalid file", "params":
+            { "type": "binary", "errorMessage": "Invalid file: must be a pdf, doc or an image not exceeding 1MB", "params":
                 {
                     "pattern": "\\.(pdf|docx?|xlsx?|jpe?g|png)$", "maxSize": 1048576
                 }
@@ -69,13 +75,13 @@
                 <pacem-form id="frm1" on-download="#toast1.show = true" autogenerate="true" metadata="{{ #metadata1.model }}" entity="{}"></pacem-form>
             </div>
             <div class="panel-footer">
-                <code><pacem-text text="{{ #frm1.entity.file && #frm1.entity.file.name || '<filename>' }}"></pacem-text></code>
+                <code><pacem-text text="{{ #frm1.entity.file.name || #frm1.entity.file || '<filename>' }}"></pacem-text></code>
             </div>
         </div>
 
         <pacem-shell-proxy>
             <div class="pacem-toaster toaster-bottom toaster-right">
-                <pacem-toast id="toast1" class="toast-accent"><div class="text-ellipsed"><i class="pacem-icon">file_download</i> <pacem-text class="text-pre" text="{{ 'Downloading\n'+ #frm1.entity.file.name +'...' }}"></pacem-text></div></pacem-toast>
+                <pacem-toast id="toast1" class="toast-accent"><div class="text-ellipsed"><i class="pacem-icon">file_download</i> <pacem-text class="text-pre" text="{{ 'Downloading\n'+ (#frm1.entity.file.name || #frm1.entity.file) +'...' }}"></pacem-text></div></pacem-toast>
             </div>
         </pacem-shell-proxy>
 

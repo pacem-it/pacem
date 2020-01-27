@@ -13,6 +13,18 @@
 
 @field_readonly_top: .2 * (@field_height / 1.5);
 @field_icon_size: 1.1rem * @font_rem_factor;
+@field_padding_top: @grid_spacing/3;
+@field_minimal_label_height: @field_minimal_fontsize * @font_size * 1.5625;
+
+.LabelTopMargin() {
+    & when (@border_field_underline = false) {
+        margin-top: @field_padding_top + @field_readonly_top + @border_field_size;
+    }
+
+    & when (@border_field_underline = true) {
+        margin-top: @field_padding_top + @field_readonly_top;
+    }
+}
 
 .Watermark() {
     color: @color_watermark;

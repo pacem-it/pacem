@@ -1,6 +1,6 @@
 ﻿@import "shared";
 
-@{P}-childform-propagator{
+@{P}-childform-propagator {
     .Inert();
 }
 
@@ -13,8 +13,7 @@
             animation: none !important;
         }
     }
-
-    .@{PCSS}-childform-item {
+    /*.@{PCSS}-childform-item {
         display: flex;
         flex-direction: row;
         align-items: flex-start;
@@ -25,6 +24,47 @@
 
         > @{P}-form {
             flex: 1 0 auto;
+        }
+    }*/
+    .@{PCSS}-childform-item {
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        align-items: start;
+
+        > .childform-item-index,
+        > .childform-item-handle {
+            grid-column: 1;
+            grid-row: 1;
+        }
+
+        > .childform-item-index {
+            display: none; // hidden by default, shown when .childform-ordered
+            margin-top: @field_padding_top;
+
+            > * /* {P}-span */ {
+                display: block;
+                .LabelTopMargin();
+                background-color: transparent;
+                padding: 0 .5em;
+
+                &::after{
+                    content: '.';
+                }
+
+                & when (@border_radius > 0) {
+                    border-radius: .3333em;
+                }
+            }
+        }
+
+        > @{P}-button {
+            grid-row: 1;
+            grid-column: 3;
+        }
+
+        > @{P}-form {
+            grid-row: 1;
+            grid-column: 2;
         }
     }
 
@@ -40,5 +80,65 @@
 
     &.@{PCSS}-drag-floater {
         opacity: 1;
+    }
+}
+
+// form-field & co.
+
+@{P}-form-field.childform-ordered @{P}-childform,
+@{P}-childform.childform-ordered {
+
+    *:not(@{P}-childform) .@{PCSS}-childform-item > .childform-item-index {
+        display: block;
+    }
+}
+
+.ChildFormColored(@suffix, @bgclr, @fgclr) {
+
+    @{P}-form-field.childform-@{suffix} @{P}-childform,
+    @{P}-childform.childform-@{suffix} {
+
+        *:not(@{P}-childform) .@{PCSS}-childform-item > .childform-item-index > * {
+            background-color: @bgclr;
+            color: @fgclr;
+
+            &::after {
+                content: none;
+            }
+
+            & when (@shadows = true) {
+                box-shadow: 0 @grid_spacing/6 @grid_spacing/2 rgba(0,0,0,0.25);
+            }
+        }
+    }
+}
+
+.ChildFormColored(accent, @color_accent, @color_accent_inv);
+.ChildFormColored(primary, @color_primary, @color_primary_inv);
+.ChildFormColored(success, @color_success, @color_success_inv);
+.ChildFormColored(danger, @color_danger, @color_danger_inv);
+.ChildFormColored(error, @color_error, @color_error_fore);
+.ChildFormColored(warning, @color_warning, @color_warning_inv);
+.ChildFormColored(disabled, @color_disabled, @color_default);
+
+@{P}-form-field.childform-ordered @{P}-childform,
+@{P}-childform.childform-ordered {
+
+    *:not(@{P}-childform) .@{PCSS}-childform-item > .childform-item-index {
+        display: block;
+    }
+}
+
+@{P}-form-field.childform-minimal @{P}-childform,
+@{P}-childform.childform-minimal {
+
+    *:not(@{P}-childform) .@{PCSS}-childform-item > .childform-item-index {
+        margin-top: 0;
+
+        > *{
+            margin-top: 0;
+            line-height: @field_minimal_label_height;
+            font-size: @field_minimal_fontsize !important;
+        }
     }
 }

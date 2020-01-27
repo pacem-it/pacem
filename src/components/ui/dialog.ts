@@ -32,7 +32,9 @@ namespace Pacem.Components.UI {
 
     export abstract class PacemDialogBase extends PacemEventTarget {
 
-        /** Not to be set declaratively. */
+        /** Gets the current state/datacontext of the dialog.
+         * It is automatically destroyed when the dialog closes.
+         * (It has not to be set declaratively.) */
         @Watch() state: any;
 
         protected abstract get lightbox(): PacemLightboxElement;
@@ -58,7 +60,8 @@ namespace Pacem.Components.UI {
             this._deferred = null;
             this.dispatchEvent(drevt);
 
-            // BOLD change: state destroyed when dialog committed
+            // BREAKING change: state destroyed when dialog committed
+            // TODO: consider 'if' and 'how' to avoid this.
             this.state = {};
         }
     }

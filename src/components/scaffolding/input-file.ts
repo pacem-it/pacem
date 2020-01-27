@@ -57,7 +57,7 @@ namespace Pacem.Components.Scaffolding {
                 on-click=":host._undo($event)"><${P}-text text="{{ :host.undoCaption }}"></${P}-text></${P}-button>
         </${P}-panel>
 
-        <${P}-span hide="{{ Pacem.Utils.isNullOrEmpty(:host.value) || :host.uploading }}" class="readonly text-reset display-block ${PCSS}-anim text-truncate text-left text-pre ${PCSS}-pad pad-right-3" text="{{ :host.viewValue }}"></${P}-span>
+        <${P}-span hide="{{ $pacem.isNullOrEmpty(:host.value) || :host.uploading }}" class="readonly text-reset display-block ${PCSS}-anim text-truncate text-left text-pre ${PCSS}-pad pad-right-3" text="{{ :host.viewValue }}"></${P}-span>
 
         <${P}-panel class="upload-progress hit-none" hide="{{ :host.readonly || (!Pacem.Utils.isNullOrEmpty(:host.value) && !:host.uploading) }}">
             <${P}-tuner value="{{ :host.percentage }}" css-class="{{ {'tuner-success': !:host.invalidFile, 'tuner-danger': :host.invalidFile} }}" interactive="false"></${P}-tuner>
@@ -90,10 +90,12 @@ namespace Pacem.Components.Scaffolding {
         @Watch({ converter: PropertyConverters.String }) undoCaption: string = 'undo';
         @Watch({ converter: PropertyConverters.String }) retryCaption: string = 'retry';
 
-        @Watch({ emit: false, converter: PropertyConverters.String }) pattern: string;
-        @Watch({ emit: false, converter: PropertyConverters.String }) url: string;
+        @Watch({ emit: false, reflectBack: true, converter: PropertyConverters.String }) pattern: string;
+        @Watch({ emit: false, reflectBack: true, converter: PropertyConverters.String }) url: string;
 
         @Watch({ emit: false, reflectBack: true, converter: PropertyConverters.Number }) maxImageWidth: number;
+        @Watch({ emit: false, reflectBack: true, converter: PropertyConverters.Number }) parallelism: number;
+        @Watch({ emit: false, reflectBack: true, converter: PropertyConverters.Number }) chunkSize: number;
         @Watch({ emit: false, reflectBack: true, converter: PropertyConverters.Number }) maxImageHeight: number;
         /** Gets or sets the max blob size in bytes. */
         @Watch({ emit: false, reflectBack: true, converter: PropertyConverters.Number }) maxSize: number;
@@ -147,7 +149,7 @@ namespace Pacem.Components.Scaffolding {
         }
 
         protected getViewValue(val: any): string {
-            const value: string | FileValue = val;
+            const value: string | FileValue = this._localValue || val;
             if (!Utils.isNullOrEmpty(value) && typeof value === 'object') {
                 return `${value.name}\n(${Utils.core.size(value.size)})`;
             }
@@ -175,7 +177,7 @@ namespace Pacem.Components.Scaffolding {
          */
         private _dispatchDownload(evt: Event) {
             avoidHandler(evt);
-            const value: string | FileValue = this.value;
+            const value: string | FileValue = /* download the file being currently precessed, if available */ this._localValue || this.value;
             if (!Utils.isNullOrEmpty(value)) {
                 if (typeof value === 'string') {
                     // dispatch outside if url is provided
@@ -193,6 +195,7 @@ namespace Pacem.Components.Scaffolding {
 
         reset() {
             super.reset();
+            this._localValue = null;
             this.invalidFile = false;
         }
 
@@ -203,6 +206,7 @@ namespace Pacem.Components.Scaffolding {
             'enqueuer': null,
             'blob': null,
             'retryFrom': 0,
+            'chunkSize': 1024 * 128,
             'undone': false
         };
 
@@ -312,7 +316,12 @@ namespace Pacem.Components.Scaffolding {
 
                     const json = await r.json();
                     const result = json as UploadResult;
-                    Uploader.percentage = Math.round(Math.max(1, result.percentage));
+
+                    // parallelism > 1 may cause non-ordered responses
+                    if (result.percentage > this.percentage) {
+                        await Uploader._tweenPercentage(Math.round(Math.max(1, result.percentage)), 200);
+                    }
+
                     if (Uploader.complete != result.complete) {
                         Uploader.complete = result.complete;
                         if (Uploader.complete === true) {
@@ -336,32 +345,36 @@ namespace Pacem.Components.Scaffolding {
                 fields.retryFrom = skip;
                 Uploader.failed = true;
                 Uploader.uploading = false;
-
             }
 
         }
 
         private _manage() {
-            var Uploader = this;
-            var fields = Uploader._fields;
+            const fields = this._fields,
+                size = this.size,
+                blob: Blob = fields.blob,
+                chunkSize = this.chunkSize || fields.chunkSize;
             var start = fields.retryFrom;
-            var size = Uploader.size;
-            var blob: Blob = fields.blob;
-            var BYTES_PER_CHUNK = 1024 * 128; // 0.125MB chunk sizes.
-            var end = start + BYTES_PER_CHUNK;
+            var end = start + chunkSize;
             //
             fields.enqueuer = setInterval(() => {
-                if (start < size && !Uploader.failed) {
-                    if (fields.ongoing >= fields.parallelism) return;
+                if (start < size && !this.failed) {
+                    const parallelism = this.parallelism || fields.parallelism;
+                    if (fields.ongoing >= parallelism) return;
                     this._doUpload(blob.slice(start, end), start);
                     start = end;
-                    end = start + BYTES_PER_CHUNK;
+                    end = start + chunkSize;
                 } else {
-                    var input = Uploader._fileupload;
+                    var input = this._fileupload;
                     input.value = '';
                     window.clearInterval(fields.enqueuer);
                 }
             }, 100);
+        }
+
+        private _localValue: FileValue;
+        private async _buildLocalValue(file: File, filename = file.name, blob: Blob = file): Promise<FileValue> {
+            return this._localValue = { name: filename, size: file.size, type: file.type, lastModified: Utils.parseDate(file.lastModified).toISOString(), content: await this._blobToBase64(blob) };
         }
 
         protected onChange(evt: Event) {
@@ -385,13 +398,15 @@ namespace Pacem.Components.Scaffolding {
                     if (!this._validate(file) && !Utils.isNullOrEmpty(this.url)) {
 
                         // do not start uploads with an invalid file
-                        reject('Invalid file.');
+                        resolve(this.value = await this._buildLocalValue(file));
 
                     } else {
 
                         if (/\.(jpe?g|png)$/i.test(filename) && this.maxImageWidth > 0 && this.maxImageHeight > 0) {
                             blob = await Utils.resizeImage(blob, this.maxImageWidth, this.maxImageHeight, .6);
                         }
+
+                        await this._buildLocalValue(file, filename, blob);
 
                         if (Utils.isNullOrEmpty(this.url)) {
 
@@ -414,13 +429,12 @@ namespace Pacem.Components.Scaffolding {
                             this.uploading = false;
 
                             // no direct upload? set the value to the very File
-                            const val: FileValue = { name: filename, size: file.size, type: file.type, lastModified: Utils.parseDate(file.lastModified).toISOString(), content: await this._blobToBase64(blob) };
-                            resolve(this.value = val);
+                            resolve(this.value = this._localValue);
 
 
                         } else {
 
-                            // upload, then wait for resulting filename (value will be the fielname string) 
+                            // upload, then wait for resulting filename (value will be the filename string) 
                             Uploader._upload(blob, input.value);
                             resolve(this.value);
                         }
@@ -452,7 +466,7 @@ namespace Pacem.Components.Scaffolding {
 
                     fields.undone = true;
                     Uploader.size = 0;
-                    Uploader.percentage = .0;
+                    Uploader._tweenPercentage(.0, 300);
                 }
 
                 return r;
@@ -467,6 +481,13 @@ namespace Pacem.Components.Scaffolding {
                 return r;
             }
 
+        }
+
+        private _tweenPercentage(pct: number, duration = 500) {
+            const from = this.percentage;
+            return this._tweener.run(from, pct, duration, 0, Pacem.Animations.Easings.sineInOut, (t, v) => {
+                this.percentage = v;
+            });
         }
 
         private _retry(e: Event) {

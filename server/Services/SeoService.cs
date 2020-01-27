@@ -44,5 +44,6 @@ namespace Pacem.Js.CustomElements.Services
                 return sb.ToString();
             }
         }
+
     }
 }

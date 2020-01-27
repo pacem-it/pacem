@@ -447,6 +447,7 @@ css-class="{{ {'${PCSS}-fetching': ::_fetcher.fetching, '${PCSS}-dirty': this.di
                 default:
                     let dataType = (meta.dataType || meta.type || '').toLowerCase();
                     switch (dataType) {
+                        // should deprecated this one:
                         case 'imageurl':
                             tagName = P + '-input-image';
                             const f_id = this._fetcher.id = `fetch${this._key}`;
@@ -462,6 +463,12 @@ css-class="{{ {'${PCSS}-fetching': ::_fetcher.fetching, '${PCSS}-dirty': this.di
                         case 'upload':
                             // upload
                             tagName = P + '-upload';
+                            let uploadExtra = meta.extra || {};
+                            attrs['url'] = uploadExtra.uploadUrl;
+                            attrs['parallelism'] = uploadExtra.parallelism;
+                            attrs['chunk-size'] = uploadExtra.chunkSize;
+                            attrs['max-image-width'] = uploadExtra.maxImageWidth;
+                            attrs['max-image-height'] = uploadExtra.maxImageHeight;
                             break;
                         case 'html':
                             // contenteditable
@@ -511,6 +518,9 @@ css-class="{{ {'${PCSS}-fetching': ::_fetcher.fetching, '${PCSS}-dirty': this.di
                             break;
                         case 'latlng':
                             tagName = P + '-latlng';
+                            if (!Utils.isNullOrEmpty(meta.extra) && typeof meta.extra === 'object' && !Utils.isArray(meta.extra)) {
+                                attrs['options'] = JSON.stringify(meta.extra);
+                            }
                             break;
                         case 'percent':
                         case 'percentage':
@@ -545,6 +555,7 @@ css-class="{{ {'${PCSS}-fetching': ::_fetcher.fetching, '${PCSS}-dirty': this.di
                                 case "decimal":
                                 case "float":
                                 case "single":
+                                case "number":
                                     tagName = P + '-input-number';
                                     attrs['step'] = "{{ 'any' }}";
                                     break;

@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Pacem.Mvc;
 using Pacem.Mvc.Binary;
 using Pacem.Mvc.Uploading;
@@ -8,19 +10,22 @@ using System.Threading.Tasks;
 
 namespace Pacem.Js.CustomElements.Controllers
 {
-
     [Route("pacem.js/[controller]")]
     public sealed class UploadController : Controller
     {
-        private readonly IUploader uploader;
-        private readonly IBinaryResolver binaryResolver;
-        private readonly IBinaryProvider binaryProvider;
+        private readonly IUploader _uploader;
+        private readonly ILogger<UploadController> _logger;
 
-        public UploadController(IUploader uploader, IBinaryResolver binaryResolver, IBinaryProvider binaryProvider)
+        private ActionResult Error(Exception exc)
         {
-            this.uploader = uploader;
-            this.binaryResolver = binaryResolver;
-            this.binaryProvider = binaryProvider;
+            _logger.LogError(exc, exc.Message);
+            return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+        }
+
+        public UploadController(IUploader uploader, ILogger<UploadController> logger)
+        {
+            _uploader = uploader;
+            _logger = logger;
         }
 
         [HttpPost]
@@ -40,70 +45,45 @@ namespace Pacem.Js.CustomElements.Controllers
             return default(UploadResult);
         }
 
-        async Task<ApiResult<UploadResult>> StartUploadAsync(string filename, long length, object state)
+        async Task<ActionResult<UploadResult>> StartUploadAsync(string filename, long length, object state)
         {
             try
             {
-                var upload = await uploader.CreateUploadAsync(filename, length, state);
-                return ApiResult.FromResult(upload.ToResult());
+                var upload = await _uploader.CreateUploadAsync(filename, length, state);
+                return Ok(upload.ToResult());
             }
             catch (Exception exc)
             {
-                return ApiResult.FromErrors(exc.Message);
+                return this.Error(exc);
             }
         }
 
-        async Task<ApiResult<UploadResult>> UploadAsync(string uid, byte[] chunk, long position)
+        async Task<ActionResult<UploadResult>> UploadAsync(string uid, byte[] chunk, long position)
         {
             try
             {
-                var upload = await uploader.DoUploadAsync(uid, chunk, position);
-                if (upload.Complete)
-                    await binaryProvider.SaveFileAsync(this.HttpContext.GetWebsite().Id, upload);
-                return ApiResult.FromResult(upload.ToResult());
+                var upload = await _uploader.DoUploadAsync(uid, chunk, position);
+                return Ok(upload.ToResult());
             }
             catch (Exception exc)
             {
-                return ApiResult.FromErrors(exc.Message);
+                return this.Error(exc);
             }
         }
 
-        async Task<ApiResult> UndoUploadAsync(string uid)
+        async Task<ActionResult> UndoUploadAsync(string uid)
         {
             try
             {
-                await uploader.UndoUploadAsync(uid);
-                return ApiResult.Success;
+                await _uploader.UndoUploadAsync(uid);
+                return NoContent();
             }
             catch (Exception exc)
             {
-                return ApiResult.FromErrors(exc.Message);
+                return this.Error(exc);
             }
         }
 
-        [HttpGet]
-        public async Task<object> Get(string type, string q, int skip, int take)
-        {
-            var pictureSet = await binaryProvider.GetPictureSetAsync(HttpContext.GetWebsite().Id, "en-us", q, skip, take);
-            return new
-            {
-                success = true,
-                result = new
-                {
-                    // these are the properties expected by the <pacem-edit> component
-                    total = pictureSet.Total,
-                    skip = pictureSet.Index,
-                    take = pictureSet.Size,
-                    set = pictureSet.Set.Select(p => new
-                    {
-                        id = p.Uid,
-                        thumb = Url.Binary(BinaryType.Picture, p.ThumbnailFilename),
-                        src = Url.Binary(BinaryType.Picture, p.Filename),
-                        caption = p.Caption
-                    })
-                }
-            };
-        }
     }
 
 }

@@ -2,16 +2,16 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
-    <TypeScriptToolsVersion>3.5.3</TypeScriptToolsVersion>
+    <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
     <RuntimeFrameworkVersion>2.2.0</RuntimeFrameworkVersion>
     <UserSecretsId>93207634-5ac3-47fd-a1b2-8f8c638352d8</UserSecretsId>
   </PropertyGroup>
 
   <PropertyGroup>
-    <Version>0.8.24</Version>
+    <Version>0.8.37</Version>
     <Company>Pacem</Company>
     <Authors>Cristian Merighi</Authors>
-    <Copyright>Copyright © Pacem 2019</Copyright>
+    <Copyright>Copyright © Pacem 2020</Copyright>
     <PackageIconUrl>https://pacem.azureedge.net/marketing/logojs.svg</PackageIconUrl>
   </PropertyGroup>
 
@@ -24,10 +24,6 @@
     <EmbeddedResource Remove="wwwroot\assets\favicon\**" />
     <None Remove="Uploads\**" />
     <None Remove="wwwroot\assets\favicon\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Remove="server\Controllers\UploadController.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -261,6 +257,7 @@
     <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.1.0" />
 
     <PackageReference Include="HtmlAgilityPack" Version="1.11.1" />
+    <PackageReference Include="Pacem.Mvc.Extensions" Version="0.5.4" />
     <PackageReference Include="Markdig" Version="0.16.0" />
   </ItemGroup>
   <ItemGroup>

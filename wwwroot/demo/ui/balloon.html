@@ -15,7 +15,7 @@ Configure the balloon to behave like a usual tooltip:
 
         <div id="tget0" class="pacem-button button">Hover me</div>
         <pacem-shell-proxy>
-            <pacem-balloon target="{{ #tget0 }}" options='{ "behavior": "tooltip" }'>
+            <pacem-balloon target="{{ #tget0 }}" options='{ "behavior": "tooltip", "position": "top" }'>
                 This balloon has basic tooltip behavior.
             </pacem-balloon>
         </pacem-shell-proxy>
@@ -65,6 +65,8 @@ You can emphasize the balloon by styling it out.
                 <!-- position selector -->
                 <pacem-select id="pos2" value="auto" empty-option="false">
                     <pacem-data-item value="auto" label="position: auto"></pacem-data-item>
+                    <pacem-data-item value="x" label="position: auto (horizontal)"></pacem-data-item>
+                    <pacem-data-item value="y" label="position: auto (vertical)"></pacem-data-item>
                     <pacem-data-item value="top" label="position: top"></pacem-data-item>
                     <pacem-data-item value="right" label="position: right"></pacem-data-item>
                     <pacem-data-item value="bottom" label="position: bottom"></pacem-data-item>

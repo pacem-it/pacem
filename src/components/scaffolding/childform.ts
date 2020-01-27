@@ -66,7 +66,8 @@ namespace Pacem.Components.Scaffolding {
     <div class="${PCSS}-childform">
     <template>
         <${P}-panel class="${PCSS}-childform-item" behaviors="{{ [::_dragger] }}">
-            <${P}-panel class="${PCSS}-margin margin-right-1" hide="{{ :host.lockItems || :host.readonly || :host.mode !== 'array' || !(:host._model && :host._model.length > 1) }}"><i class="${PCSS}-icon drag-handle">drag_handle</i></${P}-panel>
+            <${P}-panel class="childform-item-handle ${PCSS}-margin margin-right-1" hide="{{ :host.lockItems || :host.readonly || :host.mode !== 'array' || !(:host._model && :host._model.length > 1) }}"><i class="${PCSS}-icon drag-handle">drag_handle</i></${P}-panel>
+            <${P}-panel class="childform-item-index text-small"><${P}-span hide="{{ !:host.readonly || :host.mode !== 'array' }}" class="${PCSS}-margin margin-right-1" text="{{ ^index+1 }}"></${P}-span></${P}-panel>
             <${P}-form entity="{{ ^item }}" fetch-headers="{{ :host.fetchHeaders }}" fetch-credentials="{{ :host.fetchCredentials }}" on-${PropertyChangeEventName}=":host._itemChange(^index, $event)" readonly="{{ :host.readonly }}" metadata="{{ :host.metadata }}" autogenerate="true" logger="{{ :host.logger }}"></${P}-form>
             <${P}-button tab-order="-1" class="flat circular circle-small clear ${PCSS}-margin margin-left-1" hide="{{ :host.lockItems || :host.readonly }}" command-name="delete" command-argument="{{ ^index }}"></${P}-button>
         </${P}-panel>

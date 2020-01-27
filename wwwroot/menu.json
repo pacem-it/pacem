@@ -305,6 +305,11 @@
         "label": "File",
         "view": "upload",
         "title": "<pacem-upload>"
+      },
+      {
+        "label": "Lat/Lng",
+        "view": "latlng",
+        "title": "<pacem-latlng>"
       }
     ]
   },

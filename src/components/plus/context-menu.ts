@@ -40,7 +40,7 @@ namespace Pacem.Components.Plus {
         template: `<${P}-button class="button-flat ${PCSS}-margin margin-0"></${P}-button>
 <${P}-content></${P}-content>
 <${P}-shell-proxy>
-        <${P}-balloon target="{{ :host._btn }}" class="${PCSS}-contextmenu" options="{{ { trigger: 'click', position: 'left', align: 'auto' } }}">
+        <${P}-balloon target="{{ :host._btn }}" class="${PCSS}-contextmenu" options="{{ { trigger: 'click', position: 'x', align: 'auto' } }}">
     <${P}-repeater>
             <template>
                 <${P}-if match="{{ ^item.localName === '${P}-context-menuitem-command' }}">

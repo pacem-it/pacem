@@ -4,8 +4,8 @@ namespace Pacem.Components.UI {
 
     @CustomElement({
         tagName: P + '-tuner', shadow: Defaults.USE_SHADOW_ROOT,
-        template: `<canvas class="${PCSS}-tuner"></canvas><div class="${PCSS}-content"><${ P }-content></${ P }-content></div>
-<${ P }-tween on-step=":host._draw($event.detail.value)" on-end="this.disabled = true" duration="500" to="{{ :host.value }}" from="{{ :host.min }}"></${ P }-tween>`
+        template: `<canvas class="${PCSS}-tuner"></canvas><div class="${PCSS}-content"><${P}-content></${P}-content></div>
+<${P}-tween on-step=":host._draw($event.detail.value)" on-end="this.disabled = true" duration="500" to="{{ :host.value }}" from="{{ :host.min }}"></${P}-tween>`
     })
     export class PacemTunerElement extends PacemElement {
 

@@ -34,6 +34,7 @@ namespace Pacem.Js.CustomElements
             services.AddMemoryCache();
             services.AddSingleton<Services.MenuService>();
             services.AddSingleton<Services.SeoService>();
+            services.AddSingleton<Mvc.Uploading.IUploader, Services.UploadService>();
             services.AddMvc().SetCompatibilityVersion(Microsoft.AspNetCore.Mvc.CompatibilityVersion.Version_2_2);            
         }
 

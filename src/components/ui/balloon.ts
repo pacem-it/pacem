@@ -27,7 +27,9 @@ namespace Pacem.Components.UI {
         Left = 'left',
         Bottom = 'bottom',
         Right = 'right',
-        Auto = 'auto'
+        Auto = 'auto',
+        HorizontalAuto = 'x',
+        VerticalAuto = 'y'
     }
 
     export enum BalloonSizing {
@@ -283,28 +285,19 @@ namespace Pacem.Components.UI {
                 chosenAlignment = opts.align;
             if (chosenPosition != BalloonPosition.Top &&
                 chosenPosition != BalloonPosition.Bottom && chosenPosition != BalloonPosition.Left && chosenPosition != BalloonPosition.Right) {
-                let viewportPosition = coords;
                 let viewportHeight = vieportSize.height;
                 let viewportWidth = vieportSize.width;
-                const offsetLeft = viewportPosition.left;
-                const offsetTop = viewportPosition.top;
-                const offsetBottom = viewportHeight - (viewportPosition.top + viewportPosition.height);
-                const offsetRight = viewportWidth - (viewportPosition.left + viewportPosition.width);
-                // exclude 'left' and 'right' when position is set to 'auto'
-                let maxOffset = Math.max(/*offsetLeft, offsetRight,*/ offsetTop, offsetBottom);
-                switch (maxOffset) {
-                    case offsetTop:
-                        chosenPosition = BalloonPosition.Top;
+                const offsetLeft = coords.left - Utils.scrollLeft;
+                const offsetTop = coords.top - Utils.scrollTop;
+                const offsetBottom = viewportHeight - (offsetTop + coords.height);
+                const offsetRight = viewportWidth - (offsetLeft + coords.width);
+                switch (chosenPosition) {
+                    case BalloonPosition.HorizontalAuto:
+                        chosenPosition = offsetLeft > offsetRight ? BalloonPosition.Left : BalloonPosition.Right;
                         break;
-                    case offsetBottom:
-                        chosenPosition = BalloonPosition.Bottom;
-                        break;
-                    // keep the LEFT and RIGHT here, so that 'auto' position will only pick among 'top' and 'bottom'
-                    case offsetLeft:
-                        chosenPosition = BalloonPosition.Left;
-                        break;
-                    case offsetRight:
-                        chosenPosition = BalloonPosition.Right;
+                    default:
+                        // (!) exclude 'left' and 'right' also when position is simply set to 'auto'
+                        chosenPosition = offsetTop > offsetBottom ? BalloonPosition.Top : BalloonPosition.Bottom;
                         break;
                 }
             }

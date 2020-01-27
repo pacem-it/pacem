@@ -80,7 +80,7 @@
     }
 }
 
-@_input_container_pad_top: @grid_spacing/ 3;
+@_input_container_pad_top: @field_padding_top;
 
 .@{PCSS}-field {
     margin-bottom: @grid_spacing / 3;
@@ -103,13 +103,7 @@
         // field appearance borrowed from -inline:
         min-height: @field_height;
 
-        & when (@border_field_underline = false) {
-            margin-top: @_input_container_pad_top + @field_readonly_top + @border_field_size;
-        }
-
-        & when (@border_field_underline = true) {
-            margin-top: @_input_container_pad_top + @field_readonly_top;
-        }
+        .LabelTopMargin();
     }
 
     .@{PCSS}-input-container {
@@ -440,7 +434,7 @@
             margin: 0;
             .FontMainSize(@field_minimal_fontsize);
             min-height: 0;
-            height: @field_minimal_fontsize * @font_size * 1.5625;
+            height: @field_minimal_label_height;
             line-height: $height;
             padding: 0;
 
