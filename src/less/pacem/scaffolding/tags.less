@@ -68,7 +68,7 @@
             @{P}-tag {
                 margin: @_spacing 0 @_spacing @_spacing;
                 padding: @_spacing;
-                line-height: 1rem;
+                line-height: 1rem * @font_rem_factor;
                 background-color: @color_tag_back;
                 color: @color_tag_fore;
                 border-radius: @border_input_radius / 2;
@@ -117,11 +117,34 @@
                 box-shadow: 0 2px 4px rgba(0,0,0,0.5);
             }
         }
+
+        li.tag-new {
+            @{P}-suggest {
+                .@{PCSS}-input {
+                    min-height: @field_height;
+                }
+            }
+        }
     }
 
     &.@{PCSS}-disabled {
         ul.@{PCSS}-tags > li.@{PCSS}-tag @{P}-tag {
             background-color: @color_disabled;
+        }
+    }
+
+    &.@{PCSS}-readonly {
+
+        ul.@{PCSS}-viewfinder {
+            background-color: transparent;
+            border-color: transparent !important;
+            height: @field_height;
+
+            li.@{PCSS}-tag:first-child {
+                @{P}-tag {
+                    margin-left: 0;
+                }
+            }
         }
     }
 }

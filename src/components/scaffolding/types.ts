@@ -12,12 +12,19 @@ namespace Pacem.Scaffolding {
         cssClass?: string[],
 
         /** Metadata icons are currently managed only at TypeMetadata-level and only in particular scenarios (e.g. CMS). */
-        icon?:string
+        icon?: string
     }
 
     export declare type ValidatorMetadata = { type: string, errorMessage: string, params?: any };
 
     export declare type CommandMetadata = { name: string, tooltip?: string, icon: string, cssClass?: string[], prepend?: boolean, dependsOnValue?: boolean };
+
+    export declare type DependsOn = {
+        prop: string,
+        alias?: string,
+        value?: any,
+        hide?: boolean
+    }
 
     export declare type PropertyMetadata = {
         prop: string,
@@ -45,13 +52,6 @@ namespace Pacem.Scaffolding {
         // one form? many subforms?
         type?: 'object' | 'array'
     }
-
-    export declare type DependsOn = {
-        prop: string,
-        alias?: string,
-        value?: any,
-        hide?: boolean
-    }
 }
 
 namespace Pacem.Components.Scaffolding {
@@ -65,7 +65,7 @@ namespace Pacem.Components.Scaffolding {
         valid: boolean;
         name: string;
         form: PacemFormElement;
-        setPristine() : void;
+        setPristine(): void;
         setDirty(): void;
     }
 

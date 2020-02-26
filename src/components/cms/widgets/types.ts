@@ -152,10 +152,10 @@
 
         private _edit(evt: Event) {
             const form = <Pacem.Components.Plus.PacemModalFormElement>this._proxy.dom.find(e => 'core' in e.attributes);
-            form.open(this.target).then(_ => {
+            form.open(this.target)/*.then(_ => {
                 // reset metadata (this will force complete recycle next time)
-                form.metadata = null;
-            });
+                // form.metadata = [];
+            })*/;
             form.metadata = this.target.metadata;
             // popout
             this._popoutJustInCase();

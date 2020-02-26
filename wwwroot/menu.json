@@ -36,6 +36,11 @@
         "title": "<pacem-fetch>"
       },
       {
+        "label": "Online Status",
+        "view": "online-status",
+        "title": "<pacem-online-status>"
+      },
+      {
         "label": "Hub Proxy",
         "view": "hub-proxy",
         "title": "<pacem-hub-proxy>"
@@ -64,6 +69,11 @@
         "label": "Localization",
         "view": "l10n",
         "title": "Localization"
+      },
+      {
+        "label": "Keyboard Shortcuts",
+        "view": "shortcuts",
+        "title": "<pacem-shortcut>"
       },
       {
         "label": "DataTable",

@@ -50,7 +50,8 @@ namespace Pacem.Components.UI {
             'horizontalOffset': 0,
             'hoverDelay': 250,
             'hoverTimeout': 500,
-            'align': BalloonAlignment.Center
+            'align': BalloonAlignment.Center,
+            'track': true
         }
     };
 
@@ -61,9 +62,11 @@ namespace Pacem.Components.UI {
         'behavior'?: BalloonBehavior,
         'verticalOffset'?: number,
         'horizontalOffset'?: number,
-        /** Obsolete: use 'track' instead. */
+        /** Obsolete: just use 'track' instead. */
         'trackPosition'?: boolean,
         'track'?: boolean,
+
+        /** Obsolete: use <pacem-shell-proxy> to wrap the balloon. */
         'moveToRoot'?: boolean, // append/move to body (positioning goes south when the balloon is placed inside e.g. `fixed` elements)
         'hoverDelay'?: number,
         'hoverTimeout'?: number,
@@ -75,8 +78,8 @@ namespace Pacem.Components.UI {
     @CustomElement({
         tagName: P + '-balloon',
         shadow: Defaults.USE_SHADOW_ROOT,
-        template: `<${P}-resize target="{{ :host.target }}" watch-position="true" on-${ResizeEventName}=":host._onLayoutChange($event)"></${P}-resize>
-<div class="${PCSS}-balloon"><${P}-resize on-${ResizeEventName}=":host._onLayoutChange($event)" content><${P}-content></${P}-content></${P}-resize></div>
+        template: `<${P}-resize target="{{ :host.target }}" disabled="true" watch-position="true" on-${ResizeEventName}=":host._onLayoutChange($event)"></${P}-resize>
+<div class="${PCSS}-balloon"><${P}-resize on-${ResizeEventName}=":host._onLayoutChange($event)" disabled="true" content><${P}-content></${P}-content></${P}-resize></div>
 <div class="corner top-left"></div><div class="corner bottom-left"></div><div class="corner top-right"></div><div class="corner bottom-right"></div>`
     })
     export class PacemBalloonElement extends PacemElement {
@@ -150,11 +153,6 @@ namespace Pacem.Components.UI {
         private _synchronizeOptions() {
             const popup = this,
                 options = popup.options || {};
-            // track position and size
-            if (!Utils.isNull(this._resize)) {
-                this._resize.disabled =
-                    this._position.disabled = !options.track && !options.trackPosition;
-            }
             // moveToRoot
             if (!!options.moveToRoot && Utils.isNull(this._originalNeighborhood)) {
                 this._originalNeighborhood = { parent: popup.parentElement, nextSibling: popup.nextElementSibling };
@@ -419,14 +417,28 @@ namespace Pacem.Components.UI {
             //popup.style.visibility = 'visible';
         }
 
+        private _adjustWatchers(visible: boolean) {
+            const options = this.options || {};
+            if (!Utils.isNull(this._resize)) {
+                // track position and size
+                this._resize.disabled = !visible;
+                this._position.disabled = !visible || !(options.track || options.trackPosition);
+            }
+        }
+
         /**
          * Shows the balloon, if hidden.
          */
         popup() {
-            var popup = this;
+            const popup = this,
+                options = popup.options || {},
+                isVisible = Utils.isVisible(popup);
 
-            var isVisible = Utils.isVisible(popup);
-            if (isVisible) return;
+            this._adjustWatchers(true);
+
+            if (isVisible) {
+                return;
+            }
             // attach closured behavior to popup
             //if (!sameTrigger) {
             this._registerEvents(); // $popup.on('mouseenter', obj.methods.hover).on('mouseleave', obj.methods.out).data(vars.TRIGGER, obj);
@@ -456,7 +468,13 @@ namespace Pacem.Components.UI {
          */
         popout() {
             var popup = this;
-            if (!Utils.isVisible(popup)) return;
+            const isVisible = Utils.isVisible(popup);
+
+            this._adjustWatchers(false);
+
+            if (!isVisible) {
+                return;
+            }
             // detach closured behavior from popup
             this._unregisterEvents();
             //

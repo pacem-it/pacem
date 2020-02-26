@@ -7,14 +7,14 @@ namespace Pacem.Components.Plus {
         tagName: P + '-modal-form', shadow: Defaults.USE_SHADOW_ROOT,
         template: `<${P}-lightbox modal="true" logger="{{ :host.logger }}"><${P}-form wrapper>
         <${P}-form logger="{{ :host.logger }}" on-submit=":host._onSubmit($event)" readonly="{{ :host.readonly }}" entity="{{ :host.state, twoway }}" on-success=":host._broadcast($event)" 
-            on-fail=":host._broadcast($event)" success="{{ :host.success, twoway }}" fail="{{ :host.fail, twoway }}" autogenerate="{{ !Pacem.Utils.isNull($this.entity) }}" metadata="{{ :host.metadata }}"
+            on-fail=":host._broadcast($event)" success="{{ :host.success, twoway }}" fail="{{ :host.fail, twoway }}" autogenerate="{{ !$pacem.isNull($this.entity) }}" metadata="{{ :host.metadata }}"
             fetch-headers="{{ :host.fetchHeaders }}" fetch-credentials="{{ :host.fetchCredentials }}"></${P}-form></${P}-form>
         <${P}-fetch logger="{{ :host.logger }}" method="{{ :host.method }}" headers="{{ :host.fetchHeaders }}" credentials="{{ :host.fetchCredentials }}" autofetch="false" url="{{ :host.action }}"></${P}-fetch> 
     <div class="${PCSS}-dialog-buttons ${PCSS}-buttonset buttons">
         <div class="buttonset-left">
-        <${P}-button on-click=":host._submit($event)"
-            class="button primary button-size size-small" disabled="{{ !:host.readonly && (!(::_form.valid && ::_form.dirty) || ::_fetcher.fetching) }}"><${P}-text text="{{ :host.okCaption }}"></${P}-text></${P}-button>
-        <${P}-button on-click=":host._cancel($event)" hide="{{ :host.readonly }}" class="button button-size size-small" disabled="{{ ::_fetcher.fetching }}"><${P}-text text="{{ :host.cancelCaption }}"></${P}-text></${P}-button>
+        <${P}-button on-click=":host._submit($event)" css-class="{{ {'buttonset-last': :host.readonly} }}"
+            class="button primary button-size size-small" disabled="{{ !:host.readonly && (!(::_form.valid && ::_form.dirty) || ::_fetcher.fetching) }}"><${P}-text text="{{ :host.okCaption || 'OK' }}"></${P}-text></${P}-button>
+        <${P}-button on-click=":host._cancel($event)" hide="{{ :host.readonly }}" class="button button-size size-small" disabled="{{ ::_fetcher.fetching }}"><${P}-text text="{{ :host.cancelCaption || 'Cancel' }}"></${P}-text></${P}-button>
     </div></div>
     <${P}-panel class="${PCSS}-dialog-heading">
         <${P}-content></${P}-content>
@@ -24,8 +24,8 @@ namespace Pacem.Components.Plus {
     })
     export class PacemModalFormElement extends UI.PacemDialogBase implements Pacem.Net.OAuthFetchable {
 
-        @Watch({ reflectBack: true, converter: PropertyConverters.String }) okCaption: string = 'OK';
-        @Watch({ reflectBack: true, converter: PropertyConverters.String }) cancelCaption: string = 'Cancel';
+        @Watch({ reflectBack: true, converter: PropertyConverters.String }) okCaption: string;
+        @Watch({ reflectBack: true, converter: PropertyConverters.String }) cancelCaption: string;
         @Watch({ reflectBack: true, converter: PropertyConverters.String }) method: Pacem.Net.HttpMethod = Pacem.Net.HttpMethod.Post;
 
         @Watch({ converter: PropertyConverters.Json })
@@ -56,6 +56,13 @@ namespace Pacem.Components.Plus {
         @ViewChild(P + '-form[entity]') private _form: Scaffolding.PacemFormElement;
         @ViewChild(P + '-fetch') private _fetcher: PacemFetchElement;
 
+        private _emitter: Pacem.Components.Scaffolding.FormEventEmitter;
+
+        constructor() {
+            super();
+            this._emitter = new Pacem.Components.Scaffolding.FormEventEmitter(this);
+        }
+
         viewActivatedCallback() {
             super.viewActivatedCallback();
             // HACK: move the buttons outside the .pacem-scrollable element in the lightbox
@@ -71,6 +78,12 @@ namespace Pacem.Components.Plus {
             );
 
             this.dispatchEvent(new PropertyChangeEvent({ propertyName: 'modalButtons', currentValue: this.modalButtons }));
+            this._emitter.start();
+        }
+
+        disconnectedCallback() {
+            this._emitter.stop();
+            super.disconnectedCallback();
         }
 
         private _submit(evt: Event) {
@@ -82,8 +95,7 @@ namespace Pacem.Components.Plus {
                 if (Utils.isNullOrEmpty(this.action)) {
                     this.commit(UI.DialogButton.Ok, evt);
                 } else {
-                    this._form.submit(this._fetcher).then(v => {
-                        this.state = v;
+                    this._form.submit(this._fetcher).then(_ => {
                         this.commit(UI.DialogButton.Ok, evt);
                     }, r => {
                         // do nothing
@@ -105,6 +117,15 @@ namespace Pacem.Components.Plus {
             var retval = super.open(state);
             this._form.setPristine();
             return retval;
+        }
+
+        protected commit(btn: UI.DialogButton, evt: Event) {
+            super.commit(btn, evt);
+            Utils.waitForAnimationEnd(this, 500).then(_ => {
+                // BREAKING change (v0.8.37): state destroyed when dialog committed
+                // TODO: consider 'if' and 'how' to avoid this.
+                this.state = {};
+            });
         }
 
         private _cancel(evt: Event) {

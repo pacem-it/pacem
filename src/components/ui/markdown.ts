@@ -3,7 +3,7 @@
 namespace Pacem.Components.UI {
 
     @CustomElement({ tagName: P + '-markdown' })
-    export class PacemMarkdownElement extends PacemElement implements OnPropertyChanged {
+    export class PacemMarkdownElement extends PacemElement {
 
         constructor(private _md = new MarkdownService()) {
             super();

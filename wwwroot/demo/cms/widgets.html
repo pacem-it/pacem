@@ -33,12 +33,14 @@ See the following **Grid** example.
     <template>
 
         <pacem-widget-grid editing="{{ #toggleEdit1.value }}" editable="true">
-            <pacem-widget-text text="{{ #data1.model }}" editable="true" editing="{{ #toggleEdit1.value }}" tag="My Text Widget 02"></pacem-widget-text>
+            <pacem-widget-text text="{{ #data1.model }}" editable="true" editing="{{ #toggleEdit1.value }}" colspan="3" tag="My Text Widget 02"></pacem-widget-text>
         </pacem-widget-grid>
 
-        <pacem-timer interval="1000" on-tick="#data1.model = Pacem.Utils.parseDate(Date.now(), 'time')"></pacem-timer>
-        <pacem-data id="data1"></pacem-data>
-
+        <hr />
+        <div class="display-flex">
+            <pacem-widget-clock interval="1000" id="clock1"></pacem-widget-clock>
+            <pacem-widget-data id="data1" class="pacem-margin margin-left-3" model="{{ $pacem.date(#clock1.time, 'full', 'it') }}"></pacem-widget-data>
+        </div>
         <hr />
 
         <label>edit</label>

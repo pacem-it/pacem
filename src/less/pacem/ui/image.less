@@ -18,10 +18,10 @@
     border-radius: 50%;
     border: @_brd solid @color_border;
     border-top-color: @color_default;
-    animation: rotate_anim linear 1s infinite both;
+    animation: rotate-anim linear 1s infinite both;
     top: 50%;
     left: 50%;
-    margin-left: -@_size * .5;
+    margin-left: -(@_size * .5 + @_brd);
     margin-top: $margin-left;
     position: absolute;
     transition: transform .2s @easing_in_out_sine, opacity .2s linear;

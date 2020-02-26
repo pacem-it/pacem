@@ -81,37 +81,41 @@ namespace Pacem.Components.UI {
 
         initializeCallback() {
             super.initializeCallback();
+            this.addEventListener('keydown', this._keydownHandler, false);
             const el = this.master;
             //
-            const tab = this._previousTabIndex = this.master.tabIndex;
-            if (!tab || tab < 0)
-                el.tabIndex = 0;
-            el.addEventListener('keydown', this._keydownHandler, false);
-            this.addEventListener('keydown', this._keydownHandler, false);
-            el.addEventListener(Pacem.Components.ItemRegisterEventName, this._itemRegisterHandler, false);
-            el.addEventListener(Pacem.Components.ItemUnregisterEventName, this._itemUnregisterHandler, false);
+            if (!Utils.isNull(el)) {
+                const tab = this._previousTabIndex = el.tabIndex;
+                if (!tab || tab < 0)
+                    el.tabIndex = 0;
+                el.addEventListener('keydown', this._keydownHandler, false);
+                el.addEventListener(Pacem.Components.ItemRegisterEventName, this._itemRegisterHandler, false);
+                el.addEventListener(Pacem.Components.ItemUnregisterEventName, this._itemUnregisterHandler, false);
+            }
             //
             this._syncViewWithItems();
         }
 
         destroyCallback() {
-            const el = this.master;
             this.removeEventListener('keydown', this._keydownHandler, false);
-            el.removeEventListener('keydown', this._keydownHandler, false);
-            el.removeEventListener(Pacem.Components.ItemRegisterEventName, this._itemRegisterHandler, false);
-            el.removeEventListener(Pacem.Components.ItemUnregisterEventName, this._itemUnregisterHandler, false);
+            const el = this.master;
+            if (!Utils.isNull(el)) {
+                el.removeEventListener('keydown', this._keydownHandler, false);
+                el.removeEventListener(Pacem.Components.ItemRegisterEventName, this._itemRegisterHandler, false);
+                el.removeEventListener(Pacem.Components.ItemUnregisterEventName, this._itemUnregisterHandler, false);
 
-            if (!Utils.isNullOrEmpty(el.items)) {
-                for (let item of el.items) {
+                if (!Utils.isNullOrEmpty(el.items)) {
+                    for (let item of el.items) {
 
-                    const behaviors = item.behaviors, ndx = behaviors.indexOf(this._swiper);
-                    if (ndx >= 0) {
-                        behaviors.splice(ndx, 1);
+                        const behaviors = item.behaviors, ndx = behaviors.indexOf(this._swiper);
+                        if (ndx >= 0) {
+                            behaviors.splice(ndx, 1);
+                        }
                     }
                 }
-            }
 
-            el.tabIndex = this._previousTabIndex;
+                el.tabIndex = this._previousTabIndex;
+            }
 
             super.destroyCallback();
         }
@@ -135,7 +139,7 @@ namespace Pacem.Components.UI {
             item = item || this.master.items[index];
             var hide: boolean = item.hide || false,
                 disable: boolean = item.disabled || false,
-                caption:string = this._labelCallback(item, index);
+                caption: string = this._labelCallback(item, index);
             const evt = new AdapterPageButtonRefreshEvent({ index: index, hide: hide, disabled: disable, content: caption });
             this.dispatchEvent(evt);
             // receive/accept changes

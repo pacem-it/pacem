@@ -54,12 +54,41 @@ Here are other common button-relevant looks:
                 <!-- style selector -->
                 <pacem-select id="class1" value="button-primary" placeholder="style" class="pacem-margin margin-right-2">
                     <pacem-data-item value="button-primary" label="primary"></pacem-data-item>
-                    <pacem-data-item value="button-accent"  label="accent"></pacem-data-item>
+                    <pacem-data-item value="button-accent" label="accent"></pacem-data-item>
                     <pacem-data-item value="button-success" label="success"></pacem-data-item>
                     <pacem-data-item value="button-warning" label="warning"></pacem-data-item>
-                    <pacem-data-item value="button-danger"  label="danger"></pacem-data-item>
+                    <pacem-data-item value="button-danger" label="danger"></pacem-data-item>
                     <pacem-data-item value="button-default" label="default"></pacem-data-item>
                 </pacem-select>
+            </div>
+        </div>
+
+    </template>
+</pacemjs-snippet>
+
+<pacem-markdown value="{{ #content4.textContent }}" class="md-tech" root></pacem-markdown>
+
+<pre pacem hidden id="content4">
+## ButtonSet
+Buttons can be lined-up in a button-set.
+</pre>
+
+<pacemjs-snippet>
+    <template>
+
+        <div class="pacem-buttonset buttons">
+            <div class="buttonset-left">
+                <pacem-button class="button button-primary" icon-glyph="save">Save</pacem-button>
+                <pacem-button class="button" icon-glyph="undo">Reset</pacem-button>
+            </div>
+            <div class="buttonset-center">
+                <pacem-button class="button button-size size-small" icon-glyph="arrow_left"></pacem-button>
+                <pacem-button class="button button-size size-small" icon-glyph="arrow_right"></pacem-button>
+            </div>
+            <div class="buttonset-right">
+                <pacem-button class="button button-size size-auto" icon-glyph="minimize"></pacem-button>
+                <pacem-button class="button button-size size-auto" icon-glyph="fullscreen"></pacem-button>
+                <pacem-button class="button button-size size-auto button-danger" icon-glyph="close"></pacem-button>
             </div>
         </div>
 
@@ -132,10 +161,10 @@ and event (`command`).
                 </pacem-select>
 
                 <!-- button here -->
-                <pacem-button disabled="{{ !(#cmdName3.value && #cmdArg3.value) }}" 
+                <pacem-button disabled="{{ !(#cmdName3.value && #cmdArg3.value) }}"
                               class="button button-primary pacem-margin margin-bottom-0 margin-right-0"
-                              command-name="{{ #cmdName3.value }}" 
-                              command-argument="{{ #cmdArg3.value }}" 
+                              command-name="{{ #cmdName3.value }}"
+                              command-argument="{{ #cmdArg3.value }}"
                               on-command="#txt3.content = 'Command \'<b>'+ $event.detail.commandName +'</b>\' was executed on \'<b>'+ $event.detail.commandArgument +'</b>\''">Execute</pacem-button>
             </div>
             <div class="panel-footer">

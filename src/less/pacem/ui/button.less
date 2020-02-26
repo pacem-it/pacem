@@ -29,9 +29,22 @@
     &.button-size {
         padding: 0 @grid_spacing/2;
         min-width: @_width;
-
+        // constrained min-width
         &.size-small {
             min-width: @_width_half;
+        }
+        // minimal size, depends on content
+        &.size-auto {
+
+            min-width: 0;
+            padding: 0 0 0 @grid_spacing/3;
+            height: @grid_spacing;
+
+            &[data-icon-glyph]::before {
+                font-size: 1rem;
+                line-height: @grid_spacing;
+                display: block;
+            }
         }
     }
 }
@@ -395,7 +408,7 @@ input.@{PCSS}-button[disabled]:hover {
 }
 
 /* #endregion */
-body.pacem-animations {
+body.@{PCSS}-animations {
     .@{PCSS}-button, a.@{PCSS}-button, @{P}-button {
         transition: background .15s;
     }

@@ -1,6 +1,8 @@
 ﻿/// <reference path="../../core/decorators.ts" />
 namespace Pacem.Components {
 
+    // TODO: go native with IntersectionObserver 
+    // https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API
     // TODO: elementify the concept of an ochestrator
     // see also scroll-aware
     class PacemViewportOrchestrator {

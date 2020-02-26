@@ -3,10 +3,10 @@ namespace Pacem.Components.UI {
 
     @CustomElement({
         tagName: P + '-toc', shadow: Defaults.USE_SHADOW_ROOT,
-        template: `<${ P }-scroll-aware on-${ScrollEventName}=":host._onScroll($event)" url="{{ :host.url }}"></${ P }-scroll-aware>
-<${ P }-repeater><nav class="${PCSS}-toc"><template>
-    <${ P }-a on-click=":host._startScrollTo(^item, $event)" css-class="{{ {'toc-focus': ^item.focus} }}" href="{{ ^item.url }}"><${ P }-text text="{{ ^item.label }}"></${ P }-text></${ P }-a>
-</template></nav></${ P }-repeater>`
+        template: `<${P}-scroll-aware on-${ScrollEventName}=":host._onScroll($event)" url="{{ :host.url }}"></${P}-scroll-aware>
+<${P}-repeater><nav class="${PCSS}-toc"><template>
+    <${P}-a on-click=":host._startScrollTo(^item, $event)" css-class="{{ {'toc-focus': ^item.focus} }}" href="{{ ^item.url }}"><${P}-text text="{{ ^item.label }}"></${P}-text></${P}-a>
+</template></nav></${P}-repeater>`
     })
     export class PacemTocElement extends PacemElement {
 

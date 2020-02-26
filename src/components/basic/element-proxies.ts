@@ -24,14 +24,14 @@ namespace Pacem.Components {
                     this._dom = Utils.moveItems(this.childNodes, to);
                     this._children = <Element[]>this._dom.filter(e => e instanceof Element);
                 } else {
-                    Utils.moveItems(this._dom, to);
+                    Utils.moveItems(this._children, to);
                 }
             }
         }
 
         disconnectedCallback() {
             for (let item of (this._dom || []).splice(0)) {
-                item instanceof Element && item.remove();
+                (<ChildNode>item).remove();
             }
             super.disconnectedCallback();
         }
@@ -61,6 +61,7 @@ namespace Pacem.Components {
 
     }
 
+    /** Moves its content to the provided target element. */
     @CustomElement({
         tagName: P + '-element-proxy'
     })
@@ -74,7 +75,7 @@ namespace Pacem.Components {
 
         propertyChangedCallback(name: string, old, val, first?: boolean) {
             super.propertyChangedCallback(name, old, val, first);
-            if (name === 'selector' && !first) {
+            if (name === 'target' && !first) {
                 this.moveContent(this.proxy);
             }
         }

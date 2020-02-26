@@ -3,11 +3,19 @@
 <pacem-markdown value="{{ #content0.textContent }}" root></pacem-markdown>
 
 <pre pacem hidden id="content0">
-# `&lt;pacem-img>`
+## Dynamic Images
 
-typing docs...
+`PacemImageElement` allows to dynamically render images onto the screen.
 
 </pre>
+
+<pacemjs-snippet>
+    <template>
+
+        <pacem-img style="width:76px; height: 76px;"></pacem-img>
+
+    </template>
+</pacemjs-snippet>
 
 <pacem-img id="proto" hidden></pacem-img>
 <pacemjs-descriptor target="{{ #proto }}"></pacemjs-descriptor>

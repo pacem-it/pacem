@@ -42,6 +42,7 @@
     <None Remove="src\components\basic\html-proxy.ts" />
     <None Remove="src\components\basic\hub-proxy.ts" />
     <None Remove="src\components\basic\layout-proxy.ts" />
+    <None Remove="src\components\basic\online-status.ts" />
     <None Remove="src\components\basic\resize-observer.d.ts" />
     <None Remove="src\components\basic\style-proxy.ts" />
     <None Remove="src\components\basic\template-proxy.ts" />
@@ -50,6 +51,7 @@
     <None Remove="src\components\charts\types.ts" />
     <None Remove="src\components\cms\openapi\swagger-cms.ts" />
     <None Remove="src\components\cms\widgets\helpers\apimanifest.ts" />
+    <None Remove="src\components\cms\widgets\helpers\clock.ts" />
     <None Remove="src\components\cms\widgets\helpers\data.ts" />
     <None Remove="src\components\cms\widgets\helpers\fetcher.ts" />
     <None Remove="src\components\cms\widgets\helpers\types.ts" />
@@ -89,6 +91,7 @@
     <None Remove="src\core\maths\math.ts" />
     <None Remove="src\core\net\fetcher.ts" />
     <None Remove="src\core\prefix.ts" />
+    <None Remove="src\core\shortcut.ts" />
     <None Remove="src\core\ui\drag-drop.ts" />
     <None Remove="src\core\ui\rescale.ts" />
     <None Remove="src\core\ui\swipe.ts" />
@@ -288,6 +291,7 @@
     <TypeScriptCompile Include="src\components\basic\index.ts" />
     <TypeScriptCompile Include="src\components\basic\items-container.ts" />
     <TypeScriptCompile Include="src\components\basic\iterative.ts" />
+    <TypeScriptCompile Include="src\components\basic\online-status.ts" />
     <TypeScriptCompile Include="src\components\basic\overlay.ts" />
     <TypeScriptCompile Include="src\components\basic\panel.ts" />
     <TypeScriptCompile Include="src\components\basic\position.ts" />
@@ -314,6 +318,9 @@
     <TypeScriptCompile Include="src\components\charts\types.ts" />
     <TypeScriptCompile Include="src\components\cms\openapi\swagger-cms.ts" />
     <TypeScriptCompile Include="src\components\cms\widgets\helpers\apimanifest.ts" />
+    <TypeScriptCompile Include="src\components\cms\widgets\helpers\clock.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="src\components\cms\widgets\helpers\data.ts" />
     <TypeScriptCompile Include="src\components\cms\widgets\helpers\fetcher.ts" />
     <TypeScriptCompile Include="src\components\cms\widgets\helpers\types.ts" />
@@ -437,6 +444,7 @@
     <TypeScriptCompile Include="src\core\prefix.ts" />
     <TypeScriptCompile Include="src\core\promise.ts" />
     <TypeScriptCompile Include="src\core\regex.ts" />
+    <TypeScriptCompile Include="src\components\basic\shortcut.ts" />
     <TypeScriptCompile Include="src\core\storage.ts" />
     <TypeScriptCompile Include="src\core\transforms.ts" />
     <TypeScriptCompile Include="src\core\types.ts" />

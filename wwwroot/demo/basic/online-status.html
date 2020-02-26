@@ -1,0 +1,35 @@
+﻿
+
+<pacem-markdown value="{{ #content0.textContent }}" root class="md-tech"></pacem-markdown>
+
+<pre pacem hidden id="content0">
+## Connectivity Status
+`PacemOnlineStatusElement` checks whether the current internet connection is up-and-running and notifies it via its `online` property.
+
+Here an example for the utilization:  
+
+```html
+&lt;pacem-online-status id="status">&lt;/pacem-online-status>  
+&lt;pacem-data id="isOnline" model="{{ #status.online }}">&lt;/pacem-data>
+```
+
+
+</pre>
+
+<pacemjs-snippet>
+    <template id="demo0">
+
+        <pacem-online-status id="status0"></pacem-online-status>
+
+        <div class="pacem-pad pad-1 display-flex flex-middle">
+            <pacem-span class="pacem-led led-on" css-class="{{ { 'led-success': #status0.online, 'led-danger led-blink': !#status0.online } }}"></pacem-span>
+            <pacem-span class="pacem-margin margin-left-1" text="{{ #status0.online ? 'Online' : 'Offline' }}"></pacem-span>
+        </div>
+        <hr />
+        <p class="text-disabled">Plug-in and out your cable connection...</p>
+
+    </template>
+</pacemjs-snippet>
+
+<pacem-online-status id="proto"></pacem-online-status>
+<pacemjs-descriptor target="#proto"></pacemjs-descriptor>

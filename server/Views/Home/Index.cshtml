@@ -144,7 +144,7 @@
                         Theme
                     </div>
                     <div class="panel-body">
-                        <pacem-radio-list datasource="{{ #themes.model }}"
+                        <pacem-radio-list datasource="{{ #themes.model }}" class="radio-list-naked"
                                           value="{{ #theme.model }}"
                                           on-change="#ddl.popout(); #themename.model = $this.value.value"
                                           text-property="label"></pacem-radio-list>

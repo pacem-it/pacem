@@ -22,7 +22,7 @@ css-class="{{ {'${PCSS}-fetching': ::_fetcher.fetching, '${PCSS}-dirty': this.di
     })
     export class PacemFormFieldElement extends PacemElement implements Pacem.Net.OAuthFetchable {
 
-        constructor() {
+        constructor(private _md = new MarkdownService()) {
             super();
         }
 
@@ -112,9 +112,11 @@ css-class="{{ {'${PCSS}-fetching': ::_fetcher.fetching, '${PCSS}-dirty': this.di
 
         private _ensureBalloon(): void {
 
-            var innerText: string;
+            var innerText: string,
+                tooltipMode: true | false | 'html' | 'md' | 'markdown';
             const noBalloon = this.readonly
-                || (this.metadata && this.metadata.extra && this.metadata.extra.tooltip) !== true
+                || Utils.isNullOrEmpty(tooltipMode = this.metadata && this.metadata.extra && this.metadata.extra.tooltip)
+                || (tooltipMode !== true && tooltipMode !== 'html' && tooltipMode !== 'md' && tooltipMode !== 'markdown')
                 || Utils.isNullOrEmpty(innerText = this.metadata && this.metadata.display && this.metadata.display.description);
 
             // balloon
@@ -123,7 +125,7 @@ css-class="{{ {'${PCSS}-fetching': ::_fetcher.fetching, '${PCSS}-dirty': this.di
                 balloon.options = {
                     behavior: UI.BalloonBehavior.Tooltip,
                     position: UI.BalloonPosition.Top,
-                    hoverDelay: 100, hoverTimeout: 200,
+                    hoverDelay: 200, hoverTimeout: 50,
                     align: UI.BalloonAlignment.Start
                 };
                 Utils.addClass(balloon, PCSS + '-field-tooltip');
@@ -135,7 +137,20 @@ css-class="{{ {'${PCSS}-fetching': ::_fetcher.fetching, '${PCSS}-dirty': this.di
             if (!Utils.isNull(balloon)) {
                 balloon.target = this.label;
                 balloon.disabled = noBalloon;
-                balloon.innerText = innerText || '';
+
+                const content = innerText || '';
+                switch (tooltipMode) {
+                    case 'md':
+                    case 'markdown':
+                        balloon.innerHTML = this._md.toHtml(content);
+                        break;
+                    case 'html':
+                        balloon.innerHTML = content;
+                        break;
+                    default:
+                        balloon.innerText = content;
+                        break;
+                }
             }
         }
 
@@ -339,7 +354,7 @@ css-class="{{ {'${PCSS}-fetching': ::_fetcher.fetching, '${PCSS}-dirty': this.di
                 case 'oneToMany':
                     // select
                     tagName = P + '-select';
-                    attrs['on-mousewheel'] = '$event.preventDefault()';
+                    attrs['on-wheel'] = '$event.preventDefault()';
                     if (!Utils.isNullOrEmpty(fetchData.textProperty)) {
                         attrs['text-property'] = fetchData.textProperty;
                     }
@@ -423,24 +438,31 @@ css-class="{{ {'${PCSS}-fetching': ::_fetcher.fetching, '${PCSS}-dirty': this.di
                         }
                     }
 
-                    fetchAttrs['url'] = `${fetchData.sourceUrl}`;
-                    this._fetcher.method = fetchData.verb;
+                    if (!Utils.isNullOrEmpty(fetchData.sourceUrl)) {
+                        fetchAttrs['url'] = `${fetchData.sourceUrl}`;
+                        this._fetcher.method = fetchData.verb;
 
-                    //
-                    if (!Utils.isNullOrEmpty(fetchData.dependsOn)) {
-                        // deps
-                        fetchAttrs['parameters'] = `{{ { ${dependingParameters}, q: #${this._key}.hint || '', ${(fetchData.valueProperty || 'value')}: ${itemValue} || '' } }}`;
-                        fetchAttrs['disabled'] = disabledAttr;
-                    } else {
-                        // no deps
-                        fetchAttrs['parameters'] = `{{ {q: #${this._key}.hint || '', ${(fetchData.valueProperty || 'value')}: ${itemValue} || '' } }}`;
+                        //
+                        if (!Utils.isNullOrEmpty(fetchData.dependsOn)) {
+                            // deps
+                            fetchAttrs['parameters'] = `{{ { ${dependingParameters}, q: #${this._key}.hint || '', ${(fetchData.valueProperty || 'value')}: ${itemValue} || '' } }}`;
+                            fetchAttrs['disabled'] = disabledAttr;
+                        } else {
+                            // no deps
+                            fetchAttrs['parameters'] = `{{ {q: #${this._key}.hint || '', ${(fetchData.valueProperty || 'value')}: ${itemValue} || '' } }}`;
+                        }
+                        attrs['datasource'] = `{{ ${dependingClause}Pacem.Utils.getApiResult(#fetch${this._key}.result) }}`;
                     }
-                    attrs['datasource'] = `{{ ${dependingClause}Pacem.Utils.getApiResult(#fetch${this._key}.result) }}`;
+
+                    if (meta.display.ui === 'tags') {
+                        attrs['allow-new'] = (meta.extra.allowNew === true).toString();
+                        attrs['allow-duplicates'] = (meta.extra.allowDuplicates === true).toString();
+                    }
 
                     break;
                 case 'switcher':
                     if ((meta.type || '').toLowerCase() === 'boolean') {
-                        attrs['class'] = "checkbox-toggle";
+                        attrs['class'] = "checkbox-switch";
                     } else {
                         break;
                     }
@@ -593,12 +615,14 @@ css-class="{{ {'${PCSS}-fetching': ::_fetcher.fetching, '${PCSS}-dirty': this.di
                 Utils.addClass(prepend, `fieldgroup-prepend ${PCSS}-buttonset buttons`);
                 Utils.addClass(append, `fieldgroup-append ${PCSS}-buttonset buttons`);
 
+                const disable: string = dependingDisabling || 'false';
+
                 meta.commands.forEach(cmd => {
                     const btn = document.createElement(P + '-button');
                     btn.setAttribute('icon-glyph', cmd.icon);
                     btn.setAttribute('command-name', cmd.name);
                     if (cmd.dependsOnValue) {
-                        btn.setAttribute('disabled', `{{ (${dependingDisabling}) || !::_form.valid || Pacem.Utils.isNullOrEmpty(:host.entity.${meta.prop}) }}`);
+                        btn.setAttribute('disabled', `{{ (${disable}) || !::_form.valid || Pacem.Utils.isNullOrEmpty(:host.entity.${meta.prop}) }}`);
                         btn.setAttribute('command-argument', `{{ :host.entity.${meta.prop} }}`);
                     } else {
                         btn.setAttribute('disabled', disabledAttr);

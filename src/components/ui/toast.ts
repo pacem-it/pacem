@@ -26,7 +26,7 @@ namespace Pacem.Components.UI {
                 } else {
                     let order: number = CustomElementUtils.getAttachedPropertyValue(PacemToastElement, PACEM_TOAST_POPS, 0) - 1;
                     CustomElementUtils.setAttachedPropertyValue(PacemToastElement, PACEM_TOAST_POPS, order);
-                    this.style.order = ''+order;
+                    this.style.order = '' + order;
                     Utils.addClass(this, 'toast-show');
                     this._show();
                 }
@@ -48,8 +48,17 @@ namespace Pacem.Components.UI {
             window.clearTimeout(this._handle);
             if (this.disabled)
                 return;
-            if (this.autohide)
+            if (this.autohide) {
                 this._handle = window.setTimeout(() => { this.show = false; }, this.timeout);
+            }
+        }
+
+        popup() {
+            if (this.show) {
+                this._show();
+            } else {
+                this.show = true;
+            }
         }
     }
 

@@ -104,6 +104,11 @@ namespace Pacem.Components.Scaffolding {
             }
         }
 
+        setPristine() {
+            super.setPristine();
+            this._editing = false;
+        }
+
         protected onChange(_?: Event): PromiseLike<any> {
             return Utils.fromResult(this.value = this._editor.value);
         }

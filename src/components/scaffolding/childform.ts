@@ -184,6 +184,9 @@ namespace Pacem.Components.Scaffolding {
         }
 
         private _deleteAt(evt: CustomItemCommandEvent) {
+            // prevent the event to bubble (nested scenarios).
+            avoidHandler(evt.srcEvent);
+
             if (this.mode === 'array') {
                 this._model.splice(evt.detail, 1);
             } else {

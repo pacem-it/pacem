@@ -226,8 +226,12 @@
         text-shadow: none;
     }
 
-    margin-left: -@_pointer_w;
     color: @color_primary_inv;
+    
+    code{
+        color: @color_primary_inv;
+        background-color: fade(@color_primary_inv, 10);
+    }
 }
 /* #endregion */
 @{P}-balloon.dropdown {

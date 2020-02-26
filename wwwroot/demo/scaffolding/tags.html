@@ -37,5 +37,39 @@ Tags can be forced to be picked only from a specific `datasource` or set of data
     </template>
 </pacemjs-snippet>
 
+<pacem-markdown value="{{ #content1.textContent }}" class="md-tech" root></pacem-markdown>
+
+
+<pacem-markdown value="{{ #content1.textContent }}" class="md-tech" root></pacem-markdown>
+<pre pacem hidden id="content1">
+## Metadata
+`PacemTagsElement` can be injected into an autogenerating form the following way: 
+</pre>
+
+<pacemjs-snippet>
+    <template>
+
+        <pre id="metadata1" hidden pacem>
+[
+{"prop": "tags", "type": "array", "display": { "name": "Tags", "ui": "tags" },
+"extra": { "allowNew": true, "allowDuplicates": false }
+}
+]
+</pre>
+
+        <div class="pacem-panel">
+            <div class="panel-body">
+                <pacem-form id="frm1" autogenerate="true" metadata="{{ JSON.parse(#metadata1.textContent) }}" entity="{{ #entity1.model, twoway }}"></pacem-form>
+            </div>
+            <div class="panel-footer display-flex">
+                <label class="pacem-margin margin-right-2">readonly</label>
+                <pacem-checkbox class="checkbox-switch" true-value="true" false-value="false" value="{{ #frm1.readonly, twoway }}"></pacem-checkbox>
+                <pacem-data model='{ "tags": ["tag #1", "tag #2"] }' id="entity1"></pacem-data>
+            </div>
+        </div>
+
+    </template>
+</pacemjs-snippet>
+
 <pacem-tags id="proto" hidden></pacem-tags>
 <pacemjs-descriptor target="#proto"></pacemjs-descriptor>

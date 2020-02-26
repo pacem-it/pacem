@@ -84,8 +84,8 @@
 
 .@{PCSS}-field {
     margin-bottom: @grid_spacing / 3;
-    padding: @grid_spacing/3 0 @_h 0;
     z-index: 0;
+    padding: @grid_spacing/3 0 @_h 0;
     border-radius: @border_field_radius;
     transition: background linear .3s, border linear .3s;
 
@@ -95,14 +95,13 @@
         //height: @_h;
         //line-height: @_h;
         padding-left: @_h;
-        display: block;
-        align-items: center;
+        display: inline-block;
+        // align-items: center;
         color: @color_field_label;
         .FontMain(1.05);
         animation: pacem-label-anim .25s ease-in-out both;
         // field appearance borrowed from -inline:
         min-height: @field_height;
-
         .LabelTopMargin();
     }
 
@@ -400,7 +399,7 @@
     > label.@{PCSS}-label {
         margin-left: @_h;
 
-        &:before {
+        &::before {
             .Icon('keyboard_arrow_down', @grid_spacing / 1.5);
             position: absolute;
             top: @_h * .1;
@@ -419,6 +418,19 @@
     }
 }
 
+// fetching
+.@{PCSS}-field.@{PCSS}-editable {
+
+    &.@{PCSS}-fetching {
+        label.@{PCSS}-label::before {
+            .Icon('refresh', @grid_spacing / 1.5);
+            animation: pacem-rotate-anim .67s linear infinite;
+        }
+    }
+}
+
+/* #region "minimal" aspect */
+
 .form-minimal > @{P}-form-field:not(.field-full),
 @{P}-form-field.field-minimal {
 
@@ -436,11 +448,28 @@
             min-height: 0;
             height: @field_minimal_label_height;
             line-height: $height;
-            padding: 0;
+        }
 
-            &::before,
-            &::after {
-                display: none;
+        &.@{PCSS}-editable {
+            > label.@{PCSS}-label {
+
+                &::after {
+                    display: none;
+                }
+            }
+        }
+
+        &.@{PCSS}-readonly > label.@{PCSS}-label {
+            padding-left: 0;
+        }
+
+        &.@{PCSS}-editable {
+            > label.@{PCSS}-label:not(.@{PCSS}-tooltip) {
+                padding-left: 0;
+
+                &::before {
+                    display: none;
+                }
             }
         }
 
@@ -458,20 +487,16 @@
                 }
             }
 
+            > @{P}-childform.@{PCSS}-readonly {
+
+                @{P}-form.@{PCSS}-readonly, @{P}-childform.@{PCSS}-readonly {
+                    display: block;
+                }
+            }
+
             .@{PCSS}-readonly::before {
                 line-height: @field_height;
             }
-        }
-    }
-}
-
-// fetching
-.@{PCSS}-field.@{PCSS}-editable {
-
-    &.@{PCSS}-fetching {
-        label.@{PCSS}-label::before {
-            .Icon('refresh', @grid_spacing / 1.5);
-            animation: pacem-rotate-anim .67s linear infinite;
         }
     }
 }
@@ -485,6 +510,8 @@
         }
     }
 }
+
+/* #endregion */
 
 // no label
 .form-nolabels > @{P}-form-field:not(.field-label),
@@ -696,7 +723,8 @@
     }
 }
 // #endregion
-// label tooltip
+
+/* #region label tooltip*/
 .@{PCSS}-field {
     &.@{PCSS}-editable {
         > label.@{PCSS}-label {
@@ -706,10 +734,6 @@
                 animation: none !important;
             }
 
-            + .@{PCSS}-balloon {
-                margin-left: @_left * .7;
-            }
-
             &.@{PCSS}-required:after {
                 content: '*';
                 .FontTech(1.1);
@@ -717,6 +741,11 @@
         }
     }
 }
+
+@{P}-balloon.@{PCSS}-field-tooltip {
+    margin-left: -@_left * .7;
+}
+/* #endregion*/
 
 .@{PCSS}-field.@{PCSS}-editable when (@shadows = true) {
     box-shadow: 0 2px @grid_spacing / 3 rgba(0,0,0,0.25);

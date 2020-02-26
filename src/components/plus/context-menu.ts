@@ -25,6 +25,7 @@ namespace Pacem.Components.Plus {
 
         @Watch({ emit: false, converter: PropertyConverters.String }) commandName: string;
         @Watch({ emit: false, converter: PropertyConverters.String }) caption: string;
+        @Watch({ emit: false, converter: PropertyConverters.String }) tooltip: string;
         @Watch({ emit: false, converter: PropertyConverters.String }) iconGlyph: string;
         @Watch({ emit: false, converter: PropertyConverters.String }) confirmationMessage: string;
         @Watch({ emit: false, converter: PropertyConverters.Element }) confirmationDialog: Pacem.Components.UI.PacemDialogBase;
@@ -45,7 +46,7 @@ namespace Pacem.Components.Plus {
             <template>
                 <${P}-if match="{{ ^item.localName === '${P}-context-menuitem-command' }}">
                     <${P}-button icon-glyph="{{ ^item.iconGlyph }}" hide="{{ ^item.hide }}" disabled="{{ ^item.disabled }}"
-                                 on-mouseup="::_balloon.popout()"
+                                 on-mouseup="::_balloon.popout()" tooltip="{{ ^item.tooltip }}"
                                  confirmation-message="{{ ^item.confirmationMessage }}" confirmation-dialog="{{ ^item.confirmationDialog }}"
                                  command-name="{{ ^item.commandName }}"><${P}-text text="{{ ^item.caption }}"></${P}-text></${P}-button>
                 </${P}-if>

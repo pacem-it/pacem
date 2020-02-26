@@ -73,6 +73,7 @@ namespace Pacem.Components {
         private _previousLeft: number;
         private _observer: ResizeObserver;
         private _mutationObserver: MutationObserver;
+        private _handle: number;
 
         private _start() {
 
@@ -82,14 +83,16 @@ namespace Pacem.Components {
                 return;
             }
 
-            if (this._usePolyfill) {
+            if (this.watchPosition) {
+                this._startWatchIntensively();
+            }
+            else if (this._usePolyfill) {
 
                 // polyfill using MutationObserver
                 this._mutationObserver = new MutationObserver(_ => {
-                    this._check();
+                    this._checkSizeHandler();
                 });
                 this._mutationObserver.observe(this._target, MUTATION_OBSERVER_INIT);
-
 
             } else {
 
@@ -120,6 +123,7 @@ namespace Pacem.Components {
         }
 
         private _stop() {
+            window.cancelAnimationFrame(this._handle);
             window.removeEventListener('resize', this._checkSizeHandler, false);
             if (this._usePolyfill) {
                 if (!Utils.isNull(this._mutationObserver)) {
@@ -132,11 +136,18 @@ namespace Pacem.Components {
             }
         }
 
-        private _checkSizeHandler = (e) => {
+        private _startWatchIntensively() {
+            this._handle = window.requestAnimationFrame(() => {
+                this._checkSize();
+                this._startWatchIntensively();
+            })
+        }
+
+        private _checkSizeHandler = (e?) => {
             this._assignSizeDebounced();
         }
 
-        @Debounce(50)
+        @Debounce(true)
         private _assignSizeDebounced() {
             this._checkSize();
         }
@@ -158,10 +169,6 @@ namespace Pacem.Components {
                 this._previousTop = rect.top;
                 this._dispatchResize();
             }
-        }
-
-        private _check = (_?) => {
-            this._assignSizeDebounced();
         }
 
         get currentSize() {

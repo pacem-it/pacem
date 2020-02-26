@@ -59,26 +59,22 @@ namespace Pacem.Components.UI {
             this._deferred.resolve(drevt.detail);
             this._deferred = null;
             this.dispatchEvent(drevt);
-
-            // BREAKING change: state destroyed when dialog committed
-            // TODO: consider 'if' and 'how' to avoid this.
-            this.state = {};
         }
     }
 
     @CustomElement({
         tagName: P + '-dialog', shadow: Defaults.USE_SHADOW_ROOT,
         template: `<${P}-lightbox modal="true" logger="{{ :host.logger }}">
-    <${ P}-content></${P}-content>
+    <${P}-content></${P}-content>
     <div class="${PCSS}-dialog-buttons ${PCSS}-buttonset buttons">
         <div class="buttonset-left">
-            <${ P}-button class="button button-size size-small primary dialog-ok" css-class="{{ {'buttonset-last': :host.buttons === 'ok'} }}" on-click=":host.commit('ok', $event)" disabled="{{ :host.disabled || this.hide }}" hide="{{ :host.buttons !== 'ok' && :host.buttons !== 'okcancel' }}"><${P}-text text="{{ :host.okCaption }}"></${P}-text></${P}-button>
-            <${ P}-button class="button button-size size-small primary dialog-yes" css-class="{{ {'buttonset-first': :host.buttons !== 'ok' || :host.buttons !== 'okcancel'} }}" on-click=":host.commit('yes', $event)" disabled="{{ :host.disabled || this.hide }}" hide="{{ :host.buttons === 'ok' || :host.buttons === 'okcancel' }}"><${P}-text text="{{ :host.yesCaption }}"></${P}-text></${P}-button>
-            <${ P}-button class="button button-size size-small dialog-no" css-class="{{ {'buttonset-last': :host.buttons === 'yesno'} }}" on-click=":host.commit('no', $event)" disabled="{{ :host.disabled || this.hide }}" hide="{{ :host.buttons !== 'yesno' && :host.buttons !== 'yesnocancel' }}"><${P}-text text="{{ :host.noCaption }}"></${P}-text></${P}-button>
-            <${ P}-button class="button button-size size-small dialog-cancel" on-click=":host.commit('cancel', $event)" disabled="{{ :host.disabled || this.hide }}" hide="{{ :host.buttons !== 'yesnocancel' && :host.buttons !== 'okcancel' }}"><${P}-text text="{{ :host.cancelCaption }}"></${P}-text></${P}-button>
+            <${P}-button class="button button-size size-small primary dialog-ok" css-class="{{ {'buttonset-last': :host.buttons === 'ok'} }}" on-click=":host.commit('ok', $event)" disabled="{{ :host.disabled || this.hide }}" hide="{{ :host.buttons !== 'ok' && :host.buttons !== 'okcancel' }}"><${P}-text text="{{ :host.okCaption }}"></${P}-text></${P}-button>
+            <${P}-button class="button button-size size-small primary dialog-yes" css-class="{{ {'buttonset-first': :host.buttons !== 'ok' || :host.buttons !== 'okcancel'} }}" on-click=":host.commit('yes', $event)" disabled="{{ :host.disabled || this.hide }}" hide="{{ :host.buttons === 'ok' || :host.buttons === 'okcancel' }}"><${P}-text text="{{ :host.yesCaption }}"></${P}-text></${P}-button>
+            <${P}-button class="button button-size size-small dialog-no" css-class="{{ {'buttonset-last': :host.buttons === 'yesno'} }}" on-click=":host.commit('no', $event)" disabled="{{ :host.disabled || this.hide }}" hide="{{ :host.buttons !== 'yesno' && :host.buttons !== 'yesnocancel' }}"><${P}-text text="{{ :host.noCaption }}"></${P}-text></${P}-button>
+            <${P}-button class="button button-size size-small dialog-cancel" on-click=":host.commit('cancel', $event)" disabled="{{ :host.disabled || this.hide }}" hide="{{ :host.buttons !== 'yesnocancel' && :host.buttons !== 'okcancel' }}"><${P}-text text="{{ :host.cancelCaption }}"></${P}-text></${P}-button>
         </div>
     </div>
-</${ P}-lightbox>`
+</${P}-lightbox>`
     })
     export class PacemDialogElement extends PacemDialogBase {
 

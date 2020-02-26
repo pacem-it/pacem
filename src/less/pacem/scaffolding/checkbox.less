@@ -36,27 +36,40 @@
 }
 
 // just the checkbox
-.form-minimal > @{P}-form-field:not(.field-full) @{P}-checkbox,
+.form-minimal > @{P}-form-field:not(.field-full):not(.@{PCSS}-switcher) @{P}-checkbox,
 @{P}-form-field.field-minimal @{P}-checkbox,
 @{P}-checkbox.checkbox-naked {
-    min-width: 0;
-    height: @field_height;
-
-    label.@{PCSS}-checkbox {
-        border: 0;
-        padding: 0;
-        background: none;
-        position: static;
-        line-height: 1.5;
+    // avoid conflict with switchers
+    &:not(.checkbox-toggle):not(.checkbox-switch) {
         min-width: 0;
-        min-height: 0;
-        vertical-align: middle;
-        .FontStdSize(@field_minimal_fontsize);
+        height: @field_height;
 
-        &::before {
+        label.@{PCSS}-checkbox {
+            border: 0;
+            padding: 0;
+            background: none;
             position: static;
+            line-height: 1.5;
+            min-width: 0;
+            min-height: 0;
             vertical-align: middle;
-            margin-right: @grid_spacing/4;
+            .FontStdSize(@field_minimal_fontsize);
+
+            &::before {
+                position: static;
+                vertical-align: middle;
+                margin-right: @grid_spacing/4;
+            }
+        }
+    }
+}
+
+// overrides the padding of the first checkbox in a list
+.form-minimal > @{P}-form-field:not(.field-full):not(.@{PCSS}-switcher) @{P}-checkbox-list,
+@{P}-form-field.field-minimal @{P}-checkbox-list {
+    ol > li:first-child when(@border_field_underline = false) {
+        @{P}-checkbox:not(.checkbox-toggle):not(.checkbox-switch) label.@{PCSS}-checkbox {
+            padding-left: @grid_spacing/4;
         }
     }
 }
@@ -214,8 +227,7 @@
                 color: @clr;
             }
         }
-
-        &.checkbox-toggle.@{PCSS}-selected {
+        /*&.checkbox-toggle.@{PCSS}-selected {
             label.@{PCSS}-label.@{PCSS}-checkbox {
                 background: @clr;
 
@@ -229,7 +241,7 @@
             label.@{PCSS}-label.@{PCSS}-checkbox {
                 box-shadow: 0 0 8px @clr;
             }
-        }
+        }*/
     }
 
     &.checkbox-default {

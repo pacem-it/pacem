@@ -16,7 +16,7 @@ namespace Pacem.Components.Scaffolding {
     @CustomElement({
         tagName: P + '-tag', shadow: Defaults.USE_SHADOW_ROOT,
         template: `<${P}-text text="{{ :host.tag }}"></${P}-text>
-                <${ P}-button on-click=":host._remove()" hide="{{ :host.readonly }}"></${P}-button>`
+                <${P}-button on-click=":host._remove()"></${P}-button>`
     })
     export class PacemTagElement extends PacemElement {
 
@@ -30,7 +30,7 @@ namespace Pacem.Components.Scaffolding {
                 case 'readonly':
                     let readonly = !!val;
                     (readonly ? Utils.addClass : Utils.removeClass)(this, 'tag-readonly');
-                    this._btn.disabled = readonly;
+                    this._btn.disabled = this._btn.hide = readonly;
                     break;
                 case 'tag':
                     Utils.removeClass(this, 'tag-out');
@@ -53,11 +53,11 @@ namespace Pacem.Components.Scaffolding {
     <ul class="${PCSS}-tags ${PCSS}-viewfinder ${PCSS}-list list-unstyled list-inline">
         <template>
             <li class="${PCSS}-tag">
-                <${ P}-tag on-remove=":host._tagRemove(^index)" css-class="{{ { 'tag-in': :host._justAddedIndex === ^index } }}" tag="{{ :host.mapEntityToViewValue(^item) }}" readonly="{{ :host.readonly }}"></${P}-tag>
+                <${P}-tag on-remove=":host._tagRemove(^index)" css-class="{{ { 'tag-in': :host._justAddedIndex === ^index } }}" tag="{{ :host.mapEntityToViewValue(^item) }}" readonly="{{ :host.readonly }}"></${P}-tag>
             </li>
         </template>
         <li class="tag-new">
-            <${ P}-suggest logger="{{ :host.logger }}" placeholder="{{ :host.placeholder }}" allow-new="{{ :host.allowNew }}" class="${PCSS}-tags" on-change=":host._tagAdd($this.value)" hint="{{ :host.hint, twoway }}"></${P}-suggest>
+            <${P}-suggest logger="{{ :host.logger }}" placeholder="{{ :host.placeholder }}" allow-new="{{ :host.allowNew }}" class="${PCSS}-tags" on-change=":host._tagAdd($this.value)" hint="{{ :host.hint, twoway }}"></${P}-suggest>
         </li>
     </ul>
 </${ P}-repeater>`
@@ -118,17 +118,24 @@ namespace Pacem.Components.Scaffolding {
                 switch (evt.type) {
                     case 'tagremove':
                         this._justAddedIndex = -1;
-                        let trev = <TagRemoveEvent>evt;
-                        resolve(this.value.splice(trev.detail.index, 1));
+                        const trev = <TagRemoveEvent>evt,
+                            ndxrev = trev.detail.index,
+                            // manipulate a copy of the array (to preserve the originalValue)
+                            valrev = <any[]>Utils.clone(this.value);
+                        const trunk2 = valrev.splice(ndxrev + 1),
+                            trunk1 = valrev.splice(0, ndxrev);
+                        resolve(this.value = trunk1.concat(trunk2));
                         break;
                     case 'tagadd':
-                        let value = (<TagAddEvent>evt).detail.value;
+                        const value = (<TagAddEvent>evt).detail.value,
+                            // manipulate a copy of the array (to preserve the originalValue)
+                            valadd = <any[]>Utils.clone(this.value);
                         if (// no empty items
                             !Utils.isNullOrEmpty(value)
                             // no duplicated items
-                            && (this.allowDuplicates || Utils.isNullOrEmpty(this.value && (<any[]>this.value).find(i => this.mapEntityToViewValue(i) == this.mapEntityToViewValue(value))))
+                            && (this.allowDuplicates || Utils.isNullOrEmpty(valadd && (<any[]>valadd).find(i => this.mapEntityToViewValue(i) == this.mapEntityToViewValue(value))))
                         ) {
-                            let newvalue = (this.value || []).splice(0).concat([value]);
+                            let newvalue = (valadd || []).concat([value]);
                             resolve(this.value = newvalue);
                             this._suggest.hint = '';
                             this._suggest.reset();

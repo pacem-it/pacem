@@ -47,7 +47,7 @@
                 background-color: transparent;
                 padding: 0 .5em;
 
-                &::after{
+                &::after {
                     content: '.';
                 }
 
@@ -135,10 +135,57 @@
     *:not(@{P}-childform) .@{PCSS}-childform-item > .childform-item-index {
         margin-top: 0;
 
-        > *{
+        > * {
             margin-top: 0;
             line-height: @field_minimal_label_height;
             font-size: @field_minimal_fontsize !important;
         }
+    }
+}
+
+// childform "full"
+// this copies the .pacem-field style in formfield.less (amend this! DRY!)
+
+@{P}-childform .@{PCSS}-childform > .@{PCSS}-childform-item > @{P}-form > form.@{PCSS}-form .childform-full {
+    @_left: @grid_spacing * 5 / 6;
+    @_h: @_left;
+
+    padding: @grid_spacing/3 @_h;
+    margin-bottom: @grid_spacing / 3;
+    border-radius: @border_field_radius;
+    transition: background linear .3s, border linear .3s;
+
+
+    & when (@border_field_underline = false) {
+        border: @border_field_size solid transparent;
+    }
+
+    & when (@border_field_underline = true) {
+        border-bottom: @border_field_size solid transparent;
+    }
+}
+
+.@{PCSS}-field.@{PCSS}-editable > .@{PCSS}-input-container {
+
+    > @{P}-childform .@{PCSS}-childform > .@{PCSS}-childform-item > @{P}-form > form.@{PCSS}-form .childform-full {
+        background-color: @color_field_back;
+        border-color: transparent;
+
+        & when (@shadows = true) {
+            box-shadow: 0 2px @grid_spacing / 3 rgba(0,0,0,0.25);
+        }
+
+        & when (@shadows = false) {
+            box-shadow: 0 2px @grid_spacing / 8 rgba(0,0,0,0.05);
+        }
+    }
+}
+
+.@{PCSS}-field.@{PCSS}-readonly > .@{PCSS}-input-container {
+
+    > @{P}-childform .@{PCSS}-childform > .@{PCSS}-childform-item > @{P}-form > form.@{PCSS}-form .childform-full {
+        background-color: transparent;
+        box-shadow: none;
+        border-color: fade(@color_default, 5);
     }
 }

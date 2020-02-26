@@ -21,11 +21,13 @@
 // tweak needed to align the icon to the std font baseline
 @font_icon_offset: -2px;
 
+@color_phousys: #65e4d5;
 // temp overrides
 @color_blue: #0e0d4b; // #191a2c;
 @color_lightblue: #0e0d4b;
 @color_background_alt: #22367c;
-@color_light: #65e4d5; //#4beebf;
+@color_light: lighten(#65e4d5, 20); //#4beebf;
+@color_dark: #00163a; //#4beebf;
 @color_red: #ff0085; //#e51abb; //#b00c7d
 @color_teal: #625594; //#5d5483
 //@color_dark: #000;
@@ -34,7 +36,7 @@
 @color_error_fore: #fff;
 @color_highlight: #0761d3;
 @color_highlight_fore: #fff;
-@color_tech: @color_light;
+@color_tech: @color_phousys;
 @color_watermark: #c0c0c0;
 /*#endregion*/
 @color_background: @color_blue;
@@ -48,14 +50,14 @@
 @color_warning_inv: #fff; // darken(@color_warning, 35);
 @color_danger: @color_error;
 @color_danger_inv: #fff;
-@color_accent: @color_light;
+@color_accent: @color_phousys;
 @color_accent_inv: #fff; //@color_lightblue;
 /*@color_primary: #0761d3;
 @color_primary_inv: @color_light;*/
-@color_primary: @color_light;
+@color_primary: @color_phousys;
 @color_primary_inv: #fff; //@color_lightblue;
 @color_disabled: rgba(255,255,255,0.2);
-@color_code: @color_light;
+@color_code: @color_phousys;
 @color_codeblock_back: darken(@color_button_back, 2.5);
 
 @shadows: false;
@@ -66,7 +68,7 @@
 
 @size_scrollbar: 5px;
 @color_scrollbar_track: transparent;
-@color_scrollbar_thumb: @color_light;
+@color_scrollbar_thumb: @color_phousys;
 /*#region BUTTON VARIABLES*/
 @color_button_border_light: rgba(255,255,255,0.1);
 @color_button_border: fade(@color_default, 0);
@@ -103,7 +105,7 @@
 @color_contextmenu_hover_fore: @color_suggest_focus_fore; 
 // tab
 @color_tab_back: @color_button_back;
-@color_tab_highlight: @color_light;
+@color_tab_highlight: @color_phousys;
 @border_tab: 1px;
 // marquee
 @color_marquee_back: #000;
@@ -123,6 +125,6 @@
 @color_field_back: fade(@color_background_alt, 10);
 @color_field_label: @color_primary;
 @border_field_size: 2px;
-@color_input_toggle: @color_light;
-@color_input_icon: @color_light;
+@color_input_toggle: @color_phousys;
+@color_input_icon: @color_phousys;
 /*#endregion*/

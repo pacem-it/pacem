@@ -177,17 +177,21 @@ namespace Pacem.Components.Scaffolding {
          */
         private _dispatchDownload(evt: Event) {
             avoidHandler(evt);
-            const value: string | FileValue = /* download the file being currently precessed, if available */ this._localValue || this.value;
+            const value: string | FileValue = /* download the file being currently precessed, if available */ this._localValue || this.value,
+                dispatch = (name: string) => {
+                    this.dispatchEvent(new CustomEvent('download', { detail: name, bubbles: true, cancelable: false }));
+                };
             if (!Utils.isNullOrEmpty(value)) {
                 if (typeof value === 'string') {
                     // dispatch outside if url is provided
-                    this.dispatchEvent(new CustomEvent('download', { detail: value, bubbles: true, cancelable: false }));
+                    dispatch(value);
                 } else {
-                    // just download (but dispatch for confirmation)
-                    var ev = new CustomEvent('download', { detail: value.name, bubbles: true, cancelable: true });
-                    this.dispatchEvent(ev);
-                    if (!ev.defaultPrevented) {
+                    if (!Utils.isNullOrEmpty(value.content)) {
+                        // download right-away the content when provided
                         Utils.download(Utils.dataURLToBlob('data:application/download;base64,' + value.content), value.name, value.type);
+                    } else {
+                        // dispatch outside if content is empty
+                        dispatch(value.name);
                     }
                 }
             }

@@ -93,19 +93,19 @@ namespace Pacem.Components.Fx {
             Utils.removeClass(tget, HERO_CSS);
         }
 
-        reset(callback?: () => void) {
+        reset() {
             // 
             if (Utils.isNull(this._originalState) || Utils.isNull(this._targetState)) {
                 return;
             }
             this.dispatchEvent(new Event(HEROING_OUT));
-            this._animate(this._targetState, this._originalState, () => {
+            return this._animate(this._targetState, this._originalState).then(() => {
                 this._resetTarget();
                 this.dispatchEvent(new Event(HERO_OUT));
             });
         }
 
-        start(callback?: () => void) {
+        start() {
 
             if (!this.disabled && !Utils.isNull(this.target)) {
                 let goal: Pacem.Rect;
@@ -132,13 +132,16 @@ namespace Pacem.Components.Fx {
                 // 
                 Utils.addClass(tget, HERO_CSS);
                 this.dispatchEvent(new Event(HEROING_IN));
-                this._animate(start, state, () => {
+                return this._animate(start, state).then(() => {
                     this.dispatchEvent(new Event(HERO_IN));
                 });
             }
+
+            // nothing to do
+            return Promise.resolve();
         }
 
-        private _animate(from: Rect, to: Rect, callback: () => void) {
+        private _animate(from: Rect, to: Rect) {
             const tget = this.target,
                 style = tget.style;
 
@@ -164,7 +167,8 @@ namespace Pacem.Components.Fx {
                 style.transform = `translate(0, 0) scale(1)`;
             });
 
-            Utils.addAnimationEndCallback(tget, callback, TRANSITION + 10);
+            return Utils.waitForAnimationEnd(tget, TRANSITION + 10);
+            // Utils.addAnimationEndCallback(tget, callback, TRANSITION + 10);
         }
 
     }

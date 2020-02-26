@@ -68,6 +68,50 @@ Same results can be achieved in a more declarative way by wrapping a list of `&l
 </pacemjs-snippet>
 
 
+<pacem-markdown value="{{ #content3.textContent }}" root class="md-tech"></pacem-markdown>
+
+<pre pacem hidden id="content3">
+
+## Switcher
+The `PacemCheckboxElement` gets the aspect of a switcher just by applying the `checkbox-switch` css class.  
+**Custom coloring** can be obtained via CSS classes as well.
+</pre>
+
+<pacemjs-snippet>
+    <template>
+
+        <pacem-checkbox id="choice3" css-class="{{ ['checkbox-'+ #selector3.value, 'checkbox-'+ #selector4.value ] }}"
+                        caption="{{ $this.value ? 'I\'m happy today' : 'I\'m grumpy today' }}" value="{{ true }}" true-value="true" false-value="false"></pacem-checkbox>
+
+        <div class="pacem-margin margin-top-3 pacem-fieldset">
+            <div class="fieldset-left">
+                <div class="pacem-fieldgroup">
+                    <pacem-select empty-option="false" id="selector3" value="switch">
+                        <pacem-data-item value="dummy" label="Default"></pacem-data-item>
+                        <pacem-data-item value="switch" label="Switcher"></pacem-data-item>
+                        <pacem-data-item value="naked" label="Minimal"></pacem-data-item>
+                    </pacem-select>
+                    <div class="fieldgroup-prepend"></div>
+                </div>
+                <div class="pacem-fieldgroup">
+                    <pacem-select empty-option="false" id="selector4" value="primary">
+                        <pacem-data-item value="primary" label="Primary"></pacem-data-item>
+                        <pacem-data-item value="accent" label="Accent"></pacem-data-item>
+                        <pacem-data-item value="success" label="Success"></pacem-data-item>
+                        <pacem-data-item value="warning" label="Warning"></pacem-data-item>
+                        <pacem-data-item value="danger" label="Danger"></pacem-data-item>
+                        <pacem-data-item value="error" label="Error"></pacem-data-item>
+                        <pacem-data-item value="default" label="Reset"></pacem-data-item>
+                    </pacem-select>
+                    <div class="fieldgroup-append"></div>
+                </div>
+            </div>
+        </div>
+
+    </template>
+</pacemjs-snippet>
+
+
 <pacem-checkbox id="proto" hidden></pacem-checkbox>
 <pacemjs-descriptor target="#proto"></pacemjs-descriptor>
 

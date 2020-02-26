@@ -1,0 +1,66 @@
+﻿
+
+<pacem-markdown value="{{ #content0.textContent }}" root class="md-tech"></pacem-markdown>
+
+<pre pacem hidden id="content0">
+## Keyboard Shortcuts
+`PacemShortcutElement` binds key combinations to action executions.
+
+Here an example for the utilization:  
+
+```html
+&lt;pacem-shortcut combination="Ctrl+Shift+L" on-execute="console.log('FOO!')">&lt;/pacem-shortcut>
+```
+
+The possible applicable modifier are:
+
+- **`Ctrl`** for the `Control` key;
+- **`Alt`** or **`Option`**;
+- **`Win`** or **`Cmd`** for the `Meta` key;
+- **`Shift`**;
+
+**`Esc`** is also assumed for the `Escape` key and **`Back`** is assumed for the `Backspace` key.
+
+> The provided key `combination` is **case-insensitive**.
+
+</pre>
+
+<pacemjs-snippet>
+    <template id="demo0">
+
+        <!-- data models for shortcut combos -->
+        <pacem-data id="shortcuts0" model="{{ ['Ctrl+Shift+L', 'Ctrl+O', 'Ctrl+Back', 'Ctrl++', 'Ctrl+Q,D'] }}"></pacem-data>
+
+        <!-- shortcuts here -->
+        <pacem-repeater datasource="{{ #shortcuts0.model }}">
+            <template>
+                <pacem-shortcut combination="{{ ^item }}" on-execute="#state0.model = $this.combination; #toast0.popup()"></pacem-shortcut>
+            </template>
+        </pacem-repeater>
+
+        <!-- text -->
+        <p>Configured <b>Combos</b>:</p>
+        <pacem-repeater datasource="{{ #shortcuts0.model }}">
+            <ul>
+                <template>
+                    <li><code>{<pacem-text text="{{ ^item }}"></pacem-text>}</code></li>
+                </template>
+            </ul>
+        </pacem-repeater>
+        <p>(each one will pop a <b>toast</b>...)</p>
+
+        <pacem-data id="state0"></pacem-data>
+
+        <!-- toasts -->
+        <pacem-shell-proxy>
+            <div class="pacem-toaster toaster-bottom">
+                <pacem-toast id="toast0" class="toast-accent">
+                    <pacem-span content="{{ 'You typed <b>'+ #state0.model +'</b>' }}"></pacem-span>
+                </pacem-toast>
+            </div>
+        </pacem-shell-proxy>
+    </template>
+</pacemjs-snippet>
+
+<pacem-shortcut id="proto"></pacem-shortcut>
+<pacemjs-descriptor target="#proto"></pacemjs-descriptor>

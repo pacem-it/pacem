@@ -1,0 +1,151 @@
+﻿@import "theme-dark";
+
+/* #region text overrides */
+.text-default {
+    color: @color_default !important;
+}
+
+.text-invert {
+    color: @color_background !important;
+}
+
+.text-danger {
+    color: @color_danger !important;
+}
+
+.text-accent {
+    color: @color_accent !important;
+}
+
+.text-primary {
+    color: @color_primary !important;
+}
+
+.text-success {
+    color: @color_success !important;
+}
+
+.text-warning {
+    color: @color_warning !important;
+}
+
+.text-disabled {
+    color: @color_watermark !important;
+}
+
+.text-strike {
+    text-decoration: line-through !important;
+}
+
+
+.text-small {
+    font-size: .9em !important;
+}
+
+.text-small-steady {
+    .FontMainSize(12/14) !important;
+}
+
+.text-big {
+    font-size: 1.5em !important;
+}
+
+.text-big-steady {
+    .FontMainSize(18/14) !important;
+}
+
+.text-smaller {
+    font-size: 0.86667em !important;
+}
+
+.text-smaller-steady {
+    .FontMainSize(10/14) !important;
+}
+
+.text-tiny {
+    font-size: 0.75em !important;
+}
+
+.text-tiny-steady {
+    .FontMainSize(8/14) !important;
+}
+
+.text-bigger {
+    font-size: 2em !important; 
+}
+
+.text-bigger-steady {
+    .FontMainSize(24/14) !important;
+}
+
+.text-left {
+    text-align: left !important;
+}
+
+.text-right {
+    text-align: right !important;
+}
+
+.text-center {
+    text-align: center !important;
+}
+
+.text-justify {
+    text-align: justify !important;
+}
+
+.text-nowrap {
+    white-space: nowrap !important;
+}
+
+.text-pre {
+    white-space: pre !important;
+}
+
+.text-truncate, // < bootstrap compat
+.text-ellipsed {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.text-upper {
+    text-transform: uppercase !important;
+}
+
+.text-lower {
+    text-transform: lowercase !important;
+}
+
+.text-capital {
+    text-transform: capitalize !important;
+}
+
+.text-bold {
+    font-weight: 700 !important;
+}
+
+.text-tech {
+    font-family: @font_tech !important;
+}
+
+.text-std {
+    font-family: @font_std !important;
+}
+
+.text-main {
+    font-family: @font_main !important;
+}
+
+.text-normal {
+    text-transform: none !important;
+    font-style: normal !important;
+    font-weight: normal !important;
+}
+
+.text-reset {
+    .text-normal();
+    .text-std();
+    .FontStdSize(1);
+}
+/* #endregion */
