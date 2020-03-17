@@ -202,10 +202,10 @@
         </h1>
         <pacem-view id="view" url="{{ '/demo/'+ #router.state.package + '/'+ #router.state.view +'.html?v=@(version)' }}" class="pacem-animatable"></pacem-view>
 
-        <div class="toc hide-v hide-md">
+        <pacem-panel class="toc hide-v hide-md" hide="{{ !#toc.hasContent }}">
             <h3>TOC <i class="pacem-icon">keyboard_arrow_down</i></h3>
             <pacem-toc id="toc" selector="h2" target="{{ #view }}" offset="108"></pacem-toc>
-        </div>
+        </pacem-panel>
 
         <footer class="footer-border" pacem>
             <span>Copyright @(DateTime.UtcNow.Year) - <a href="https://pacem.it" target="_blank">Pacem</a> 

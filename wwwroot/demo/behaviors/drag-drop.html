@@ -162,6 +162,7 @@ By setting the drag data **mode** to `Pacem.UI.DragDataMode.Copy` the drag sourc
                          on-draginit="$event.detail.placeholder = #spawn2.cloneNode(true); $event.detail.placeholder.textContent = 'cloned at ' + $pacem.date(Date.now(), { hour: 'numeric', minute: 'numeric', second: 'numeric' })"
                          on-drop="$event.detail.placeholder.removeAttribute('behaviors')"
                          drop-targets="{{[ #columnD ]}}"
+                         spill-behavior="{{ Pacem.UI.DropTargetMissedBehavior.Remove }}"
                          drop-behavior="{{Pacem.UI.DropBehavior.InsertChild}}"></pacem-drag-drop>
 
         <div style="        overflow: hidden">
@@ -252,7 +253,7 @@ All these events have type `Pacem.UI.PacemDragDropEvent`, whose properties are:
 - `type`: see list above.
 - `element`: the physically or virtually dragged element.
 - `placeholder`: the placeholder element showed in the current drop zone.
-- `floater`: the physically dragged element.
+- `floater`: the physically dragged element. Add `drag-floater-resize` css-class to force its size to match the original element.
 - `data`: the dragged data. May be the repeater item or the element dataset.
 - `currentPosition`: the current cursor position.
 </pre>

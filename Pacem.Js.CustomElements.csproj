@@ -28,15 +28,19 @@
 
   <ItemGroup>
     <None Remove="demo\components\snippet.ts" />
+    <None Remove="demo\components\transformers.ts" />
     <None Remove="demo\less\docs.less" />
     <None Remove="demo\less\docs_descriptor.less" />
     <None Remove="demo\less\docs_snippet.less" />
     <None Remove="demo\less\docs_splash.less" />
     <None Remove="demo\less\docs_themeroller.less" />
+    <None Remove="demo\webworkers\echo.ts" />
     <None Remove="index.d.ts" />
     <None Remove="src\components\2d\adapters\canvasadapter.ts" />
     <None Remove="src\components\2d\adapters\svgadapter.ts" />
     <None Remove="src\components\2d\circle.ts" />
+    <None Remove="src\components\2d\group.ts" />
+    <None Remove="src\components\2d\path.ts" />
     <None Remove="src\components\2d\rect.ts" />
     <None Remove="src\components\basic\element-proxies.ts" />
     <None Remove="src\components\basic\html-proxy.ts" />
@@ -48,6 +52,7 @@
     <None Remove="src\components\basic\template-proxy.ts" />
     <None Remove="src\components\2d\stage.ts" />
     <None Remove="src\components\2d\types.ts" />
+    <None Remove="src\components\basic\webworker-proxy.ts" />
     <None Remove="src\components\charts\types.ts" />
     <None Remove="src\components\cms\openapi\swagger-cms.ts" />
     <None Remove="src\components\cms\widgets\helpers\apimanifest.ts" />
@@ -89,6 +94,7 @@
     <None Remove="demo\customelement-descriptor.ts" />
     <None Remove="demo\themeroller.ts" />
     <None Remove="src\core\maths\math.ts" />
+    <None Remove="src\core\maths\matrix2d.ts" />
     <None Remove="src\core\net\fetcher.ts" />
     <None Remove="src\core\prefix.ts" />
     <None Remove="src\core\shortcut.ts" />
@@ -265,11 +271,17 @@
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="demo\components\snippet.ts" />
+    <TypeScriptCompile Include="demo\components\transformers.ts" />
+    <TypeScriptCompile Include="demo\webworkers\echo.ts" />
     <TypeScriptCompile Include="index.d.ts" />
     <TypeScriptCompile Include="src\components\2d\adapters\canvasadapter.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\components\2d\adapters\svgadapter.ts" />
+    <TypeScriptCompile Include="src\components\2d\group.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\components\2d\path.ts" />
     <TypeScriptCompile Include="src\components\2d\rect.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
@@ -308,6 +320,7 @@
     <TypeScriptCompile Include="src\components\basic\tweener.ts" />
     <TypeScriptCompile Include="src\components\basic\types.ts" />
     <TypeScriptCompile Include="src\components\basic\viewport-aware.ts" />
+    <TypeScriptCompile Include="src\components\basic\webworker-proxy.ts" />
     <TypeScriptCompile Include="src\components\behaviors\behavior.ts" />
     <TypeScriptCompile Include="src\components\behaviors\drag-drop.ts" />
     <TypeScriptCompile Include="src\components\behaviors\swipe.ts" />
@@ -437,6 +450,7 @@
     <TypeScriptCompile Include="src\core\maths\gaussian.ts" />
     <TypeScriptCompile Include="src\core\maths\geom.ts" />
     <TypeScriptCompile Include="src\core\maths\colors.ts" />
+    <TypeScriptCompile Include="src\core\maths\matrix2d.ts" />
     <TypeScriptCompile Include="src\core\net\fetcher.ts" />
     <TypeScriptCompile Include="src\core\net\http.ts" />
     <TypeScriptCompile Include="src\core\logger.ts" />

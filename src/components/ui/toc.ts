@@ -18,6 +18,9 @@ namespace Pacem.Components.UI {
         @Watch({ emit: false, converter: PropertyConverters.Number }) offset: number;
         @Watch({ emit: false, converter: PropertyConverters.Element }) target: HTMLElement;
 
+        /** @readonly */
+        @Watch({ converter: PropertyConverters.Boolean }) hasContent: boolean;
+
         @ViewChild(P + '-repeater') private _repeater: PacemRepeaterElement;
 
         propertyChangedCallback(name: string, old: any, val: any, first?: boolean) {
@@ -133,6 +136,7 @@ namespace Pacem.Components.UI {
             const selector = this.selector;
             if (Utils.isNullOrEmpty(selector)) {
                 this._repeater && (this._repeater.datasource = []);
+                this.hasContent = false;
                 return;
             }
             const items = (this.target || document).querySelectorAll(selector),
@@ -147,6 +151,7 @@ namespace Pacem.Components.UI {
             // bootstrap TOC
             this._items = elements;
             this._update(Utils.scrollTop);
+            this.hasContent = !Utils.isNullOrEmpty(elements);
 
             // initial state
             let initialTarget = window.location.hash;

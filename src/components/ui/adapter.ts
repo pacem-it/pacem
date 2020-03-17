@@ -187,6 +187,7 @@ namespace Pacem.Components.UI {
         @Watch({ emit: false, reflectBack: true, converter: PropertyConverters.Boolean }) swipeEnabled: boolean = true;
         /** Gets or sets whether, by selecting twice an item, you will de-select it and obtain an overall unselected state. */
         @Watch({ emit: false, reflectBack: true, converter: PropertyConverters.Boolean }) deselectable: boolean;
+        @Watch({ emit: false, reflectBack: true, converter: PropertyConverters.Boolean }) loop: boolean = true;
 
         @Watch({ emit: false }) labelCallback: (item: any, index: number) => string = (item, index) => (index + 1).toString();
 
@@ -227,6 +228,7 @@ namespace Pacem.Components.UI {
                 return;
             var val = this.master.items;
             this._prevBtn.hide = this._nextBtn.hide = this._panel.hide = !(val && val.length > 1);
+            this._panel.hide = Utils.isNullOrEmpty(val);
             this._repeater.datasource = val;
             this._index = this.master.index;
             if (!Utils.isNullOrEmpty(val)) {
@@ -260,7 +262,7 @@ namespace Pacem.Components.UI {
             if (evt.type !== Pacem.UI.SwipeEventType.SwipeLeft)
                 Pacem.avoidHandler(evt);
             this._resetTimer(this.interval);
-            super.next();
+            super.next(this.loop);
         }
 
         @Throttle(333)
@@ -268,7 +270,7 @@ namespace Pacem.Components.UI {
             if (evt.type !== Pacem.UI.SwipeEventType.SwipeRight)
                 Pacem.avoidHandler(evt);
             this._resetTimer(this.interval);
-            super.previous();
+            super.previous(this.loop);
         }
 
         private _select(ndx: number, evt: Event) {

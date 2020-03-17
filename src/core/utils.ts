@@ -307,7 +307,7 @@ namespace Pacem {
         }
 
         /**
-         * Crops the snapshot of a drawable element onto a provided canvas context. It gets centered in the area anc cropped (`cover`-like behavior).
+         * Crops the snapshot of a drawable element onto a provided canvas context. It gets centered in the area and cropped (`cover`-like behavior).
          * @param el drawable element
          * @param ctx canvas context
          * @param sourceWidth forced source width
@@ -548,7 +548,7 @@ namespace Pacem {
             };
         }
 
-        static deserializeTransform(style: CSSStyleDeclaration): { a: number, b: number, c: number, d: number, x: number, y: number } {
+        static deserializeTransform(style: CSSStyleDeclaration): Matrix2D {
             var a = 1, b = 0, c = 0, d = 1, x = 0, y = 0, matches = /^matrix\((.*)\)$/.exec(style.transform),
                 mij: string[];
             //matrix(1, 0, 0, 1, 2, 4) 
@@ -562,7 +562,7 @@ namespace Pacem {
                 x += parseFloat(mij[4]);
                 y += parseFloat(mij[5]);
             }
-            return { a: a, b: b, c: c, d: d, x: x, y: y };
+            return { a: a, b: b, c: c, d: d, e: x, f: y };
         }
 
         static get scrollTop() {

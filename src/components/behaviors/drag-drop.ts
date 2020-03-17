@@ -15,7 +15,8 @@ namespace Pacem.Components {
     type DragElementDelegateInitParams = {
         element: DraggableElement,
         dragDrop: UI.DragDropper,
-        placeholder?: DraggableElement
+        placeholder?: DraggableElement,
+        data?: any
     }
 
     /**
@@ -46,7 +47,7 @@ namespace Pacem.Components {
                 this._sourceRepeater = repItem.repeater;
             }
             //
-            this._bootstrap(initArgs.placeholder);
+            this._bootstrap(initArgs.placeholder, initArgs.data);
         }
 
         private _dragDropper: UI.DragDropper;
@@ -81,12 +82,12 @@ namespace Pacem.Components {
                 CustomElementUtils.stripObservedAttributes(floater);
                 if (floater instanceof HTMLElement || floater instanceof SVGElement) {
                     Utils.addClass(floater, PCSS + '-drag-floater');
-                    document.body.appendChild(floater);
+                    CustomElementUtils.findAncestorShell(this._element).appendChild(floater);
                     floater.style.position = 'absolute';
                     let pos = { left: origin.x + floater.clientWidth / 2, top: origin.y - floater.clientHeight / 2 };
 
                     // if cloned the original element then preserve dimensions
-                    if (src === this._element) {
+                    if (src === this._element || src.classList.contains('drag-floater-resize')) {
                         let size = Utils.offset(this._element);
                         floater.style.boxSizing = 'border-box';
                         floater.style.width = size.width + 'px';
@@ -199,7 +200,7 @@ namespace Pacem.Components {
             this._currentTarget = null;
         };
 
-        private _bootstrap(placeholder) {
+        private _bootstrap(placeholder, dataObj) {
             var el = this._element,
                 dragger = this._dragDropper,
                 origin: Point,
@@ -215,8 +216,8 @@ namespace Pacem.Components {
                     initialDelta = { x: 0, y: 0 },
                     css = Utils.deserializeTransform(style);
                 //
-                initialDelta.x += css.x;
-                initialDelta.y += css.y;
+                initialDelta.x += css.e;
+                initialDelta.y += css.f;
 
                 // === floater (first)
                 let floater = this._createFloater(dragger.floater || el, origin);
@@ -244,7 +245,7 @@ namespace Pacem.Components {
                     CustomElementUtils.freezeObservedAttributes(placeholder);
                 }
 
-                const data = this._getLogicalData(this._repeaterItem || el);
+                const data = dataObj || this._getLogicalData(this._repeaterItem || el);
 
                 // setup args
                 args = {
@@ -261,6 +262,7 @@ namespace Pacem.Components {
             }
         }
 
+        private _revertTrackedTarget: Element = null;
         private _moveHandler = (evt: MouseEvent | TouchEvent | WheelEvent) => {
             if (evt.type !== 'wheel') {
                 avoidHandler(evt);
@@ -315,17 +317,17 @@ namespace Pacem.Components {
                 // what am I over?
                 var hover = this._currentTarget;
                 if (!isMouseFlag && dragger.dropTargets.length > 0) {
-                    const doc: any = document; // Workaround. Waiting for TS 2.8.2 bugfix: https://github.com/Microsoft/TypeScript/issues/22943
-                    hover = (<DocumentOrShadowRoot>doc)
+                    hover = document
                         .elementsFromPoint(args.currentPosition.x - Utils.scrollLeft, args.currentPosition.y - Utils.scrollTop)
                         .find(e => dragger.dropTargets.indexOf(e) >= 0);
                 }
                 // changed hover element since last time?
-                if (hover !== args.target) {
-                    if (!Utils.isNull(args.target)) {
-                        Utils.removeClass(<HTMLElement | SVGElement>args.target, PCSS + '-dropping');
+                var oldTarget = args.target;
+                if (hover !== oldTarget) {
+                    if (!Utils.isNull(oldTarget)) {
+                        Utils.removeClass(<HTMLElement | SVGElement>oldTarget, PCSS + '-dropping');
                         dragger.dispatchEvent(new UI.DragDropEvent(UI.DragDropEventType.Out, UI.DragDropEventArgsClass.fromArgs(args)));
-                        this._logFn(Logging.LogLevel.Info, `Drop area left (${(args.target['id'] || args.target.constructor.name)})`);
+                        this._logFn(Logging.LogLevel.Info, `Drop area left (${(oldTarget['id'] || oldTarget.constructor.name)})`);
                     }
                     if (dragger.dropTargets.indexOf(hover) != -1) {
                         args.target = hover;
@@ -338,9 +340,12 @@ namespace Pacem.Components {
                             Utils.addClass(<HTMLElement | SVGElement>args.target, PCSS + '-dropping');
                             this._logFn(Logging.LogLevel.Info, `Drop area entered (${(args.target['id'] || args.target.constructor.name)})`);
                         }
-                    } else
+                    } else {
                         delete args.target;
+                    }
                 }
+                this._revertTrackedTarget = args.target || oldTarget;
+
                 // positioning
                 if (!Utils.isNull(args.target) && dragger.dropBehavior === UI.DropBehavior.InsertChild) {
                     this._insertChild(hover, args);
@@ -386,9 +391,8 @@ namespace Pacem.Components {
                     }
 
                     // === drop
-
-                    // TODO: add animation to fit the target and to fit back when reverting...
-                    if (!Utils.isNull(args.target)) {
+                    const dropping = !Utils.isNull(args.target);
+                    if (dropping) {
                         dragger.dispatchEvent(new UI.DragDropEvent(UI.DragDropEventType.Drop, UI.DragDropEventArgsClass.fromArgs(args)));
                         Utils.removeClass(<HTMLElement>args.target, PCSS + '-dropping');
                     }
@@ -410,17 +414,12 @@ namespace Pacem.Components {
                     // refresh origin datasource and, eventually, target datasource
 
                     if (isDraggingRepeaterItem) {
-                        // if (!Utils.isNull(sourceRepeater)) {
                         sourceRepeater.removeItem(repItem.index);
                     }
 
                     if (isDroppingRepeaterItem) {
-                        // if (!Utils.isNull(targetRepeater)) {
                         args.placeholder.remove();
-                        //}
 
-                        //if (isDroppingRepeaterItem) {
-                        // if (!Utils.isNull(sourceRepeater)
                         if (targetRepeater === sourceRepeater) {
                             let from = repItem.index, to = targetRepItem.index;
                             if (to > from) {
@@ -434,7 +433,19 @@ namespace Pacem.Components {
                         }
                     }
 
-                    // TODO: check spill behavior
+                    // Check spill behavior
+                    if (!dropping
+                        && !Utils.isNullOrEmpty(dragger.dropTargets)
+                        && dragger.spillBehavior === UI.DropTargetMissedBehavior.Remove
+                        // if mode is 'copy' then don't remove the source
+                        && dragger.mode !== UI.DragDataMode.Copy) {
+
+                        if (isDraggingRepeaterItem) {
+                            sourceRepeater.datasource.splice(repItem.index, 1)
+                        } else {
+                            el.remove();
+                        }
+                    }
                     // === end
 
                     dragger.dispatchEvent(new UI.DragDropEvent(UI.DragDropEventType.End, UI.DragDropEventArgsClass.fromArgs(args)));
@@ -448,25 +459,28 @@ namespace Pacem.Components {
                 if (args.floater != drag) {
 
                     let floater = <HTMLElement>args.floater;
-                    const m = Utils.deserializeTransform(getComputedStyle(floater));
+                    var m = Utils.deserializeTransform(getComputedStyle(floater));
 
-                    // dropping?
-                    if (!Utils.isNull(args.target)) {
+                    // dropping or reverting?
+                    if (!Utils.isNull(args.target)
+                        || dragger.spillBehavior === UI.DropTargetMissedBehavior.Revert
+                        || (dragger.dropBehavior === UI.DropBehavior.InsertChild && dragger.spillBehavior !== UI.DropTargetMissedBehavior.Remove)) {
 
                         // overlap to placeholder
                         const tgetPos = Utils.offset(drag),
                             srcPos = Utils.offset(floater);
                         floater.style.transition = 'transform .2s ease-in-out';
-                        m.x += (tgetPos.left - srcPos.left);
-                        m.y += (tgetPos.top - srcPos.top);
+                        m = Matrix2D.translate(m, { x: tgetPos.left - srcPos.left, y: tgetPos.top - srcPos.top });
 
                     } else {
 
+                        floater.style.transition = 'transform .2s ease-in, opacity .2s linear';
                         // scale down to 0
-                        m.a = m.d = 0;
+                        m = Matrix2D.scale(m, 0.1);
+                        floater.style.opacity = '0';
                     }
                     Utils.addAnimationEndCallback(floater, fnDispose, 300);
-                    floater.style.transform = `matrix(${m.a},${m.b},${m.c},${m.d},${m.x},${m.y}`;
+                    floater.style.transform = `matrix(${m.a},${m.b},${m.c},${m.d},${m.e},${m.f})`;
 
                 } else {
                     fnDispose();
@@ -546,7 +560,7 @@ namespace Pacem.Components {
                 el.removeEventListener('touchend', unlockFn, false);
                 SET_VAL(el, MOUSE_DOWN, origin);
                 SET_VAL(el, DELEGATE, new DragElementDelegate({
-                    element: element, dragDrop: this, placeholder: args.placeholder
+                    element: element, dragDrop: this, placeholder: args.placeholder, data: args.data,
                 }, (level, message, category) => this.log.apply(this, [level, message, category])));
             };
             const unlockFn = (evt?: Event) => {
@@ -595,8 +609,10 @@ namespace Pacem.Components {
         @Watch({ emit: false, converter: PropertyConverters.String }) mode: Pacem.UI.DragDataMode = Pacem.UI.DragDataMode.Self;
         /** Gets or sets the floating element while dragging around. */
         @Watch({ emit: false, converter: PropertyConverters.Element }) floater: Element;
-        /** Gets or sets the drop mode ("insert", "nonde"). */
+        /** Gets or sets the drop mode ("insert", "none"). */
         @Watch({ emit: false, converter: PropertyConverters.String }) dropBehavior: Pacem.UI.DropBehavior;
+        /** Gets or sets the spill behavior ("revert", "remove", "none") */
+        @Watch({ emit: false, converter: PropertyConverters.String }) spillBehavior: Pacem.UI.DropTargetMissedBehavior;
         /** Gets or sets the handle selector to be matched when starting the drop gesture. */
         @Watch({ emit: false, converter: PropertyConverters.String }) handleSelector: string;
 

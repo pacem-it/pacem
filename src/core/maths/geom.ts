@@ -6,8 +6,25 @@
 
     const RAD2DEG = 180.0 / Math.PI
     const RAD_ROUND = 2 * Math.PI
+    const FLOAT_PATTERN = /[-+]?[\d]+(\.[\d]+)?/g;
 
     export class Geom {
+
+        static parseRect(rect: string): Rect {
+            let reg = rect.match(FLOAT_PATTERN);
+            if (reg && reg.length === 4) {
+                return { x: parseFloat(reg[0]), y: parseFloat(reg[1]), width: parseFloat(reg[2]), height: parseFloat(reg[3]) };
+            }
+            throw new Error(`Cannot parse "${rect}" as a valid Rect.`);
+        }
+
+        static parsePoint(pt: string): Point {
+            let reg = pt.match(FLOAT_PATTERN);
+            if (reg && reg.length === 2) {
+                return { x: parseFloat(reg[0]), y: parseFloat(reg[1]) };
+            }
+            throw new Error(`Cannot parse "${pt}" as a valid Point.`);
+        }
 
         /**
          * Computes the distance between two points.

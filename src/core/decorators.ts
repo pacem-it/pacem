@@ -729,7 +729,7 @@ namespace Pacem {
         }
     }
 
-    export function Debounce(msecs: boolean | number = 50) {
+    export function Debounce(msecs: true | number = 50) {
 
         return function (target: any /* type, actually */, key: string, descriptor?: PropertyDescriptor) {
             const originalMethod = <Function>descriptor.value;
@@ -750,14 +750,14 @@ namespace Pacem {
                     clearTimeout(GET_VAL(_this, handleKey, 0));
                     SET_VAL(_this, handleKey, setTimeout(() => {
                         originalMethod.apply(_this, args);
-                    }, <number>msecs));
+                    }, msecs));
                 }
             }
         }
 
     }
 
-    export function Throttle(msecs: boolean | number = 50) {
+    export function Throttle(msecs: true | number = 50) {
 
         return function (target: any /* type, actually */, key: string, descriptor?: PropertyDescriptor) {
             const originalMethod = <Function>descriptor.value;
@@ -775,7 +775,7 @@ namespace Pacem {
                 if (msecs === true) {
                     requestAnimationFrame(reset);
                 } else if (msecs > 0) {
-                    setTimeout(reset, <number>msecs);
+                    setTimeout(reset, msecs);
                 }
             }
         }

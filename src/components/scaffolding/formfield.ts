@@ -16,8 +16,8 @@ namespace Pacem.Components.Scaffolding {
 css-class="{{ {'${PCSS}-fetching': ::_fetcher.fetching, '${PCSS}-dirty': this.dirty, '${PCSS}-invalid': !this.valid, '${PCSS}-editable': !:host.readonly, '${PCSS}-readonly': :host.readonly, '${PCSS}-pristine': !this.dirty, '${PCSS}-valid': this.valid, '${PCSS}-has-value': !:host._isValueNullOrEmpty(:host.entity, :host.metadata) } }}">
     <label class="${PCSS}-label"></label>
     <div class="${PCSS}-input-container"></div>
-    <${ P}-fetch debounce="50" logger="{{ :host.logger }}" credentials="{{ :host.fetchCredentials }}" headers="{{ :host.fetchHeaders }}" diff-by-values="true"></${P}-fetch>
-    <${ P}-panel class="${PCSS}-validators" hide="{{ ::_form.valid || !::_form.dirty || :host.readonly }}"></${P}-panel>
+    <${P}-fetch debounce="50" logger="{{ :host.logger }}" credentials="{{ :host.fetchCredentials }}" headers="{{ :host.fetchHeaders }}" diff-by-values="true"></${P}-fetch>
+    <${P}-panel class="${PCSS}-validators" hide="{{ ::_form.valid || !::_form.dirty || :host.readonly }}"></${P}-panel>
 </${ P}-form>`
     })
     export class PacemFormFieldElement extends PacemElement implements Pacem.Net.OAuthFetchable {
@@ -566,8 +566,10 @@ css-class="{{ {'${PCSS}-fetching': ::_fetcher.fetching, '${PCSS}-dirty': this.di
                                     attrs['min'] = '0';
                                     attrs['max'] = '255';
                                     break;
+                                case "int16":
                                 case "int32":
                                 case "int64":
+                                case "short":
                                 case "integer":
                                 case "int":
                                 case "long":

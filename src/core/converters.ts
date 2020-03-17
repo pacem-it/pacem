@@ -56,6 +56,16 @@ namespace Pacem {
             convert: (attr: string) => document.querySelector(attr),
             convertBack: (prop: any) => (prop instanceof Element && prop.id) ? ('#' + prop.id) : undefined,
             retryConversionWhenReady: true
+        },
+
+        // geom
+        Point: {
+            convert: (attr: string) => Geom.parsePoint(attr),
+            convertBack: (prop: Point) => `${prop.x || 0} ${prop.y || 0}`
+        },
+        Rect: {
+            convert: (attr: string) => Geom.parseRect(attr),
+            convertBack: (prop: Rect) => `${prop.x || 0} ${prop.y || 0} ${prop.width || 0} ${prop.height || 0}`
         }
     }
 }

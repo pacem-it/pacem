@@ -46,6 +46,11 @@
         "title": "<pacem-hub-proxy>"
       },
       {
+        "label": "WebWorker Proxy",
+        "view": "webworker-proxy",
+        "title": "<pacem-webworker-proxy>"
+      },
+      {
         "label": "Panel",
         "view": "panel",
         "title": "<pacem-panel>"
@@ -267,6 +272,16 @@
         "title": "<pacem-input-number>"
       },
       {
+        "label": "Text",
+        "view": "input-text",
+        "title": "<pacem-input-text>"
+      },
+      {
+        "label": "Multiline Text",
+        "view": "textarea",
+        "title": "<pacem-textarea>"
+      },
+      {
         "label": "Select",
         "view": "select",
         "title": "<pacem-select>"
@@ -328,8 +343,8 @@
     "label": "2D Drawing",
     "items": [
       {
-        "label": "Canvas",
-        "view": "canvas"
+        "label": "Canvas vs SVG",
+        "view": "2d"
       }
     ]
   },

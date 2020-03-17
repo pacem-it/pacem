@@ -107,6 +107,11 @@ namespace Pacem.Components.Scaffolding {
                 this._container.setAttribute('contenteditable', '');
         }
 
+        /** @override */
+        protected get preventKeyboardSubmit() {
+            return true;
+        }
+
         protected get inputFields() {
             return [this._container];
         }
@@ -141,7 +146,7 @@ namespace Pacem.Components.Scaffolding {
             }
         }
 
-        private keydownHandler = (evt) => {
+        private _keydownHandler = (evt) => {
             const execCommand = this._commands,
                 commands = knownCommands;
 
@@ -183,14 +188,14 @@ namespace Pacem.Components.Scaffolding {
             this._repeater.datasource = Pacem.Components.Scaffolding.KNOWN_COMMANDS;
             this._container.addEventListener('blur', this._checkChangedHandler, false);
             this._container.addEventListener('input', this._checkChangedHandler, false);
-            this._container.addEventListener('keydown', this.keydownHandler, false);
+            this._container.addEventListener('keydown', this._keydownHandler, false);
         }
 
         disconnectedCallback() {
             if (!Utils.isNull(this._container)) {
                 this._container.removeEventListener('blur', this._checkChangedHandler, false);
                 this._container.removeEventListener('input', this._checkChangedHandler, false);
-                this._container.removeEventListener('keydown', this.keydownHandler, false);
+                this._container.removeEventListener('keydown', this._keydownHandler, false);
             }
             super.disconnectedCallback();
         }

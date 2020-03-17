@@ -1,0 +1,42 @@
+﻿<pacem-markdown value="{{ #content0.textContent }}" class="md-tech" root></pacem-markdown>
+
+<pre pacem hidden id="content0">
+## Multiline Text Input
+`PacemTextAreaElement` is the suggested webcomponent for **multiline text** editing. 
+
+> Differently from most input fields, it does not trigger form submit when `Enter` keyboard button is pressed.
+</pre>
+
+
+<pacemjs-snippet>
+    <template>
+
+        <pre pacem hidden id="metajson0">
+{
+        "display": { "cssClass": ["pacem-grid", "grid-nospace", "grid-no-rowgap"], "name": "Feedback" },
+        "props": [
+            {
+                "prop": "comment", "dataType": "multilinetext", "type": "string",
+                "display": { "cssClass": ["pacem-cell", "field-outline"], "name": "You Comment", "watermark": "feedback..." },
+                "validators": [
+                    { "type": "required", "errorMessage": "required field" }
+                ]
+            }
+        ]
+    }
+</pre>
+
+        <pacem-form action="/foo" resettable="false" sudden-validation="false" on-submit="$event.preventDefault(); #toast0.show = true" metadata="{{ JSON.parse(#metajson0.textContent) }}" entity="{}" autogenerate="true"></pacem-form>
+
+        <pacem-shell-proxy>
+            <div class="pacem-toaster toaster-bottom toaster-right">
+                <pacem-toast id="toast0" class="toast-primary">Form submitted!</pacem-toast>
+            </div>
+        </pacem-shell-proxy>
+    </template>
+</pacemjs-snippet>
+
+
+
+<pacem-textarea id="proto" hidden></pacem-textarea>
+<pacemjs-descriptor target="#proto"></pacemjs-descriptor>

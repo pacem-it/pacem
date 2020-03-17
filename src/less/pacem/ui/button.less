@@ -35,7 +35,6 @@
         }
         // minimal size, depends on content
         &.size-auto {
-
             min-width: 0;
             padding: 0 0 0 @grid_spacing/3;
             height: @grid_spacing;
@@ -273,8 +272,8 @@ a.@{PCSS}-button,
 
     &.circular,
     &.button-circular,
-    &.button-circle {
-        border-radius: 50%;
+    &.button-circle,
+    &.button-square {
         width: 2 *@grid_spacing;
         height: $width;
         font-size: 0;
@@ -287,6 +286,7 @@ a.@{PCSS}-button,
             margin-left: -@grid_spacing/2;
         }
 
+        &.square-small,
         &.circle-small {
             width: 1.5 *@grid_spacing;
             height: $width;
@@ -298,6 +298,7 @@ a.@{PCSS}-button,
             }
         }
 
+        &.square-smaller,
         &.circle-smaller {
             width: @grid_spacing;
             height: $width;
@@ -308,6 +309,10 @@ a.@{PCSS}-button,
                 margin-left: $margin-top;
             }
         }
+    }
+
+    &.circular, &.button-circular, &.button-circle {
+        border-radius: 50%;
     }
 }
 

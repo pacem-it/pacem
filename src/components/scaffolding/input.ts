@@ -25,6 +25,7 @@ namespace Pacem.Components.Scaffolding {
                 convertBack: (prop: any) => prop.toString()
             } }) debounce: number | boolean = false;
         @Watch({ emit: false, converter: PropertyConverters.String }) changePolicy: ChangePolicy = ChangePolicy.Input;
+        @Watch({ emit: false, converter: PropertyConverters.Boolean }) autoselect: boolean;
 
         propertyChangedCallback(name: string, old: any, val: any, first?: boolean) {
             super.propertyChangedCallback(name, old, val, first);
@@ -32,6 +33,12 @@ namespace Pacem.Components.Scaffolding {
                 case 'placeholder':
                     this.inputField && this.inputField.setAttribute(name, val);
                     break;
+            }
+        }
+
+        private _focusHandler = (evt: FocusEvent) => {
+            if (this.autoselect && !Utils.isNull(this.inputField)) {
+                this.inputField.select();
             }
         }
 
@@ -81,11 +88,13 @@ namespace Pacem.Components.Scaffolding {
             field.size = 1;
             field.autocomplete = 'off';
             field.addEventListener('input', this.changeHandler, false);
+            field.addEventListener('focus', this._focusHandler, false);
         }
 
         disconnectedCallback() {
             let field = this.inputField;
             if (!Utils.isNull(field)) {
+                field.removeEventListener('focus', this._focusHandler, false);
                 field.removeEventListener('input', this.changeHandler, false);
             }
             super.disconnectedCallback();

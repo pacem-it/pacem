@@ -7,3 +7,5 @@
 /// <reference path="dist/js/pacem-plus.d.ts" />
 /// <reference path="dist/js/pacem-charts.d.ts" />
 /// <reference path="dist/js/pacem-fx.d.ts" />
+/// <reference path="dist/js/pacem-cms.d.ts" />
+/// <reference path="dist/js/pacem-2d.d.ts" />

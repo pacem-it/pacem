@@ -231,6 +231,10 @@ namespace Pacem.Components.Scaffolding {
 
         protected abstract toggleReadonlyView(readonly: boolean): void;
 
+        protected get preventKeyboardSubmit(): boolean {
+            return false;
+        }
+
         /**
          * When implemented in a derived class, must handle the `UI -> value` change logic and returns the value that has been set.
          * @param evt {Event} Original event triggered by the user
@@ -283,6 +287,7 @@ namespace Pacem.Components.Scaffolding {
             }
         }
 
+        private _preFocusValue: any;
         protected focusHandler = (evt: FocusEvent) => {
 
             const focusFieldgroup = (add = true) => {
@@ -298,6 +303,7 @@ namespace Pacem.Components.Scaffolding {
                 case 'focus':
                     Utils.addClass(this, PCSS + '-focus');
                     focusFieldgroup();
+                    this._preFocusValue = this.value;
                     break;
                 case 'blur':
                     Utils.removeClass(this, PCSS + '-focus');
@@ -320,6 +326,36 @@ namespace Pacem.Components.Scaffolding {
             }, _ => {
                 // do nothing
             });
+        }
+
+        protected keydownHandler = (evt: KeyboardEvent) => {
+            stopPropagationHandler(evt);
+        }
+
+        protected keyupHandler = (evt: KeyboardEvent) => {
+            switch (evt.keyCode) {
+                case /* Esc */27:
+
+                    stopPropagationHandler(evt);
+
+                    // choose between reset and set
+                    if (this.compareValuePropertyValues(this.originalValue, this._preFocusValue)) {
+                        this.reset();
+                    } else {
+                        this.value = this._preFocusValue;
+                    }
+                    this.blur();
+
+                    break;
+
+                case /* Enter */13:
+                    if (this.preventKeyboardSubmit) {
+
+                        stopPropagationHandler(evt);
+
+                    }
+                    break;
+            }
         }
 
         viewActivatedCallback() {
@@ -346,7 +382,8 @@ namespace Pacem.Components.Scaffolding {
                 inputField.addEventListener('blur', this.focusHandler, false);
                 inputField.addEventListener('change', this.changeHandler, false);
                 // avoid interference with other handlers (e.g. cref UI.PacemAdapterElement)
-                inputField.addEventListener('keydown', Pacem.stopPropagationHandler, false);
+                inputField.addEventListener('keydown', this.keydownHandler, false);
+                inputField.addEventListener('keyup', this.keyupHandler, false);
                 inputField.addEventListener('mousedown', Pacem.stopPropagationHandler, false);
                 inputField.addEventListener('touchstart', Pacem.stopPropagationHandler, { passive: false, capture: false });
             }
@@ -358,7 +395,8 @@ namespace Pacem.Components.Scaffolding {
             for (let inputField of this.inputFields) {
                 if (Utils.isNull(inputField)) continue;
                 inputField.removeEventListener('touchstart', Pacem.stopPropagationHandler, { capture: false });
-                inputField.removeEventListener('keydown', Pacem.stopPropagationHandler, false);
+                inputField.removeEventListener('keydown', this.keydownHandler, false);
+                inputField.removeEventListener('keyup', this.keyupHandler, false);
                 inputField.removeEventListener('mousedown', Pacem.stopPropagationHandler, false);
                 //
                 inputField.removeEventListener('change', this.changeHandler, false);
@@ -473,6 +511,7 @@ namespace Pacem.Components.Scaffolding {
             if (flag) {
                 item.addEventListener(PropertyChangeEventName, this._itemPropertyChangedHandler, false);
             }
+            return flag;
         }
 
         /**
@@ -484,7 +523,9 @@ namespace Pacem.Components.Scaffolding {
             if (ndx >= 0) {
                 let item = this.items.splice(ndx, 1)[0];
                 item.removeEventListener(PropertyChangeEventName, this._itemPropertyChangedHandler, false);
+                return true;
             }
+            return false;
         }
 
         private _itemPropertyChangedHandler = (evt: PropertyChangeEvent) => {

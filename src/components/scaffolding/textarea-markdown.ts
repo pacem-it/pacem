@@ -23,6 +23,11 @@ namespace Pacem.Components.Scaffolding {
             this.input.hidden = readonly;
         }
 
+        /** @override */
+        protected get preventKeyboardSubmit() {
+            return true;
+        }
+
         protected get inputFields(): HTMLTextAreaElement[] {
             return [this.input];
         }

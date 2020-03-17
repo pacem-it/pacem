@@ -142,11 +142,15 @@ namespace Pacem.Components.Scaffolding {
         private _keydownHandler = (evt: KeyboardEvent) => {
             this._downOn = evt.target;
             var el: HTMLElement;
-            if (evt.keyCode === 40 || evt.keyCode === 9) {
-                if (this._balloon.visible === true && !Utils.isNull(el = <HTMLElement>this._repeater.querySelector('ol > li'))) {
-                    Pacem.avoidHandler(evt);
-                    this._focus(el);
-                }
+            switch (evt.keyCode) {
+                case 40: /*arrow down*/
+                case 9: /*tab*/
+                case 13: /* enter */
+                    if (this._balloon.visible === true && !Utils.isNull(el = <HTMLElement>this._repeater.querySelector('ol > li'))) {
+                        Pacem.avoidHandler(evt);
+                        this._focus(el);
+                    }
+                    break;
             }
         }
 
@@ -263,7 +267,7 @@ namespace Pacem.Components.Scaffolding {
         private _createBalloon(): UI.PacemBalloonElement {
             /*<${ P }-balloon target="{{ ::_input }}" options="{ position: 'bottom', align: 'left', behavior: 'inert', hoverDelay: 0 }"
 disabled="{{ :host.readonly || Pacem.Utils.isNullOrEmpty(:host.adaptedDatasource) }}">*/
-            const balloon = <UI.PacemBalloonElement>document.createElement(P +'-balloon');
+            const balloon = <UI.PacemBalloonElement>document.createElement(P + '-balloon');
             Utils.addClass(balloon, 'suggest dropdown');
             balloon.options = {
                 trackPosition: true,

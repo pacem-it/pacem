@@ -14,6 +14,11 @@ namespace Pacem.Components.Scaffolding {
         @ViewChild('textarea') private _input: HTMLTextAreaElement;
         @ViewChild(`span.${PCSS}-readonly`) private _span: HTMLSpanElement;
 
+        /** @override */
+        protected get preventKeyboardSubmit() {
+            return true;
+        }
+
         protected toggleReadonlyView(readonly: boolean) {
             this._span.hidden = !readonly;
             this._input.hidden = readonly;

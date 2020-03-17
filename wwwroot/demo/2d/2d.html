@@ -4,8 +4,8 @@
 
 <pre pacem hidden id="content0">
 
-## Canvas-based adapter
-One possible adapter for 2D drawn object is the canvas-based one:
+## Canvas- vs SVG-based Adapter
+Feel free to toggle seamlessly between the two possible adapters:
 
 </pre>
 
@@ -19,7 +19,7 @@ One possible adapter for 2D drawn object is the canvas-based one:
             hovering: <b><pacem-text text="{{ #hovertag1.model || '' }}"></pacem-text></b>
         </div>
         <pacem-body-proxy>
-            <pacem-panel class="pacem-toaster" css-class="top right">
+            <pacem-panel class="pacem-toaster toaster-top toaster-right">
                 <!-- toast -->
                 <pacem-toast timeout="2500" id="toast1" class="toast-primary">
                     <span>clicked: <b><pacem-text text="{{ #clicktag1.model  }}"></pacem-text></b></span>
@@ -28,8 +28,10 @@ One possible adapter for 2D drawn object is the canvas-based one:
         </pacem-body-proxy>
 
         <!-- 2D stuff -->
-        <pacem-2d-canvas-adapter id="canvas"></pacem-2d-canvas-adapter>
-        <pacem-2d adapter="{{ #canvas }}" style="height: 200px"
+        <pacem-2d-svg-adapter id="svg0"></pacem-2d-svg-adapter>
+        <pacem-2d-canvas-adapter id="canvas0"></pacem-2d-canvas-adapter>
+        <pacem-data id="adapter0" model="{{ #canvas0 }}"></pacem-data>
+        <pacem-2d adapter="{{ #adapter0.model }}" style="height: 200px"
                   on-itemout="#hovertag1.model = null"
                   on-itemover="#hovertag1.model = $event.detail.element.tag"
                   on-itemclick="#clicktag1.model = $event.detail.element.tag; #toast1.show = true">
@@ -43,8 +45,28 @@ One possible adapter for 2D drawn object is the canvas-based one:
         <pacem-slider min="25" max="75" step=".25" id="slider1" value="50" thumb-label="true"
                       on-formatvalue="$event.detail.output = $event.detail.value +'px'"></pacem-slider>
 
+        <pacem-radio-list value="{{ #adapter0.model, twoway }}">
+            <pacem-data-item value="{{ #canvas0 }}" label="Canvas (Context2D)"></pacem-data-item>
+            <pacem-data-item value="{{ #svg0 }}" label="SVG"></pacem-data-item>
+        </pacem-radio-list>
+
     </template>
 </pacemjs-snippet>
+
+<pacem-markdown value="{{ #content1.textContent }}" root class="md-tech"></pacem-markdown>
+
+<pre pacem hidden id="content1">
+
+## Samples
+More probing samples below:
+
+</pre>
+
+<ul>
+    <li>
+        <pacem-a router="#router" href="/2d/sample-brain">Brain slice neurons plot</pacem-a>
+    </li>
+</ul>
 
 
 <pacem-2d-canvas-adapter id="proto" hidden></pacem-2d-canvas-adapter>

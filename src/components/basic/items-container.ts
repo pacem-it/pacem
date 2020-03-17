@@ -3,20 +3,19 @@ namespace Pacem.Components {
 
     export abstract class PacemItemElement extends PacemElement {
 
-        private _container: PacemItemsContainerElement<any>;
+        private _container: ItemsContainer<any>;
         protected get container() {
             return this._container;
         }
 
         /** @overridable */
-        protected findContainer(): PacemItemsContainerElement<any> {
+        protected findContainer(): ItemsContainer<any> {
             return CustomElementUtils.findAncestor(this, n => n instanceof PacemItemsContainerElement);
         }
 
         viewActivatedCallback() {
             super.viewActivatedCallback();
-            let iter: PacemItemsContainerElement<any>
-                = this._container = this.findContainer();
+            let iter = this._container = this.findContainer();
             if (!Utils.isNull(iter))
                 iter.register(this);
         }
@@ -26,6 +25,13 @@ namespace Pacem.Components {
                 this._container.unregister(this);
             super.disconnectedCallback();
         }
+    }
+
+    export function isItemsContainer(object: any): object is ItemsContainer<any> {
+        return 'items' in object
+            && (Utils.isNull(object.items) || Utils.isArray(object.items))
+            && typeof object.register === 'function'
+            && typeof object.unregister === 'function';
     }
 
     export const ItemRegisterEventName = "itemregister";

@@ -17,8 +17,11 @@
     }
 
     export enum DropTargetMissedBehavior {
+        /** Reverts to the last tracked spot. */
         Revert = 'revert',
+        /** Deletes item on spill-out. */
         Remove = 'remove',
+        /** No explicit behavior, might fallback to 'revert' when drop behavior is 'insert'.  */
         None = 'none'
     }
 
@@ -52,6 +55,7 @@
         }
 
         abstract readonly placeholder: HTMLElement | SVGElement;
+        abstract readonly data: any;
 
         get origin() {
             return this._builder.origin;
@@ -63,10 +67,6 @@
 
         get startTime() {
             return this._builder.startTime;
-        }
-
-        get data() {
-            return this._builder.data;
         }
 
         get floater() {
@@ -90,9 +90,11 @@
         private constructor(_builder: DragDropEventArgs) {
             super(_builder);
             this.placeholder = _builder.placeholder;
+            this.data = _builder.data;
         }
 
         placeholder: HTMLElement | SVGElement;
+        data: any;
 
         static fromArgs(builder: DragDropEventArgs) {
             return new DragDropInitEventArgsClass(Utils.extend({}, builder));
@@ -100,12 +102,16 @@
     }
 
     export class DragDropEventArgsClass extends DragDropEventArgsBaseClass {
-        private constructor(_builder: DragDropEventArgs, private _placeholder = _builder.placeholder) {
+        private constructor(_builder: DragDropEventArgs, private _placeholder = _builder.placeholder, private _data = _builder.data) {
             super(_builder);
         }
 
         get placeholder() {
             return this._placeholder;
+        }
+
+        get data() {
+            return this._data;
         }
 
         static fromArgs(builder: DragDropEventArgs) {
@@ -158,6 +164,8 @@
         floater: Element;
 
         dropBehavior: DropBehavior;
+
+        spillBehavior: DropTargetMissedBehavior;
     }
 
 }

@@ -86,12 +86,16 @@ on-${Pacem.Net.FetchResultEventName}=":host._onresult($event)" on-${Pacem.Net.Fe
 
         register(item: PacemWidgetFetchParameterElement) {
             const parameters = this.parameters;
+
             if (Utils.isNullOrEmpty(parameters)) {
                 this.parameters = [item];
             } else if (parameters.indexOf(item) === -1 && parameters.findIndex(p => p.name === item.name) === -1) {
                 item.addEventListener(PropertyChangeEventName, this._parameterChangeHandler, false);
                 parameters.push(item);
+            } else {
+                return false;
             }
+            return true;
         }
 
         unregister(item: PacemWidgetFetchParameterElement) {
@@ -100,7 +104,10 @@ on-${Pacem.Net.FetchResultEventName}=":host._onresult($event)" on-${Pacem.Net.Fe
             if (ndx >= 0) {
                 parameters[ndx].removeEventListener(PropertyChangeEventName, this._parameterChangeHandler, false);
                 parameters.splice(ndx, 1);
+                return true;
             }
+
+            return false;
         }
 
         // #endregion ItemsContainer

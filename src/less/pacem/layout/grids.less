@@ -163,7 +163,7 @@
     box-sizing: border-box;
     grid-template-columns: repeat(12, 1fr);
     //grid-template-rows: auto 150px;
-    .@{PCSS}-cell {
+    > .@{PCSS}-cell {
         grid-column: span 12;
 
         &.cell-center {
@@ -175,85 +175,6 @@
         box-sizing: border-box;
         .Cols(cols, 12);
         .Rows(rows, 12);
-
-        &.@{PCSS}-panel {
-            margin: 0 /*!important*/;
-            display: grid;
-            grid-template-columns: 100%;
-            grid-template-rows: auto 1fr auto;
-            grid-template-areas: 'heading' 'body' 'footer';
-
-            > .panel-heading {
-                grid-area: heading;
-            }
-
-            > .panel-body {
-                grid-area: body;
-            }
-
-            > .panel-footer {
-                grid-area: footer;
-            }
-
-            @_pad: @grid_spacing/1.5;
-
-            &.panel-side-left {
-                grid-template-columns: @grid_cell + @_pad 1fr;
-
-                &.side-large {
-                    grid-template-columns: @_pad+ ceil(1.414 * @grid_cell) 1fr;
-                }
-
-                &.side-larger {
-                    grid-template-columns: @_pad+ 2 * @grid_cell 1fr;
-                }
-
-                &.side-small {
-                    grid-template-columns: @_pad+ 2 * @grid_spacing 1fr;
-                }
-
-                &.side-smaller {
-                    grid-template-columns: @_pad+ @grid_spacing 1fr;
-                }
-
-                &.side-auto {
-                    grid-template-columns: auto 1fr;
-                }
-
-                grid-template-areas: 'aside heading' 'aside body' 'aside footer';
-            }
-
-            &.panel-side-right {
-                grid-template-columns: 1fr @_pad+ @grid_cell;
-
-                &.side-large {
-                    grid-template-columns: 1fr @_pad+ ceil(1.414 * @grid_cell);
-                }
-
-                &.side-larger {
-                    grid-template-columns: 1fr @_pad+ 2 * @grid_cell;
-                }
-
-                &.side-small {
-                    grid-template-columns: 1fr @_pad+ 2 * @grid_spacing;
-                }
-
-                &.side-smaller {
-                    grid-template-columns: 1fr @_pad+ @grid_spacing;
-                }
-
-                &.side-auto {
-                    grid-template-columns: 1fr auto;
-                }
-
-                grid-template-areas: 'heading aside' 'body aside' 'footer aside';
-            }
-
-            > .panel-side {
-                grid-area: aside;
-                grid-row: span 3;
-            }
-        }
 
         &.@{PCSS}-wrapper {
             margin: 0;

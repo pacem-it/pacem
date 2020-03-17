@@ -160,15 +160,27 @@ namespace Pacem.Components {
             this._element.index = this._getAvailable(ndx);
         }
 
-        previous() {
+        /**
+         * Sets the new iterative's index to the closest available previous item.
+         * @param loop When `true` (default) it allows modular previous 
+         */
+        previous();
+        previous(loop: boolean);
+        previous(loop = true) {
             var prev = this._getPreviousAvailable(this._element.index);
-            if (prev >= 0)
+            if (prev >= 0 && (loop || this._element.index > prev))
                 this._element.index = prev;
         }
 
-        next() {
+        /**
+         * Sets the new iterative's index to the closest available next item.
+         * @param loop When `true` (default) it allows modular next
+         */
+        next();
+        next(loop: boolean);
+        next(loop = true) {
             var next = this._getNextAvailable(this._element.index);
-            if (next >= 0)
+            if (next >= 0 && (loop || this._element.index < next))
                 this._element.index = next;
         }
 

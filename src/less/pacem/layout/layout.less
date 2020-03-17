@@ -472,3 +472,106 @@ aside[pacem], .@{PCSS}-aside {
         }
     }
 }
+
+
+.@{PCSS}-body {
+
+    .Stretch(@keep) {
+        height: ~"calc(100vh - @{keep})";
+        margin: -@grid_spacing 0;
+    }
+
+    &[footer] .@{PCSS}-stretch {
+        .Stretch(@layout_footer_height);
+    }
+
+    &[bigfooter] .@{PCSS}-stretch {
+        .Stretch(@layout_bigfooter_height);
+    }
+
+    &[header] {
+        .@{PCSS}-stretch {
+            .Stretch( @layout_header_height);
+        }
+
+        &[footer] .@{PCSS}-stretch {
+            .Stretch(@layout_header_height + @layout_footer_height);
+        }
+
+        &[bigfooter] .@{PCSS}-stretch {
+            .Stretch(@layout_header_height + @layout_bigfooter_height);
+        }
+    }
+
+    &[headbar], &[footbar], &[headbar-prepend], &[footbar-append] {
+        .@{PCSS}-stretch {
+            .Stretch(@layout_toolbar_height);
+        }
+
+        &[footer] {
+            .@{PCSS}-stretch {
+                .Stretch(@layout_toolbar_height + @layout_footer_height);
+            }
+        }
+
+        &[bigfooter] {
+            .@{PCSS}-stretch {
+                .Stretch(@layout_toolbar_height + @layout_bigfooter_height);
+            }
+        }
+
+        &[header] {
+            .@{PCSS}-stretch {
+                .Stretch(@layout_toolbar_height + @layout_toolbar_height);
+            }
+
+            &[footer] {
+                .@{PCSS}-stretch {
+                    .Stretch(@layout_toolbar_height + @layout_toolbar_height + @layout_footer_height);
+                }
+            }
+
+            &[bigfooter] {
+                .@{PCSS}-stretch {
+                    .Stretch(@layout_toolbar_height + @layout_toolbar_height + @layout_bigfooter_height);
+                }
+            }
+        }
+    }
+
+    &[headbar][footbar], &[headbar-prepend][footbar], &[headbar][footbar-append], &[headbar-prepend][footbar-append] {
+        .@{PCSS}-stretch {
+            .Stretch(2 * @layout_toolbar_height);
+        }
+
+        &[footer] {
+            .@{PCSS}-stretch {
+                .Stretch(2 * @layout_toolbar_height + @layout_footer_height);
+            }
+        }
+
+        &[bigfooter] {
+            .@{PCSS}-stretch {
+                .Stretch(2 * @layout_toolbar_height + @layout_bigfooter_height);
+            }
+        }
+
+        &[header] {
+            .@{PCSS}-stretch {
+                .Stretch(@layout_toolbar_height + 2 * @layout_toolbar_height);
+            }
+
+            &[footer] {
+                .@{PCSS}-stretch {
+                    .Stretch(@layout_toolbar_height + 2 * @layout_toolbar_height + @layout_footer_height);
+                }
+            }
+
+            &[bigfooter] {
+                .@{PCSS}-stretch {
+                    .Stretch(@layout_toolbar_height + 2 * @layout_toolbar_height + @layout_bigfooter_height);
+                }
+            }
+        }
+    }
+}

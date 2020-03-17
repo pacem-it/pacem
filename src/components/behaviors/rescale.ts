@@ -34,7 +34,7 @@ namespace Pacem.Components {
         private _origin: Point;
         private _position: Point;
         private _startTime: number = Date.now();
-        private _originalTransform: { a: number, b: number, c: number, d: number, x: number, y: number };
+        private _originalTransform: Matrix2D;
 
         private _moveHandler = (evt: MouseEvent | TouchEvent) => {
             evt.stopPropagation();
@@ -106,7 +106,7 @@ namespace Pacem.Components {
                 if (!evt.defaultPrevented) {
                     // render resize
                     const m = this._originalTransform;
-                    el.style.transform = `matrix(${m.a},${m.b},${m.c},${m.d},${(m.x + desiredRect.x - this._rect.x)},${(m.y + desiredRect.y - this._rect.y)})`;
+                    el.style.transform = `matrix(${m.a},${m.b},${m.c},${m.d},${(m.e + desiredRect.x - this._rect.x)},${(m.f + desiredRect.y - this._rect.y)})`;
                     el.style.width = desiredRect.width + 'px';
                     el.style.height = desiredRect.height + 'px';
                 }

@@ -35,12 +35,14 @@ namespace Pacem.Js.CustomElements.Services
                 var nodes = doc.DocumentNode.SelectNodes(@"//pre");
 
                 StringBuilder sb = new StringBuilder();
-                foreach (var node in nodes)
+                if (nodes != null)
                 {
-                    string md = node.InnerText;
-                    sb.AppendFormat("<div>{0}</div>", Markdig.Markdown.ToHtml(md));
+                    foreach (var node in nodes)
+                    {
+                        string md = node.InnerText;
+                        sb.AppendFormat("<div>{0}</div>", Markdig.Markdown.ToHtml(md));
+                    }
                 }
-
                 return sb.ToString();
             }
         }

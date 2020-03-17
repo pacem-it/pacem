@@ -14,7 +14,7 @@ namespace Pacem.Components {
         }
 
         /** Gets the bubbling item's Event. */
-        get srcEvent()  {
+        get srcEvent() {
             return this._originalEvent;
         }
     }
@@ -138,7 +138,7 @@ namespace Pacem.Components {
 
             // custom 'item<cmd>' event fires next
             this.dispatchEvent(new CustomItemCommandEvent(/* 'originalEvent' */ evt));
-            
+
         }
 
         viewActivatedCallback() {

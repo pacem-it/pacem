@@ -42,7 +42,7 @@
     box-shadow: 0 0 0 @width @clr;
 }
 
-.NoOutline(){
+.NoOutline() {
     box-shadow: none;
 }
 
@@ -102,7 +102,6 @@
     &when (@border_field_underline = false) {
         .FormFieldItemSize(@f_height, 2 * @border_field_size);
     }
-
     //background: none;
     box-sizing: border-box;
     color: @field_forecolor;
@@ -145,8 +144,11 @@
         margin: @field_outline_width;
     }*/
     @media (min-width: @threshold_lg) {
-        min-width: @field_min_width;
-        display: inline-block;
+
+        &:not(.field-stretch) {
+            min-width: @field_min_width;
+            display: inline-block;
+        }
     }
 
     .@{PCSS}-viewfinder,

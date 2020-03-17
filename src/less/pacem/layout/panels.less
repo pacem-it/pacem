@@ -25,11 +25,43 @@
 
 .@{PCSS}-panel {
     .Panel(panel);
-    display: block;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-rows: repeat(3, auto);
+    grid-template-areas: 'heading tools' 'body body' 'footer footer';
 
     .panel-heading {
         padding-top: @panel_spacing;
         padding-bottom: @panel_spacing;
+        .Ellipsed();
+    }
+
+    > .panel-heading {
+        grid-area: heading;
+    }
+
+    > .panel-body {
+        grid-area: body;
+    }
+
+    > .panel-footer {
+        grid-area: footer;
+    }
+
+    > .panel-content {
+        grid-column: ~"1/2";
+        grid-row: ~"2/3";
+    }
+
+    > .panel-tools {
+        grid-area: tools;
+        align-self: center;
+        padding: 0 @panel_spacing 0 0;
+        // reset
+        position: static;
+        top: 0;
+        right: 0;
+        z-index: auto;
     }
 
     .panel-body.@{PCSS}-flex,
@@ -55,6 +87,76 @@
     }
 
     &.panel-master {
+    }
+
+
+    @_pad: @grid_spacing/1.5;
+
+    &.panel-side-left {
+        grid-template-columns: @grid_cell + @_pad 1fr auto;
+
+        &.side-large {
+            grid-template-columns: @_pad+ ceil(1.414 * @grid_cell) 1fr auto;
+        }
+
+        &.side-larger {
+            grid-template-columns: @_pad+ 2 * @grid_cell 1fr auto;
+        }
+
+        &.side-small {
+            grid-template-columns: @_pad+ 2 * @grid_spacing 1fr auto;
+        }
+
+        &.side-smaller {
+            grid-template-columns: @_pad+ @grid_spacing 1fr auto;
+        }
+
+        &.side-auto {
+            grid-template-columns: auto 1fr auto;
+        }
+
+        grid-template-areas: 'aside heading tools' 'aside body body' 'aside footer footer';
+    }
+
+    &.panel-side-right {
+        grid-template-columns: 1fr auto @_pad+ @grid_cell;
+
+        &.side-large {
+            grid-template-columns: 1fr auto @_pad+ ceil(1.414 * @grid_cell);
+        }
+
+        &.side-larger {
+            grid-template-columns: 1fr auto @_pad+ 2 * @grid_cell;
+        }
+
+        &.side-small {
+            grid-template-columns: 1fr auto @_pad+ 2 * @grid_spacing;
+        }
+
+        &.side-smaller {
+            grid-template-columns: 1fr auto @_pad+ @grid_spacing;
+        }
+
+        &.side-auto {
+            grid-template-columns: 1fr auto auto;
+        }
+
+        grid-template-areas: 'heading tools aside' 'body body aside' 'footer footer aside';
+    }
+
+    &.panel-side-left, &.panel-side-right {
+        > .panel-side {
+            grid-area: aside;
+            grid-row: span 3;
+        }
+    }
+}
+
+.@{PCSS}-grid > .@{PCSS}-cell {
+
+    &.@{PCSS}-panel {
+        margin: 0 /*!important*/;
+        grid-template-rows: auto 1fr auto;
     }
 }
 

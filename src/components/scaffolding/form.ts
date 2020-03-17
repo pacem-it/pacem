@@ -156,7 +156,9 @@ namespace Pacem.Components.Scaffolding {
         }
 
         private _keyupHandler = (evt: KeyboardEvent) => {
-            if (evt.keyCode === 13) {
+            if (evt.keyCode === /* Enter */13
+                // no modifiers
+                && !evt.shiftKey && !evt.ctrlKey && !evt.altKey && !evt.metaKey) {
                 let btn: Pacem.Components.UI.PacemButtonElement = (<HTMLFormElement>evt.currentTarget).querySelector(P + '-button[type=submit]');
                 if (!Utils.isNull(btn) && Utils.isVisible(btn) && !btn.disabled) {
                     btn.click();

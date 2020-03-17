@@ -43,7 +43,7 @@ namespace Pacem.Components {
             window.removeEventListener('touchmove', this._moveHandler, TOUCH_OPTIONS);
         }
 
-        private _originalTransform: { a: number, b: number, c: number, d: number, x: number, y: number };
+        private _originalTransform: Matrix2D;
         private _halfElementWidth: number;
         private _threshold;
 
@@ -181,7 +181,7 @@ namespace Pacem.Components {
 
             const m = this._originalTransform;
             //const d_pct = d / (w_half * 2);
-            el.style.transform = `matrix(${m.a},${m.b},${m.c},${m.d},${(m.x + d/*_pct*/)},${m.y})`;
+            el.style.transform = `matrix(${m.a},${m.b},${m.c},${m.d},${(m.e + d/*_pct*/)},${m.f})`;
         }
 
         private _endHandler = (evt: TouchEvent | MouseEvent) => {
