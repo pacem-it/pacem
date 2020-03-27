@@ -16,20 +16,10 @@ namespace Pacem.Components {
         let regExc: RegExpExecArray;
         while (!Utils.isNullOrEmpty(regExc = modifierPattern.exec(combo))) {
             combo = combo.substr(regExc.index + regExc[0].length);
-            modifiers.push(regExc[1].toLowerCase());
+            modifiers.push(regExc[1]);
         }
 
-        const altKey = modifiers.indexOf('alt') >= 0 || modifiers.indexOf('option') >= 0,
-            shiftKey = modifiers.indexOf('shift') >= 0,
-            ctrlKey = modifiers.indexOf('ctrl') >= 0,
-            metaKey = modifiers.indexOf('win') >= 0 || modifiers.indexOf('cmd') >= 0;
-
-        // console.log(`${evt.key} (${evt.keyCode})`);
-
-        if (altKey !== evt.altKey
-            || shiftKey !== evt.shiftKey
-            || metaKey !== evt.metaKey
-            || ctrlKey !== evt.ctrlKey) {
+        if (!CustomEventUtils.matchModifiers(evt, modifiers)) {
             return false;
         }
 

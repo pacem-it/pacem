@@ -949,6 +949,13 @@
     > .@{PCSS}-input-container.@{PCSS}-fieldgroup {
         justify-content: start;
         grid-template-columns: repeat(3, auto);
+        align-items: start;
+
+        .@{PCSS}-readonly{
+            // reset the borders-replacers 
+            // since the fieldgroup already shows borders
+            margin: 0;
+        }
 
         .fieldgroup-append,
         //.input-group-prepend,

@@ -2,7 +2,9 @@
 /// <reference path="../../dist/js/pacem-2d.d.ts" />
 namespace Pacem.Components.Js {
 
-    const PALETTE = ['#fff', '#999', '#808000', '#80006e', '#d69d73', '#308978', '#429cd6'];
+    const PALETTE = [() => Utils.Css.getVariableValue('--color-default'),
+        '#999', '#808000', '#80006e', '#d69d73', '#308978', '#429cd6'];
+
     type Vertex = {
         x: number,
         y: number,
@@ -27,6 +29,8 @@ namespace Pacem.Components.Js {
         readonly parent: { items: Pacem.Drawing.Drawable[] }
     }
 
+    const balloons = new WeakMap<Pacem.Components.UI.PacemBalloonElement, number>();
+
     class DemoTransformers {
 
         @Transformer()
@@ -34,13 +38,16 @@ namespace Pacem.Components.Js {
             const drawables: Pacem.Drawing.Drawable[] = [];
             let j = 0;
             for (let cls of slice.classes || []) {
+                const isBorder = cls.index === 0;
                 const drawable: Pacem.Drawing.Drawable & { items: Pacem.Drawing.Drawable[] } = { stage: stage, items: [] };
-                const color = PALETTE[j % PALETTE.length];
-
+                var color: string | (() => string) = PALETTE[j % PALETTE.length];
+                if (typeof color === 'function') {
+                    color = color();
+                }
                 let k = 0;
                 for (let vertex of cls.vertices || []) {
 
-                    if (cls.index === 0 && cls.vertices.length > k + 1) {
+                    if (isBorder && cls.vertices.length > k + 1) {
                         // add segment
                         const p1 = vertex, p2 = cls.vertices[k + 1];
                         const segment: Pacem.Drawing.Shape = {
@@ -53,8 +60,8 @@ namespace Pacem.Components.Js {
 
                     const path: Neuron = {
                         fill: color,
-                        lineWidth: 0, opacity: .5, pathData: Pacem.Components.Drawing.PacemCircleElement.getPathData({ x: vertex.x, y: vertex.y }, .1),
-                        stage: stage, draggable: cls.index === 0,
+                        lineWidth: 0, opacity: .5, pathData: Pacem.Components.Drawing.PacemCircleElement.getPathData({ x: vertex.x, y: vertex.y }, isBorder ? .25 : .1),
+                        stage: stage, draggable: isBorder,
 
                         // extra-shape (neuron)
                         index: drawable.items.length, parent: drawable, center: vertex
@@ -84,7 +91,7 @@ namespace Pacem.Components.Js {
                 }
             }
             if (establish) {
-                neuron.pathData = Pacem.Components.Drawing.PacemCircleElement.getPathData(center, .1);
+                neuron.pathData = Pacem.Components.Drawing.PacemCircleElement.getPathData(center, .25);
                 neuron.center = center;
                 stage.draw(neuron);
             }
@@ -97,6 +104,21 @@ namespace Pacem.Components.Js {
                 }
             }
 
+        }
+
+        @Transformer()
+        static neuronTooltip(balloon: Pacem.Components.UI.PacemBalloonElement, coords?: Point | false) {
+            if (balloons.has(balloon)) {
+                const handle = balloons.get(balloon);
+                window.clearTimeout(handle);
+            }
+            if (coords) {
+                balloon.target = coords;
+                balloon.popup();
+            } else {
+                const handle = window.setTimeout(() => balloon.popout(), 500);
+                balloons.set(balloon, handle);
+            }
         }
     }
 }

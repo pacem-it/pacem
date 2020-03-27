@@ -39,10 +39,6 @@ namespace Pacem {
 
         // #region GENERAL
 
-        static cssEscape(input: string) {
-            return escape(input).replace('%', '\\');
-        }
-
         static uniqueCode() {
             var pacem = this.core;
             var seed: number = pacem.__currentSeed || new Date().valueOf();
@@ -81,7 +77,6 @@ namespace Pacem {
             }
             return deferred.promise;
         }
-
         // json-dedicated
         static Json = {
             stringify: Json.serialize,
@@ -153,6 +148,22 @@ namespace Pacem {
                 element.style.filter = filter;
             } else {
                 return filter;
+            }
+        }
+
+        static cssEscape(input: string) {
+            return escape(input).replace('%', '\\');
+        }
+
+        // css-dedicated
+        static Css = {
+            colorize: Utils.colorize,
+            escape: Utils.cssEscape,
+            getVariableValue(name: string): string {
+                return getComputedStyle(document.documentElement).getPropertyValue(name);
+            },
+            setVariable(name: string, value: string): void {
+                getComputedStyle(document.documentElement).setProperty(name, value);
             }
         }
 

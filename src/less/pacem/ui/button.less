@@ -110,44 +110,13 @@ a.@{PCSS}-button,
     display: inline-block;
     vertical-align: middle;
     margin: 0 @_margin @_margin 0;
-    color: @color_button_fore;
     user-select: none;
-
-    &:focus when (@glows = true) {
-        text-shadow: 0 0 8px @color_button_fore;
-    }
-
-    &:hover when (@glows = true) {
-        text-shadow: 0 0 8px @color_button_fore;
-    }
-
-    @_darken_perc: @button_hover_percentage;
-
-    &:focus when (@dark_theme = false) {
-        background-color: darken(@color_button_back, @_darken_perc);
-    }
-
-    &:hover when (@dark_theme = false) {
-        background-color: darken(@color_button_back, @_darken_perc);
-    }
-
-    &:focus when (@dark_theme = true) {
-        background-color: lighten(@color_button_back, @_darken_perc);
-    }
-
-    &:hover when (@dark_theme = true) {
-        background-color: lighten(@color_button_back, @_darken_perc);
-    }
 
     .ButtonColorize(@clr, @clr_fore) {
         background: @clr;
         color: @clr_fore;
 
-        &:focus,
-        &:hover {
-            background: darken(@clr, @_darken_perc);
-            color: @clr_fore;
-        }
+        @_darken_perc: @button_hover_percentage;
 
         &:focus when (@glows = true) {
             text-shadow: 0 0 8px @clr_fore;
@@ -156,7 +125,25 @@ a.@{PCSS}-button,
         &:hover when (@glows = true) {
             text-shadow: 0 0 8px @clr_fore;
         }
+
+        &:focus when (@dark_theme = false) {
+            background-color: darken(@clr, @_darken_perc);
+        }
+
+        &:hover when (@dark_theme = false) {
+            background-color: darken(@clr, @_darken_perc);
+        }
+
+        &:focus when (@dark_theme = true) {
+            background-color: lighten(@clr, @_darken_perc);
+        }
+
+        &:hover when (@dark_theme = true) {
+            background-color: lighten(@clr, @_darken_perc);
+        }
     }
+
+    .ButtonColorize(@color_button_back, @color_button_fore);
 
     &.accent,
     &.button-accent {
@@ -190,7 +177,12 @@ a.@{PCSS}-button,
 
     &.flat,
     &.button-flat {
-        background: transparent;
+        color: fade(@color_button_fore, 70);
+
+        &:focus,
+        &:hover {
+            color: @color_button_fore;
+        }
     }
 
     &.rise,
@@ -317,15 +309,11 @@ a.@{PCSS}-button,
 }
 
 @{P}-button, .@{PCSS}-button {
-    /*&.@{PCSS}-focus when (@gradients = true) {
-        .GradientBorderVertical(1, 0, 100%, fade(@color_button_border_light, 20), fade(@color_button_border, 0));
-    }*/
+
     &:focus when (@gradients = true) {
         .GradientBorderVertical(1, 0, 100%, fade(@color_button_border_light, 20), fade(@color_button_border, 0));
     }
-    /*&.@{PCSS}-focus when (@gradients = false) {
-        border-bottom-color: @color_button_border_dark;
-    }*/
+
     &:focus when (@gradients = false) {
         border-bottom-color: @color_button_border_dark;
     }
@@ -368,6 +356,7 @@ a.@{PCSS}-button,
 .@{PCSS}-button when (@uppercase_buttons = true) {
     text-transform: uppercase;
 }
+
 //:host([disabled]),
 .@{PCSS}-button.@{PCSS}-disabled,
 @{P}-button.@{PCSS}-disabled,
@@ -389,9 +378,10 @@ input.@{PCSS}-button[disabled]:hover {
 .@{PCSS}-button,
 @{P}-button,
 .@{PCSS}-button:hover,
-@{P}-button:hover {
-    color: inherit;
-
+@{P}-button:hover,
+.@{PCSS}-button:focus,
+@{P}-button:focus {
+    // color: inherit;
     &.@{PCSS}-disabled {
         background-color: @color_button_back;
         cursor: default;
@@ -410,12 +400,18 @@ input.@{PCSS}-button[disabled]:hover {
         //border-color: #f0f0f0;
         border-color: transparent;
     }
+    // flat: no background at all
+    &.flat,
+    &.button-flat {
+        background: transparent;
+    }
 }
+
 
 /* #endregion */
 body.@{PCSS}-animations {
     .@{PCSS}-button, a.@{PCSS}-button, @{P}-button {
-        transition: background .15s;
+        transition: color .1s, background .15s;
     }
 }
 
@@ -519,8 +515,22 @@ body.@{PCSS}-animations {
 @{P}-button,
 .@{PCSS}-button {
 
-    &[data-icon-glyph]::before {
-        content: attr(data-icon-glyph);
+    &[data-icon-glyph] {
+        &::before {
+            content: attr(data-icon-glyph);
+        }
+
+        &.icon-glyph-normal::before {
+            font-size: 1rem;
+        }
+
+        &.icon-glyph-tiny::before {
+            font-size: @grid_spacing/3;
+        }
+
+        &.icon-glyph-small::before {
+            font-size: 2 * @grid_spacing/3;
+        }
     }
 
     &[data-icon-url]::before {

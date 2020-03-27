@@ -135,10 +135,10 @@ Here's the _mise en place_:
           },
           {
             "type": "length",
-            "errorMessage": "length must be between 2 and 10",
+            "errorMessage": "length must be between 3 and 20",
             "params": {
-              "max": 10,
-              "min": 2
+              "max": 20,
+              "min": 3
             }
           }
         ]
@@ -173,6 +173,13 @@ Here's the _mise en place_:
             "params": {
               "to": "Password",
               "operator": "equal"
+            }
+          },
+          {
+            "type": "length",
+            "errorMessage": "password must be at least 8 chars long",
+            "params": {
+              "min": 8
             }
           }
         ]

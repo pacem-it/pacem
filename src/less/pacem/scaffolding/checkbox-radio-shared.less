@@ -90,7 +90,9 @@
 @media (min-width: @threshold_lg) {
 
     @{P}-checkbox-list @{P}-checkbox,
-    @{P}-radio-list @{P}-radio {
+    @{P}-checkbox-list @{P}-checkbox:not(.field-stretch),
+    @{P}-radio-list @{P}-radio,
+    @{P}-radio-list @{P}-radio:not(.field-stretch) {
         min-width: 0;
     }
 }

@@ -116,10 +116,8 @@ namespace Pacem.Components.Drawing {
 
         private _getPoint(evt: MouseEvent | TouchEvent): Point {
             if (evt instanceof MouseEvent && evt.altKey) {
-                return { x: evt.pageX, y: evt.pageY };
-            } else if (evt instanceof TouchEvent && evt.touches.length > 0) {
-                let pt = evt.touches[0];
-                return { x: pt.pageX, y: pt.pageY };
+
+                return CustomEventUtils.getEventCoordinates(evt).page;
             }
             return null;
         }
@@ -127,7 +125,7 @@ namespace Pacem.Components.Drawing {
         private _panHandler = (evt: MouseEvent | TouchEvent) => {
             const state = this._panningStart,
                 actual = this._getPoint(evt);
-            if (!Utils.isNullOrEmpty(state) && !Utils.isNull(actual)) {
+            if (!Utils.isNullOrEmpty(state && state.point) && !Utils.isNull(actual)) {
                 const factor = state.factor,
                     vbox = state.box, start = state.point;
                 this.viewbox = {
@@ -142,11 +140,17 @@ namespace Pacem.Components.Drawing {
         private _panningStart: { point: Point, box: Rect, factor: number };
         private _panStartHandler = (evt: MouseEvent | TouchEvent) => {
             const size = this._size,
-                vbox = this.viewbox || { x: 0, y: 0, width: size.width, height: size.height };
-            this._panningStart = { point: this._getPoint(evt), box: vbox, factor: vbox.width / size.width };
+                vbox = this.viewbox || { x: 0, y: 0, width: size.width, height: size.height },
+                start = this._getPoint(evt);
+            if (start) {
+                avoidHandler(evt);
+                this._stage.style.pointerEvents = 'none';
+                this._panningStart = { point: start, box: vbox, factor: vbox.width / size.width };
+            }
         };
 
         private _panEndHandler = (evt: MouseEvent | TouchEvent) => {
+            this._stage.style.pointerEvents = '';
             this._panningStart = null;
         };
 
@@ -166,11 +170,11 @@ namespace Pacem.Components.Drawing {
 
             // panning
             stage.addEventListener('mousedown', this._panStartHandler, false);
-            stage.addEventListener('mousemove', this._panHandler, false);
-            stage.addEventListener('mouseup', this._panEndHandler, false);
             stage.addEventListener('touchstart', this._panStartHandler, options);
-            stage.addEventListener('touchmove', this._panHandler, options);
-            stage.addEventListener('touchend', this._panEndHandler, options);
+            window.addEventListener('mousemove', this._panHandler, false);
+            window.addEventListener('mouseup', this._panEndHandler, false);
+            window.addEventListener('touchmove', this._panHandler, options);
+            window.addEventListener('touchend', this._panEndHandler, options);
         }
 
         propertyChangedCallback(name: string, old, val, first?: boolean) {
@@ -208,11 +212,11 @@ namespace Pacem.Components.Drawing {
 
                 // panning
                 stage.removeEventListener('mousedown', this._panStartHandler, false);
-                stage.removeEventListener('mousemove', this._panHandler, false);
-                stage.removeEventListener('mouseup', this._panEndHandler, false);
                 stage.removeEventListener('touchstart', this._panStartHandler);
-                stage.removeEventListener('touchmove', this._panHandler);
-                stage.removeEventListener('touchend', this._panEndHandler);
+                window.removeEventListener('mousemove', this._panHandler, false);
+                window.removeEventListener('mouseup', this._panEndHandler, false);
+                window.removeEventListener('touchmove', this._panHandler);
+                window.removeEventListener('touchend', this._panEndHandler);
             }
             if (!Utils.isNull(this.adapter)) {
                 this.adapter.dispose(this);

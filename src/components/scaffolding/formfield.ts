@@ -233,6 +233,7 @@ css-class="{{ {'${PCSS}-fetching': ::_fetcher.fetching, '${PCSS}-dirty': this.di
 
             // field
             let tagName: string = /* setting the default/fallback input element */ P + '-input-text';
+            let numericTagName = P + (meta.display && meta.display.ui === 'slider' ? '-slider' : '-input-number');
             let attrs: { [key: string]: string } = {
                 'id': this._key, 'name': meta.prop,
                 // readonly if property `readonly` set to true OR metadata property is not editable OR parent form's `readonly` property is set to true
@@ -562,10 +563,8 @@ css-class="{{ {'${PCSS}-fetching': ::_fetcher.fetching, '${PCSS}-dirty': this.di
                                     delete attrs['placeholder'];
                                     break;
                                 case "byte":
-                                    tagName = P + '-input-number';
                                     attrs['min'] = '0';
                                     attrs['max'] = '255';
-                                    break;
                                 case "int16":
                                 case "int32":
                                 case "int64":
@@ -573,14 +572,15 @@ css-class="{{ {'${PCSS}-fetching': ::_fetcher.fetching, '${PCSS}-dirty': this.di
                                 case "integer":
                                 case "int":
                                 case "long":
-                                    tagName = P + '-input-number';
+                                    attrs['step'] = "1";
+                                    tagName = numericTagName;
                                     break;
                                 case "double":
                                 case "decimal":
                                 case "float":
                                 case "single":
                                 case "number":
-                                    tagName = P + '-input-number';
+                                    tagName = numericTagName;
                                     attrs['step'] = "{{ 'any' }}";
                                     break;
                                 default:

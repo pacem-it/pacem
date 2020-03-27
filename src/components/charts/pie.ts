@@ -228,7 +228,7 @@ namespace Pacem.Components.Charts {
                         let p: SVGPathElement;
                         if (ndx >= pCount) {
                             const g_n = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-                            g_n.setAttribute('class', 'chart-series '+PCSS+'-pie-slice' + (Utils.isNullOrEmpty(slice.className) ? '' : (' ' + slice.className)));
+                            g_n.setAttribute('class', 'chart-series ' + PCSS + '-pie-slice' + (Utils.isNullOrEmpty(slice.className) ? '' : (' ' + slice.className)));
                             p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
                             g_n.appendChild(p);
                             g.appendChild(g_n);
@@ -244,6 +244,9 @@ namespace Pacem.Components.Charts {
                         if (slice.value > 0) {
                             this._drawSlice(p, slice, sum, progress);
                             progress += slice.value;
+                            p.removeAttribute('display');
+                        } else {
+                            p.setAttribute('display', 'none');
                         }
                         ndx++;
                     }

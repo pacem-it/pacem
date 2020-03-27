@@ -69,5 +69,42 @@ The slider has several levels of customization:
     </template>
 </pacemjs-snippet>
 
+
+<pacem-markdown value="{{ #content2.textContent }}" root></pacem-markdown>
+
+<pre pacem hidden id="content2">
+## Formattable
+`PacemSliderElement` value can be formatted given straight attribute or relevant metadata. 
+</pre>
+
+<pacemjs-snippet>
+    <template>
+
+        <pre id="metadata2" hidden pacem>
+[
+{"prop": "amount", "type": "float", "dataType": "percentage", "display": { "name": "Progress", "ui": "slider" },
+"validators": [{
+    "type": "range", "errorMessage": "Nope, you can't", "params": { "min": 0, "max": 1 }
+}]
+}
+]
+</pre>
+
+        <div class="pacem-panel">
+            <div class="panel-body">
+                <pacem-form id="frm2" autogenerate="true" metadata="{{ JSON.parse(#metadata2.textContent) }}" entity="{{ { amount: 0.5 } }}"></pacem-form>
+            </div>
+            <div class="panel-footer display-flex">
+                <pacem-span on-click="#frm2.reset()" hide="{{ !#frm2.dirty }}" class="pacem-clickable  pacem-margin margin-right-1">
+                    <i class="pacem-icon text-success text-big">undo</i>
+                </pacem-span>
+                <label class="pacem-margin margin-right-2">readonly</label>
+                <pacem-checkbox class="checkbox-switch" true-value="true" false-value="false" value="{{ #frm2.readonly, twoway }}"></pacem-checkbox>
+            </div>
+        </div>
+
+    </template>
+</pacemjs-snippet>
+
 <pacem-slider id="proto" hidden></pacem-slider>
 <pacemjs-descriptor target="#proto"></pacemjs-descriptor>

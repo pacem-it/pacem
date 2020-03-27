@@ -521,6 +521,11 @@ namespace Pacem.Components {
                 return;
             }
 
+            // check modifier guards
+            if (!CustomEventUtils.matchModifiers(evt, this.modifiers)) {
+                return;
+            }
+
             // check the handle selector
             if (!Utils.isNullOrEmpty(this.handleSelector)
                 && (<HTMLElement>evt.currentTarget).querySelector(this.handleSelector) !== evt.target) {
@@ -531,16 +536,9 @@ namespace Pacem.Components {
             // stop and prevent
             avoidHandler(evt);
 
-            var el = evt.currentTarget,
-                origin: Point;
-
-            if (evt instanceof MouseEvent) {
-                origin = { x: evt.pageX, y: evt.pageY };
-            } else {
-                if (evt.touches.length != 1)
-                    return;
-                origin = { x: evt.touches[0].pageX, y: evt.touches[0].pageY };
-            }
+            const el = evt.currentTarget,
+                coords = CustomEventUtils.getEventCoordinates(evt),
+                origin: Point = coords.page;
 
             const lockFn = () => {
                 let element = <HTMLElement | SVGElement>el;
@@ -615,6 +613,13 @@ namespace Pacem.Components {
         @Watch({ emit: false, converter: PropertyConverters.String }) spillBehavior: Pacem.UI.DropTargetMissedBehavior;
         /** Gets or sets the handle selector to be matched when starting the drop gesture. */
         @Watch({ emit: false, converter: PropertyConverters.String }) handleSelector: string;
+        /** Gets or sets whether keyboard modifiers are allowed */
+        @Watch({
+            emit: false, converter: {
+                convert: (attr) => (attr || '').match(/[a-zA-Z]+/g),
+                convertBack: (prop) => (prop || []).join('+')
+            }
+        }) modifiers: string[];
 
     }
 }

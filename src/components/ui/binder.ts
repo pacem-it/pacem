@@ -118,6 +118,11 @@ namespace Pacem.Components.UI {
                         this._svg.setAttribute('class', PCSS + '-binder ' + this.className);
                     }
                     break;
+                case 'hide':
+                    if (!first) {
+                        this._setPathVisibility();
+                    }
+                    break;
             }
         }
 
@@ -133,6 +138,16 @@ namespace Pacem.Components.UI {
             super.disconnectedCallback();
         }
 
+        private _setPathVisibility(path = this._path, hide = this.hide) {
+            if (!Utils.isNull(path)) {
+                if (hide) {
+                    path.setAttribute('display', 'none');
+                } else {
+                    path.removeAttribute('display');
+                }
+            }
+        }
+
         private _ensurePath() {
             if (Utils.isNull(this._path)) {
 
@@ -146,6 +161,9 @@ namespace Pacem.Components.UI {
 
                 const path = this._path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
                 path.setAttribute('fill', 'none');
+                path.setAttribute('display', 'none');
+
+                this._setPathVisibility();
 
                 svg.appendChild(path);
                 document.body.appendChild(svg);

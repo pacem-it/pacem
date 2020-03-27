@@ -75,18 +75,37 @@ namespace Pacem.Drawing {
     export class DragEvent extends CustomEvent<DragEventArgs> implements DragEvent {}
 
     export class Event extends CustomEvent<Drawable>{}
+
+    export class DrawableEvent extends Event {
+
+        constructor(type, args: Drawable, private _coords: Pacem.EventCoordinates) {
+            super(type, { detail: args, bubbles: true, cancelable: true });
+        }
+
+        get pageX(): number {
+            return this._coords.page.x;
+        }
+        get pageY(): number {
+            return this._coords.page.y;
+        }
+        get clientX(): number {
+            return this._coords.client.x;
+        }
+        get clientY(): number {
+            return this._coords.client.y;
+        }
+        get screenX(): number {
+            return this._coords.screen.x;
+        }
+        get screenY(): number {
+            return this._coords.screen.y;
+        }
+    }
 }
 
 namespace Pacem.Components.Drawing {
 
     const Identity: Pacem.Drawing.Matrix2D = { a: 1, b: 0, c: 0, d: 1, e: 0, f: 0 };
-
-    export class DrawableElementEvent extends CustomEvent<Pacem.Drawing.Drawable> {
-
-        constructor(type: string, args: Pacem.Drawing.Drawable) {
-            super(type, { detail: args, bubbles: true, cancelable: true });
-        }
-    }
 
     export interface Stage extends Pacem.Drawing.Stage {
         readonly adapter: Pacem2DAdapterElement;

@@ -56,7 +56,7 @@ The following live example sums up what can be done with a pie-chart webcomponen
                                     <pacem-span css="{{ {color: ^item.color} }}" class="display-inline-block"><i class="pacem-icon">label</i></pacem-span>
                                     <pacem-text text="{{ ^item.label }}"></pacem-text>
                                     <pacem-slider min="0" max="5" value="{{ ^item.value, twoway }}" change-policy="drag" class="slider-primary"></pacem-slider>
-                                    <pacem-binder></pacem-binder>
+                                    <pacem-binder hide="{{ !(^item.value > 0) }}"></pacem-binder>
                                 </li>
                             </template>
 

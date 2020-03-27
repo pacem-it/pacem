@@ -11,8 +11,9 @@ namespace Pacem.Components.Scaffolding {
         <div class="thumb-label"></div>
     </${P}-panel>
     <${P}-text text="{{ :host._format(:host.max) }}" max></${P}-text>
+    <div class="slider-footer"><${P}-text text="{{ :host.viewValue }}"></${P}-text></div>
 <${P}-drag-drop lock-timeout="0"></${P}-drag-drop><${P}-resize watch-position="true" on-${ResizeEventName}=":host._setTrackSize($event)" target="{{ ::_track }}"></${P}-resize>
-<${P}-balloon class="text-center"><${P}-text text="{{ :host.viewValue }}"></${P}-text></${P}-balloon><${P}-body-proxy></${P}-body-proxy>
+<${P}-shell-proxy><${P}-balloon class="text-center"><${P}-text text="{{ :host.viewValue }}"></${P}-text></${P}-balloon></${P}-shell-proxy>
 `,
         shadow: Defaults.USE_SHADOW_ROOT
     })
@@ -41,6 +42,11 @@ namespace Pacem.Components.Scaffolding {
         }
 
         private _format(v: number): string {
+            const intl = this.format;
+            if (!Utils.isNullOrEmpty(intl)) {
+                return new Intl.NumberFormat(Utils.lang(this), intl).format(v);
+            }
+            // fallback
             let sv: string = '-';
             if (!Utils.isNull(v)) {
                 sv = v.toLocaleString();
@@ -78,6 +84,8 @@ namespace Pacem.Components.Scaffolding {
         }) step: 'any' | number;
         @Watch({ emit: false, converter: PropertyConverters.String }) changePolicy: 'drag'|'end';
 
+        @Watch({ emit: false, converter: PropertyConverters.Json }) format: Intl.NumberFormatOptions;
+
 
         @ViewChild(`.slider-track`) private _track: HTMLElement;
         @ViewChild(`.slider-progress`) private _progress: HTMLElement;
@@ -85,7 +93,7 @@ namespace Pacem.Components.Scaffolding {
         @ViewChild(`${P}-text[min]`) private _min: PacemTextElement;
         @ViewChild(`${P}-text[max]`) private _max: PacemTextElement;
         @ViewChild(`${P}-drag-drop`) private _dragger: PacemDragDropElement;
-        @ViewChild(`${P}-balloon`) private _balloon: UI.PacemBalloonElement;
+        @ViewChild(`${P}-shell-proxy`) private _shellProxy: PacemShellProxyElement;
 
         protected toggleReadonlyView(readonly: boolean) {
             this._thumb.hidden = readonly;
@@ -181,7 +189,7 @@ namespace Pacem.Components.Scaffolding {
             this._min.text = this._format(this.min);
             this._max.text = this._format(this.max);
             // balloon
-            const balloon = this._balloon;
+            const balloon = this._shellProxy.dom[0] as UI.PacemBalloonElement;
             balloon.target = this._thumb;
             balloon.options = {
                 trigger: UI.BalloonTrigger.Focus,
@@ -212,10 +220,14 @@ namespace Pacem.Components.Scaffolding {
 
         propertyChangedCallback(name: string, old, val, first?: boolean) {
             super.propertyChangedCallback(name, old, val, first);
+            if (first) {
+                return;
+            }
             switch (name) {
                 case 'thumbLabel':
                     (val ? Utils.addClass : Utils.removeClass).apply(this, [this, 'slider-thumblabel']);
-                    this._balloon.disabled = !val;
+                    const balloon = this._shellProxy.dom[0] as UI.PacemBalloonElement;
+                    balloon.disabled = !val;
                     break;
                 case 'min':
                 case 'max':

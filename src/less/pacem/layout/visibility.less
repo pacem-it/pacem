@@ -72,7 +72,12 @@
         align-items: stretch;
 
         > * {
-            flex: 1 0 100%;
+            flex: 1 1 100%;
+
+            &.flex-auto,
+            &.self-auto{
+                flex: 0 0 auto;
+            }
         }
     }
 

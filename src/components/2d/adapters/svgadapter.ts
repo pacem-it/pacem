@@ -11,19 +11,15 @@
     export class PacemSvgAdapterElement extends Pacem2DAdapterElement {
 
         private _dragger: Pacem.Components.PacemDragDropElement;
+
         viewActivatedCallback() {
             super.viewActivatedCallback();
 
             const dragDrop = this._dragger = document.createElement(P + '-drag-drop') as Pacem.Components.PacemDragDropElement;
-            // dragDrop.addEventListener(UI.DragDropEventType.Init, this._dragInitHandler, false);
             dragDrop.mode = UI.DragDataMode.Self;
-            //const floater = document.createElement('div');
-            //Utils.addClass(floater, PCSS + '-svg-adapter drag-floater');
-            //dragDrop.floater = floater;
 
             // append
             const shell = CustomElementUtils.findAncestorShell(this);
-            //shell.appendChild(floater);
             shell.appendChild(dragDrop);
 
             dragDrop.addEventListener(UI.DragDropEventType.Init, this._dragInitHandler, false);
@@ -37,7 +33,6 @@
                 dragger.removeEventListener(UI.DragDropEventType.Init, this._dragInitHandler, false);
                 dragger.removeEventListener(UI.DragDropEventType.Drag, this._draggingHandler, false);
                 dragger.removeEventListener(UI.DragDropEventType.End, this._dragEndHandler, false);
-                // dragger.floater.remove();
                 dragger.remove();
             }
             super.disconnectedCallback();
@@ -217,13 +212,16 @@
             if (!this._dragging) {
 
                 // not dragging around
-                var el = document.elementFromPoint(pt.x, pt.y);
-                const t: Pacem.Drawing.Drawable = !Utils.isNull(el) ? CustomElementUtils.getAttachedPropertyValue(el, DRAWABLE_VAR) : null;
+                var d: Pacem.Drawing.Drawable = null;
+                var el = document.elementsFromPoint(pt.x, pt.y).find(i => {
+                    d = CustomElementUtils.getAttachedPropertyValue(i, DRAWABLE_VAR);
+                    return d && !d.inert;
+                });
 
                 var old = this._hitTarget,
-                    val = t;
+                    val = d;
 
-                if (Utils.isNull(t && t.stage) || !this._scenes.has(t.stage) || t.inert) {
+                if (Utils.isNull(d && d.stage) || !this._scenes.has(d.stage) || d.inert) {
                     val = null;
                 }
 
@@ -232,33 +230,39 @@
                 if (val !== old) {
                     if (!Utils.isNull(old)) {
                         this._dragger.unregister(this._items.get(old));
-                        this._itemDispatch(old, 'out');
+                        this._itemDispatch(old, 'out', evt);
                     }
 
                     if (!Utils.isNull(val)) {
                         if (val.draggable) {
                             this._dragger.register(this._items.get(val));
                         }
-                        this._itemDispatch(val, 'over');
+                        this._itemDispatch(val, 'over', evt);
                     }
                 }
             }
         }
 
-        private _clickHandler = (evt: Event) => {
+        private _clickHandler = (evt: MouseEvent | TouchEvent) => {
             if (!Utils.isNull(this._hitTarget)) {
-                this._itemDispatch(this._hitTarget, 'click');
+                this._itemDispatch(this._hitTarget, 'click', evt);
             }
         }
 
-        private _itemDispatch(target: Pacem.Drawing.Drawable, type: 'click' | 'over' | 'out');
+        private _itemDispatch(target: Pacem.Drawing.Drawable, type: 'click' | 'over' | 'out', evt: MouseEvent | TouchEvent);
         private _itemDispatch(target: Pacem.Drawing.Drawable, type: UI.DragDropEventType, offset: Point);
-        private _itemDispatch(target: Pacem.Drawing.Drawable, type: 'click' | 'over' | 'out' | UI.DragDropEventType, offset?: Point) {
+        private _itemDispatch(target: Pacem.Drawing.Drawable, type: 'click' | 'over' | 'out' | UI.DragDropEventType, offset?: Point | MouseEvent | TouchEvent) {
             if (!Utils.isNull(target)) {
 
-                const dragArgs: Pacem.Drawing.DragEventArgs = { item: target, offset: offset };
-                const evt = () => Utils.isNull(offset) ? new DrawableElementEvent(type, target) : new Pacem.Drawing.DragEvent(type, { detail: dragArgs }),
-                    itemevt = Utils.isNull(offset) ? new DrawableElementEvent('item' + type, target) : new Pacem.Drawing.DragEvent('item' + type, { detail: dragArgs });
+                var dragArgs: Pacem.Drawing.DragEventArgs,
+                    coords: Pacem.EventCoordinates;
+                if (offset instanceof Event) {
+                    coords = CustomEventUtils.getEventCoordinates(offset);
+                } else {
+                    dragArgs = { item: target, offset: offset };
+                }
+                const evt = () => offset instanceof Event ? new Pacem.Drawing.DrawableEvent(type, target, coords) : new Pacem.Drawing.DragEvent(type, { detail: dragArgs }),
+                    itemevt = offset instanceof Event ? new Pacem.Drawing.DrawableEvent('item' + type, target, coords) : new Pacem.Drawing.DragEvent('item' + type, { detail: dragArgs });
 
                 if (target instanceof EventTarget) {
                     target.dispatchEvent(evt());
@@ -286,14 +290,6 @@
 
                         parent.appendChild(el);
                         dict.set(item, el);
-
-                        //// add handlers
-                        //el.addEventListener('mouseover', this._itemOverHandler, false);
-                        //el.addEventListener('mouseout', this._itemOutHandler, false);
-                        //el.addEventListener('touchstart', this._itemOverHandler, { passive: true });
-                        //el.addEventListener('touchmove', this._itemOverHandler, { passive: true });
-                        //el.addEventListener('touchend', this._itemOutHandler, { passive: true });
-                        //el.addEventListener('click', this._itemClickHandler, false);
                     }
                     else {
                         el = dict.get(item);
@@ -303,7 +299,11 @@
                     }
 
                     if (Pacem.Drawing.isDrawable(item)) {
-                        el.setAttribute('visibility', item.hide ? 'collapsed' : 'visible');
+                        if (item.hide) {
+                            el.setAttribute('display', 'none');
+                        } else {
+                            el.removeAttribute('display');
+                        }
                         el.style.transform = 'none';
                     }
 
@@ -345,14 +345,6 @@
                 for (let k = parent.children.length - 1; k >= j; k--) {
 
                     const el = parent.children.item(k);
-
-                    //// remove handlers
-                    //el.removeEventListener('mouseover', this._itemOverHandler, false);
-                    //el.removeEventListener('mouseout', this._itemOutHandler, false);
-                    //el.removeEventListener('touchstart', this._itemOverHandler);
-                    //el.removeEventListener('touchmove', this._itemOverHandler);
-                    //el.removeEventListener('touchend', this._itemOutHandler);
-                    //el.removeEventListener('click', this._itemClickHandler, false);
 
                     el.remove();
                 }

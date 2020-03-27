@@ -25,6 +25,8 @@ namespace Pacem.Components.Drawing {
                     var ctx = scenes.get(scene);
                     ctx.canvas.width = size.width;
                     ctx.canvas.height = size.height;
+
+                    this._canvasOffset = Utils.offsetRect(ctx.canvas);
                 }
             }
         }
@@ -149,15 +151,15 @@ namespace Pacem.Components.Drawing {
                     if (!Utils.isNull(formerHitTarget)) {
 
                         if (formerHitTarget instanceof Element) {
-                            formerHitTarget.dispatchEvent(new DrawableElementEvent('out', formerHitTarget));
+                            formerHitTarget.dispatchEvent(new Pacem.Drawing.DrawableEvent('out', formerHitTarget, this._pointer));
                         }
-                        scene.dispatchEvent(new DrawableElementEvent('itemout', formerHitTarget));
+                        scene.dispatchEvent(new Pacem.Drawing.DrawableEvent('itemout', formerHitTarget, this._pointer));
                     }
                     if (!Utils.isNull(currentHitTarget)) {
                         if (currentHitTarget instanceof Element) {
-                            currentHitTarget.dispatchEvent(new DrawableElementEvent('over', currentHitTarget));
+                            currentHitTarget.dispatchEvent(new Pacem.Drawing.DrawableEvent('over', currentHitTarget, this._pointer));
                         }
-                        scene.dispatchEvent(new DrawableElementEvent('itemover', currentHitTarget));
+                        scene.dispatchEvent(new Pacem.Drawing.DrawableEvent('itemover', currentHitTarget, this._pointer));
                     }
                 }
 
@@ -178,28 +180,29 @@ namespace Pacem.Components.Drawing {
         }
 
         private _hitTarget: Pacem.Drawing.Drawable;
-        private _pointer: Point;
+        private _pointer: EventCoordinates = {
+            page: { x: 0, y: 0 }, screen: { x: 0, y: 0 }, client: {x: 0, y: 0}
+        };
+        private _canvasOffset: Rect = { x: 0, y: 0, width: 0, height: 0 };
 
-        private _clickHandler = (_: MouseEvent) => {
+        private _clickHandler = (evt: MouseEvent) => {
             const currentHitTarget = this._hitTarget;
             if (!Utils.isNull(currentHitTarget)) {
+                var coords = CustomEventUtils.getEventCoordinates(evt);
                 if (currentHitTarget instanceof Element) {
-                    currentHitTarget.dispatchEvent(new DrawableElementEvent('click', currentHitTarget));
+                    currentHitTarget.dispatchEvent(new Pacem.Drawing.DrawableEvent('click', currentHitTarget, coords));
                 }
-                currentHitTarget.stage.dispatchEvent(new DrawableElementEvent('itemclick', currentHitTarget));
+                currentHitTarget.stage.dispatchEvent(new Pacem.Drawing.DrawableEvent('itemclick', currentHitTarget, coords));
             }
         }
 
         private _mousemoveHandler = (evt: MouseEvent) => {
-            this._pointer = { x: evt.offsetX, y: evt.offsetY };
+            this._pointer = CustomEventUtils.getEventCoordinates(evt);
         }
 
         private _touchstartHandler = (evt: TouchEvent) => {
             if (evt.touches.length === 1) {
-                const touch = evt.touches[0],
-                    pageX = touch.pageX, pageY = touch.pageY,
-                    offset = Utils.offset(evt.target as Element);
-                this._pointer = { x: pageX - offset.left, y: pageY - offset.top };
+                this._pointer = CustomEventUtils.getEventCoordinates(evt);
             }
         }
 
@@ -237,11 +240,13 @@ namespace Pacem.Components.Drawing {
                     hasStroke = !isNone(item.stroke);
 
                 var path2D = new Path2D(data);
-                const pointer = this._pointer;
+                const pointer = this._pointer,
+                    offset = this._canvasOffset,
+                    point = { x: pointer.page.x - offset.x, y: pointer.page.y - offset.y };
                 if (!item.inert /* is hit-test visible? */
                     && !Utils.isNull(pointer)) {
-                    if ((hasFill && ctx.isPointInPath(path2D, pointer.x, pointer.y))
-                        || (hasStroke && ctx.isPointInStroke(path2D, pointer.x, pointer.y))) {
+                    if ((hasFill && ctx.isPointInPath(path2D, point.x, point.y))
+                        || (hasStroke && ctx.isPointInStroke(path2D, point.x, point.y))) {
 
                         // overwrite current hit-target (last one wins)
                         this._hitTarget = item;

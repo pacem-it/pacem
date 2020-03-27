@@ -6,7 +6,8 @@
 
     const RAD2DEG = 180.0 / Math.PI
     const RAD_ROUND = 2 * Math.PI
-    const FLOAT_PATTERN = /[-+]?[\d]+(\.[\d]+)?/g;
+    // 1.7763568394002505e-15 -20.4551920341394 40 40
+    const FLOAT_PATTERN = /[-+]?[\d]+(\.[\d]+(e-[\d]+)?)?/g;
 
     export class Geom {
 

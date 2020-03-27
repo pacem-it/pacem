@@ -106,7 +106,7 @@
     @_w: @grid_spacing * 10;
     @_m: @grid_cell;
 
-   @{P}-toast {
+    @{P}-toast {
         position: static;
         z-index: 0;
         //flex: 0 1 auto;
@@ -124,6 +124,10 @@
         pointer-events: none;
         border-radius: @border_radius;
 
+        // tweak flexbox
+        justify-content: flex-start;
+        padding: @grid_spacing * 2 / 3;
+
         &.toast-show {
             pointer-events: auto;
             //min-height: @_h;
@@ -137,7 +141,7 @@
         right: auto;
         left: 0;
 
-       @{P}-toast {
+        @{P}-toast {
             transform: translateX(-@_w + @_m) translateY(0) translateZ(0) scale(0.25);
             transform-origin: left center;
 
@@ -153,7 +157,7 @@
     &.toaster-bottom {
         flex-direction: column-reverse;
 
-       @{P}-toast {
+        @{P}-toast {
             margin: @grid_spacing 0 0 0;
         }
     }

@@ -2,6 +2,15 @@
 @import "../theme-dark";
 @import "shared";
 
+
+.SliderProgress(@clr) {
+    background-color: @clr;
+
+    & when (@glows = true) {
+        box-shadow: 0 0 8px @clr;
+    }
+}
+
 @{P}-slider {
 
     @_slider_h: @field_height;
@@ -10,11 +19,20 @@
 
     display: grid;
     grid-template-columns: auto 1fr auto;
-    grid-template-areas: 'left track right';
+    grid-template-rows: auto auto;
+    grid-template-areas: 'min track max' 'left footer right';
     align-items: center;
 
     .slider-track, .slider-progress, .slider-thumb {
         grid-area: track;
+    }
+
+    *[min] {
+        grid-area: min;
+    }
+
+    *[max] {
+        grid-area: max;
     }
 
     .slider-track, .slider-progress {
@@ -75,14 +93,6 @@
         }
     }
 
-    .SliderProgress(@clr) {
-        background-color: @clr;
-
-        & when (@glows = true) {
-            box-shadow: 0 0 8px @clr;
-        }
-    }
-
     .slider-progress {
         align-self: start;
         transform: scaleX(0);
@@ -90,58 +100,91 @@
         .SliderProgress(@color_default);
     }
 
-    &.slider-primary {
-        .slider-progress {
-            .SliderProgress(@color_primary);
-        }
-    }
-
-    &.slider-danger {
-        .slider-progress {
-            .SliderProgress(@color_danger);
-        }
-    }
-
-    &.slider-success {
-        .slider-progress {
-            .SliderProgress(@color_success);
-        }
-    }
-
-    &.slider-default {
-        .slider-progress {
-            .SliderProgress(@color_default);
-        }
-    }
-
-    &.slider-accent {
-        .slider-progress {
-            .SliderProgress(@color_accent);
-        }
-    }
-
-    &.slider-warning {
-        .slider-progress {
-            .SliderProgress(@color_warning);
-        }
+    .slider-footer {
+        grid-area: footer;
+        pointer-events: none;
+        display: none;
     }
 }
+
+@{P}-form-field.slider-primary @{P}-slider,
+@{P}-slider.slider-primary {
+    .slider-progress {
+        .SliderProgress(@color_primary);
+    }
+}
+
+@{P}-form-field.slider-danger @{P}-slider,
+@{P}-slider.slider-danger {
+    .slider-progress {
+        .SliderProgress(@color_danger);
+    }
+}
+
+@{P}-form-field.slider-success @{P}-slider,
+@{P}-slider.slider-success {
+    .slider-progress {
+        .SliderProgress(@color_success);
+    }
+}
+
+@{P}-form-field.slider-default @{P}-slider,
+@{P}-slider.slider-default {
+    .slider-progress {
+        .SliderProgress(@color_default);
+    }
+}
+
+@{P}-form-field.slider-accent @{P}-slider,
+@{P}-slider.slider-accent {
+    .slider-progress {
+        .SliderProgress(@color_accent);
+    }
+}
+
+@{P}-form-field.slider-warning @{P}-slider,
+@{P}-slider.slider-warning {
+    .slider-progress {
+        .SliderProgress(@color_warning);
+    }
+}
+
 
 .@{PCSS}-animations {
 
     &:not(.@{PCSS}-dragging) @{P}-slider:not(.slider-keydown) {
 
-            .slider-progress,
-            .slider-thumb {
-                transition: transform .3333s @easing_in_out_sine;
-            }
-       
+        .slider-progress,
+        .slider-thumb {
+            transition: transform .3333s @easing_in_out_sine;
+        }
     }
 
     @{P}-slider {
 
         .slider-thumb .thumb-label {
             transition: transform .15s @easing_in_out_sine;
+        }
+    }
+}
+
+/* form-field context */
+@{P}-form-field @{P}-slider {
+
+    .slider-footer {
+        .FontTech(.8);
+        display: flex;
+        align-items: center;
+        flex-direction: row;
+        padding-left: @grid_spacing;
+        .Ellipsed();
+        color: fade(@color_tech, 100);
+
+        &::before {
+            .Icon('label', @grid_spacing/1.5);
+            position: static;
+            margin-right: @grid_spacing/6;
+            color: @color_default;
         }
     }
 }
