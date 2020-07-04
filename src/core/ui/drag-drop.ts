@@ -1,4 +1,5 @@
-﻿namespace Pacem.UI {
+﻿/// <reference path="../../../dist/js/pacem-foundation.d.ts" />
+namespace Pacem.UI {
 
     export enum DragDataMode {
         /** Source element is dragged around (floater is the element itself so is the data). */
@@ -78,9 +79,9 @@
 
         get delta() {
             var args = this;
-            return Geom.add(
+            return Point.add(
                 args.initialDelta, /* included in `initialDelta` for perf sake => { x: this._builder.scroll.left, y: this._builder.scroll.top },*/
-                Geom.subtract(args.origin, args.currentPosition)
+                Point.subtract(args.origin, args.currentPosition)
             );
         }
     }
@@ -131,10 +132,10 @@
         target?: Element
     };
 
-    export class DragDropEvent extends CustomTypedEvent<DragDropEventArgsClass | DragDropInitEventArgsClass> {
+    export class DragDropEvent extends CustomUIEvent<DragDropEventArgsClass | DragDropInitEventArgsClass> {
 
-        constructor(type: DragDropEventType, args: DragDropEventArgsClass | DragDropInitEventArgsClass, eventInit?: EventInit) {
-            super(type, args, eventInit);
+        constructor(type: DragDropEventType, args: DragDropEventArgsClass | DragDropInitEventArgsClass, eventInit?: EventInit, evt?: MouseEvent | TouchEvent) {
+            super(type, args, eventInit, evt);
         }
 
     }

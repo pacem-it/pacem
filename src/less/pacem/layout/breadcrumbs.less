@@ -1,4 +1,5 @@
 ﻿@import "../theme-dark";
+@import "mixins";
 
 @_main_h: 2 * @grid_spacing;
 @_main_w: 3 * @grid_spacing;
@@ -44,7 +45,7 @@
         text-shadow: none;
     }
 
-    &.breadcrumb-border {
+    &.breadcrumb-border{
         border: 1px solid @color_border;
     }
 
@@ -74,11 +75,13 @@
         line-height: @_main_h;
     }
 
-    color: @color_teal;
+    color: @color_secondary;
+
+    .BoxLayout(breadcrumb);
 
     &.home {
         background-color: @color_background_alt;
         color: @color_accent;
-        border-color: @color_accent;
+        border-color: fade(@color_accent, 20);
     }
 }

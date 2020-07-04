@@ -70,10 +70,10 @@ namespace Pacem.Components.Fx {
                 bottomLeft = { x: rect.left, y: rect.top + rect.height },
                 bottomRight = { x: topRight.x, y: bottomLeft.y };
             const radius = Math.max(
-                Geom.distance(point, topLeft),
-                Geom.distance(point, topRight),
-                Geom.distance(point, bottomRight),
-                Geom.distance(point, bottomLeft)
+                Point.distance(point, topLeft),
+                Point.distance(point, topRight),
+                Point.distance(point, bottomRight),
+                Point.distance(point, bottomLeft)
             );
 
             const wave = this._wave;

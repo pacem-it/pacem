@@ -9,6 +9,6 @@ namespace Pacem.Js.CustomElements
     {
         public string Version { get; set; }
 
-        public int Refresh { get; set; }
+        public long Refresh { get; set; }
     }
 }

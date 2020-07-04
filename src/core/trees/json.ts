@@ -3,13 +3,49 @@ namespace Pacem {
 
     const REF_ID = '$refId';
 
+    /** How functions get serialized. */
+    export enum JsonFunctionConversion {
+        /** Skip functions (default). */
+        Ignore,
+        /** Functions get referenced from a state in the current DOM. Not suitable for backups or long-term dehydrations. */
+        Reference = 'reference',
+        /** Function gets stringified and then eval(uated) while dehydrating. Functions with a state (impure) might not working properly when used on the dehydrated side. */
+        Plain = 'plain'
+    };
+
+    export interface JsonSerializationOptions {
+        functions?: JsonFunctionConversion
+    }
+
+    class JsonFnStore {
+        private static _jsonFnWeakMap = new WeakMap<Function, string>();
+        private static _jsonFnMap = new Map<string, Function>();
+        static store(fn: Function): string {
+            const weak = this._jsonFnWeakMap;
+            if (!weak.has(fn)) {
+                const key = Utils.uniqueCode();
+                weak.set(fn, key);
+                this._jsonFnMap.set(key, fn);
+            }
+            return weak.get(fn);
+        }
+        static retrieve(key: string) {
+            return this._jsonFnMap.get(key);
+        }
+        static remove(key: string) {
+            const fn = this.retrieve(key);
+            this._jsonFnMap.delete(key);
+            this._jsonFnWeakMap.delete(fn);
+        }
+    }
+
     export class Json {
 
-        private constructor() {
+        private constructor(private _options?: JsonSerializationOptions) {
         }
 
-        static serialize(obj: any) {
-            return new Json()._serialize(obj);
+        static serialize(obj: any, options?: JsonSerializationOptions) {
+            return new Json(options)._serialize(obj);
         }
 
         static deserialize(json: string) {
@@ -26,14 +62,27 @@ namespace Pacem {
         private _deserialize(json: string) {
             let hasRefs = false;
             let obj = JSON.parse(json, (key, value) => {
-                const elPattern = /^\$<#(.+)>$/;
+                const elPattern = /^\$<#(.+)>$/,
+                    fnPattern = /^\$<fn:([^\x05]+)>$/, // <- Firefox workaround for missing 's' flag implementation
+                    // fnPattern = /^\$<fn:(.+)>$/s,
+                    fnRefPattern = /^\$<fn#(.+)>$/;
                 let arr: RegExpExecArray;
                 if (key === REF_ID) {
                     hasRefs = true;
                 } else if (typeof value === 'string') {
+
+                    // element?
                     if ((arr = elPattern.exec(value)) && arr.length > 1) {
                         return document.getElementById(arr[1]);
-                    }
+                    } else
+                        // function (flat)
+                        if ((arr = fnPattern.exec(value)) && arr.length > 1) {
+                            return eval(arr[1]);
+                        } else
+                            // function (ref)
+                            if ((arr = fnRefPattern.exec(value)) && arr.length > 1) {
+                                return JsonFnStore.retrieve(arr[1]);
+                            }
                 }
                 return value;
             });
@@ -69,9 +118,19 @@ namespace Pacem {
                                 keys.push(k);
                             }
                             obj[k] = this._flatten(obj[k], increment, seen, keys);
-                            });
+                        });
                         return obj;
                     }
+                }
+            } else if (typeof obj === 'function') {
+                switch (this._options?.functions) {
+                    case JsonFunctionConversion.Reference:
+                        const key = JsonFnStore.store(obj);
+                        return '$<fn#' + key + '>';
+                    case JsonFunctionConversion.Plain:
+                        return '$<fn:' + obj + '>';
+                    default:
+                        return undefined;
                 }
             }
             return obj;

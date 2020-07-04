@@ -1,7 +1,7 @@
 ﻿namespace Pacem {
 
     const RGB_PATTERN = /^rgb\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)$/;
-    const RGBA_PATTERN = /^rgba\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,[\d\.]+\)$/;
+    const RGBA_PATTERN = /^rgba\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*([\d\.]+)\)$/;
     const HEX_PATTERN = /^#[a-f0-9]{6}$/;
     const HEX_SHORT_PATTERN = /^#[a-f0-9]{3}$/;
 

@@ -6,6 +6,7 @@
 /// <reference path="json-tests.ts" />
 /// <reference path="uri-tests.ts" />
 /// <reference path="transformer-tests.ts" />
+/// <reference path="geom2d-tests.ts" />
 
 namespace Pacem.Tests {
 
@@ -46,6 +47,12 @@ namespace Pacem.Tests {
     });
 
     geomTests.forEach(test => {
+
+        describe(test.name, test.test);
+
+    });
+
+    geom2dTests.forEach(test => {
 
         describe(test.name, test.test);
 

@@ -293,7 +293,7 @@ namespace Pacem.Components {
                     this._currentTarget = container;
                 }
 
-                dragger.dispatchEvent(new UI.DragDropEvent(UI.DragDropEventType.Start, UI.DragDropEventArgsClass.fromArgs(args)));
+                dragger.dispatchEvent(new UI.DragDropEvent(UI.DragDropEventType.Start, UI.DragDropEventArgsClass.fromArgs(args), {}, evt));
             }
 
             // move
@@ -305,7 +305,7 @@ namespace Pacem.Components {
                 Utils.addClass(CustomElementUtils.findAncestorShell(el), PCSS + '-dragging');
                 const pos = args.currentPosition = getCurrentPosition();
                 let floater = args.floater;
-                let moveEvt = new UI.DragDropEvent(UI.DragDropEventType.Drag, UI.DragDropEventArgsClass.fromArgs(args), { cancelable: true });
+                let moveEvt = new UI.DragDropEvent(UI.DragDropEventType.Drag, UI.DragDropEventArgsClass.fromArgs(args), { cancelable: true }, evt);
                 // dispatch move event
                 dragger.dispatchEvent(moveEvt);
                 if (!moveEvt.defaultPrevented // obey the - eventual - canceling feedback
@@ -326,15 +326,15 @@ namespace Pacem.Components {
                 if (hover !== oldTarget) {
                     if (!Utils.isNull(oldTarget)) {
                         Utils.removeClass(<HTMLElement | SVGElement>oldTarget, PCSS + '-dropping');
-                        dragger.dispatchEvent(new UI.DragDropEvent(UI.DragDropEventType.Out, UI.DragDropEventArgsClass.fromArgs(args)));
+                        dragger.dispatchEvent(new UI.DragDropEvent(UI.DragDropEventType.Out, UI.DragDropEventArgsClass.fromArgs(args), {}, evt));
                         this._logFn(Logging.LogLevel.Info, `Drop area left (${(oldTarget['id'] || oldTarget.constructor.name)})`);
                     }
                     if (dragger.dropTargets.indexOf(hover) != -1) {
                         args.target = hover;
                         this._logFn(Logging.LogLevel.Info, `Drop area entering (${(args.target['id'] || args.target.constructor.name)})`);
-                        let evt = new UI.DragDropEvent(UI.DragDropEventType.Over, UI.DragDropEventArgsClass.fromArgs(args), { cancelable: true });
-                        dragger.dispatchEvent(evt);
-                        if (evt.defaultPrevented) {
+                        let evt0 = new UI.DragDropEvent(UI.DragDropEventType.Over, UI.DragDropEventArgsClass.fromArgs(args), { cancelable: true }, evt);
+                        dragger.dispatchEvent(evt0);
+                        if (evt0.defaultPrevented) {
                             delete args.target;
                         } else {
                             Utils.addClass(<HTMLElement | SVGElement>args.target, PCSS + '-dropping');
@@ -393,7 +393,7 @@ namespace Pacem.Components {
                     // === drop
                     const dropping = !Utils.isNull(args.target);
                     if (dropping) {
-                        dragger.dispatchEvent(new UI.DragDropEvent(UI.DragDropEventType.Drop, UI.DragDropEventArgsClass.fromArgs(args)));
+                        dragger.dispatchEvent(new UI.DragDropEvent(UI.DragDropEventType.Drop, UI.DragDropEventArgsClass.fromArgs(args), {}, evt));
                         Utils.removeClass(<HTMLElement>args.target, PCSS + '-dropping');
                     }
 
@@ -448,7 +448,7 @@ namespace Pacem.Components {
                     }
                     // === end
 
-                    dragger.dispatchEvent(new UI.DragDropEvent(UI.DragDropEventType.End, UI.DragDropEventArgsClass.fromArgs(args)));
+                    dragger.dispatchEvent(new UI.DragDropEvent(UI.DragDropEventType.End, UI.DragDropEventArgsClass.fromArgs(args), {}, evt));
                     //
                     Utils.removeClass(shell, PCSS + '-dragging');
                 }
@@ -521,41 +521,45 @@ namespace Pacem.Components {
                 return;
             }
 
-            // check modifier guards
-            if (!CustomEventUtils.matchModifiers(evt, this.modifiers)) {
-                return;
-            }
-
             // check the handle selector
             if (!Utils.isNullOrEmpty(this.handleSelector)
                 && (<HTMLElement>evt.currentTarget).querySelector(this.handleSelector) !== evt.target) {
                 return;
             }
 
-            // fair to go...
-            // stop and prevent
-            avoidHandler(evt);
-
             const el = evt.currentTarget,
                 coords = CustomEventUtils.getEventCoordinates(evt),
                 origin: Point = coords.page;
 
+            let element = <HTMLElement | SVGElement>el;
+            let args = UI.DragDropInitEventArgsClass.fromArgs({
+                element: element,
+                placeholder: null,
+                currentPosition: origin,
+                origin: origin,
+                initialDelta: { x: 0, y: 0 },
+                startTime: null,
+                floater: null,
+                data: null
+            });
+
+            // init event might be prevented
+            const initEvent = new Pacem.UI.DragDropEvent(Pacem.UI.DragDropEventType.Init, args, { cancelable: true }, evt);
+            this.dispatchEvent(initEvent);
+            if (initEvent.defaultPrevented) {
+                return;
+            }
+
+            // fair to go...
+            // stop propagation
+            avoidHandler(evt);
+
             const lockFn = () => {
-                let element = <HTMLElement | SVGElement>el;
-                let args = UI.DragDropInitEventArgsClass.fromArgs({
-                    element: element,
-                    placeholder: null,
-                    currentPosition: origin,
-                    origin: origin,
-                    initialDelta: { x: 0, y: 0 },
-                    startTime: null,
-                    floater: null,
-                    data: null
-                });
-                this.dispatchEvent(new Pacem.UI.DragDropEvent(Pacem.UI.DragDropEventType.Init, args));
-                this.log(Logging.LogLevel.Info, 'Drag locked!');
+
                 el.removeEventListener('mouseup', unlockFn, false);
                 el.removeEventListener('touchend', unlockFn, false);
+
+                this.log(Logging.LogLevel.Info, 'Drag locked!');
                 SET_VAL(el, MOUSE_DOWN, origin);
                 SET_VAL(el, DELEGATE, new DragElementDelegate({
                     element: element, dragDrop: this, placeholder: args.placeholder, data: args.data,
@@ -613,13 +617,6 @@ namespace Pacem.Components {
         @Watch({ emit: false, converter: PropertyConverters.String }) spillBehavior: Pacem.UI.DropTargetMissedBehavior;
         /** Gets or sets the handle selector to be matched when starting the drop gesture. */
         @Watch({ emit: false, converter: PropertyConverters.String }) handleSelector: string;
-        /** Gets or sets whether keyboard modifiers are allowed */
-        @Watch({
-            emit: false, converter: {
-                convert: (attr) => (attr || '').match(/[a-zA-Z]+/g),
-                convertBack: (prop) => (prop || []).join('+')
-            }
-        }) modifiers: string[];
 
     }
 }

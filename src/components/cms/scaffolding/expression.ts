@@ -1,8 +1,6 @@
-﻿/// <reference path="types.ts" />
-/// <reference path="input.ts" />
-/// <reference path="element-picker.ts" />
+﻿/// <reference path="element-picker.ts" />
 
-namespace Pacem.Components.Scaffolding {
+namespace Pacem.Components.Cms {
 
     export enum ExpressionSource {
         Constant = 'const',
@@ -26,11 +24,11 @@ namespace Pacem.Components.Scaffolding {
             <${P}-element-picker value="{{ :host._sourceRef, twoway }}" selector="{{ :host.selector }}" filter="{{ :host.filter }}" labeler="{{ :host.labeler }}" class="display-block"></${P}-element-picker>
         </${P}-panel>
         <${P}-panel class="${PCSS}-cell cols-hd-6" hide="{{ :host._source !== '${ExpressionSource.PropertyReference}' }}">
-            <${P}-property-picker disabled="{{ !:host._sourceRef }}" target="{{ :host._sourceRef }}" on-change="::_editor.focus()" value="{{ :host._propRef, twoway }}" class="display-block"></${P}-property-picker>
+            <${P}-property-picker value="{{ :host._propRef, twoway }}" disabled="{{ !:host._sourceRef }}" target="{{ :host._sourceRef }}" on-change="::_editor.focus()" class="display-block"></${P}-property-picker>
         </${P}-panel>
 
         <${P}-panel class="${PCSS}-cell">
-            <${P}-textarea class="display-block" placeholder="{{ '{{ '+ (:host._source || '') +'... }}' }}" change-policy="${ChangePolicy.Blur}"></${P}-textarea>
+            <${P}-textarea class="display-block" placeholder="{{ '{{ '+ (:host._source || '') +'... }}' }}" change-policy="${Pacem.Components.Scaffolding.ChangePolicy.Blur}"></${P}-textarea>
         </${P}-panel>
     </div>
 </${P}-collapse>
@@ -41,9 +39,9 @@ namespace Pacem.Components.Scaffolding {
             <${P}-panel class="fieldgroup-prepend">
                 <${P}-button class="flat edit ${PCSS}-pad pad-left-1" on-click=":host._editing = !:host._editing" hide="{{ :host.readonly }}"></${P}-button>
             </${P}-panel>
-            <${P}-panel class="fieldgroup-append text-tech" hide="{{ Pacem.Utils.isNullOrEmpty(:host.value) }}">
+            <${P}-panel class="fieldgroup-append text-tech display-flex flex-middle flex-nowrap" hide="{{ $pacem.isNullOrEmpty(:host.value) }}">
                 <i class="${PCSS}-icon text-primary">keyboard_arrow_right</i>
-                <${P}-text text="?" class="bg-primary ${PCSS}-pad pad-left-1 pad-right-1 ${PCSS}-margin margin-right-1" eval></${P}-text>
+                <${P}-text text="?" class="bg-primary ${PCSS}-pad pad-left-1 pad-right-1 ${PCSS}-margin margin-right-1 text-truncate" eval></${P}-text>
             </${P}-panel>
         </div>
     </div>
@@ -60,7 +58,7 @@ namespace Pacem.Components.Scaffolding {
         @Watch({ converter: PropertyConverters.String }) private _propRef: string;
 
         @ViewChild(P + '-element-picker') private _picker: PacemElementPickerElement;
-        @ViewChild(P + '-textarea') private _editor: PacemTextAreaElement;
+        @ViewChild(P + '-textarea') private _editor: Pacem.Components.Scaffolding.PacemTextAreaElement;
         @ViewChild('span.' + PCSS + '-viewfinder') private _view: HTMLElement;
         @ViewChild(P + '-text') private _eval: PacemTextElement;
 

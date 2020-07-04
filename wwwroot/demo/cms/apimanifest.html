@@ -44,7 +44,8 @@ The Api Manifest Widget can be exploitet to feed a `PacemWidgetFetchElement`> ta
         <pacem-checkbox class="checkbox-toggle" id="toggleEdit1" true-value="true" false-value="false" value="false"></pacem-checkbox>
         <br />
         <pacem-span content="{{ 'yielded endpoints: <code>'+ (#manifest1.manifest && #manifest1.manifest.endpoints && #manifest1.manifest.endpoints.length || '0') +'</code>' }}"></pacem-span> |
-        <pacem-span content="{{ 'url to fetch: <code>'+ (#fetch1.manifest && #fetch1.manifest.baseUrl || '') + (#fetch1.endpoint && #fetch1.endpoint.path || '...') +'</code>' }}"></pacem-span>
+        <pacem-span content="{{ 'url to fetch: <code>'+ (#fetch1.manifest && #fetch1.manifest.baseUrl || '') + (#fetch1.endpoint && #fetch1.endpoint.path || '...') +'</code>' }}"></pacem-span> |
+        <pacem-span text="{{ JSON.stringify(#fetch1.result || {}) }}" hide="{{ $pacem.isNull(#fetch1.result) }}"></pacem-span>
 
     </template>
 </pacemjs-snippet>

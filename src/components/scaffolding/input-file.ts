@@ -43,8 +43,9 @@ namespace Pacem.Components.Scaffolding {
         , template: `<${P}-button on-click=":host._dispatchDownload($event)" class="${PCSS}-upload ${PCSS}-viewfinder flat" css-class="{{ {'upload-chosen': !Pacem.Utils.isNullOrEmpty(:host.value) && !:host.uploading, 'upload-error': ${ERROR_BINDING}, 'upload-readonly': :host.readonly } }}">
 
         <${P}-panel class="upload-button" hide="{{ (:host.uploading || :host.failed) && !Pacem.Utils.isNullOrEmpty(:host.url) }}">
-            <${P}-button tooltip="{{ :host.viewValue }}" class="circular pos-relative overflow-hidden" icon-glyph="{{ :host._getMimeIcon(:host.value, :host.uploading) }}" 
-                css-class="{{ {'${PCSS}-anim anim-rotate': :host.uploading, 'button-danger': :host.invalidFile, 'button-primary': Pacem.Utils.isNullOrEmpty(:host.value) && !:host.invalidFile, 'button-success': !Pacem.Utils.isNullOrEmpty(:host.value) && !:host.invalidFile } }}">
+            <${P}-button tooltip="{{ :host.readonly ? :host.viewValue : 'upload' }}" class="circular pos-relative overflow-hidden" icon-glyph="{{ :host._getMimeIcon(:host.value, :host.uploading) }}" 
+                on-mouseover="$this.iconGlyph = :host._getMimeIcon(:host.readonly ? :host.value : '', :host.uploading)" on-mouseout="$this.iconGlyph = :host._getMimeIcon(:host.value, :host.uploading)"
+                css-class="{{ {'${PCSS}-anim anim-rotate': :host.uploading, 'button-error': :host.invalidFile, 'button-primary': Pacem.Utils.isNullOrEmpty(:host.value) && !:host.invalidFile, 'button-success': !Pacem.Utils.isNullOrEmpty(:host.value) && !:host.invalidFile } }}">
                 <input type="file" class="${PCSS}-transparent ${PCSS}-clickable pos-absolute absolute-left absolute-right absolute-top absolute-bottom" />
             </${P}-button>
         </${P}-panel>
@@ -57,10 +58,10 @@ namespace Pacem.Components.Scaffolding {
                 on-click=":host._undo($event)"><${P}-text text="{{ :host.undoCaption }}"></${P}-text></${P}-button>
         </${P}-panel>
 
-        <${P}-span hide="{{ $pacem.isNullOrEmpty(:host.value) || :host.uploading }}" class="readonly text-reset display-block ${PCSS}-anim text-truncate text-left text-pre ${PCSS}-pad pad-right-3" text="{{ :host.viewValue }}"></${P}-span>
+        <${P}-span tooltip="{{ :host.viewValue }}" hide="{{ $pacem.isNullOrEmpty(:host.value) || :host.uploading }}" class="readonly text-reset display-block ${PCSS}-anim text-truncate text-left text-pre ${PCSS}-pad pad-right-3" text="{{ :host.viewValue }}"></${P}-span>
 
         <${P}-panel class="upload-progress hit-none" hide="{{ :host.readonly || (!Pacem.Utils.isNullOrEmpty(:host.value) && !:host.uploading) }}">
-            <${P}-tuner value="{{ :host.percentage }}" css-class="{{ {'tuner-success': !:host.invalidFile, 'tuner-danger': :host.invalidFile} }}" interactive="false"></${P}-tuner>
+            <${P}-tuner value="{{ :host.percentage }}" css-class="{{ {'tuner-success': !:host.invalidFile, 'tuner-error': :host.invalidFile} }}" interactive="false"></${P}-tuner>
         </${P}-panel>
 
 </${P}-button>`

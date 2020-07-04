@@ -2,7 +2,7 @@
 /// <reference path="promise.ts" />
 /// <reference path="trees/json.ts" />
 /// <reference path="number_extensions.ts" />
-/// <reference path="maths/colors.ts" />
+/// <reference path="../../dist/js/pacem-foundation.d.ts" />
 
 namespace Pacem {
 
@@ -213,8 +213,8 @@ namespace Pacem {
             return new Blob([u8arr], { type: mime });
         }
 
-        static textToBlob(content: string): Blob {
-            return new Blob([content], { type: 'text/plain' });
+        static textToBlob(content: string, type = 'text/plain'): Blob {
+            return new Blob([content], { type: type });
         }
 
         /**
@@ -352,39 +352,67 @@ namespace Pacem {
             }
         }
 
-        static snapshotElement(el: HTMLElement | SVGElement): HTMLImageElement {
+        private static get _domURL(): { createObjectURL: (object) => string, revokeObjectURL: (url: string) => void } {
+            return window.URL || window['webkitURL'] || <any>window;
+        }
 
-            var data = el.outerHTML;
+        /**
+         * Snapshots a DOM element and returns its blob image representation.
+         * @param el Element to snapshot
+         * @param background Background color to replace the original
+         */
+        static snapshotElement(el: HTMLElement | SVGElement, background?: string): PromiseLike<Blob> {
 
-            if (el instanceof HTMLElement) {
+            return new Promise((resolve, _) => {
 
-                var doc = document.implementation.createHTMLDocument('');
-                doc.write(el.outerHTML);
+                if (!(el instanceof SVGElement)) {
+                    var doc = document.implementation.createHTMLDocument('');
+                    doc.write(el.outerHTML);
 
-                doc.documentElement.setAttribute('xmlns', doc.documentElement.namespaceURI);
+                    doc.documentElement.setAttribute('xmlns', doc.documentElement.namespaceURI);
 
-                const html = new XMLSerializer().serializeToString(doc);
+                    const node = <HTMLElement>document.evaluate(".//" + el.localName, doc.body, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+                    node.setAttribute('xmlns', doc.documentElement.namespaceURI);
+                    node.style.cssText = getComputedStyle(el).cssText;
 
-                const node = <HTMLElement>document.evaluate(".//" + el.localName, doc.body, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
-                node.setAttribute('xmlns', doc.documentElement.namespaceURI);
-                node.style.cssText = getComputedStyle(el).cssText;
+                    // Get well-formed markup
+                    const svg = document.createElementNS("http://www.w3.org/2000/svg", 'svg');
+                    const size = Utils.offset(el);
+                    svg.setAttribute('width', size.width.toString());
+                    svg.setAttribute('height', size.height.toString());
+                    svg.innerHTML = '<foreignObject width="100%" height="100%">' +
+                        node.outerHTML +
+                        '</foreignObject>';
+                    el = svg;
+                }
 
-                // Get well-formed markup
-                var data = '<svg xmlns="http://www.w3.org/2000/svg" width="' + el.offsetWidth + '" height="' + el.offsetHeight + '">' +
-                    '<foreignObject width="100%" height="100%">' +
-                    node.outerHTML +
-                    '</foreignObject>' +
-                    '</svg>';
+                const data = new XMLSerializer().serializeToString(el);
 
-            }
+                var domURL = this._domURL;
 
-            var DOMURL: { createObjectURL: (object) => string } = window.URL || window['webkitURL'] || <any>window;
+                var img = new Image();
+                var svg = new Blob([data], { type: 'image/svg+xml' });
+                var url = domURL.createObjectURL(svg);
+                var canvas = document.createElement('canvas');
+                img.onload = () => {
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    const ctx = canvas.getContext('2d');
 
-            var img = new Image();
-            var svg = new Blob([data], { type: 'image/svg+xml' });
-            var url = DOMURL.createObjectURL(svg);
-            img.src = url;
-            return img;
+                    if (!Utils.isNullOrEmpty(background)) {
+                        ctx.fillStyle = background;
+                        ctx.fillRect(0, 0, img.width, img.height);
+                    }
+
+                    ctx.drawImage(img, 0, 0);
+
+                    domURL.revokeObjectURL(url);
+                    canvas.toBlob(b => {
+                        resolve(b);
+                    }, 'image/png');
+                };
+                img.src = url;
+            });
         }
 
         static download(content: Blob, filename?: string, mime?: string): PromiseLike<void>;
@@ -428,7 +456,7 @@ namespace Pacem {
                 const content = arg0,
                     filename = (typeof arg1 === 'string' && arg1) || DEFAULT_DOWNLOAD_FILENAME,
                     fanchor = document.createElement('a');
-                fanchor.setAttribute('href', window.URL.createObjectURL(content));
+                fanchor.setAttribute('href', this._domURL.createObjectURL(content));
                 fanchor.setAttribute('download', filename);
                 if (document.createEvent) {
                     var event = document.createEvent('MouseEvents');
@@ -670,6 +698,9 @@ namespace Pacem {
         static isEmpty(obj) {
             if (Utils.Dates.isDate(obj))
                 return false;
+            if (Utils.isArray(obj)) {
+                return obj.length === 0;
+            }
             for (var _ in obj)
                 return false;
             try {
@@ -702,29 +733,8 @@ namespace Pacem {
             return sv1 === sv2;
         }
 
-        static extend(target, ...sources: any[]) {
-            for (var source of sources) {
-                var obj = <any>Object; // <- dodging the es5 compiler // TODO: replace in a future.
-                if (typeof obj.assign != 'function') {
-                    obj.assign = function (target) {
-                        'use strict';
-                        if (target == null) {
-                            throw new TypeError('Cannot convert undefined or null to object');
-                        }
-                        target = obj(target);
-                        if (source != null) {
-                            for (var key in source) {
-                                if (obj.prototype.hasOwnProperty.call(source, key)) {
-                                    target[key] = source[key];
-                                }
-                            }
-                        }
-                    };
-                }
-                else obj.assign(target, source);
-            }
-            return target;
-        }
+        /** Alias for Object.assign */
+        static extend = Object.assign;
 
         static clone<T>(obj: T): T {
             if (obj === undefined) return undefined;
@@ -782,7 +792,7 @@ namespace Pacem {
         };
 
         /**
-         * Ensures the proper parsing of Web API results, including deprecated Pacem wrapped results.
+         * Ensures the proper parsing of Web API results, including deprecated/legacy Pacem wrapped results.
          */
         static getApiResult(json: any): any {
             if (typeof json === 'object'

@@ -50,10 +50,10 @@ namespace Pacem.UI {
         }
     }
 
-    export class RescaleEvent extends CustomTypedEvent<RescaleEventArgsClass> {
+    export class RescaleEvent extends CustomUIEvent<RescaleEventArgsClass> {
 
-        constructor(type: RescaleEventType, args: RescaleEventArgsClass, eventInit?: EventInit) {
-            super(type, args, eventInit);
+        constructor(type: RescaleEventType, args: RescaleEventArgsClass, eventInit?: EventInit, evt?: MouseEvent | TouchEvent) {
+            super(type, args, eventInit, evt);
         }
 
     }

@@ -57,6 +57,7 @@ namespace Pacem.Components {
         disconnectedCallback() {
             this._isReady = 
                 /*this._isConnected =*/ false;
+            this.dispatchEvent(new Event('unload'));
         }
 
         viewActivatedCallback() {

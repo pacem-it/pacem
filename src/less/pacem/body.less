@@ -20,16 +20,35 @@ body {
     .@{PCSS}-animatable {
         .Animatable(.4s);
 
+        &.anim-fade-inout,
         &.anim-rotate {
             animation-name: rotate-anim;
-            animation-duration: 1s;
             animation-timing-function: @easing_in_out_sine;
             animation-delay: 0;
             animation-iteration-count: infinite;
         }
 
+        &.anim-rotate {
+            animation-duration: 1s;
+            animation-name: rotate-anim;
+        }
+
+        &.anim-fade-inout {
+            animation-duration: .6s;
+            animation-name: fade-in;
+            animation-direction: alternate;
+        }
+
         &.anim-quick {
             animation-duration: .2s;
+
+            &.anim-rotate {
+                animation-duration: .4s;
+            }
+
+            &.anim-fade-inout {
+                animation-duration: .3s;
+            }
         }
 
         &.anim-sudden {
@@ -38,6 +57,14 @@ body {
 
         &.anim-slow {
             animation-duration: .8s;
+
+            &.anim-rotate {
+                animation-duration: 2s;
+            }
+
+            &.anim-fade-inout {
+                animation-duration: 1s;
+            }
         }
 
         &.anim-delay {
@@ -130,7 +157,6 @@ body {
 
 ::-webkit-resizer {
 }
-
 // gecko
 &, * {
     scrollbar-color: @color_scrollbar_thumb @color_scrollbar_track;

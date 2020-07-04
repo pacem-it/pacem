@@ -242,6 +242,27 @@ logger="{{ #_RFzKYbi.logger }}" entity="{{ #_RFzKYbi.entity, twoway }}" metadata
     },
 
     {
+        name: 'CustomEventUtils', test: function () {
+
+            it('Match modifiers overload equivalence', function () {
+
+                const evt: KeyEventLike = {
+                    ctrlKey: true,
+                    altKey: true,
+                    shiftKey: false,
+                    metaKey: false
+                };
+                const check1 = CustomEventUtils.matchModifiers(evt, ["Ctrl", "Alt"]);
+                const check2 = CustomEventUtils.matchModifiers(evt, EventKeyModifier.CtrlKey, EventKeyModifier.AltKey);
+
+                expect(check1).toEqual(check2);
+
+            });
+
+        }
+    },
+
+    {
         name: 'CustomElementUtils', test: function () {
 
             it('Set object leaf property (dotted path)', function () {
@@ -421,6 +442,24 @@ logger="{{ #_RFzKYbi.logger }}" entity="{{ #_RFzKYbi.entity, twoway }}" metadata
 
             });
 
+            it('PacemEventTarget unload event', function (done) {
+
+                var ticker = 0;
+                const el = <Pacem.Components.PacemEventTarget>document.createElement('pacem-data');
+                const fnDone = function (evt?) {
+                    expect(++ticker).toBeTruthy();
+                    if (ticker === 2) {
+                        done();
+                    } else {
+                        el.remove();
+                    }
+                }
+                el.addEventListener('load', fnDone, false);
+                el.addEventListener('unload', fnDone, false);
+
+                document.body.appendChild(el);
+            });
+
             it('PacemText plain attribute', function (done) {
 
                 var instance = <Pacem.Components.PacemTextElement>document.createElement('pacem-text');
@@ -473,7 +512,6 @@ logger="{{ #_RFzKYbi.logger }}" entity="{{ #_RFzKYbi.entity, twoway }}" metadata
                 document.body.appendChild(el);
 
             });
-
 
             it('PacemEventTarget attributechange event', function (done) {
 

@@ -2,10 +2,39 @@
 @import "../theme-dark";
 @import "../ui/shared";
 
-.PanelColorize(@prefix, @_clr) {
-    .@{prefix}-heading {
-        color: @_clr;
+.BoxLayout(@prefix) {
+    .BoxLayout(@prefix, @color_default);
+
+    &.@{prefix}-accent {
+        .BoxLayout(@prefix, @color_accent);
     }
+
+    &.@{prefix}-warning {
+        .BoxLayout(@prefix, @color_warning);
+    }
+
+    &.@{prefix}-success {
+        .BoxLayout(@prefix, @color_success);
+    }
+
+    &.@{prefix}-danger {
+        .BoxLayout(@prefix, @color_danger);
+    }
+
+    &.@{prefix}-error {
+        .BoxLayout(@prefix, @color_error);
+    }
+
+    &.@{prefix}-primary {
+        .BoxLayout(@prefix, @color_primary);
+    }
+
+    &.@{prefix}-disabled {
+        .BoxLayout(@prefix, @color_disabled);
+    }
+}
+
+.BoxLayout(@prefix, @_clr) {
 
     &.@{prefix}-border {
         border-color: fade(@_clr, 20);
@@ -18,7 +47,14 @@
     &.@{prefix}-corners when (@border_radius = 0) {
         .Corners(@_clr);
     }
+}
 
+.PanelColorize(@prefix, @_clr) {
+    .@{prefix}-heading {
+        color: @_clr;
+    }
+
+    .BoxLayout(@prefix, @_clr);
     .CornersColorize(@_clr);
 }
 
@@ -170,6 +206,10 @@
 
     &.@{prefix}-danger {
         .PanelColorize(@prefix, @color_danger);
+    }
+
+    &.@{prefix}-error {
+        .PanelColorize(@prefix, @color_error);
     }
 
     &.@{prefix}-primary {

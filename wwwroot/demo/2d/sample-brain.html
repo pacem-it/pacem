@@ -8,14 +8,17 @@
 <div class="pacem-relative">
     <!--on-itemover="$event.detail.origStroke = ''+$event.detail.stroke; $event.detail.stroke = '#f00'; $this.draw($event.detail)"
     on-itemout="$event.detail.stroke = $event.detail.origStroke; $this.draw($event.detail)"-->
-    <pacem-2d adapter="#adapter2dSvg" datasource="{{ $pacem.drawifyBrainSlice(#slice.model, $this, #style.cssReady) }}"
-              on-itemover="#neuronInfo.model = $event.detail.draggable && $event.detail.center || #neuronInfo.model; $pacem.neuronTooltip(#tooltip, $event.detail.draggable && {x: $event.pageX, y: $event.pageY})"
-              on-itemout="$pacem.neuronTooltip(#tooltip, false)"
+    <pacem-2d adapter="#adapter2dSvg" datasource="{{ $pacem.drawifyBrainSlice(#slice.model, $this, #style.cssReady) }}" id="stage"
+              on-itemover="#neuronInfo.model = $event.detail.draggable && $event.detail.center || #neuronInfo.model; $pacem.handleItemOver($event, #tooltip)"
+              on-itemout="$pacem.handleItemOut($event, #tooltip)"
+              on-itemclick="$pacem.handleItemClick($event, #slice)"
               on-itemdrag="$pacem.trayBrainBorder($event.detail.item, $event.detail.offset, false)"
               on-itemdragend="$pacem.trayBrainBorder($event.detail.item, $event.detail.offset, true)"
-              viewbox="-20 -20 40 40" aspect-ratio="xMidYMid meet" class="pacem-stretch"></pacem-2d>
+              viewbox="-20 -20 40 40" interactive="false" aspect-ratio="xMidYMid meet" class="pacem-stretch"></pacem-2d>
     <pacem-loader class="pacem-hover" active="{{ #sliceLoader.fetching }}"></pacem-loader>
 </div>
+
+<pacem-shortcut combination="Ctrl+Shift+Down" on-execute="#adapter2dSvg.snapshot(#stage, '#000').then(b => Pacem.Utils.download(b, 'brain.png'))"></pacem-shortcut>
 
 <pre pacem hidden id="help1">
 ### Interactivity
@@ -24,6 +27,11 @@ In order to interact with the **2D stage**, you can:
 
 - `Alt+MouseWheel` to zoom in/out
 - `Alt+MouseDrag` to pan the view
+
+Specific Brain stuff interaction:
+
+- `Shift+MouseOver` to show tooltips
+- `Ctrl+Click` to split border segment
 </pre>
 
 <pacem-shell-proxy>

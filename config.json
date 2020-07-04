@@ -1,6 +1,9 @@
 ﻿{
   "pacemjs": {
-    "version": "0.8.40",
-    "refresh": 0
+    "version": "0.9.0-atlantis",
+    "refresh": 1586953182324
+  },
+  "ConnectionStrings": {
+    "storage":  "{AzureStorage ConnectionString Here}"
   }
 }

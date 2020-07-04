@@ -15,7 +15,20 @@ namespace Pacem.Scaffolding {
         icon?: string
     }
 
-    export declare type ValidatorMetadata = { type: string, errorMessage: string, params?: any };
+    type CompareValidatorOperator = 'equal' | 'lessOrEqual' | 'less' | 'greater' | 'greaterOrEqual' | 'notEqual';
+
+    export declare type KnownValidatorMetadata =
+        { type: 'required', errorMessage: string }
+        | { type: 'email', errorMessage: string }
+        | { type: 'length', errorMessage: string, params: { min?: number, max?: number } }
+        | { type: 'range', errorMessage: string, params: { min?: number | string | Date, max?: number | string | Date } }
+        | { type: 'regex', errorMessage: string, params: { pattern: string | RegExp } }
+        | { type: 'binary', errorMessage: string, params: { pattern?: string, maxSize?: number } }
+        | { type: 'compare', errorMessage: string, params: { value: any, operator?: CompareValidatorOperator } | { to: string, operator?: CompareValidatorOperator } }
+        | { type: 'async', errorMessage: string, params: { url: string, verb?: Pacem.Net.HttpMethod, dependsOn?: DependsOn[] } }
+        ;
+
+    export declare type ValidatorMetadata = KnownValidatorMetadata | { type: Omit<string, 'required' | 'email' | 'length' | 'range' | 'regex' | 'binary' | 'compare' | 'async'>, errorMessage: string, params?: any };
 
     export declare type CommandMetadata = { name: string, tooltip?: string, icon: string, cssClass?: string[], prepend?: boolean, dependsOnValue?: boolean };
 
@@ -26,11 +39,42 @@ namespace Pacem.Scaffolding {
         hide?: boolean
     }
 
+    type PropertyMetadataExtraCore = { dependsOn?: DependsOn[] }
+        & { tooltip?: true | false | 'html' | 'md' | 'markdown' };
+
+    type PropertyMetadataExtraDatasource = { source?: Function | any[], sourceUrl?: string, verb?: Pacem.Net.HttpMethod, valueProperty?: string, textProperty?: string, disabledProperty?: string }
+        & { enum?: any[] };
+
+    type PropertyMetadataExtraSnapshot = { width?: number, height?: number, thumbHeight?: number, thumbWidth?: number, snapshot?: boolean, uploadUrl?: string, fetchUrl?: string };
+    type PropertyMetadataExtraTags = { allowNew?: boolean, allowDuplicates?: boolean };
+    type PropertyMetadataExtraChildform = { lockItems?: boolean };
+    type PropertyMetadataExtraUpload = { maxImageWidth?: number, maxImageHeight?: number, parallelism?: number, chunkSize?: number, uploadUrl?: string };
+    type PropertyMetadataExtraSlider = { step?: 'any' | number };
+
+    export declare type PropertyMetadataExtra = PropertyMetadataExtraCore
+        & (
+            // one-to-many, ... datasources
+            PropertyMetadataExtraDatasource
+            // snapshot/imageUrl (deprecatable)
+            & PropertyMetadataExtraSnapshot
+            // tags
+            & PropertyMetadataExtraTags
+            // child-forms
+            & PropertyMetadataExtraChildform
+            // upload
+            & PropertyMetadataExtraUpload
+            // slider
+            & PropertyMetadataExtraSlider
+        );
+
+    // to be continued
     export declare type PropertyMetadata = {
         prop: string,
-        type: 'object' | 'array' | string,
+        type: 'object' | 'array' | string | /* let the possibility to inject custom scaffolding elements */ ((host: Element, hostRef?: string, entityRef?: string) => { tagName: string, attrs: { [name: string]: string } }),
         display?: DisplayMetadata,
-        extra?: any,
+        extra?: PropertyMetadataExtra
+        // leave space to immagination
+        & { [key: string]: any },
         isReadOnly?: boolean,
         dataType?: string,
         isComplexType?: boolean,
@@ -83,27 +127,6 @@ namespace Pacem.Components.Scaffolding {
     const ORIGINAL_VALUE_FIELD = 'pacem:model:original-value';
 
     export abstract class PacemFormRelevantElement extends PacemElement {
-
-        //private _form: PacemFormElement;
-
-        //get form(): PacemFormElement {
-        //    return this._form || (this._form = CustomElementUtils.findAncestor(this, (n) => n instanceof PacemFormElement));
-        //}
-
-        //set form(v: PacemFormElement) {
-        //    if (v == null)
-        //        throw `Cannot set null ${PacemFormElement.name} instance.`;
-        //    if (v !== this._form) {
-        //        let old = this._form;
-        //        this._form = v;
-        //        this.propertyChangedCallback('form', old, v);
-        //    }
-        //}
-
-        //disconnectedCallback() {
-        //    this._form = null;
-        //    super.disconnectedCallback();
-        //}
 
         @Watch({ converter: PropertyConverters.Element }) form: PacemFormElement;
 

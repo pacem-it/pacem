@@ -1,21 +1,6 @@
 ﻿/// <reference path="../../../dist/js/pacem-core.d.ts" />
 namespace Pacem.Drawing {
 
-    export interface Matrix2D  {
-        readonly a: number;
-        readonly b: number;
-        readonly c: number;
-        readonly d: number;
-        readonly e: number;
-        readonly f: number;
-    }
-
-    export class Matrix2D {
-        static isIdentity(m: Matrix2D) {
-            return m.a === 1 && m.d === 1 && m.b === 0 && m.f === 0 && m.c === 0 && m.e === 0;
-        }
-    }
-
     export declare type ViewBoxAlignment = 'min' | 'mid' | 'max';
     export declare type ViewBoxAspectRatio = 'none' | {
         x: ViewBoxAlignment, y: ViewBoxAlignment, slice?: boolean
@@ -24,7 +9,8 @@ namespace Pacem.Drawing {
     export interface Stage extends EventTarget {
         draw(item?: Drawable);
         viewbox: Rect,
-        aspectRatio?: ViewBoxAspectRatio, 
+        aspectRatio?: ViewBoxAspectRatio,
+        readonly transformMatrix: Matrix2D;
         readonly stage: HTMLElement;
     }
 
@@ -34,6 +20,7 @@ namespace Pacem.Drawing {
         inert?: boolean;
         hide?: boolean;
         draggable?: boolean;
+        tag?: string;
     }
 
     export function isDrawable(object: any): object is Drawable {
@@ -59,6 +46,9 @@ namespace Pacem.Drawing {
         stroke?: string;
         lineWidth?: number;
         fill?: string;
+        dashArray?: number[],
+        lineJoin?: CanvasLineJoin,
+        lineCap?: CanvasLineCap,
         readonly boundingRect?: Rect;
     }
 
@@ -67,45 +57,66 @@ namespace Pacem.Drawing {
             && isUiObject(object);
     }
 
+    export interface Group extends UiObject {
+        items: Drawable[];
+    }
+
+    export function isGroup(object: any): object is Pacem.Drawing.Group {
+        return 'items' in object
+            && !Utils.isNullOrEmpty(object.items)
+            && isUiObject(object);
+    }
+
+    export interface Text extends UiObject {
+        text: string;
+        fontFamily?: string;
+        fontSize?: number;
+        color?: string;
+        anchor?: Point,
+        textAnchor?: 'start'|'middle'|'end';
+    }
+
+    export function isText(object: any): object is Pacem.Drawing.Text {
+        return 'text' in object
+            && isUiObject(object);
+    }
+
     export interface DragEventArgs {
         readonly offset: Point;
         readonly item: Drawable;
     }
 
-    export class DragEvent extends CustomEvent<DragEventArgs> implements DragEvent {}
-
-    export class Event extends CustomEvent<Drawable>{}
-
-    export class DrawableEvent extends Event {
-
-        constructor(type, args: Drawable, private _coords: Pacem.EventCoordinates) {
-            super(type, { detail: args, bubbles: true, cancelable: true });
+    export abstract class UI2DEvent<T> extends CustomUIEvent<T>{
+        constructor(type: string, eventInit: CustomEventInit<T>, originalEvent: MouseEvent | TouchEvent | KeyboardEvent, transformMatrix: Matrix2D) {
+            super(type, eventInit, originalEvent);
+            this.#transformMatrix = transformMatrix;
         }
 
-        get pageX(): number {
-            return this._coords.page.x;
+        #transformMatrix: Matrix2D;
+        /** Gets the screen transform matrix. */
+        get transformMatrix() {
+            return this.#transformMatrix;
         }
-        get pageY(): number {
-            return this._coords.page.y;
+
+        project(pt: Point = { x: this.screenX, y: this.screenY }) {
+            return Matrix2D.multiply(pt, this.#transformMatrix);
         }
-        get clientX(): number {
-            return this._coords.client.x;
+    }
+
+    export class DragEvent extends UI2DEvent<DragEventArgs> {
+    }
+
+    export class DrawableEvent extends UI2DEvent<Drawable> {
+
+        constructor(type: string, args: Drawable, originalEvent: MouseEvent | TouchEvent | KeyboardEvent, m: Matrix2D
+        ) {
+            super(type, { detail: args, bubbles: true, cancelable: true }, originalEvent, m);
         }
-        get clientY(): number {
-            return this._coords.client.y;
-        }
-        get screenX(): number {
-            return this._coords.screen.x;
-        }
-        get screenY(): number {
-            return this._coords.screen.y;
-        }
+
     }
 }
 
 namespace Pacem.Components.Drawing {
-
-    const Identity: Pacem.Drawing.Matrix2D = { a: 1, b: 0, c: 0, d: 1, e: 0, f: 0 };
 
     export interface Stage extends Pacem.Drawing.Stage {
         readonly adapter: Pacem2DAdapterElement;
@@ -122,6 +133,12 @@ namespace Pacem.Components.Drawing {
             lineWidth: 1,
             fill: "#fff"
         };
+
+        /**
+         * Returns the transform matrix that projects page coords into stage coords.
+         * @param scene {Pacem2DElement} Container for the stage/scene
+         */
+        abstract getTransformMatrix(scene: Pacem2DElement): Matrix2D;
 
         /**
          * Updates the stage with the new size.
@@ -152,9 +169,14 @@ namespace Pacem.Components.Drawing {
          * Draws the elements of provided the scene.
          * @param scene {Pacem2DElement} Container for the stage/scene
          * @param item {Drawable} If provided, tries to limit the drawing execution to the drawable itself
+         * @param forceGroupRedraw {Boolean} In case the item is a group, it forces the redraw of its content
          */
-        abstract draw(scene: Pacem2DElement, item?: Pacem.Drawing.Drawable);
+        abstract draw(scene: Pacem2DElement, item?: Pacem.Drawing.Drawable, forceGroupRedraw?: boolean);
 
+        /**
+         * Processes the stage content and returns an image accordingly.
+         * */
+        abstract snapshot(stage: Pacem2DElement): PromiseLike<Blob>;
     }
 
     export abstract class DrawableElement extends PacemCrossItemsContainerElement<DrawableElement> implements Pacem.Drawing.Drawable {
@@ -188,7 +210,7 @@ namespace Pacem.Components.Drawing {
                 case 'items':
                     const scene = this.stage;
                     if (!Utils.isNull(scene)) {
-                        name === 'hide'? scene.draw(this) : scene.requestDraw();
+                        name === 'hide' ? scene.draw(this) : scene.requestDraw();
                     }
                     break;
             }
@@ -204,7 +226,7 @@ namespace Pacem.Components.Drawing {
         @Watch({ emit: false, converter: PropertyConverters.Number }) translateY: number;
         @Watch({ emit: false, converter: PropertyConverters.Number }) opacity: number;
 
-        private _transformMatrix: Pacem.Drawing.Matrix2D = Identity;
+        private _transformMatrix = Pacem.Matrix2D.identity;
 
         propertyChangedCallback(name: string, old, val, first?: boolean) {
             if (!first) {
@@ -251,6 +273,14 @@ namespace Pacem.Components.Drawing {
         @Watch({ emit: false, converter: PropertyConverters.String }) stroke: string;
         @Watch({ emit: false, converter: PropertyConverters.Number }) lineWidth: number;
         @Watch({ emit: false, converter: PropertyConverters.String }) fill: string;
+        @Watch({
+            emit: false, converter: {
+                convert: (attr) => attr?.split(',').map(i => parseInt(i)).filter(i => !Number.isNaN(i)),
+                convertBack: (prop) => prop?.join(',')
+            }
+        }) dashArray?: number[];
+        @Watch({ emit: false, converter: PropertyConverters.String }) lineJoin?: CanvasLineJoin;
+        @Watch({ emit: false, converter: PropertyConverters.String }) lineCap?: CanvasLineCap;
 
         validate(_: DrawableElement) {
             // shapes do not allow child drawables
@@ -287,4 +317,10 @@ namespace Pacem.Components.Drawing {
 
     }
 
+    export declare type StageOptions = {
+        panControl: boolean,
+        zoomControl: boolean,
+        panModifiers: EventKeyModifier[],
+        zoomModifiers: EventKeyModifier[]
+    };
 }

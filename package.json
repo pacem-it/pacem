@@ -1,5 +1,5 @@
 {
-  "version": "0.8.40",
+  "version": "0.9.1",
   "name": "pacem",
   "homepage": "https://js.pacem.it",
   "repository": {
@@ -9,6 +9,8 @@
   "files": [
     "dist/js/polyfills/documentfragment.edge.js",
     "dist/js/resize-observer.d.ts",
+    "dist/js/pacem-foundation.d.ts",
+    "dist/js/pacem-numerical.d.ts",
     "dist/js/pacem-core.d.ts",
     "dist/js/pacem-ui.d.ts",
     "dist/js/pacem-logging.d.ts",
@@ -22,6 +24,8 @@
     "dist/js/pacem-plus.d.ts",
     "dist/js/pacem-charts.d.ts",
     "dist/js/pacem-cms.d.ts",
+    "dist/js/pacem-foundation.js",
+    "dist/js/pacem-numerical.js",
     "dist/js/pacem-core.js",
     "dist/js/pacem-ui.js",
     "dist/js/pacem-logging.js",
@@ -33,6 +37,8 @@
     "dist/js/pacem-plus.js",
     "dist/js/pacem-charts.js",
     "dist/js/pacem-cms.js",
+    "dist/js/pacem-foundation.min.js",
+    "dist/js/pacem-numerical.min.js",
     "dist/js/pacem-core.min.js",
     "dist/js/pacem-ui.min.js",
     "dist/js/pacem-logging.min.js",
@@ -75,8 +81,10 @@
     "test": "jasmine tests/*.js",
     "clean-js": "rimraf wwwroot/dist/js/*",
     "clean-css": "rimraf wwwroot/dist/css/*",
-    "build": "npm run build-core && npm run build-ui && npm run build-logging && npm run build-maps && npm run build-scaffolding && npm run build-3d && npm run build-2d && npm run build-charts && npm run build-plus && npm run build-fx && npm run build-cms",
-    "uglify": "npm run uglify-core && npm run uglify-ui && npm run uglify-logging && npm run uglify-maps && npm run uglify-scaffolding && npm run uglify-3d && npm run uglify-2d && npm run uglify-charts && npm run uglify-plus && npm run uglify-fx && npm run uglify-cms",
+    "build": "npm run build-foundation && npm run build-numerical && npm run build-core && npm run build-ui && npm run build-logging && npm run build-maps && npm run build-scaffolding && npm run build-3d && npm run build-2d && npm run build-charts && npm run build-plus && npm run build-fx && npm run build-cms",
+    "uglify": "npm run uglify-foundation && npm run uglify-numerical && npm run uglify-core && npm run uglify-ui && npm run uglify-logging && npm run uglify-maps && npm run uglify-scaffolding && npm run uglify-3d && npm run uglify-2d && npm run uglify-charts && npm run uglify-plus && npm run uglify-fx && npm run uglify-cms",
+    "uglify-foundation": "uglifyjs --compress --mangle --keep-classnames --output dist/js/pacem-foundation.min.js -- dist/js/pacem-foundation.js",
+    "uglify-numerical": "uglifyjs --compress --mangle --keep-classnames --output dist/js/pacem-numerical.min.js -- dist/js/pacem-numerical.js",
     "uglify-core": "uglifyjs --compress --mangle --keep-classnames --output dist/js/pacem-core.min.js -- dist/js/pacem-core.js",
     "uglify-logging": "uglifyjs --compress --mangle --keep-classnames --output dist/js/pacem-logging.min.js -- dist/js/pacem-logging.js",
     "uglify-ui": "uglifyjs --compress --mangle --keep-classnames --output dist/js/pacem-ui.min.js -- dist/js/pacem-ui.js",
@@ -88,6 +96,8 @@
     "uglify-fx": "uglifyjs --compress --mangle --keep-classnames --output dist/js/pacem-fx.min.js -- dist/js/pacem-fx.js",
     "uglify-maps": "uglifyjs --compress --mangle --keep-classnames --output dist/js/pacem-maps.min.js -- dist/js/pacem-maps.js",
     "uglify-scaffolding": "uglifyjs --compress --mangle --keep-classnames --output dist/js/pacem-scaffolding.min.js -- dist/js/pacem-scaffolding.js",
+    "build-foundation": "tsc -p src/foundation/tsconfig.json",
+    "build-numerical": "tsc -p src/numerical/tsconfig.json",
     "build-ui": "tsc -p src/components/ui/tsconfig.json",
     "build-logging": "tsc -p src/components/logging/tsconfig.json",
     "build-scaffolding": "copyfiles -f src/components/scaffolding/openapi/swagger-types.d.ts dist/js && tsc -p src/components/scaffolding/tsconfig.json",
@@ -111,10 +121,12 @@
     "build-demo-prod": "npm run build-demo && npm run build-css-demo-dark && npm run build-css-demo-light && npm run build-css-demo-phousys",
     "build-test": "tsc -p test/tsconfig.json",
     "build-sw": "tsc -p src/serviceWorker/tsconfig.json",
+    "version-sw": "node swUpdate.js",
     "safe-publish": "node safePublishing.js",
     "header": "header dist/**/*.*",
     "copyfiles": "copyfiles -f src/polyfills/*.* dist/js/polyfills && copyfiles dist/js/**/*.* wwwroot",
-    "docs": "typedoc --out wwwroot/typedoc/ --target ES6 --excludeExternals --excludePrivate && typedoc --json wwwroot/typedoc/core.json --target ES6 --excludeExternals --excludePrivate"
+    "docs": "typedoc --out wwwroot/typedoc/ --target ES6 --excludeExternals --excludePrivate && typedoc --json wwwroot/typedoc/core.json --target ES6 --excludeExternals --excludePrivate",
+    "stdout-version": "node stdoutVersion.js"
   },
   "devDependencies": {
     "@aspnet/signalr": "1.1.0",
@@ -133,8 +145,9 @@
     "module-header": "0.5.0",
     "rimraf": "3.0.2",
     "typedoc": "0.13.0",
-    "typescript": "3.8.2",
+    "typescript": "3.9.5",
     "uglify-es": "3.3.10",
-    "child-process-promise": "2.2.1"
+    "child-process-promise": "2.2.1",
+    "node-fetch": "2.6.0"
   }
 }

@@ -125,7 +125,7 @@ namespace Pacem.Cms.OpenApi {
                             field = meta && meta.props.find(p => p.prop === col);
 
                         let datafield: Pacem.Scaffolding.OpenApi.DataField = Object.assign({
-                            prop: col, type: column.type || 'text'
+                            prop: col, type: column.type || 'text', props: undefined
                         }, field || /* if there's no match, then read-only */ { isReadOnly: true });
 
                         if (field) {

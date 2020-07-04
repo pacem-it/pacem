@@ -74,7 +74,7 @@ namespace Pacem.Components {
                 desiredRect.width = this._rect.width - delta.x;
             }
 
-            this._logFn(Logging.LogLevel.Log,`handle: ${ handle }, origin: ${ JSON.stringify(origin) }, currentPosition: ${ JSON.stringify(currentPosition) }`, `Rescaling`);
+            this._logFn(Logging.LogLevel.Log, `handle: ${handle}, origin: ${JSON.stringify(origin)}, currentPosition: ${JSON.stringify(currentPosition)}`, `Rescaling`);
             this._logFn(Logging.LogLevel.Log, `delta: ${JSON.stringify(delta)}, position: ${JSON.stringify(position)}`, `Rescaling`);
             this._logFn(Logging.LogLevel.Log, `from: ${JSON.stringify(this._rect)}, to: ${JSON.stringify(desiredRect)}`, `Rescaling`);
 
@@ -130,7 +130,7 @@ namespace Pacem.Components {
             window.removeEventListener('touchmove', this._moveHandler, false);
         }
     }
-    
+
     const GET_VAL = CustomElementUtils.getAttachedPropertyValue;
     const SET_VAL = CustomElementUtils.setAttachedPropertyValue;
     const DEL_VAL = CustomElementUtils.deleteAttachedPropertyValue;
@@ -178,7 +178,7 @@ namespace Pacem.Components {
                         frame.left.hidden = disabled || (!all && handles.find(h => h === UI.RescaleHandle.Left) == null);
                         frame.right.hidden = disabled || (!all && handles.find(h => h === UI.RescaleHandle.Right) == null);
                         frame.topleft.hidden = frame.top.hidden || frame.left.hidden;
-                        frame.topright.hidden = frame.top.hidden ||  frame.right.hidden;
+                        frame.topright.hidden = frame.top.hidden || frame.right.hidden;
                         frame.bottomleft.hidden = frame.bottom.hidden || frame.left.hidden;
                         frame.bottomright.hidden = frame.bottom.hidden || frame.right.hidden;
                     }
@@ -216,24 +216,27 @@ namespace Pacem.Components {
 
         private _startHandler = (evt: MouseEvent | TouchEvent) => {
             evt.stopPropagation();
-            var el = evt.currentTarget,
-                origin: Point;
 
-            if (evt instanceof MouseEvent) {
-                origin = { x: evt.clientX, y: evt.clientY };
-            } else {
-                if (evt.touches.length != 1)
-                    return;
-                origin = { x: evt.touches[0].clientX, y: evt.touches[0].clientY };
-            }
+            const coords = CustomEventUtils.getEventCoordinates(evt);
+
+            const el = evt.currentTarget,
+                origin: Point = coords.client;
+
             const type = /rescale-(.+)/.exec(el['className'])[1];
 
             // start
             const target = (<HTMLElement>el).parentElement;
-            this.dispatchEvent(new UI.RescaleEvent(UI.RescaleEventType.Start, UI.RescaleEventArgsClass.fromArgs({
+            const initEvent = new UI.RescaleEvent(UI.RescaleEventType.Start, UI.RescaleEventArgsClass.fromArgs({
                 currentPosition: origin,
                 origin: origin, element: target, handle: type, startTime: Date.now()
-            })));
+            }), { cancelable: true }, evt);
+            this.dispatchEvent(initEvent);
+
+            // canceled?
+            if (initEvent.defaultPrevented) {
+                return;
+            }
+
             SET_VAL(target, MOUSE_DOWN, origin);
             SET_VAL(target, DELEGATE, new RescaleElementDelegate(target, type, this,
                 /* logging */(level, message, category) => this.log.apply(this, [level, message, category])));

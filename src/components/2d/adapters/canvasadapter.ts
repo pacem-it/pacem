@@ -16,13 +16,35 @@ namespace Pacem.Components.Drawing {
     @CustomElement({ tagName: P + '-' + TAG_MIDDLE_NAME + '-canvas-adapter' })
     export class PacemCanvasAdapterElement extends Pacem2DAdapterElement {
 
+        snapshot(stage: Pacem2DElement): PromiseLike<Blob> {
+            return new Promise((resolve, _) => {
+                const scenes = this._scenes;
+                if (scenes.has(stage)) {
+                    var ctx2d = scenes.get(stage).context;
+                    ctx2d.canvas.toBlob((b) => {
+                        resolve(b);
+                    }, 'image/png');
+                } else {
+                    resolve(null);
+                }
+            });
+        }
+
+        getTransformMatrix(scene: Pacem2DElement): Matrix2D {
+            const scenes = this._scenes;
+            if (scenes.has(scene)) {
+                return scenes.get(scene).transformMatrix;
+            }
+            return Matrix2D.identity;
+        }
+
         invalidateSize(scene: Pacem2DElement, size: Size) {
             const scenes = this._scenes;
             if (!Utils.isNull(scene) && !Utils.isNullOrEmpty(size)) {
 
                 if (scenes.has(scene)) {
 
-                    var ctx = scenes.get(scene);
+                    var ctx = scenes.get(scene).context;
                     ctx.canvas.width = size.width;
                     ctx.canvas.height = size.height;
 
@@ -48,7 +70,7 @@ namespace Pacem.Components.Drawing {
 
             // already in the store?
             if (scenes.has(scene)) {
-                return scenes.get(scene).canvas;
+                return scenes.get(scene).context.canvas;
             }
 
             const stage = scene.stage;
@@ -64,9 +86,9 @@ namespace Pacem.Components.Drawing {
             canvas.addEventListener('click', this._clickHandler, false);
 
             stage.appendChild(canvas);
-            scenes.set(scene, context);
+            scenes.set(scene, { context, transformMatrix: Matrix2D.identity });
 
-            this._requestDraw(scene);
+            // this._requestDraw(scene);
 
             return canvas;
         }
@@ -83,7 +105,8 @@ namespace Pacem.Components.Drawing {
             const scenes = this._scenes;
             if (scenes.has(scene)) {
 
-                var context = scenes.get(scene);
+                var tuple = scenes.get(scene),
+                    context = tuple.context;
                 context.canvas.removeEventListener('click', this._clickHandler, false);
                 context.canvas.removeEventListener('touchend', this._clickHandler, false);
                 context.canvas.removeEventListener('touchmove', this._touchstartHandler);
@@ -132,13 +155,13 @@ namespace Pacem.Components.Drawing {
                 this._hitTarget = null;
 
                 // clear stage
-                const context = scenes.get(scene),
+                const tuple = scenes.get(scene), context = tuple.context,
                     canvas = context.canvas;
 
                 context.clearRect(0, 0, canvas.width, canvas.height);
 
                 // viewbox
-                this._resetTransform(scene.viewbox, context);
+                const m = tuple.transformMatrix = this._resetTransform(scene.viewbox, context);
 
                 // draw recursively
                 for (let drawable of items) {
@@ -151,15 +174,15 @@ namespace Pacem.Components.Drawing {
                     if (!Utils.isNull(formerHitTarget)) {
 
                         if (formerHitTarget instanceof Element) {
-                            formerHitTarget.dispatchEvent(new Pacem.Drawing.DrawableEvent('out', formerHitTarget, this._pointer));
+                            formerHitTarget.dispatchEvent(new Pacem.Drawing.DrawableEvent('out', formerHitTarget, this._scopeEvent, m));
                         }
-                        scene.dispatchEvent(new Pacem.Drawing.DrawableEvent('itemout', formerHitTarget, this._pointer));
+                        scene.dispatchEvent(new Pacem.Drawing.DrawableEvent('itemout', formerHitTarget, this._scopeEvent, m));
                     }
                     if (!Utils.isNull(currentHitTarget)) {
                         if (currentHitTarget instanceof Element) {
-                            currentHitTarget.dispatchEvent(new Pacem.Drawing.DrawableEvent('over', currentHitTarget, this._pointer));
+                            currentHitTarget.dispatchEvent(new Pacem.Drawing.DrawableEvent('over', currentHitTarget, this._scopeEvent, m));
                         }
-                        scene.dispatchEvent(new Pacem.Drawing.DrawableEvent('itemover', currentHitTarget, this._pointer));
+                        scene.dispatchEvent(new Pacem.Drawing.DrawableEvent('itemover', currentHitTarget, this._scopeEvent, m));
                     }
                 }
 
@@ -168,41 +191,56 @@ namespace Pacem.Components.Drawing {
             }
         }
 
-        private _resetTransform(viewbox: Rect, context: CanvasRenderingContext2D) {
+        private _resetTransform(viewbox: Rect, context: CanvasRenderingContext2D): Matrix2D {
 
             context.resetTransform();
             const rect = viewbox, size = context.canvas;
             if (!Utils.isNull(rect)) {
                 const w = size.width, h = size.height,
-                    scale = 1 / Math.min(rect.width / w, rect.height / h);
-                context.transform(scale, 0, 0, scale, w / 2 - scale * rect.x, h / 2 - scale * rect.y);
+                    scale = 1 / Math.min(rect.width / w, rect.height / h),
+                    a = scale,
+                    b = 0,
+                    c = 0,
+                    d = scale,
+                    e = w / 2 - scale * rect.x,
+                    f = h / 2 - scale * rect.y;
+                context.transform(a, b, c, d, e, f);
+                return { a: a, b: b, c: c, d: d, e: e, f: f };
             }
         }
 
         private _hitTarget: Pacem.Drawing.Drawable;
         private _pointer: EventCoordinates = {
-            page: { x: 0, y: 0 }, screen: { x: 0, y: 0 }, client: {x: 0, y: 0}
+            page: { x: 0, y: 0 }, screen: { x: 0, y: 0 }, client: { x: 0, y: 0 }
         };
+        //private _modifiers: EventKeyModifiers = {
+        //    altKey: false, shiftKey: false, ctrlKey : false, metaKey: false
+        //};
+        private _scopeEvent: MouseEvent | TouchEvent;
         private _canvasOffset: Rect = { x: 0, y: 0, width: 0, height: 0 };
 
         private _clickHandler = (evt: MouseEvent) => {
             const currentHitTarget = this._hitTarget;
             if (!Utils.isNull(currentHitTarget)) {
-                var coords = CustomEventUtils.getEventCoordinates(evt);
+                const m = currentHitTarget.stage.transformMatrix;
                 if (currentHitTarget instanceof Element) {
-                    currentHitTarget.dispatchEvent(new Pacem.Drawing.DrawableEvent('click', currentHitTarget, coords));
+                    currentHitTarget.dispatchEvent(new Pacem.Drawing.DrawableEvent('click', currentHitTarget, evt, m));
                 }
-                currentHitTarget.stage.dispatchEvent(new Pacem.Drawing.DrawableEvent('itemclick', currentHitTarget, coords));
+                currentHitTarget.stage.dispatchEvent(new Pacem.Drawing.DrawableEvent('itemclick', currentHitTarget, evt, m));
             }
         }
 
         private _mousemoveHandler = (evt: MouseEvent) => {
+            this._scopeEvent = evt;
             this._pointer = CustomEventUtils.getEventCoordinates(evt);
+            // this._modifiers = CustomEventUtils.getEventKeyModifiers(evt);
         }
 
         private _touchstartHandler = (evt: TouchEvent) => {
             if (evt.touches.length === 1) {
+                this._scopeEvent = evt;
                 this._pointer = CustomEventUtils.getEventCoordinates(evt);
+                // this._modifiers = CustomEventUtils.getEventKeyModifiers(evt);
             }
         }
 
@@ -224,12 +262,22 @@ namespace Pacem.Components.Drawing {
 
             if (!Utils.isNull(ctx) && Pacem.Drawing.isShape(item) && !Utils.isNullOrEmpty(data = item.pathData)) {
                 ctx.strokeStyle = fallback(item.stroke, defaults.stroke);
-                ctx.fillStyle = fallback(item.fill, defaults.fill);
                 ctx.lineWidth = fallback(item.lineWidth, defaults.lineWidth);
+                if (!Utils.isNullOrEmpty(item.dashArray)) {
+                    ctx.setLineDash(item.dashArray);
+                }
+                if (!Utils.isNullOrEmpty(item.lineCap)) {
+                    ctx.lineCap = item.lineCap;
+                }
+                if (!Utils.isNullOrEmpty(item.lineJoin)) {
+                    ctx.lineJoin = item.lineJoin;
+                }
+                ctx.lineWidth = fallback(item.lineWidth, defaults.lineWidth);
+                ctx.fillStyle = fallback(item.fill, defaults.fill);
                 ctx.globalAlpha = fallback(item.opacity, 1);
 
                 let t = item.transformMatrix;
-                if (!Utils.isNull(t) && !Pacem.Drawing.Matrix2D.isIdentity(t)) {
+                if (!Utils.isNull(t) && !Pacem.Matrix2D.isIdentity(t)) {
                     ctx.transform(t.a, t.b, t.c, t.d, t.e, t.f);
                 }
 
@@ -258,6 +306,14 @@ namespace Pacem.Components.Drawing {
                 if (hasFill)
                     ctx.fill(path2D);
 
+                // reset defaults
+                ctx.lineWidth = 1;
+                ctx.strokeStyle = '#000';
+                ctx.setLineDash([]);
+                ctx.lineCap = 'butt';
+                ctx.lineJoin = 'miter';
+
+                // reset transform
                 this._resetTransform(item.stage.viewbox, ctx);
             }
 
@@ -268,7 +324,7 @@ namespace Pacem.Components.Drawing {
                     // TypeScript bug
                     const ui = <Pacem.Drawing.UiObject>item;
                     const t = ui.transformMatrix;
-                    if (!Utils.isNull(t) && !Pacem.Drawing.Matrix2D.isIdentity(t)) {
+                    if (!Utils.isNull(t) && !Pacem.Matrix2D.isIdentity(t)) {
                         ctx.transform(t.a, t.b, t.c, t.d, t.e, t.f);
                     }
                 }
@@ -279,7 +335,7 @@ namespace Pacem.Components.Drawing {
             }
         }
 
-        private _scenes = new WeakMap<Pacem2DElement, CanvasRenderingContext2D>();
+        private _scenes = new WeakMap<Pacem2DElement, { context: CanvasRenderingContext2D, transformMatrix: Matrix2D }>();
         private _handles = new WeakMap<Pacem2DElement, number>();
 
     }

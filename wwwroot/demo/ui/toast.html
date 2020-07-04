@@ -11,9 +11,9 @@ Default appearance:
     <template id="demo0">
 
         <pacem-data id="show0"></pacem-data>
-        <pacem-body-proxy>
+        <pacem-shell-proxy>
             <pacem-toast show="{{ #show0.model, twoway }}" css-class="{{ ['toast-' + #style0.value] }}">Popped!</pacem-toast>
-        </pacem-body-proxy>
+        </pacem-shell-proxy>
         <pacem-radio-list id="style0" class="display-block pacem-margin margin-bottom-3" value="default" disabled="{{ #show0.model }}">
             <pacem-data-item value="default"></pacem-data-item>
             <pacem-data-item value="primary"></pacem-data-item>
@@ -87,7 +87,7 @@ To make the toast to be persistent, force the user to dismiss it:
             <div class="pacem-toaster">
                 <pacem-toast show="{{ #show4.model, twoway }}" autohide="false" class="toast-danger">
                     <i class="pacem-icon">announcement</i>
-                    <div>                        
+                    <div>
                         Click me to dismiss.
                     </div>
                 </pacem-toast>
@@ -95,6 +95,27 @@ To make the toast to be persistent, force the user to dismiss it:
         </pacem-shell-proxy>
         <pacem-button class="button" disabled="{{ #show4.model }}" on-click="#show4.model = true">pop!</pacem-button>
 
+    </template>
+</pacemjs-snippet>
+
+
+<pacem-markdown value="{{ #content3.textContent }}" class="md-tech" root></pacem-markdown>
+
+<pre pacem hidden id="content3">
+## Utilities
+
+Pop your toasts programmatically by exploiting the `poptoast()` utility method.
+</pre>
+
+<pacemjs-snippet>
+    <template>
+
+        <pacem-button class="button" 
+                      on-click="$pacem.poptoast(#toaster3, ['danger', 'success', 'warning', 'info'][Math.floor(Math.random() * 4)], '<b>Popped toast</b><p>at <code>' + $pacem.date(Date.now(), 'full') + '</code></p>', {timeout: 3000, autohide: true})"
+                      >Pop a random toast...</pacem-button>
+        <pacem-shell-proxy>
+            <div class="pacem-toaster toaster-center toaster-top toaster-autosize toaster-anim anim-bounce" id="toaster3"></div>
+        </pacem-shell-proxy>
     </template>
 </pacemjs-snippet>
 

@@ -22,6 +22,9 @@
 @shell_selector: "html";
 @shell: (~"@{shell_selector}");
 
+// maximum z-index on stage (toasts)
+@max_z_index: 2000; // < leaflet controls z_index = 1000
+
 @color_lightblue: #262b3e; //#429bbb;
 @color_blue: #1e2336; //#0e456e;
 @color_red: #ff005a; // #af0843;
@@ -34,7 +37,7 @@
 
 @color_dark: #000;
 @color_error: #970828;
-@color_error_fore: #fff;
+@color_error_inv: #fff;
 @color_highlight: #a7f8ab;
 @color_highlight_fore: @color_blue;
 @color_tech: fade( @color_highlight, 60);
@@ -51,6 +54,18 @@
 
 // tweak needed to align the icon to the std font baseline
 @font_icon_offset: -1px;
+
+// palette
+@palette_green: #1ebb8f;
+@palette_yellow: #e8d522;
+@palette_brown: #a6715e;
+@palette_red: #801b2c;
+@palette_pink: #ff0085;
+@palette_blue: #116e8b;
+@palette_orange: #e48d1c;
+@palette_purple: #624472;
+@palette_teal: @color_teal;
+
 
 // layout
 @layout_aside_width: 10 * @grid_spacing;
@@ -133,11 +148,13 @@
 @color_warning: #c5c023;
 @color_warning_inv: /*darken(@color_warning, 35); //*/ @color_light;
 @color_danger: @color_error;
-@color_danger_inv: @color_error_fore;
+@color_danger_inv: @color_error_inv;
 @color_accent: @color_red;
 @color_accent_inv: @color_light;
 @color_primary: @color_teal;
 @color_primary_inv: @color_light;
+@color_secondary: @color_teal;
+@color_secondary_inv: @color_light;
 @color_disabled: @color_watermark;
 @color_title: @color_accent;
 @color_title_inv: transparent;
@@ -194,6 +211,7 @@
 @menu_link_hover_color: @color_default;
 @menu_link_active_color: @color_primary;
 @menu_link_active_backgroundcolor: fade(@color_default, 5);
+@menu_link_active_decorcolor: @menu_link_active_color;
 @menu_link_fontfamily: @font_std;
 @menu_link_fontsize: 1rem * @font_rem_factor;
 @menu_nav_background: @color_background;
@@ -243,6 +261,7 @@
 @border_tab: 0;
 
 // lightbox
+@color_lightbox: @color_background;
 @color_lightbox_back: fade(@color_dark, 50);
 @color_gallery_back: @color_lightbox_back;
 

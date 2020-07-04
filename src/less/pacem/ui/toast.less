@@ -26,7 +26,6 @@
     right: 0;
     height: @_ht;
     overflow: visible;
-
     cursor: pointer;
     background: fade( @color_background, 75);
     border: @_brdt solid;
@@ -45,7 +44,6 @@
     align-content: flex-start;
     .FontMainSize(1.25);
     height: @_ht;
-    transition: transform .3s @easing_out_sine, opacity .25s linear;
     transform: translateY(-@_ht);
     opacity: 0;
 
@@ -58,9 +56,13 @@
         opacity: 1;
     }
 
-    &.toast-danger,
-    &.fail {
+    &.toast-danger {
         .ToastColor( @color_danger, @color_danger_inv);
+    }
+
+    &.toast-error,
+    &.fail {
+        .ToastColor( @color_error, @color_error_inv);
     }
 
     &.toast-success,
@@ -123,7 +125,6 @@
         margin: 0 0 @grid_spacing 0;
         pointer-events: none;
         border-radius: @border_radius;
-
         // tweak flexbox
         justify-content: flex-start;
         padding: @grid_spacing * 2 / 3;
@@ -163,5 +164,60 @@
     }
 
     &.toaster-top {
+    }
+
+    &.toaster-center {
+        left: 0;
+        width: auto;
+        align-content: center;
+
+        @{P}-toast {
+            align-self: center;
+            transform-origin: 50% 0;
+            transform: translateY(-100%) translateX(0) translateZ(0) scale(0.25);
+
+            &.toast-hide {
+                transform: translateY(100%) translateX(0) translateZ(0);
+                opacity: 0;
+            }
+        }
+
+        &.toaster-bottom @{P}-toast {
+            transform: translateY(100%) translateX(0) translateZ(0) scale(0.25);
+
+            &.toast-hide {
+                transform: translateY(-100%) translateX(0) translateZ(0);
+                opacity: 0;
+            }
+        }
+
+        @{P}-toast.toast-show {
+            transform: translateY(0) translateX(0) translateZ(0);
+        }
+    }
+
+    &.toaster-autosize @{P}-toast {
+        width: auto;
+    }
+}
+
+// animations
+.@{PCSS}-animations {
+
+    @{P}-toast {
+        transition: transform .3s @easing_out_sine, opacity .25s linear;
+
+        &.toast-hide{
+            transition-duration: .125s;
+            transition-timing-function: @easing_in_sine;
+        }
+    }
+
+    .@{PCSS}-toaster.toaster-anim {
+        &.anim-bounce {
+            @{P}-toast.toast-show {
+                transition: transform .3s @easing_out_back, opacity .25s linear;
+            }
+        }
     }
 }

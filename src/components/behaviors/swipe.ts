@@ -203,20 +203,14 @@ namespace Pacem.Components {
             if (this.disabled)
                 return;
 
-            var el = evt.currentTarget,
-                origin: Point;
-
-            if (evt instanceof MouseEvent) {
-                if (!this.includeMouse) {
-                    // does not handle mouse events, exit.
-                    return;
-                }
-                origin = { x: evt.clientX, y: evt.clientY };
-            } else {
-                if (evt.touches.length != 1)
-                    return;
-                origin = { x: evt.touches[0].clientX, y: evt.touches[0].clientY };
+            if (evt instanceof MouseEvent && !this.includeMouse) {
+                return;
             }
+
+            const coords = CustomEventUtils.getEventCoordinates(evt);
+
+            const el = evt.currentTarget,
+                origin = coords.client;
 
             evt.stopPropagation();
             SET_VAL(el, MOUSEDOWN, { position: origin, timestamp: Date.now() });

@@ -18,7 +18,7 @@ namespace Pacem.Components.Scaffolding {
     on-${ RepeaterItemRemoveEventName}=":host._itemRemove($event)">
     <ol>
         <template>
-            <li><${ P}-span content="{{ $pacem.highlight(^item.viewValue, ::_input.value) }}"></${P}-span></li>
+            <li><${P}-span content="{{ $pacem.highlight(^item.viewValue, ::_input.value) }}"></${P}-span></li>
         </template>
     </ol>
 </${ P}-repeater><${P}-content></${P}-content>`

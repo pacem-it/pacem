@@ -272,9 +272,14 @@ namespace Pacem.Components.UI {
         }
 
         private _adjust() {
-            var popup = this,
-                el = popup.target,
-                coords = el instanceof Element ? Utils.offset(el) : { top: el.y, left: el.x, width: 0, height: 0 };
+            const popup = this,
+                el = popup.target;
+
+            if (Utils.isNull(el)) {
+                return;
+            }
+
+            const coords = el instanceof Element ? Utils.offset(el) : { top: el.y, left: el.x, width: 0, height: 0 };
 
             const vieportSize = Utils.windowSize;
 

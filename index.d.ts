@@ -1,4 +1,6 @@
-﻿/// <reference path="dist/js/pacem-core.d.ts" />
+﻿/// <reference path="dist/js/pacem-foundation.d.ts" />
+/// <reference path="dist/js/pacem-numerical.d.ts" />
+/// <reference path="dist/js/pacem-core.d.ts" />
 /// <reference path="dist/js/pacem-logging.d.ts" />
 /// <reference path="dist/js/pacem-ui.d.ts" />
 /// <reference path="dist/js/pacem-scaffolding.d.ts" />

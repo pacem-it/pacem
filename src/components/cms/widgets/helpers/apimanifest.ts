@@ -26,7 +26,7 @@ namespace Pacem.Components.Cms {
     };
 
     @CustomElement({ tagName: P + '-widget-apimanifest' })
-    export class PacemWidgetApiManigestElement extends PacemBearerWidgetElement {
+    export class PacemWidgetApiManifestElement extends PacemBearerWidgetElement {
 
         constructor(private _openapi = new Pacem.Cms.OpenApi.SwaggerCmsParser(), private _cache = new Pacem.Storage()) {
             super(buildWidgetMetadata(APIMANIFEST_METADATA));

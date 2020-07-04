@@ -41,13 +41,10 @@ In this case the possibility to dynamically establish bindings between elements 
         <div id="container1" hidden>
             <pacem-data id="structure2" model="{{ {system: { star: 'Sun', planets: { closest: 'Mercury', biggest: 'Jupiter', warmest: 'Venus', furthest: 'Neptune' } } } }}"></pacem-data>
         </div>
-<pre id="meta1" hidden>
-[{  
-"prop": "text", "type": "text", "display": { "name": "text to display", "ui": "expression" },
-"extra": { "selector": "#container1 > *", "filter": "pacem-data" }
-}]
-</pre>
-        <pacem-form entity="{{ #txt1, twoway }}" metadata="{{ JSON.parse(#meta1.textContent) }}" autogenerate="true"></pacem-form>
+        <pacem-form entity="{{ #txt1, twoway }}" metadata='{{ [{
+                    "prop": "text", "type": Pacem.Components.Cms.EXPRESSION_METADATA_TYPE, "display": { "name": "text to display" },
+                    "extra": { "selector": "#container1 > *", "filter": "pacem-data" }
+                }] }}' autogenerate="true"></pacem-form>
         <hr />
         <span class="text-tech">&lt;text:<pacem-span hide="{{ Pacem.Utils.isNullOrEmpty($this.text) }}" class="bg-accent display-inline-block pacem-pad pad-left-1 pad-right-1 text-bold" id="txt1"></pacem-span>&gt;</span>
 

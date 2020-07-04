@@ -160,6 +160,11 @@ a.@{PCSS}-button,
         .ButtonColorize(@color_danger, @color_danger_inv);
     }
 
+    &.error,
+    &.button-error {
+        .ButtonColorize(@color_error, @color_error_inv);
+    }
+
     &.success,
     &.button-success {
         .ButtonColorize(@color_success, @color_success_inv);
@@ -580,5 +585,57 @@ body.@{PCSS}-animations {
     &:focus {
         background-color: @color_suggest_focus_back;
         color: @color_suggest_focus_fore;
+    }
+}
+
+// icon rotations
+@{P}-button,
+.@{PCSS}-button {
+
+    &.icon-rotate {
+
+        &::before {
+            display: inline-block;
+            transform-origin: center center;
+        }
+        // rotate
+        &.rotate-45::before {
+            transform: rotate(45deg);
+        }
+
+        &.rotate-90::before {
+            transform: rotate(90deg);
+        }
+
+        &.rotate-135::before {
+            transform: rotate(135deg);
+        }
+
+        &.rotate-180::before {
+            transform: rotate(180deg);
+        }
+
+        &.rotate-225::before {
+            transform: rotate(225deg);
+        }
+
+        &.rotate-270::before {
+            transform: rotate(270deg);
+        }
+
+        &.rotate-315::before {
+            transform: rotate(315deg);
+        }
+    }
+}
+
+// animations
+.@{PCSS}-animations {
+
+    @{P}-button,
+    .@{PCSS}-button {
+        &.icon-rotate::before {
+            transition: transform @easing_in_out_sine .2s;
+        }
     }
 }

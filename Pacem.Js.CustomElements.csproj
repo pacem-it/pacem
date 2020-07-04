@@ -1,14 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
-    <RuntimeFrameworkVersion>2.2.0</RuntimeFrameworkVersion>
-    <UserSecretsId>93207634-5ac3-47fd-a1b2-8f8c638352d8</UserSecretsId>
+    <LangVersion>Latest</LangVersion>
   </PropertyGroup>
 
   <PropertyGroup>
-    <Version>0.8.37</Version>
+    <Version>0.8.41</Version>
     <Company>Pacem</Company>
     <Authors>Cristian Merighi</Authors>
     <Copyright>Copyright © Pacem 2020</Copyright>
@@ -42,6 +41,7 @@
     <None Remove="src\components\2d\group.ts" />
     <None Remove="src\components\2d\path.ts" />
     <None Remove="src\components\2d\rect.ts" />
+    <None Remove="src\components\2d\text.ts" />
     <None Remove="src\components\basic\element-proxies.ts" />
     <None Remove="src\components\basic\html-proxy.ts" />
     <None Remove="src\components\basic\hub-proxy.ts" />
@@ -55,6 +55,7 @@
     <None Remove="src\components\basic\webworker-proxy.ts" />
     <None Remove="src\components\charts\types.ts" />
     <None Remove="src\components\cms\openapi\swagger-cms.ts" />
+    <None Remove="src\components\cms\scaffolding\types.ts" />
     <None Remove="src\components\cms\widgets\helpers\apimanifest.ts" />
     <None Remove="src\components\cms\widgets\helpers\clock.ts" />
     <None Remove="src\components\cms\widgets\helpers\data.ts" />
@@ -64,6 +65,7 @@
     <None Remove="src\components\cms\widgets\translator.ts" />
     <None Remove="src\components\cms\widgets\types.ts" />
     <None Remove="src\components\cms\widgets\ui\composite\grid.ts" />
+    <None Remove="src\components\cms\widgets\ui\dataviz\datagrid.ts" />
     <None Remove="src\components\cms\widgets\ui\types.ts" />
     <None Remove="src\components\fx\fancy.ts" />
     <None Remove="src\components\fx\hero.ts" />
@@ -89,18 +91,19 @@
     <None Remove="src\core\animations\easings.ts" />
     <None Remove="src\core\animations\events.ts" />
     <None Remove="src\core\animations\tween-service.ts" />
-    <None Remove="src\core\maths\colors.ts" />
-    <None Remove="src\core\maths\gaussian.ts" />
     <None Remove="demo\customelement-descriptor.ts" />
     <None Remove="demo\themeroller.ts" />
-    <None Remove="src\core\maths\math.ts" />
-    <None Remove="src\core\maths\matrix2d.ts" />
     <None Remove="src\core\net\fetcher.ts" />
     <None Remove="src\core\prefix.ts" />
     <None Remove="src\core\shortcut.ts" />
     <None Remove="src\core\ui\drag-drop.ts" />
     <None Remove="src\core\ui\rescale.ts" />
     <None Remove="src\core\ui\swipe.ts" />
+    <None Remove="src\foundation\colors.ts" />
+    <None Remove="src\foundation\drawing2d.ts" />
+    <None Remove="src\foundation\geom.ts" />
+    <None Remove="src\foundation\matrix2d.ts" />
+    <None Remove="src\foundation\number_extensions.ts" />
     <None Remove="src\less\pacem\layout\grids.less" />
     <None Remove="src\components\3d\detector.ts" />
     <None Remove="src\components\3d\three.ts" />
@@ -226,6 +229,7 @@
     <None Remove="src\less\pacem\layout\visibility.less" />
     <None Remove="test\core-tests.ts" />
     <None Remove="test\geom-tests.ts" />
+    <None Remove="test\geom2d-tests.ts" />
     <None Remove="test\main.ts" />
     <None Remove="test\markdown-tests.ts" />
     <None Remove="test\math-tests.ts" />
@@ -259,15 +263,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />
+    <!--<PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Rewrite" Version="2.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.2.0" />-->
     <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.1.0" />
 
-    <PackageReference Include="HtmlAgilityPack" Version="1.11.1" />
-    <PackageReference Include="Pacem.Mvc.Extensions" Version="0.5.4" />
-    <PackageReference Include="Markdig" Version="0.16.0" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.23" />
+    <PackageReference Include="Pacem.Mvc.Extensions" Version="0.6.0" />
+    <PackageReference Include="Pacem.Mvc.Acme" Version="0.6.0" />
+    <PackageReference Include="Markdig" Version="0.18.3" />
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="demo\components\snippet.ts" />
@@ -288,6 +293,7 @@
     <TypeScriptCompile Include="src\components\2d\circle.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
+    <TypeScriptCompile Include="src\components\2d\text.ts" />
     <TypeScriptCompile Include="src\components\3d\detector.ts" />
     <TypeScriptCompile Include="src\components\3d\three.ts" />
     <TypeScriptCompile Include="src\components\3d\types.ts" />
@@ -330,6 +336,7 @@
     <TypeScriptCompile Include="src\components\2d\types.ts" />
     <TypeScriptCompile Include="src\components\charts\types.ts" />
     <TypeScriptCompile Include="src\components\cms\openapi\swagger-cms.ts" />
+    <TypeScriptCompile Include="src\components\cms\scaffolding\types.ts" />
     <TypeScriptCompile Include="src\components\cms\widgets\helpers\apimanifest.ts" />
     <TypeScriptCompile Include="src\components\cms\widgets\helpers\clock.ts">
       <SubType>Code</SubType>
@@ -338,6 +345,7 @@
     <TypeScriptCompile Include="src\components\cms\widgets\helpers\fetcher.ts" />
     <TypeScriptCompile Include="src\components\cms\widgets\helpers\types.ts" />
     <TypeScriptCompile Include="src\components\cms\widgets\ui\composite\grid.ts" />
+    <TypeScriptCompile Include="src\components\cms\widgets\ui\dataviz\datagrid.ts" />
     <TypeScriptCompile Include="src\components\cms\widgets\ui\text.ts" />
     <TypeScriptCompile Include="src\components\cms\widgets\helpers\translator.ts" />
     <TypeScriptCompile Include="src\components\cms\widgets\types.ts" />
@@ -369,8 +377,8 @@
     <TypeScriptCompile Include="src\components\scaffolding\property-picker.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="src\components\scaffolding\element-picker.ts" />
-    <TypeScriptCompile Include="src\components\scaffolding\expression.ts" />
+    <TypeScriptCompile Include="src\components\cms\scaffolding\element-picker.ts" />
+    <TypeScriptCompile Include="src\components\cms\scaffolding\expression.ts" />
     <TypeScriptCompile Include="src\components\scaffolding\form.ts" />
     <TypeScriptCompile Include="src\components\scaffolding\formfield.ts" />
     <TypeScriptCompile Include="src\components\scaffolding\input-color.ts" />
@@ -447,14 +455,15 @@
     <TypeScriptCompile Include="src\core\events.ts" />
     <TypeScriptCompile Include="src\core\eventtarget.ts" />
     <TypeScriptCompile Include="src\core\expression.ts" />
-    <TypeScriptCompile Include="src\core\maths\gaussian.ts" />
-    <TypeScriptCompile Include="src\core\maths\geom.ts" />
-    <TypeScriptCompile Include="src\core\maths\colors.ts" />
-    <TypeScriptCompile Include="src\core\maths\matrix2d.ts" />
+    <TypeScriptCompile Include="src\foundation\colors.ts" />
+    <TypeScriptCompile Include="src\foundation\geom.ts" />
+    <TypeScriptCompile Include="src\foundation\matrix2d.ts" />
+    <TypeScriptCompile Include="src\foundation\number_extensions.ts" />
+    <TypeScriptCompile Include="src\numerical\gaussian.ts" />
     <TypeScriptCompile Include="src\core\net\fetcher.ts" />
     <TypeScriptCompile Include="src\core\net\http.ts" />
     <TypeScriptCompile Include="src\core\logger.ts" />
-    <TypeScriptCompile Include="src\core\maths\math.ts" />
+    <TypeScriptCompile Include="src\numerical\math.ts" />
     <TypeScriptCompile Include="src\core\prefix.ts" />
     <TypeScriptCompile Include="src\core\promise.ts" />
     <TypeScriptCompile Include="src\core\regex.ts" />
@@ -472,6 +481,7 @@
     <TypeScriptCompile Include="test\geom-tests.ts" />
     <TypeScriptCompile Include="test\main.ts" />
     <TypeScriptCompile Include="test\markdown-tests.ts" />
+    <TypeScriptCompile Include="test\geom2d-tests.ts" />
     <TypeScriptCompile Include="test\math-tests.ts" />
     <TypeScriptCompile Include="test\transformer-tests.ts" />
   </ItemGroup>
@@ -481,7 +491,8 @@
     <None Include="wwwroot\assets\logo-dark.svg" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="src\components\cms\scaffolding\" />
+    <Folder Include="dist\" />
+    <Folder Include="src\components\cms\widgets\scaffolding\" />
   </ItemGroup>
 
 </Project>

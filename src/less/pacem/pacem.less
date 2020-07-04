@@ -117,7 +117,7 @@ html .@{PCSS}-preloader {
     }
 
     .bg-error {
-        .Bg(@color_error, @color_error_fore);
+        .Bg(@color_error, @color_error_inv);
     }
 
     .bg-accent {
@@ -145,7 +145,6 @@ html .@{PCSS}-preloader {
         .Bg( @color_default, @color_background);
     }
     /*#endregion*/
-
     @import "text-overrides";
 }
 
@@ -160,6 +159,8 @@ html .@{PCSS}-preloader {
     --color-primary-inverse: @color_primary_inv;
     --color-danger: @color_danger;
     --color-danger-inverse: @color_danger_inv;
+    --color-error: @color_error;
+    --color-error-inverse: @color_error_inv;
     --color-highlight: @color_highlight;
     --color-highlight-inverse: @color_highlight_fore;
     --color-warning: @color_warning;
@@ -167,6 +168,16 @@ html .@{PCSS}-preloader {
     --color-success: @color_success;
     --color-success-inverse: @color_success_inv;
     --color-disabled: @color_disabled;
+    // palette
+    --color-green: @palette_green;
+    --color-yellow: @palette_yellow;
+    --color-brown: @palette_brown;
+    --color-red: @palette_red;
+    --color-pink: @palette_pink;
+    --color-blue: @palette_blue;
+    --color-orange: @palette_orange;
+    --color-purple: @palette_purple;
+    --color-teal: @palette_teal;
     //
     --grid-cell: @grid_cell;
     --grid-spacing: @grid_spacing;

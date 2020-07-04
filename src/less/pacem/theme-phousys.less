@@ -21,20 +21,20 @@
 // tweak needed to align the icon to the std font baseline
 @font_icon_offset: -2px;
 
-@color_phousys: #65e4d5;
+@color_phousys: #29c7de; // #65e4d5;
 // temp overrides
-@color_blue: #0e0d4b; // #191a2c;
-@color_lightblue: #0e0d4b;
-@color_background_alt: #22367c;
-@color_light: lighten(#65e4d5, 20); //#4beebf;
-@color_dark: #00163a; //#4beebf;
-@color_red: #ff0085; //#e51abb; //#b00c7d
-@color_teal: #625594; //#5d5483
+@color_blue: #06070e; // #191a2c;
+@color_lightblue: #101721;
+@color_background_alt: rgb(12,18,28); // #1e2f35;
+@color_light: lighten(@color_phousys, 20); //#4beebf;
+@color_dark: #000; //#4beebf;
+@color_red: #d42b2d; //#e51abb; //#b00c7d
+@color_teal: #2f989d; //#5d5483
 //@color_dark: #000;
 
-@color_error: #9c006e;
-@color_error_fore: #fff;
-@color_highlight: #0761d3;
+@color_error: @color_red;
+@color_error_inv: #fff;
+@color_highlight: #119e9c;
 @color_highlight_fore: #fff;
 @color_tech: @color_phousys;
 @color_watermark: #c0c0c0;
@@ -42,29 +42,34 @@
 @color_background: @color_blue;
 @color_root_background: @color_background;
 @color_default: #fff; // @color_light;
-@color_title_inv: #0d267a;
-@color_title: #7acbcf;
-@color_success: #4beebf; //#3680a0;
+@color_title_inv: #1b2733;
+@color_title: #4fd1d9;// #317396;
+@color_success: #42d9af;
 @color_success_inv: #fff;
-@color_warning: #d5d033;
+@color_warning: #dbcc30;
 @color_warning_inv: #fff; // darken(@color_warning, 35);
-@color_danger: @color_error;
+@color_danger: #9c006e;
 @color_danger_inv: #fff;
 @color_accent: @color_phousys;
 @color_accent_inv: #fff; //@color_lightblue;
 /*@color_primary: #0761d3;
 @color_primary_inv: @color_light;*/
-@color_primary: @color_phousys;
+@color_primary: #3b748f;
 @color_primary_inv: #fff; //@color_lightblue;
+@color_secondary: #1e4f57;
 @color_disabled: rgba(255,255,255,0.2);
 @color_code: @color_phousys;
 @color_codeblock_back: darken(@color_button_back, 2.5);
+
+// palette
+@palette_red: @color_red;
 
 @shadows: false;
 @gradients: true;
 @glows: true;
 @blur: true;
 @border_radius: 0;
+@menuitem_borders: false;
 
 @size_scrollbar: 5px;
 @color_scrollbar_track: transparent;
@@ -84,22 +89,24 @@
 @menu_link_color: fade(@color_default, 60);
 @menu_link_hover_color: @color_default;
 @menu_link_active_color: @color_accent;
-@menu_link_active_backgroundcolor: fade(@color_default, 5);
+@menu_link_active_backgroundcolor: fade(#354a52 , 33.333);// fade(@color_default, 5);
+@menu_link_active_decorcolor: @palette_blue;
 @menu_link_fontfamily: @font_tech;
 @menu_link_fontsize: .8rem; // * @font_rem_factor;
 @menu_nav_background: fade(@color_background, 80);
 // balloon
-@balloon_color: @color_background_alt;
+// @balloon_color: rgb(18,28,40);
+@balloon_shadows: true;
 // slider
 @color_slider_thumb: @color_highlight;
 // suggest
 @color_suggest_border: @color_button_back;
 @color_suggest_back: @color_button_back;
-@color_suggest_border_light: rgba(255,255,255,0.1);
-@color_suggest_border_dark: rgba(0,0,0,0.25);
-@color_suggest_focus_back: #002066;
-@color_suggest_focus_fore: @color_accent;
-@color_suggest_focus_highlight: @color_default;
+@color_suggest_border_light: rgba(76,102,104,0.5);
+@color_suggest_border_dark: rgba(46,54,62,0.5);
+@color_suggest_focus_back: @menu_link_active_backgroundcolor;
+@color_suggest_focus_fore: @color_default;
+@color_suggest_focus_highlight: @color_highlight;
 // contextmenu
 @color_contextmenu_hover_back: @color_suggest_focus_back;
 @color_contextmenu_hover_fore: @color_suggest_focus_fore; 
@@ -116,9 +123,9 @@
 // calendar/schedule/agenda
 /*@color_event_back: #313cb0; // #3681a1;
 @color_event_fore: #3580a0; //#bbdefa;*/
-@color_event_back: #002391; // #002066;
+@color_event_back: #1c446e; // #002066;
 @color_event_fore: @color_accent;
-@color_schedule_header: #26265d;
+@color_schedule_header: #182b4c;
 /*#endregion*/
 /*#region SCAFFOLDING_VARIABLES*/
 @color_field_outline: fade(@color_teal, 50);
@@ -127,4 +134,6 @@
 @border_field_size: 2px;
 @color_input_toggle: @color_phousys;
 @color_input_icon: @color_phousys;
+//
+@color_lightbox: fade(@color_background_alt, 50);
 /*#endregion*/

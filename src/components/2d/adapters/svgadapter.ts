@@ -7,8 +7,38 @@
         return Utils.isNull(v) ? f : v;
     }
 
+    function replaceChildAt(parent: Element, newChild: Element, targetIndex: number): Element {
+        if (targetIndex >= parent.children.length) {
+            parent.appendChild(newChild);
+            return null;
+        } else {
+            return parent.replaceChild(newChild, parent.children.item(targetIndex));
+        }
+    }
+
     @CustomElement({ tagName: P + '-' + TAG_MIDDLE_NAME + '-svg-adapter' })
     export class PacemSvgAdapterElement extends Pacem2DAdapterElement {
+
+        snapshot(stage: Pacem.Drawing.Stage, background?: string): PromiseLike<Blob> {
+            return new Promise((resolve, _) => {
+                if (this._scenes.has(stage)) {
+                    const svg = this._scenes.get(stage);
+                    Utils.snapshotElement(svg, background).then(b => {
+                        resolve(b);
+                    });
+                } else {
+                    resolve(null);
+                }
+            });
+        }
+
+        getTransformMatrix(scene: Pacem2DElement): Matrix2D {
+            const scenes = this._scenes;
+            if (scenes.has(scene)) {
+                return scenes.get(scene).getScreenCTM().inverse();
+            }
+            return Matrix2D.identity;
+        }
 
         private _dragger: Pacem.Components.PacemDragDropElement;
 
@@ -61,7 +91,6 @@
                     } else {
                         svg.setAttribute('preserveAspectRatio', `xM${aspectRatio.x.substr(1)}YM${aspectRatio.y.substr(1)} ${(aspectRatio.slice ? 'slice' : 'meet')}`);
                     }
-
                 }
             }
         }
@@ -90,10 +119,12 @@
 
             const options: AddEventListenerOptions = { passive: false, capture: true };
             svg.addEventListener('mousemove', this._mousemoveHandler, false);
-            svg.addEventListener('click', this._clickHandler, false);
+            svg.addEventListener('click', this._mouseDownUpHandler, false);
+            svg.addEventListener('mousedown', this._mouseDownUpHandler, false);
+            svg.addEventListener('mouseup', this._mouseDownUpHandler, false);
 
             // draw right away
-            this.draw(scene);
+            // this.draw(scene);
 
             return svg;
         }
@@ -103,6 +134,10 @@
             if (scenes.has(scene)) {
 
                 var svg = scenes.get(scene);
+                svg.removeEventListener('mousemove', this._mousemoveHandler);
+                svg.removeEventListener('click', this._mouseDownUpHandler);
+                svg.removeEventListener('mousedown', this._mouseDownUpHandler);
+                svg.removeEventListener('mouseup', this._mouseDownUpHandler);
 
                 // remove
                 svg.remove();
@@ -115,7 +150,9 @@
             return this._hitTarget;
         }
 
-        draw(scene: Pacem2DElement, item?: Pacem.Drawing.Drawable) {
+        draw(scene: Pacem2DElement, item?: Pacem.Drawing.Drawable);
+        draw(scene: Pacem2DElement, item: Pacem.Drawing.Group, deepRedraw: boolean);
+        draw(scene: Pacem2DElement, item?: Pacem.Drawing.Drawable, deepRedraw = false) {
 
             const scenes = this._scenes,
                 dict = this._items;
@@ -156,7 +193,7 @@
                 parent.innerHTML = '';
             }
 
-            this._draw(parent, items || [], flow);
+            this._draw(parent, items || [], flow, deepRedraw);
         }
 
         private _dragging: boolean;
@@ -164,7 +201,7 @@
             const args = evt.detail as UI.DragDropInitEventArgsClass,
                 el = <SVGGraphicsElement>args.element,
                 drawable: Pacem.Drawing.Drawable = CustomElementUtils.getAttachedPropertyValue(el, DRAWABLE_VAR),
-                transformMatrix = el.getScreenCTM().inverse(),
+                transformMatrix = drawable.stage.transformMatrix,
                 initialMatrix = Utils.deserializeTransform(el.style);
 
             args.data = {
@@ -172,7 +209,14 @@
                 initialTransformMatrix: initialMatrix
             };
 
-            this._itemDispatch(drawable, <UI.DragDropEventType>evt.type, { x: 0, y: 0 });
+            const reject = this._itemDispatch(drawable, evt, { x: 0, y: 0 });
+
+            if (reject) {
+
+                // reject dragging
+                evt.preventDefault();
+            }
+
         }
 
         private _draggingHandler = (evt: UI.DragDropEvent) => {
@@ -188,8 +232,11 @@
                 x: (args.currentPosition.x - args.origin.x) * data.transformMatrix.a + data.initialTransformMatrix.e,
                 y: (args.currentPosition.y - args.origin.y) * data.transformMatrix.d + data.initialTransformMatrix.f
             };
-            el.style.transform = `matrix(1,0,0,1,${offset.x},${offset.y})`;
-            this._itemDispatch(data.item, <UI.DragDropEventType>evt.type, offset);
+
+            const rejected = this._itemDispatch(data.item, evt, offset);
+            if (!rejected) {
+                el.style.transform = `matrix(1,0,0,1,${offset.x},${offset.y})`;
+            }
         };
 
         private _dragEndHandler = (evt: UI.DragDropEvent) => {
@@ -197,17 +244,11 @@
             const args = evt.detail,
                 data: { transformMatrix: DOMMatrix, item: Pacem.Drawing.Drawable, initialTransformMatrix: Matrix2D } = args.data,
                 transform = Utils.deserializeTransform(args.element.style);
-            this._itemDispatch(data.item, <UI.DragDropEventType>evt.type, { x: transform.e, y: transform.f });
+            this._itemDispatch(data.item, evt, { x: transform.e, y: transform.f });
         }
 
         private _mousemoveHandler = (evt: MouseEvent | TouchEvent) => {
-            var pt: Point = null;
-            if (evt instanceof TouchEvent) {
-                const touch = evt.touches[0];
-                pt = { x: touch.clientX, y: touch.clientY };
-            } else {
-                pt = { x: evt.clientX, y: evt.clientY };
-            }
+            var pt: Point = CustomEventUtils.getEventCoordinates(evt).client;
 
             if (!this._dragging) {
 
@@ -243,39 +284,69 @@
             }
         }
 
-        private _clickHandler = (evt: MouseEvent | TouchEvent) => {
+        private _mouseDownUpHandler = (evt: MouseEvent) => {
             if (!Utils.isNull(this._hitTarget)) {
-                this._itemDispatch(this._hitTarget, 'click', evt);
+                const type: 'down' | 'up' | 'click' = <any>evt.type.replace(/^mouse/, '');
+                this._itemDispatch(this._hitTarget, type, evt);
             }
         }
 
-        private _itemDispatch(target: Pacem.Drawing.Drawable, type: 'click' | 'over' | 'out', evt: MouseEvent | TouchEvent);
-        private _itemDispatch(target: Pacem.Drawing.Drawable, type: UI.DragDropEventType, offset: Point);
-        private _itemDispatch(target: Pacem.Drawing.Drawable, type: 'click' | 'over' | 'out' | UI.DragDropEventType, offset?: Point | MouseEvent | TouchEvent) {
+        private _itemDispatch(target: Pacem.Drawing.Drawable, type: 'down' | 'up' | 'click' | 'over' | 'out', evt: MouseEvent | TouchEvent);
+        private _itemDispatch(target: Pacem.Drawing.Drawable, type: UI.DragDropEvent, offset: Point);
+        private _itemDispatch(target: Pacem.Drawing.Drawable, type: 'down' | 'up' | 'click' | 'over' | 'out' | UI.DragDropEvent, offset?: Point | MouseEvent | TouchEvent): boolean {
             if (!Utils.isNull(target)) {
 
                 var dragArgs: Pacem.Drawing.DragEventArgs,
-                    coords: Pacem.EventCoordinates;
+                    originalEvent: MouseEvent | TouchEvent,
+                    evtType: string;
+
                 if (offset instanceof Event) {
-                    coords = CustomEventUtils.getEventCoordinates(offset);
+                    originalEvent = offset;
                 } else {
                     dragArgs = { item: target, offset: offset };
                 }
-                const evt = () => offset instanceof Event ? new Pacem.Drawing.DrawableEvent(type, target, coords) : new Pacem.Drawing.DragEvent(type, { detail: dragArgs }),
-                    itemevt = offset instanceof Event ? new Pacem.Drawing.DrawableEvent('item' + type, target, coords) : new Pacem.Drawing.DragEvent('item' + type, { detail: dragArgs });
 
-                if (target instanceof EventTarget) {
-                    target.dispatchEvent(evt());
+                if (typeof type === 'string') {
+                    evtType = type;
+                } else {
+                    evtType = type.type;
+                    originalEvent = type.originalEvent as MouseEvent;
                 }
-                target.stage.dispatchEvent(itemevt);
+
+                const m = target.stage.transformMatrix;
+
+                const evt = () => offset instanceof Event ? new Pacem.Drawing.DrawableEvent(evtType, target, originalEvent, m) : new Pacem.Drawing.DragEvent(evtType, { detail: dragArgs, cancelable: evtType === UI.DragDropEventType.Init || evtType === UI.DragDropEventType.Drag }, originalEvent, m),
+                    itemevt = offset instanceof Event ? new Pacem.Drawing.DrawableEvent('item' + evtType, target, originalEvent, m) : new Pacem.Drawing.DragEvent('item' + evtType, { detail: dragArgs, cancelable: evtType === UI.DragDropEventType.Init || evtType === UI.DragDropEventType.Drag }, originalEvent, m);
+
+                var prevent = false;
+                if (target instanceof EventTarget) {
+
+                    const evnt = evt();
+                    target.dispatchEvent(evnt);
+                    prevent = evnt.defaultPrevented;
+                }
+
+                target.stage.dispatchEvent(itemevt)
+
+                // was the event (in one of its forms) rejected?
+                return prevent || itemevt.defaultPrevented;
             }
+
+            return false;
         }
 
         private _hasItems(object: any): object is { items: any[] } {
-            return 'items' in object && Utils.isArray(object.items);
+            return Pacem.Drawing.isGroup(object);
         }
 
-        private _draw(parent: SVGElement, items: Pacem.Drawing.Drawable[], flow: boolean): void {
+        private _disposeSvg(el: Element) {
+            if (!Utils.isNull(el)) {
+                var drawable = CustomElementUtils.getAttachedPropertyValue(el, DRAWABLE_VAR);
+                this._items.delete(drawable);
+            }
+        }
+
+        private _draw(parent: SVGElement, items: Pacem.Drawing.Drawable[], flow: boolean, deepRedraw: boolean): void {
             const dict = this._items;
             // children counter
             let j = 0;
@@ -288,13 +359,13 @@
                         el = this._buildSVGElement(item);
                         CustomElementUtils.setAttachedPropertyValue(el, DRAWABLE_VAR, item);
 
-                        parent.appendChild(el);
+                        this._disposeSvg(replaceChildAt(parent, el, j));
                         dict.set(item, el);
                     }
                     else {
                         el = dict.get(item);
                         if (el.parentNode !== parent) {
-                            parent.appendChild(el);
+                            this._disposeSvg(replaceChildAt(parent, el, j));
                         }
                     }
 
@@ -313,12 +384,37 @@
                         path.setAttribute('d', fallback(item.pathData, 'M0,0'));
                         path.setAttribute('fill', fallback(item.fill, defaults.fill));
                         path.setAttribute('stroke', fallback(item.stroke, defaults.stroke));
+                        let css = '';
+                        if (!Utils.isNullOrEmpty(item.dashArray)) {
+                            css += `stroke-dasharray: ${item.dashArray.join(',')};`;
+                        }
+                        if (!Utils.isNullOrEmpty(item.lineCap)) {
+                            css += `stroke-linecap: ${item.lineCap};`;
+                        }
+                        if (!Utils.isNullOrEmpty(item.lineJoin)) {
+                            css += `stroke-linejoin: ${item.lineJoin};`;
+                        }
+                        path.style.cssText = css;
                         path.setAttribute('stroke-width', '' + fallback(item.lineWidth, defaults.lineWidth));
+                    } else if (Pacem.Drawing.isText(item)) {
+                        const text = <SVGTextElement>el;
+                        text.textContent = item.text;
+                        text.style.fill = Utils.isNullOrEmpty(item.color) ? '' : item.color;
+                        text.style.fontFamily = Utils.isNullOrEmpty(item.fontFamily) ? '' : item.fontFamily;
+                        text.style.fontSize = Utils.isNull(item.fontSize) ? '' : item.fontSize + 'px';
+                        text.setAttribute('text-anchor', fallback(item.textAnchor, 'start'));
+                        if (!Utils.isNull(item.anchor)) {
+                            text.setAttribute('x', item.anchor.x.toString());
+                            text.setAttribute('y', item.anchor.y.toString());
+                        } else {
+                            text.removeAttribute('x');
+                            text.removeAttribute('y');
+                        }
                     }
 
                     if (Pacem.Drawing.isUiObject(item)) {
                         const t = item.transformMatrix;
-                        if (Utils.isNull(t) || Pacem.Drawing.Matrix2D.isIdentity(t)) {
+                        if (Utils.isNull(t) || Pacem.Matrix2D.isIdentity(t)) {
                             el.removeAttribute('transform');
                         } else {
                             el.setAttribute('transform', `matrix(${t.a} ${t.b} ${t.c} ${t.d} ${t.e} ${t.f})`);
@@ -331,10 +427,10 @@
                         }
                     }
 
-                    if (flow && this._hasItems(item)) {
+                    if ((flow || deepRedraw) && this._hasItems(item)) {
 
                         // recursion
-                        this._draw(el, item.items, flow);
+                        this._draw(el, item.items, true, deepRedraw);
                     }
 
                     j++;
@@ -345,7 +441,7 @@
                 for (let k = parent.children.length - 1; k >= j; k--) {
 
                     const el = parent.children.item(k);
-
+                    this._disposeSvg(el);
                     el.remove();
                 }
             }
@@ -354,6 +450,9 @@
         private _buildSVGElement(item: Pacem.Drawing.Drawable): SVGElement {
             if (Pacem.Drawing.isShape(item)) {
                 return document.createElementNS(SVG_NS, 'path');
+            }
+            if (Pacem.Drawing.isText(item)) {
+                return document.createElementNS(SVG_NS, 'text');
             }
             return document.createElementNS(SVG_NS, 'g');
         }

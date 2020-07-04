@@ -39,8 +39,27 @@ namespace Pacem.Components.UI {
 
     class BinderUtils {
 
+        private static _pageBinders : PacemBinderElement[] = [];
+        private static _bodyResizeListener: Pacem.Components.PacemResizeElement;
+
+        private static _updateResizeListener() {
+            const binders = this._pageBinders;
+            if (Utils.isNull(this._bodyResizeListener)) {
+                const resize = this._bodyResizeListener = new PacemResizeElement();
+                resize.target = document.body;
+                document.body.appendChild(resize);
+                document.addEventListener(Pacem.Components.ResizeEventName, () => {
+                    for (let binder of binders) {
+                        binder.invalidateSize();
+                    }
+                }, false);
+            }
+            this._bodyResizeListener.disabled = binders.length === 0;
+        }
+
         static register(element: Element, binder: PacemBinderElement) {
-            var collector: BindersCollector = CustomElementUtils.getAttachedPropertyValue(element, UI_BINDERS);
+            var collector: BindersCollector = CustomElementUtils.getAttachedPropertyValue(element, UI_BINDERS),
+                binders = this._pageBinders;
             if (Utils.isNull(collector)) {
                 collector = new BindersCollector(element);
                 CustomElementUtils.setAttachedPropertyValue(element, UI_BINDERS, collector);
@@ -53,11 +72,17 @@ namespace Pacem.Components.UI {
                 //}
                 collector.binders.push(binder);
             }
+            if (binders.indexOf(binder) === -1) {
+                binders.push(binder);
+                this._updateResizeListener();
+            }
         }
 
         static unregister(element: Element, binder: PacemBinderElement) {
             var collector: BindersCollector = CustomElementUtils.getAttachedPropertyValue(element, UI_BINDERS),
-                ndx: number;
+                ndx: number,
+                binders = this._pageBinders,
+                ndx2: number;
             if (!Utils.isNull(collector) && (ndx = collector.binders.indexOf(binder)) > -1) {
                 collector.binders.splice(ndx, 1);
                 if (collector.binders.length === 0) {
@@ -65,6 +90,10 @@ namespace Pacem.Components.UI {
                     collector.dispose();
                     CustomElementUtils.deleteAttachedPropertyValue(element, UI_BINDERS);
                 }
+            }
+            if ((ndx2 = binders.indexOf(binder)) >= 0) {
+                binders.splice(ndx2, 1);
+                this._updateResizeListener();
             }
         }
 
@@ -166,7 +195,18 @@ namespace Pacem.Components.UI {
                 this._setPathVisibility();
 
                 svg.appendChild(path);
+
+                this.invalidateSize();
+
                 document.body.appendChild(svg);
+            }
+        }
+
+        invalidateSize() {
+            const svg = this._svg;
+            if (!Utils.isNull(svg)) {
+                svg.setAttribute('width', document.body.scrollWidth.toString());
+                svg.setAttribute('height', document.body.scrollHeight.toString());
             }
         }
 
@@ -218,7 +258,7 @@ namespace Pacem.Components.UI {
 
             function getDistance(suffix1, suffix2) {
                 const key = suffix1 + '_' + suffix2;
-                return distance_memoizer[key] = distance_memoizer[key] || Geom.distance(points['p1_' + suffix1], points['p2_' + suffix2]);
+                return distance_memoizer[key] = distance_memoizer[key] || Point.distance(points['p1_' + suffix1], points['p2_' + suffix2]);
             }
 
             if (anchor == BinderAnchor.Auto || refAnchor == BinderAnchor.Auto) {
@@ -226,7 +266,8 @@ namespace Pacem.Components.UI {
                 //if (anchor == BinderAnchor.Auto && refAnchor == BinderAnchor.Auto) {
                 // algorithm for finding the closest edges (1 atan + 4 distances)
                 // 1. compute atan of the segment joining the two centers
-                const slope = Geom.slopeDeg({ x: p1_center.x, y: -p1_center.y }, { x: p2_center.x, y: -p2_center.y });
+                const a = { x: p1_center.x, y: -p1_center.y }, b = { x: p2_center.x, y: -p2_center.y };
+                const slope = Math.atan2(b.y - a.y, b.x - a.x) * 180 / Math.PI;
 
                 switch (slope) {
                     case 0:
@@ -409,16 +450,18 @@ namespace Pacem.Components.UI {
 
         refresh(element: PacemBinderTarget, args?: ResizeEventArgs) {
             var path: SVGPathElement;
-            if (Utils.isNull(element) || Utils.isNull(path = this._path))
+            if (Utils.isNull(element) || Utils.isNull(path = this._path)) {
                 return;
+            }
 
             const draw = !Utils.isNull(this.from) && !Utils.isNull(this.to);
             const leave = Utils.isNull(this.from) && Utils.isNull(this.to)
 
             if (this.disabled || !draw) {
                 path.removeAttribute('d');
-                if (leave)
+                if (leave) {
                     return;
+                }
             }
 
             // compute anchor points
@@ -429,18 +472,20 @@ namespace Pacem.Components.UI {
                 if (!(element instanceof Element)) {
                     args = { height: 0, width: 0, left: element.x, top: element.y };
                     anchor = BinderAnchor.Center;
-                } else if (key in this._state)
+                } else if (key in this._state) {
                     args = this._state[key].size;
-
+                }
             }
 
-            if (Utils.isNull(args))
+            if (Utils.isNull(args)) {
                 return;
+            }
 
             this._state[key] = { size: args, anchor: anchor };
 
-            if (draw)
+            if (draw) {
                 this._draw();
+            }
         }
 
         //@Debounce()
@@ -480,12 +525,14 @@ namespace Pacem.Components.UI {
 
             const dStart = `M${x0 - 2},${y0 - 2} h4 v4 h-4 z`;
             const dEnd = `M${x1 - 2},${y1 - 2} h4 v4 h-4 z`;
-            path.setAttribute('d', dStart + `M${x0},${y0} C${cx0},${cy0} ${cx1},${cy1} ${x1},${y1}` + dEnd);
+
+            const d = dStart + `M${x0},${y0} C${cx0},${cy0} ${cx1},${cy1} ${x1},${y1}` + dEnd;
+            if (d.indexOf('NaN') === -1) {
+                path.setAttribute('d', d);
+            }
             if (!Utils.isNullOrEmpty(this.color))
                 path.style.stroke = this.color;
 
-            svg.setAttribute('width', document.body.scrollWidth.toString());
-            svg.setAttribute('height', document.body.scrollHeight.toString());
         }
 
     }

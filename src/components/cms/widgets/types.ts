@@ -12,19 +12,19 @@
                     props: Array.prototype.concat.apply([
                         {
                             prop: 'claimType', type: 'string',
-                            display: { cssClass: [PCSS + '-cell', 'cols-hd-4', 'cols-lg-6'], name: 'Claim type' },
+                            display: { cssClass: [PCSS + '-cell', 'cols-hd-4', 'cols-lg-6', 'field-stretch', 'field-minimal'], name: 'Claim type' },
                             validators: [{ type: 'required', errorMessage: '!' }]
                         },
                         {
                             prop: 'claimValue', type: 'string',
-                            display: { cssClass: [PCSS + '-cell', 'cols-hd-4', 'cols-lg-6'], name: 'Claim value' },
+                            display: { cssClass: [PCSS + '-cell', 'cols-hd-4', 'cols-lg-6', 'field-stretch', 'field-minimal'], name: 'Claim value' },
                             validators: [{ type: 'required', errorMessage: '!' }]
                         },
                     ], ['read', 'update', 'create', 'delete'].map((p, j) => {
                         return {
                             prop: p,
                             type: 'boolean',
-                            display: { cssClass: [PCSS + '-cell', 'cols-hd-1', 'cols-3', 'field-minimal', 'field-center'], name: p.charAt(0).toUpperCase() + p.substr(1) }
+                            display: { cssClass: [PCSS + '-cell', 'cols-hd-1', 'cols-3', 'field-minimal', PCSS + '-pad pad-left-2'], name: p.charAt(0).toUpperCase() + p.substr(1) }
                         };
                     }))
                 }
@@ -75,6 +75,7 @@
     }
 
     const WIDGET_CSS_CLASS = PCSS + '-widget';
+
     /** Default metadata ('expression' field) 'extra' object. */
     export const EXPRESSION_WIDGET_METADATA_EXTRA = {
         selector: '.' + WIDGET_CSS_CLASS,

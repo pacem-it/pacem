@@ -32,12 +32,14 @@ Feel free to toggle seamlessly between the two possible adapters:
         <pacem-2d-canvas-adapter id="canvas0"></pacem-2d-canvas-adapter>
         <pacem-data id="adapter0" model="{{ #canvas0 }}"></pacem-data>
         <pacem-2d adapter="{{ #adapter0.model }}" style="height: 200px"
+                  on-draw="console.log('drawn!')"
                   on-itemout="#hovertag1.model = null"
                   on-itemover="#hovertag1.model = $event.detail.tag"
                   on-itemclick="#clicktag1.model = $event.detail.tag; #toast1.show = true">
 
             <pacem-2d-rect x="125" y="125" w="125" h="50" stroke="#f40" fill="#fffcc0" tag="rectangle"></pacem-2d-rect>
-            <pacem-2d-circle radius="{{ #slider1.value }}" center='{ "x":100, "y": 100 }' line-width="10" stroke="#f00" fill="none" tag="circle"></pacem-2d-circle>
+            <pacem-2d-circle radius="{{ #slider1.value }}" center='{ "x":100, "y": 100 }' line-width="10" stroke="#f00" fill="none" tag="circle" dash-array="5,3"></pacem-2d-circle>
+            <pacem-2d-text text="Hello World!" anchor='{"x": 250, "y": 120}' text-anchor="end"></pacem-2d-text>
 
         </pacem-2d>
 

@@ -60,11 +60,11 @@ namespace Pacem {
 
         // geom
         Point: {
-            convert: (attr: string) => Geom.parsePoint(attr),
+            convert: (attr: string) => Point.parse(attr),
             convertBack: (prop: Point) => `${prop.x || 0} ${prop.y || 0}`
         },
         Rect: {
-            convert: (attr: string) => Geom.parseRect(attr),
+            convert: (attr: string) => Rect.parse(attr),
             convertBack: (prop: Rect) => `${prop.x || 0} ${prop.y || 0} ${prop.width || 0} ${prop.height || 0}`
         }
     }

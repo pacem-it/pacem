@@ -25,11 +25,10 @@
         > .@{PCSS}-dialog-heading {
             order: 0;
             // padding: @lightbox_padding @lightbox_padding 0 /*@grid_spacing / 2*/ @lightbox_padding;
-
             > * {
                 margin: 0 @lightbox_padding;
 
-                &:first-child{
+                &:first-child {
                     margin-top: @lightbox_padding;
                 }
             }
@@ -45,5 +44,87 @@
         .@{PCSS}-lightbox when (@border_radius = 0) {
             .Corners(fade(@color_border, 100));
         }
+    }
+}
+
+.DialogSizeAbsolute(@prefix, @suffix, @vw) {
+
+    &.@{prefix}-@{suffix} {
+        .@{PCSS}-lightbox {
+            max-width: @vw;
+
+            > .@{PCSS}-scrollable {
+                max-width: @vw;
+            }
+        }
+    }
+}
+
+.DialogSizeResponsive(@prefix, @mid, @suffix, @vw) {
+
+    &.@{prefix}-@{mid}-@{suffix} {
+        .@{PCSS}-lightbox {
+            max-width: @vw;
+
+            > .@{PCSS}-scrollable {
+                max-width: @vw;
+            }
+        }
+    }
+}
+
+.DialogSize(@prefix) {
+
+    @_slim: 25vw;
+    @_medium: 50vw;
+
+
+    .DialogSizeAbsolute(@prefix, slim, @_slim);
+    .DialogSizeAbsolute(@prefix, medium, @_medium);
+
+
+    @media (max-width: @threshold_sm - 1) {
+        .DialogSizeResponsive(@prefix, xs, slim, @_slim);
+        .DialogSizeResponsive(@prefix, xs, medium, @_medium);
+    }
+
+    @media (min-width: @threshold_sm) {
+        .DialogSizeResponsive(@prefix, sm, slim, @_slim);
+        .DialogSizeResponsive(@prefix, sm, medium, @_medium);
+    }
+
+    @media (min-width: @threshold_md) {
+        .DialogSizeResponsive(@prefix, md, slim, @_slim);
+        .DialogSizeResponsive(@prefix, md, medium, @_medium);
+    }
+
+    @media (min-width: @threshold_lg) {
+        .DialogSizeResponsive(@prefix, lg, slim, @_slim);
+        .DialogSizeResponsive(@prefix, lg, medium, @_medium);
+    }
+
+    @media (min-width: @threshold_xl) {
+        .DialogSizeResponsive(@prefix, xl, slim, @_slim);
+        .DialogSizeResponsive(@prefix, xl, medium, @_medium);
+    }
+
+    @media (min-width: @threshold_hd) {
+        .DialogSizeResponsive(@prefix, hd, slim, @_slim);
+        .DialogSizeResponsive(@prefix, hd, medium, @_medium);
+    }
+
+    @media (min-width: @threshold_2k) {
+        .DialogSizeResponsive(@prefix, 2k, slim, @_slim);
+        .DialogSizeResponsive(@prefix, 2k, medium, @_medium);
+    }
+
+    @media (min-width: @threshold_4k) {
+        .DialogSizeResponsive(@prefix, 4k, slim, @_slim);
+        .DialogSizeResponsive(@prefix, 4k, medium, @_medium);
+    }
+
+    @media (orientation: portrait) {
+        .DialogSizeResponsive(@prefix, v, slim, @_slim);
+        .DialogSizeResponsive(@prefix, v, medium, @_medium);
     }
 }

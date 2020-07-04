@@ -2,7 +2,7 @@
 namespace Pacem.Components {
 
     @CustomElement({ tagName: P + '-data' })
-    export class PacemDataElement extends PacemEventTarget implements OnPropertyChanged {
+    export class PacemDataElement extends PacemEventTarget {
 
         constructor(private storage = new Pacem.Storage()) {
             super();

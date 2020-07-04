@@ -118,7 +118,7 @@ namespace Pacem.Components.Scaffolding {
             this._synchronizeOptions();
         }
 
-        private _synchronizeOptions(opts: LatLngOptions = this.options) {
+        private _synchronizeOptions(opts: LatLngOptions = this.options || { provider: 'osm' }) {
             const marker = this._marker, map = this._map;
             marker.icon = opts.icon;
 

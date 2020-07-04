@@ -6,6 +6,10 @@ namespace Pacem {
 
     export class Matrix2D {
 
+        static isIdentity(m: Matrix2D) {
+            return m.a === 1 && m.d === 1 && m.b === 0 && m.f === 0 && m.c === 0 && m.e === 0;
+        }
+
         static get identity(): Matrix2D {
             return { a: 1, b: 0, c: 0, d: 1, e: 0, f: 0 };
         }
@@ -64,11 +68,10 @@ namespace Pacem {
             const invdet = 1 / det;
 
             /*
-             * found this shortcut:  
              * 1. swap a, d
              * 2. swap c, b and change signs
              * 3. e := -e*d + f*c
-             * 4. f := -e*b + f*a
+             * 4. f := e*b - f*a
              * 5. divide everything by [det]
             */
             return this.multiply({
@@ -77,7 +80,7 @@ namespace Pacem {
                 c: -m.b,
                 d: m.a,
                 e: -m.e * m.d + m.c * m.f,
-                f: -m.e * m.b + m.a * m.f
+                f: m.e * m.b - m.a * m.f
             }, invdet);
         }
 

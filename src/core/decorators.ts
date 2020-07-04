@@ -678,7 +678,7 @@ namespace Pacem {
 
     export function Concurrent() {
 
-        function isPromiseLike(obj: any): boolean {
+        function isPromiseLike(obj: any): obj is PromiseLike<any> {
             return obj && typeof obj.then === 'function';
         }
 
@@ -711,7 +711,7 @@ namespace Pacem {
                         deferred = DeferPromise.defer<any>();
                     // hi-jack only if promise-like...
                     CustomElementUtils.setAttachedPropertyValue(_this, lockKey, true);
-                    (<PromiseLike<any>>result).then(r => {
+                    result.then(r => {
                         deferred.resolve(r);
                         CustomElementUtils.setAttachedPropertyValue(_this, lockKey, false);
                         // warning: here's a possibly sneaky point (TODO: strengthen the lock)

@@ -1,4 +1,5 @@
 ﻿@import "../theme-dark";
+@import "../../shared";
 @import "shared";
 
 @_w: @layout_aside_width;
@@ -9,6 +10,7 @@
 @_clr_a_active: @menu_link_active_color;
 @_clr_a_active_hover: @menu_link_active_color;
 @_clr_a_active_bg: @menu_link_active_backgroundcolor;
+@_clr_a_active_decor: @menu_link_active_decorcolor;
 
 @_header_height: @layout_header_height;
 @_toolbar_height: @layout_toolbar_height;
@@ -146,7 +148,7 @@
                 color: @_clr_a_active;
                 background-color: @_clr_a_active_bg;
                 cursor: default;
-                border-color: @_clr_a_active;
+                border-color: @_clr_a_active_decor;
 
                 &:hover {
                     color: @_clr_a_active_hover;
@@ -170,6 +172,10 @@
                     padding-left: 2 * @grid_spacing;
                 }
             }
+        }
+
+        & when (@blur = true) {
+            .Blur(6px, @menu_nav_background);
         }
     }
 
@@ -316,6 +322,7 @@
 
             nav {
                 background: none;
+                backdrop-filter: none;
                 grid-row: ~"1/9";
                 width: @_w;
                 padding-top: @grid_spacing + @layout_header_height;

@@ -1,4 +1,4 @@
-﻿/// <reference path="../maths/geom.ts" />
+﻿/// <reference path="../../../dist/js/pacem-foundation.d.ts" />
 /// <reference path="../types.ts" />
 /// <reference path="../utils.ts" />
 namespace Pacem.UI {

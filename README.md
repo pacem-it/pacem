@@ -26,6 +26,7 @@ Basic example:
         <script src="https://github.com/webcomponents/custom-elements/blob/master/custom-elements.min.js"></script>
         <script src="node_modules/pacem/dist/js/polyfills/documentfragment.edge.js"></script>
         <!-- scripts -->
+        <script src="node_modules/pacem/dist/js/pacem-foundation.min.js"></script>
         <script src="node_modules/pacem/dist/js/pacem-core.min.js"></script>
         <script src="node_modules/pacem/dist/js/pacem-ui.min.js"></script>
         <script src="node_modules/pacem/dist/js/pacem-scaffolding.min.js"></script>
@@ -66,7 +67,7 @@ Basic example:
 ### Road-map to v1
 To-do (improvements):
 
-- **Modularize**: ongoing POC for an ES6-module version (+ WebPack);
+- ~~**Modularize**: ongoing POC for an ES6-module version (+ WebPack)~~;
 - **CSP compliancy**. Mumblings:
   - try binding syntax semplifications that may avoid `Function()`;
   - ~~`inline-styles`: deal with them~~;

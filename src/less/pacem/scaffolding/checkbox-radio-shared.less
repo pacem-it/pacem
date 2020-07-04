@@ -26,7 +26,7 @@
             flex: 1 1 auto;
             display: inline-block;
             padding: 0 2 * @_pad 0 0;
-            
+
             &:last-child {
                 padding-right: 0;
             }
@@ -94,5 +94,25 @@
     @{P}-radio-list @{P}-radio,
     @{P}-radio-list @{P}-radio:not(.field-stretch) {
         min-width: 0;
+    }
+}
+
+// nowrap lists
+@{P}-form-field.field-nowrap {
+
+    @{P}-radio-list,
+    @{P}-checkbox-list {
+        ol {
+            flex-wrap: nowrap;
+
+            > li {
+                flex-grow: 0;
+                flex-shrink: 1;
+
+                @{P}-radio > label {
+                    white-space: nowrap;
+                }
+            }
+        }
     }
 }

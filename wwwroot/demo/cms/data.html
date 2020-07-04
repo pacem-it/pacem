@@ -11,7 +11,7 @@ The `PacemWidgetDataElement` is the ideal widget for sharing data across the pag
 
         <div class="display-flex">
             <pacem-widget-data editable="true" editing="{{ #toggleEdit0.value }}" id="data0" model='{ "foo": "bar" }'></pacem-widget-data>
-            <pacem-widget-text class="pacem-margin margin-left-3 text-tech" text="{{ Pacem.Utils.Json.stringify(#data0.model) }}"></pacem-widget-text>
+            <pacem-text class="pacem-margin margin-left-3 text-tech" text="{{ Pacem.Utils.Json.stringify(#data0.model) }}"></pacem-text>
         </div>
 
         <hr />

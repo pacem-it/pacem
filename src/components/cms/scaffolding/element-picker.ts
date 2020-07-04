@@ -1,7 +1,7 @@
 ﻿/// <reference path="types.ts" />
-namespace Pacem.Components.Scaffolding {
+namespace Pacem.Components.Cms {
 
-    export abstract class PacemElementPickerElementBase extends PacemBaseElement {
+    export abstract class PacemElementPickerElementBase extends Pacem.Components.Scaffolding.PacemBaseElement {
 
         @Watch({ converter: PropertyConverters.String }) selector: string;
 
@@ -40,7 +40,7 @@ namespace Pacem.Components.Scaffolding {
             return PropertyConverters.Element.convert(attr);
         }
 
-        @ViewChild(P + '-select') private _select: PacemSelectElement;
+        @ViewChild(P + '-select') private _select: Pacem.Components.Scaffolding.PacemSelectElement;
 
         viewActivatedCallback() {
             super.viewActivatedCallback();

@@ -3,88 +3,32 @@ namespace Pacem.Tests {
 
     export const geomTests = [{
 
-        name: 'Geom Functionalities', test: function () {
+        name: 'Point Functionalities', test: function () {
 
             it('Distance between points', function () {
 
                 var p1: Point = { x: 4, y: 0 };
                 var p2: Point = { x: 0, y: 3 };
-                const distance = Geom.distance(p1, p2);
+                const distance = Point.distance(p1, p2);
 
                 expect(distance).toEqual(5);
-
-            });
-            it('Segment slope', function () {
-
-                var p1: Point = { x: 4, y: 0 };
-                var p2: Point = { x: 0, y: 4 };
-
-                const precision = 14;
-
-                const slope = Geom.slopeDeg(p1, p2);
-                expect(slope).toEqual(135);
-
-                const slope0a = Geom.slopeDeg2(p1, p2);
-                expect(slope0a).toEqual(slope);
-
-                const slope1 = Geom.slopeRad(p1, p2);
-                expect(slope1).toBeCloseTo(Math.PI * 3 / 4, precision);
-
-                const slope1a = Geom.slopeRad2(p1, p2);
-                expect(slope1a).toBeCloseTo(slope1, precision);
-
-                const slope2 = Geom.slopeDeg(p2, p1);
-                expect(slope2).toEqual(-45);
-
-                const slope2a = Geom.slopeDeg2(p2, p1);
-                expect(slope2a).toEqual(315);
-
-                const slope3 = Geom.slopeRad(p2, p1);
-                expect(slope3).toBeCloseTo(-Math.PI / 4, precision);
-
-                const slope3a = Geom.slopeRad2(p2, p1);
-                expect(slope3a).toBeCloseTo(Math.PI * 7 / 4, precision);
-
-            });
-            it('Segment slope vertical', function () {
-
-                var p1: Point = { x: 0, y: 0 };
-                var p2: Point = { x: 0, y: 4 };
-
-                const slope = Geom.slopeDeg(p1, p2);
-                expect(slope).toEqual(90);
-
-                const slope2 = Geom.slopeDeg(p2, p1);
-                expect(slope2).toEqual(-90);
-
-            });
-            it('Segment slope horizontal', function () {
-
-                var p1: Point = { x: 0, y: 0 };
-                var p2: Point = { x: -4, y: 0 };
-
-                const slope = Geom.slopeDeg(p1, p2);
-                expect(slope).toEqual(180);
-
-                const slope2 = Geom.slopeDeg(p2, p1);
-                expect(slope2).toEqual(0);
 
             });
 
         }
     },
 
-        {
-            name: 'Math algorithms', test: function () {
+    {
+        name: 'Math algorithms', test: function () {
 
-                function _normalizer(a0:number, a1:number) {
-                    const magn = Math.log10(a1 - a0),
-                        rounder = Math.pow(10, Math.floor(magn));
-                    return {
-                        min: Math.floor(a0 / rounder) * rounder,
-                        max: Math.ceil(a1 / rounder) * rounder
-                    };
-                }
+            function _normalizer(a0: number, a1: number) {
+                const magn = Math.log10(a1 - a0),
+                    rounder = Math.pow(10, Math.floor(magn));
+                return {
+                    min: Math.floor(a0 / rounder) * rounder,
+                    max: Math.ceil(a1 / rounder) * rounder
+                };
+            }
 
             it('Log based', function () {
                 const a1 = 980,
@@ -114,6 +58,20 @@ namespace Pacem.Tests {
 
                 expect(tuple3.min).toEqual(-300);
                 expect(tuple3.max).toEqual(500);
+            });
+
+        }
+    }
+        ,
+    {
+        name: 'Numeric thresholds', test: function () {
+
+            it('isCloseTo extension method', function () {
+
+                const v1 = .3,
+                    v2 = .1 + .2,
+                    close = v2.isCloseTo(v1);
+                expect(close).toBeTruthy(`${v2} is not close to ${v1}.`);
             });
 
         }

@@ -302,11 +302,6 @@
         "title": "<pacem-datetime-picker>"
       },
       {
-        "label": "Expression",
-        "view": "expression",
-        "title": "<pacem-expression>"
-      },
-      {
         "label": "Name-Value List / Dictionary",
         "view": "namevalue",
         "title": "<pacem-namevalue-list>"
@@ -345,6 +340,11 @@
       {
         "label": "Canvas vs SVG",
         "view": "2d"
+      },
+      {
+        "label": "Stage",
+        "view": "stage",
+        "title": "<pacem-2d>"
       }
     ]
   },
@@ -352,6 +352,11 @@
     "package": "cms",
     "label": "CMS",
     "items": [
+      {
+        "label": "Expression",
+        "view": "expression",
+        "title": "<pacem-expression>"
+      },
       {
         "label": "Widgets",
         "view": "widgets"

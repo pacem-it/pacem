@@ -72,39 +72,60 @@ namespace Pacem.Components.UI {
         }
 
         disconnectedCallback() {
+            if (this.show) {
+                this._close();
+            }
             window.removeEventListener('resize', this._resizeHandler, false);
             window.removeEventListener('keyup', this._keyupHandler, false);
             super.disconnectedCallback();
         }
 
+        #loop: boolean = false;
+        #locked: boolean = false;
         private _resize(evt?: any) {
             if (Utils.isNull(this.container)) return;
-            var win = window, element = this._wrapperElement;
-            var viewportHeight = Utils.windowSize.height;
-            var scrollTop = win.pageYOffset;
-            element.style.width = '100%'
-            element.style.height = viewportHeight + 'px';
-            element.style.position = 'absolute';
-            //element.style.zIndex = '10000'; // set in css
-            element.style.margin = '0';
-            element.style.padding = '0';
-            element.style.top = scrollTop + 'px';
-            element.style.left = '0';
-            //
-            var container = this.container;
-            container.style.top = '0';
-            container.style.margin = '0 auto';
-            let fnPos = () => {
-                var containerHeight = container.offsetHeight;
-                var top = (viewportHeight - containerHeight) * .5;
-                container.style.transform = `translateY(${Math.round(top)}px)`;// top + 'px auto 0 auto';
-            };
-            window.requestAnimationFrame(fnPos);
-            //fnPos();
+
+            if (this.#locked) {
+                this.#loop = true;
+            } else {
+                this.#locked = true;
+                this.#loop = false;
+
+                var win = window, element = this._wrapperElement;
+                var viewportHeight = Utils.windowSize.height;
+                var scrollTop = win.pageYOffset;
+                element.style.width = '100%'
+                element.style.height = viewportHeight + 'px';
+                element.style.position = 'absolute';
+                //element.style.zIndex = '10000'; // set in css
+                element.style.margin = '0';
+                element.style.padding = '0';
+                element.style.top = scrollTop + 'px';
+                element.style.left = '0';
+                //
+                var container = this.container;
+                container.style.top = '0';
+                container.style.margin = '0 auto';
+                let fnPos = () => {
+                    var containerHeight = container.offsetHeight;
+                    var top = (viewportHeight - containerHeight) * .5;
+                    container.style.transform = `translateY(${Math.round(top)}px)`;// top + 'px auto 0 auto';
+                    Utils.waitForAnimationEnd(container, 300).then(() => {
+                        this.#locked = false;
+                        if (this.#loop) {
+                            this._resize();
+                        }
+                    });
+                };
+                window.requestAnimationFrame(fnPos);
+            }
+
         }
 
-        private _close(evt) {
-            Pacem.avoidHandler(evt);
+        private _close(evt?: any) {
+            if (!Utils.isNull(evt)) {
+                Pacem.avoidHandler(evt);
+            }
             this.show = false;
         }
     }

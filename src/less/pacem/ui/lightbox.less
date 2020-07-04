@@ -1,6 +1,7 @@
 ﻿@import "shared";
 @import "../theme-dark";
 @import "../../shared";
+@import "dialog-vars";
 
 /*#region LIGHTBOX*/
 
@@ -51,15 +52,13 @@
 }
 
 .@{PCSS}-lightbox {
-    @_clr: @color_background;
+    @_clr: @color_lightbox;
     @_fore_clr: @color_default;
     color: @_fore_clr;
     max-width: 80vw;
     max-height: 80vh;
     //box-sizing: border-box;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.25);
     border-radius: @border_radius;
-
 
     & when (@blur = false) {
         background-color: @_clr;
@@ -68,7 +67,6 @@
     & when (@blur = true) {
         .Blur(6px, @_clr);
     }
-
 
     > .@{PCSS}-scrollable {
         position: relative;
@@ -84,6 +82,13 @@
     box-shadow: 0 @grid_spacing/4 3 * @grid_spacing/4 rgba(0,0,0,0.2);
 }
 
+.@{PCSS}-lightbox when (@dark_theme = true) {
+    box-shadow: 0 @grid_spacing/4 @grid_spacing rgba(0,0,0,0.75);
+}
+
+@{P}-lightbox {
+    .DialogSize(lightbox);
+}
 /*#endregion*/
 
 .@{PCSS}-animations {
