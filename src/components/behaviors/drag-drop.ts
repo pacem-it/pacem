@@ -405,6 +405,7 @@ namespace Pacem.Components {
                         isDraggingRepeaterItem = !Utils.isNull(repItem),
                         targetRepItem = placeholder && this._findTargetRepeaterItem(args.placeholder.parentElement, args.placeholder.nextElementSibling),
                         targetRepeater = targetRepItem && targetRepItem.repeater,
+                        isCopying = dragger.mode === UI.DragDataMode.Copy,
 
                         // is dropping onto a repeater item?
                         // true if
@@ -413,14 +414,14 @@ namespace Pacem.Components {
                         isDroppingRepeaterItem = !Utils.isNull(targetRepeater) && !(Utils.isNull(repItem) && sourceRepeater === targetRepeater);
                     // refresh origin datasource and, eventually, target datasource
 
-                    if (isDraggingRepeaterItem) {
+                    if (isDraggingRepeaterItem && !isCopying) {
                         sourceRepeater.removeItem(repItem.index);
                     }
 
                     if (isDroppingRepeaterItem) {
                         args.placeholder.remove();
 
-                        if (targetRepeater === sourceRepeater) {
+                        if (targetRepeater === sourceRepeater && !isCopying) {
                             let from = repItem.index, to = targetRepItem.index;
                             if (to > from) {
                                 // tweak
@@ -428,7 +429,9 @@ namespace Pacem.Components {
                             }
                             sourceRepeater.datasource.moveWithin(from, to);
                         } else {
-                            sourceRepeater && sourceRepeater.datasource.splice(repItem.index, 1);
+                            if (!isCopying) {
+                                sourceRepeater && sourceRepeater.datasource.splice(repItem.index, 1);
+                            }
                             targetRepeater && (targetRepeater.datasource = targetRepeater.datasource || []).splice(targetRepItem.index, 0, data);
                         }
                     }
@@ -438,7 +441,7 @@ namespace Pacem.Components {
                         && !Utils.isNullOrEmpty(dragger.dropTargets)
                         && dragger.spillBehavior === UI.DropTargetMissedBehavior.Remove
                         // if mode is 'copy' then don't remove the source
-                        && dragger.mode !== UI.DragDataMode.Copy) {
+                        && !isCopying) {
 
                         if (isDraggingRepeaterItem) {
                             sourceRepeater.datasource.splice(repItem.index, 1)

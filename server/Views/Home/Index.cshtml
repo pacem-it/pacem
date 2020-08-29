@@ -219,16 +219,9 @@
 
     <script>
         var pacemdocs = window['pacemdocs'] = window['pacemdocs'] || {};
-        // Service Worker registration
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker
-                .register('/sw.js')
-                .then(function () {
-                    console.log("Service Worker v@(version) registered.");
-                });
-        }
     </script>
 
+    <pacem-serviceworker-proxy src="/sw.js" on-register="console.log('Service Worker v@(version) registered.')"></pacem-serviceworker-proxy>
     <pacem-fetch url="/menu.json?v=@(version)" id="menu" on-fetchresult="pacemdocs.menu = $event.detail"></pacem-fetch>
 
     <environment include="Development">

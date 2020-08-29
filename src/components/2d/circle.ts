@@ -5,8 +5,8 @@ namespace Pacem.Components.Drawing {
     @CustomElement({ tagName: P + '-' + TAG_MIDDLE_NAME + '-circle' })
     export class PacemCircleElement extends ShapeElement {
 
-        @Watch({ converter: PropertyConverters.Json }) center: Point;
-        @Watch({ converter: PropertyConverters.Number }) radius: number;
+        @Watch({ emit: false, converter: PropertyConverters.Point }) center: Point;
+        @Watch({ emit: false, converter: PropertyConverters.Number }) radius: number;
 
         propertyChangedCallback(name: string, old, val, first?: boolean) {
             super.propertyChangedCallback(name, old, val, first);

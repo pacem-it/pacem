@@ -410,6 +410,29 @@
                             text.removeAttribute('x');
                             text.removeAttribute('y');
                         }
+                    } else if (Pacem.Drawing.isImage(item)) {
+                        const img = <SVGImageElement>el;
+                        img.setAttribute('href', item.src);
+                        if (item.width > 0) {
+                            img.setAttribute('width', '' + item.width);
+                        } else {
+                            img.removeAttribute('width');
+                        }
+                        if (item.height > 0) {
+                            img.setAttribute('height', '' + item.height);
+                        } else {
+                            img.removeAttribute('height');
+                        }
+                        if (!Utils.isNull(item.x)) {
+                            img.setAttribute('x', '' + item.x);
+                        } else {
+                            img.removeAttribute('x');
+                        }
+                        if (!Utils.isNull(item.y)) {
+                            img.setAttribute('y', '' + item.y);
+                        } else {
+                            img.removeAttribute('y');
+                        }
                     }
 
                     if (Pacem.Drawing.isUiObject(item)) {
@@ -453,6 +476,9 @@
             }
             if (Pacem.Drawing.isText(item)) {
                 return document.createElementNS(SVG_NS, 'text');
+            }
+            if (Pacem.Drawing.isImage(item)) {
+                return document.createElementNS(SVG_NS, 'image');
             }
             return document.createElementNS(SVG_NS, 'g');
         }

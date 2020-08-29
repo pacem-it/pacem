@@ -4,7 +4,7 @@
 
 <pre pacem hidden id="content0">
 ## WebWorker Proxy
-`PacemWebWorkerProxyElement` establishes a communication channel between the mani thread and a `WebWorker`.
+`PacemWebWorkerProxyElement` establishes a communication channel between the main thread and a `WebWorker`.
 
 Here an example for the utilization:  
 
@@ -21,7 +21,7 @@ Here an example for the utilization:
         <pacem-webworker-proxy id="proxy0" src="/dist/js/workers/echo.js"
                                message="{{ #message0.value }}"></pacem-webworker-proxy>
 
-        <div class="pacem-pad pad-1 display-flex flex-middle">
+        <div class="pacem-pad pad-1 display-flex flex-stretch">
             <pacem-input-text id="message0" placeholder="message here..."></pacem-input-text>
         </div>
         <hr />

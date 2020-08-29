@@ -7,7 +7,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-const VERSION = '0.9.0-atlantis.2';
+const VERSION = '0.0.0';
 const CACHE_KEY = 'pacem-js-v' + VERSION;
 const OFFLINE_PAGE = '/demo/offline.html';
 const PREFETCHED = [
@@ -102,7 +102,12 @@ const _networkFirst = (evt) => {
         }
     })));
 };
-self.addEventListener('fetch', _networkFirst);
+self.addEventListener('fetch', (event) => {
+    if (event.request.url.indexOf('/.well-known/') !== -1) {
+        return false;
+    }
+    _networkFirst(event);
+});
 self.addEventListener('activate', function (event) {
     console.log(`Service Worker v${VERSION} activated.`);
     event.waitUntil(caches.keys().then(function (cacheNames) {

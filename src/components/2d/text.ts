@@ -6,15 +6,11 @@ namespace Pacem.Components.Drawing {
     @CustomElement({ tagName: P + '-' + TAG_MIDDLE_NAME + '-text' })
     export class PacemTextElement extends UiElement implements Pacem.Drawing.Text {
 
-        validate(_: DrawableElement): boolean {
-            return false;
-        }
-
         @Watch({ emit: false, converter: PropertyConverters.String }) text: string;
         @Watch({ emit: false, converter: PropertyConverters.String }) color: string;
         @Watch({ emit: false, converter: PropertyConverters.String }) fontFamily: string;
         @Watch({ emit: false, converter: PropertyConverters.Number }) fontSize: number;
-        @Watch({ emit: false, converter: PropertyConverters.Json }) anchor: Point;
+        @Watch({ emit: false, converter: PropertyConverters.Point }) anchor: Point;
         @Watch({ emit: false, converter: PropertyConverters.String }) textAnchor: 'start'|'middle'|'end';
 
         propertyChangedCallback(name: string, old, val, first?: boolean) {

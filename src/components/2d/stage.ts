@@ -99,6 +99,14 @@ namespace Pacem.Components.Drawing {
             }
         }
 
+        private _getActualAspectRatio() {
+            const aspectRatio = this.aspectRatio || 'none';
+            const alignmentX: Pacem.Drawing.ViewBoxAlignment = aspectRatio === 'none' ? 'mid' : aspectRatio.x;
+            const alignmentY: Pacem.Drawing.ViewBoxAlignment = aspectRatio === 'none' ? 'mid' : aspectRatio.y;
+            const slice = aspectRatio === 'none' ? false : aspectRatio.slice;
+            return { x: alignmentX, y: alignmentY, slice };
+        }
+
         private _zoomHandler = (evt: WheelEvent) => {
             const opts = this._options;
             if (opts.zoomControl && CustomEventUtils.matchModifiers(evt, opts.zoomModifiers)) {
@@ -120,16 +128,45 @@ namespace Pacem.Components.Drawing {
 
                 if (targetWidth > 0 && targetHeight > 0) {
 
+                    const aspectRatio = this._getActualAspectRatio();
+                    const alignmentX: Pacem.Drawing.ViewBoxAlignment = aspectRatio.x;
+                    const alignmentY: Pacem.Drawing.ViewBoxAlignment = aspectRatio.y;
+                    const slice = aspectRatio.slice;
                     // offset
                     const
-                        //scale = targetWidth / dim,
                         stageRect = Utils.offsetRect(<Element>evt.currentTarget),
                         vboxRatio = vbox.width / vbox.height,
-                        size = Math.min(stageRect.width, stageRect.height),
-                        pt = { x: evt.clientX, y: evt.clientY },
-                        adjX = (targetWidth - vbox.width) * (pt.x - stageRect.x - .5 * (stageRect.width - size)) / (size * vboxRatio),
-                        adjY = (targetHeight - vbox.height) * (pt.y - stageRect.y - .5 * (stageRect.height - size)) / (size * vboxRatio);
+                        size = slice ? Math.max(stageRect.width, stageRect.height) : Math.min(stageRect.width, stageRect.height),
+                        pt = { x: evt.clientX, y: evt.clientY };
+                    let
+                        // to be adjusted based on aspectRatio
+                        adjX: number,
+                        adjY: number;
                     ;
+
+                    switch (alignmentX) {
+                        case 'mid':
+                            adjX = (targetWidth - vbox.width) * (pt.x - stageRect.x - .5 * (stageRect.width - size)) / (size * vboxRatio);
+                            break;
+                        case 'max':
+                            adjX = (targetWidth - vbox.width) * (pt.x - stageRect.x - (stageRect.width - size)) / (size * vboxRatio);
+                            break;
+                        default:
+                            adjX = (targetWidth - vbox.width) * (pt.x - stageRect.x) / (size * vboxRatio);
+                            break;
+                    }
+
+                    switch (alignmentY) {
+                        case 'mid':
+                            adjY = (targetHeight - vbox.height) * (pt.y - stageRect.y - .5 * (stageRect.height - size)) / (size * vboxRatio);
+                            break;
+                        case 'max':
+                            adjY = (targetHeight - vbox.height) * (pt.y - stageRect.y - (stageRect.height - size)) / (size * vboxRatio);
+                            break;
+                        default:
+                            adjY = (targetHeight - vbox.height) * (pt.y - stageRect.y) / (size * vboxRatio);
+                            break;
+                    }
 
                     const targetX = vbox.x - adjX,
                         targetY = vbox.y - adjY;
@@ -176,7 +213,11 @@ namespace Pacem.Components.Drawing {
             if (start) {
                 avoidHandler(evt);
                 this._stage.style.pointerEvents = 'none';
-                const factor = Math.max(vbox.width / size.width, vbox.height / size.height); // Math.max(vbox.height, vbox.width) / Math.max(size.height, size.width);
+                const aspectRatio = this._getActualAspectRatio();
+                const
+                    wBased = vbox.width / size.width,
+                    hBased = vbox.height / size.height,
+                    factor = aspectRatio.slice ? Math.min(wBased, hBased) : Math.max(wBased, hBased);
                 this._panningStart = { point: start, box: vbox, factor };
             }
         };

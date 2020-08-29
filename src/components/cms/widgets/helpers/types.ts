@@ -8,7 +8,8 @@ namespace Pacem.Components.Cms {
         }
     };
     export const ACCESS_TOKEN_METADATA: Pacem.Scaffolding.PropertyMetadata = {
-        prop: 'accessToken', type: 'string', display: { name: 'Access Token', ui: 'expression' }
+        prop: 'accessToken', type: EXPRESSION_METADATA_TYPE, display: { name: 'Access Token' },
+        extra: Utils.extend({}, EXPRESSION_WIDGET_METADATA_EXTRA, { filter: (e: Element) => e instanceof PacemWidgetDataElement || e instanceof PacemWidgetFetchElement })
     };
 
     export abstract class PacemBearerWidgetElement extends PacemWidgetElement implements Pacem.Net.OAuthFetchable {

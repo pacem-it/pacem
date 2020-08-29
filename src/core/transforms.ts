@@ -21,6 +21,15 @@ namespace Pacem {
         }
 
         @Transformer()
+        static padleft(src: any, length: number, pad: any) {
+            let retval: string = '' + src;
+            while (retval.length < length) {
+                retval = pad + retval;
+            }
+            return retval;
+        }
+
+        @Transformer()
         static size(src: number): string {
             // TODO: use logarithms
             if (!(src > 0))

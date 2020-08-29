@@ -46,6 +46,11 @@
         "title": "<pacem-hub-proxy>"
       },
       {
+        "label": "ServiceWorker Proxy",
+        "view": "serviceworker-proxy",
+        "title": "<pacem-serviceworker-proxy>"
+      },
+      {
         "label": "WebWorker Proxy",
         "view": "webworker-proxy",
         "title": "<pacem-webworker-proxy>"
@@ -121,6 +126,11 @@
         "label": "Anchor",
         "view": "anchor",
         "title": "<pacem-a>"
+      },
+      {
+        "label": "Audio",
+        "view": "audio",
+        "title": "<pacem-audio>"
       },
       {
         "label": "Balloon",

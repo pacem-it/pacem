@@ -236,20 +236,6 @@ namespace Pacem.Components {
             }
         }
 
-        /** Refreshes all the properties corresponding to explicit binding attributes. */
-        protected refreshBindings() {
-            // refresh all the bindings
-            for (let j = 0; j < this.attributes.length; j++) {
-                let attr = this.attributes.item(j),
-                    isBinding = CustomElementUtils.isBindingAttribute(attr.value);
-                if (!isBinding)
-                    continue;
-                let prop = CustomElementUtils.kebabToCamel(attr.name);
-                let binding = CustomElementUtils.parseBindingAttribute(attr.value, this);
-                this[prop] = binding.evaluate();
-            }
-        }
-
         @Watch({ emit: false, converter: PropertyConverters.Json /* when declared plainly assume array of strings */ })
         cssClass: { [key: string]: boolean } | string[];
 

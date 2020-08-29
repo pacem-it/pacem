@@ -67,10 +67,12 @@ namespace Pacem.Scaffolding {
             & PropertyMetadataExtraSlider
         );
 
+    export declare type PropertyMetadataTypeGenerator = (host: Element, hostRef?: string, entityRef?: string) => { tagName: string, attrs: { [name: string]: string } };
+
     // to be continued
     export declare type PropertyMetadata = {
         prop: string,
-        type: 'object' | 'array' | string | /* let the possibility to inject custom scaffolding elements */ ((host: Element, hostRef?: string, entityRef?: string) => { tagName: string, attrs: { [name: string]: string } }),
+        type: 'object' | 'array' | string | /* let the possibility to inject custom scaffolding elements */ PropertyMetadataTypeGenerator,
         display?: DisplayMetadata,
         extra?: PropertyMetadataExtra
         // leave space to immagination

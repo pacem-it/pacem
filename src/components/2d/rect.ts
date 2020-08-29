@@ -5,10 +5,10 @@ namespace Pacem.Components.Drawing {
     @CustomElement({ tagName: P + '-' + TAG_MIDDLE_NAME + '-rect' })
     export class PacemRectElement extends ShapeElement {
 
-        @Watch({ converter: PropertyConverters.Number }) x: number;
-        @Watch({ converter: PropertyConverters.Number }) y: number;
-        @Watch({ converter: PropertyConverters.Number }) w: number;
-        @Watch({ converter: PropertyConverters.Number }) h: number;
+        @Watch({ emit: false, converter: PropertyConverters.Number }) x: number;
+        @Watch({ emit: false, converter: PropertyConverters.Number }) y: number;
+        @Watch({ emit: false, converter: PropertyConverters.Number }) w: number;
+        @Watch({ emit: false, converter: PropertyConverters.Number }) h: number;
 
         propertyChangedCallback(name: string, old, val, first?: boolean) {
             super.propertyChangedCallback(name, old, val, first);

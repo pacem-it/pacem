@@ -13,7 +13,7 @@ Example:
 <pacemjs-snippet>
     <template id="demo1">
 
-        <pacem-panel behaviors="{{ [#rescale1] }}" class="bg-primary pacem-pad pad-1 pacem-borderbox">
+        <pacem-panel behaviors="{{ [#rescale1] }}" class="bg-primary pacem-pad pad-1 pacem-borderbox pacem-margin margin-bottom-1 margin-right-1">
             <p class="text-nowrap text-ellipsed pacem-margin margin-0">Resize me, freely.</p>
         </pacem-panel>
         <pacem-rescale id="rescale1"></pacem-rescale>
@@ -31,6 +31,7 @@ You can also tweak `&lt;pacem-rescale>` **properties** for more desirable result
 - `minWidth`: the minimum width allowed when rescaling.
 - `maxHeight`: the maximum height allowed when rescaling.
 - `minHeight`: the minimum height allowed when rescaling.
+- `keepProportions`: whether to constrain or not the proportions between the 2 dimensions.
 
 Example:
 </pre>
@@ -38,7 +39,7 @@ Example:
 <pacemjs-snippet>
     <template id="demo2">
 
-        <pacem-panel behaviors="{{ [#rescale2] }}" class="bg-warning pacem-pad pad-1 pacem-borderbox" id="paragraph2">
+        <pacem-panel behaviors="{{ [#rescale2] }}" class="bg-warning pacem-pad pad-1 pacem-borderbox pacem-margin margin-bottom-1 margin-right-1" id="paragraph2">
             <p class="text-nowrap text-ellipsed pacem-margin margin-0">Resize me. <b>Constraints</b> are applied and only <b>bottom-right</b> handles are enabled.</p>
         </pacem-panel>
         <pacem-rescale id="rescale2" handles="right bottom" min-width="120" max-height="160"
@@ -71,7 +72,7 @@ Example:
     <template id="demo3">
 
         <pacem-data id="data3"></pacem-data>
-        <pacem-panel behaviors="{{ [#rescale3] }}" class="bg-success pacem-pad pad-1 pacem-borderbox" id="always-me">
+        <pacem-panel behaviors="{{ [#rescale3] }}" class="bg-success pacem-pad pad-1 pacem-borderbox pacem-margin margin-bottom-1 margin-right-1" id="always-me">
             <p class="text-nowrap text-ellipsed pacem-margin margin-0">
                 <pacem-if match="{{ Pacem.Utils.isNull(#data3.model) }}">Resize me.</pacem-if>
                 <pacem-if match="{{ !Pacem.Utils.isNull(#data3.model) }}">
@@ -147,6 +148,12 @@ Feel free to play with the cofiguration:
                     <label class="pacem-cell cols-3 pacem-label text-ellipsed">max-height</label>
                     <pacem-input-number class="pacem-cell cols-9" value="{{ #maxHeight.model, twoway }}"></pacem-input-number>
                 </div>
+
+                <!-- keep-proportions -->
+                <div class="pacem-grid pacem-field pacem-nopad pacem-margin margin-bottom-1">
+                    <label class="pacem-cell cols-3 pacem-label text-ellipsed">keep-proportions</label>
+                    <pacem-checkbox true-value="true" false-value="false" class="pacem-cell cols-9" value="{{ #keepProportions.model, twoway }}" caption="constrain proportions"></pacem-checkbox>
+                </div>
             </div>
         </div>
         <!-- data bridges -->
@@ -156,14 +163,16 @@ Feel free to play with the cofiguration:
         <pacem-data id="minHeight" model="{{ Pacem.Utils.offset(#paragraph4).height, once }}"></pacem-data>
         <pacem-data id="maxWidth" model="{{ Pacem.Utils.offset(#paragraph4).width, once }}"></pacem-data>
         <pacem-data id="maxHeight"></pacem-data>
+        <pacem-data id="keepProportions"></pacem-data>
         <!-- rescale -->
-        <pacem-rescale id="rescale4" 
+        <pacem-rescale id="rescale4"
                        handles="{{ #handles.model }}"
                        disabled="{{ #disabled.model }}"
                        min-width="{{ #minWidth.model }}"
                        max-height="{{ #maxHeight.model }}"
                        min-height="{{ #minHeight.model }}"
-                       max-width="{{ #maxWidth.model }}"></pacem-rescale>
+                       max-width="{{ #maxWidth.model }}"
+                       keep-proportions="{{ #keepProportions.model }}"></pacem-rescale>
 
     </template>
 </pacemjs-snippet>

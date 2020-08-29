@@ -110,10 +110,15 @@ namespace Pacem.Components.Plus {
             this.emit(evt);
         }
 
-        open(state) {
+        #keepStateOnCommit = false;
+
+        open(state);
+        open(state, keepStateOnCommit: boolean);
+        open(state, keepStateOnCommit?: boolean) {
             if (Utils.isNull(state)) {
                 throw `The state of a ${PacemModalFormElement} cannot be null.`;
             }
+            this.#keepStateOnCommit = keepStateOnCommit;
             var retval = super.open(state);
             this._form.setPristine();
             return retval;
@@ -121,11 +126,14 @@ namespace Pacem.Components.Plus {
 
         protected commit(btn: UI.DialogButton, evt: Event) {
             super.commit(btn, evt);
-            Utils.waitForAnimationEnd(this, 500).then(_ => {
-                // BREAKING change (v0.8.37): state destroyed when dialog committed
-                // TODO: consider 'if' and 'how' to avoid this.
-                this.state = {};
-            });
+
+            if (!this.#keepStateOnCommit) {
+                Utils.waitForAnimationEnd(this, 500).then(_ => {
+                    // BREAKING change (v0.8.37): state destroyed when dialog committed
+                    // TODO: consider 'if' and 'how' to avoid this.
+                    this.state = {};
+                });
+            }
         }
 
         private _cancel(evt: Event) {

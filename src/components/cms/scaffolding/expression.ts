@@ -35,7 +35,7 @@ namespace Pacem.Components.Cms {
 <div class="${PCSS}-fieldset">
     <div class="fieldset-left">
         <div class="${PCSS}-fieldgroup ${PCSS}-viewfinder">
-            <div><span class="text-ellipsed ${PCSS}-viewfinder display-block text-tech ${PCSS}-pad pad-left-1 pad-right-1">{{ :host.value || '...' }}</span></div>
+            <div class="text-truncate ${PCSS}-pad pad-x-1"><span class="${PCSS}-viewfinder text-tech">{{ :host.value || '...' }}</span></div>
             <${P}-panel class="fieldgroup-prepend">
                 <${P}-button class="flat edit ${PCSS}-pad pad-left-1" on-click=":host._editing = !:host._editing" hide="{{ :host.readonly }}"></${P}-button>
             </${P}-panel>
@@ -154,7 +154,7 @@ namespace Pacem.Components.Cms {
                     const expression = CustomElementUtils.parseBindingAttribute(expr, this),
                         deps = expression.dependencies;
                     // complex or simple (one dependency) expression
-                    if (Utils.isNullOrEmpty(deps) || deps.length > 1) {
+                    if (Utils.isNullOrEmpty(deps) || deps.length > 1 || RepeaterItem.isRepeaterItem(deps[0].element)) {
                         this._source = ExpressionSource.Expression;
                     } else {
                         const dep = deps[0];

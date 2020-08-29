@@ -37,13 +37,6 @@ namespace Pacem.Components {
             return this.disabled === true /*&& !(evt instanceof PropertyChangeEvent && evt.detail.propertyName === 'disabled')*/;
         }
 
-        // do not override "isConnected" -> breaks polyfills.
-        //private _isConnected = false;
-        ///** Gets whether the element has been appended to an (owner)Document. */
-        //get isConnected() : boolean {
-        //    return this._isConnected;
-        //}
-
         private _isReady = false;
         /** Gets whether the element has been completely loaded alongside with the remaining DOM. */
         get isReady(): boolean {
@@ -51,12 +44,10 @@ namespace Pacem.Components {
         }
 
         connectedCallback() { 
-            //this._isConnected = true;
         }
 
         disconnectedCallback() {
-            this._isReady = 
-                /*this._isConnected =*/ false;
+            this._isReady = false;
             this.dispatchEvent(new Event('unload'));
         }
 
@@ -110,6 +101,20 @@ namespace Pacem.Components {
          */
         protected log(level: Pacem.Logging.LogLevel, message: string, category: string = this.localName + (this.id ? '#' + this.id : '')) {
             this.logger && this.logger.log(level, message, category);
+        }
+
+        /** Refreshes all the properties corresponding to explicit binding attributes. */
+        protected refreshBindings() {
+            // refresh all the bindings
+            for (let j = 0; j < this.attributes.length; j++) {
+                let attr = this.attributes.item(j),
+                    isBinding = CustomElementUtils.isBindingAttribute(attr.value);
+                if (!isBinding)
+                    continue;
+                let prop = CustomElementUtils.kebabToCamel(attr.name);
+                let binding = CustomElementUtils.parseBindingAttribute(attr.value, this);
+                this[prop] = binding.evaluate();
+            }
         }
     }
 

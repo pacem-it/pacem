@@ -6,7 +6,7 @@ namespace Pacem.Components.Drawing {
     @CustomElement({ tagName: P + '-' + TAG_MIDDLE_NAME + '-path' })
     export class PacemPathElement extends ShapeElement {
 
-        @Watch({ converter: PropertyConverters.String }) d: string;
+        @Watch({ emit: false, converter: PropertyConverters.String }) d: string;
         @Watch({ converter: PropertyConverters.Json }) boundingRect: Rect;
 
         propertyChangedCallback(name: string, old, val, first?: boolean) {

@@ -57,8 +57,9 @@ namespace Pacem.Components.UI {
                         document.body.style.overflow = 'hidden';
                         this._resize();
                         var scroller = this.querySelector('.' + PCSS + '-scrollable');
-                        if (scroller)
+                        if (scroller) {
                             window.requestAnimationFrame(() => scroller.scrollTop = 0);
+                        }
                     } else {
                         document.body.style.overflow = '';
                         this.dispatchEvent(new Event('close'));

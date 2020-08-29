@@ -121,8 +121,8 @@
     </div>
 <div>
 <${P}-shell-proxy>
-    <${P}-modal-form autogenerate="true" core></${P}-modal-form>
-    <${P}-modal-form autogenerate="true" permissions></${P}-modal-form>
+    <${P}-modal-form core></${P}-modal-form>
+    <${P}-modal-form permissions></${P}-modal-form>
 </${P}-shell-proxy>`
     })
     export class PacemWidgetToolbarElement extends PacemElement {
@@ -153,10 +153,7 @@
 
         private _edit(evt: Event) {
             const form = <Pacem.Components.Plus.PacemModalFormElement>this._proxy.dom.find(e => 'core' in e.attributes);
-            form.open(this.target)/*.then(_ => {
-                // reset metadata (this will force complete recycle next time)
-                // form.metadata = [];
-            })*/;
+            form.open(this.target, true);
             form.metadata = this.target.metadata;
             // popout
             this._popoutJustInCase();

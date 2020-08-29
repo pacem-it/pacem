@@ -19,12 +19,14 @@ namespace Pacem.Drawing {
         /** Gets or sets whether the drawable is hit-testable. */
         inert?: boolean;
         hide?: boolean;
+
+        /** @deprecated will be likely removed sooner or later to be handled outside the stage/adapter. */
         draggable?: boolean;
         tag?: string;
     }
 
     export function isDrawable(object: any): object is Drawable {
-        return 'stage' in object;
+        return !Utils.isNull(object) && 'stage' in object;
     }
 
     export interface UiObject extends Drawable {
@@ -53,8 +55,7 @@ namespace Pacem.Drawing {
     }
 
     export function isShape(object: any): object is Shape {
-        return 'pathData' in object
-            && isUiObject(object);
+        return isUiObject(object) && 'pathData' in object;
     }
 
     export interface Group extends UiObject {
@@ -62,9 +63,7 @@ namespace Pacem.Drawing {
     }
 
     export function isGroup(object: any): object is Pacem.Drawing.Group {
-        return 'items' in object
-            && !Utils.isNullOrEmpty(object.items)
-            && isUiObject(object);
+        return isUiObject(object) && 'items' in object && !Utils.isNullOrEmpty(object['items']);
     }
 
     export interface Text extends UiObject {
@@ -73,12 +72,23 @@ namespace Pacem.Drawing {
         fontSize?: number;
         color?: string;
         anchor?: Point,
-        textAnchor?: 'start'|'middle'|'end';
+        textAnchor?: 'start' | 'middle' | 'end';
     }
 
     export function isText(object: any): object is Pacem.Drawing.Text {
-        return 'text' in object
-            && isUiObject(object);
+        return isUiObject(object) && 'text' in object && typeof object['text'] === 'string';
+    }
+
+    export interface Image extends UiObject {
+        src: string;
+        x?: number;
+        y?: number;
+        width?: number;
+        height?: number;
+    }
+
+    export function isImage(object: any): object is Pacem.Drawing.Image {
+        return isUiObject(object) && 'src' in object && typeof object['src'] === 'string';
     }
 
     export interface DragEventArgs {
@@ -181,6 +191,11 @@ namespace Pacem.Components.Drawing {
 
     export abstract class DrawableElement extends PacemCrossItemsContainerElement<DrawableElement> implements Pacem.Drawing.Drawable {
 
+        validate(_: DrawableElement): boolean {
+            // by default no children allowed (Group will except)
+            return false;
+        }
+
         protected findContainer() {
             // override
             return this.parent || this.stage;
@@ -210,7 +225,7 @@ namespace Pacem.Components.Drawing {
                 case 'items':
                     const scene = this.stage;
                     if (!Utils.isNull(scene)) {
-                        name === 'hide' ? scene.draw(this) : scene.requestDraw();
+                        name === 'hide' ? scene.draw(this) : scene.requestDraw(this, true);
                     }
                     break;
             }
@@ -281,11 +296,6 @@ namespace Pacem.Components.Drawing {
         }) dashArray?: number[];
         @Watch({ emit: false, converter: PropertyConverters.String }) lineJoin?: CanvasLineJoin;
         @Watch({ emit: false, converter: PropertyConverters.String }) lineCap?: CanvasLineCap;
-
-        validate(_: DrawableElement) {
-            // shapes do not allow child drawables
-            return false;
-        }
 
         propertyChangedCallback(name: string, old, val, first?: boolean) {
             if (!first) {

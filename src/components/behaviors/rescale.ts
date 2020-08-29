@@ -38,17 +38,20 @@ namespace Pacem.Components {
 
         private _moveHandler = (evt: MouseEvent | TouchEvent) => {
             evt.stopPropagation();
-            var el = this._element,
+            const el = this._element,
                 origin = this._origin,
                 rescaler = this._rescaler,
                 handle = this._type,
+                keepProportions = rescaler.keepProportions,
                 minWidth = rescaler.minWidth || 0,
                 minHeight = rescaler.minHeight || 0,
                 maxWidth = rescaler.maxWidth || Number.MAX_SAFE_INTEGER,
                 maxHeight = rescaler.maxHeight || Number.MAX_SAFE_INTEGER,
-                currentPosition: Point = (evt instanceof MouseEvent ? { x: evt.clientX, y: evt.clientY } : { x: evt.touches[0].clientX, y: evt.touches[0].clientY }),
-                position: Point = Utils.extend({}, currentPosition);
-            switch (this._type) {
+                currentPosition: Point = (evt instanceof MouseEvent ? { x: evt.pageX, y: evt.pageY } : { x: evt.touches[0].pageX, y: evt.touches[0].pageY }),
+                position: Point = { x: currentPosition.x, y: currentPosition.y },
+                origRect = this._rect;
+
+            switch (handle) {
                 case 'top':
                 case 'bottom':
                     position.x = origin.x;
@@ -61,17 +64,60 @@ namespace Pacem.Components {
 
 
             this._position = position;
+            const delta: Point = { x: position.x - origin.x, y: position.y - origin.y };
+            var desiredRect: Rect;
 
-            var delta: Point = { x: position.x - origin.x, y: position.y - origin.y },
-                // bottonright as default
-                desiredRect: Rect = { x: this._rect.x, y: this._rect.y, width: this._rect.width + delta.x, height: this._rect.height + delta.y };
-            if (handle.startsWith('top')) {
-                desiredRect.y = this._rect.y + delta.y;
-                desiredRect.height = this._rect.height - delta.y;
-            }
-            if (handle.endsWith('left')) {
-                desiredRect.x = this._rect.x + delta.x;
-                desiredRect.width = this._rect.width - delta.x;
+            if (keepProportions) {
+
+                const A = { x: origRect.x, y: origRect.y }, B = { x: origRect.x + origRect.width, y: origRect.y },
+                    C = { x: origRect.x + origRect.width, y: origRect.y + origRect.height }, D = { x: origRect.x, y: origRect.y + origRect.height },
+                    cos = Point.distance(C, D) / Point.distance(C, A), sin = Point.distance(A, D) / Point.distance(C, A),
+                    AC = Point.distance(A, C),
+                    proj = (v1: Point, v2: Point) => (v1.x * v2.x + v1.y * v2.y) / AC
+                    ;
+
+                switch (handle) {
+                    case "topleft":
+                        const vCA = Point.subtract(C, A);
+                        const dotCA = proj(Point.subtract(C, position), vCA);
+                        const topLeft = { x: C.x - dotCA * cos, y: C.y - dotCA * sin };
+                        desiredRect = { x: topLeft.x, y: topLeft.y, width: C.x - topLeft.x, height: C.y - topLeft.y };
+                        break;
+                    case "topright":
+                        const vDB = Point.subtract(D, B);
+                        const dotDB = proj(Point.subtract(D, position), vDB);
+                        const topRight = { x: D.x + dotDB * cos, y: D.y - dotDB * sin };
+                        desiredRect = { x: D.x, y: topRight.y, width: topRight.x - D.x, height: D.y - topRight.y };
+                        break;
+                    case "bottomleft":
+                        const vBD = Point.subtract(B, D);
+                        const dotBD = proj(Point.subtract(B, position), vBD);
+                        const bottomLeft = { x: B.x - dotBD * cos, y: B.y + dotBD * sin };
+                        desiredRect = { x: bottomLeft.x, y: B.y, width: B.x - bottomLeft.x, height: bottomLeft.y - B.y };
+                        break;
+
+                    default:
+                        const vAC = Point.subtract(A, C);
+                        const dotAC = proj(Point.subtract(A, position), vAC);
+                        const bottomRight = { x: A.x + dotAC * cos, y: A.y + dotAC * sin };
+                        desiredRect = { x: A.x, y: A.y, width: bottomRight.x - A.x, height: bottomRight.y - A.y };
+                        break;
+                }
+
+            } else {
+
+
+                // compute bottomright as default
+                desiredRect = { x: this._rect.x, y: this._rect.y, width: this._rect.width + delta.x, height: this._rect.height + delta.y };
+
+                if (handle.startsWith('top')) {
+                    desiredRect.y = this._rect.y + delta.y;
+                    desiredRect.height = this._rect.height - delta.y;
+                }
+                if (handle.endsWith('left')) {
+                    desiredRect.x = this._rect.x + delta.x;
+                    desiredRect.width = this._rect.width - delta.x;
+                }
             }
 
             this._logFn(Logging.LogLevel.Log, `handle: ${handle}, origin: ${JSON.stringify(origin)}, currentPosition: ${JSON.stringify(currentPosition)}`, `Rescaling`);
@@ -79,8 +125,13 @@ namespace Pacem.Components {
             this._logFn(Logging.LogLevel.Log, `from: ${JSON.stringify(this._rect)}, to: ${JSON.stringify(desiredRect)}`, `Rescaling`);
 
             // check constraints
-            const horizontally = desiredRect.width >= minWidth && desiredRect.width <= maxWidth,
+            let horizontally = desiredRect.width >= minWidth && desiredRect.width <= maxWidth,
                 vertically = desiredRect.height >= minHeight && desiredRect.height <= maxHeight;
+
+            // if proportions are constrained and one fails, then both fail
+            if (keepProportions && (!horizontally || !vertically)) {
+                horizontally = vertically = false;
+            }
 
             if (!horizontally) {
                 // reset to the last valid horizontal configuration
@@ -99,17 +150,20 @@ namespace Pacem.Components {
                 // dispatch
                 const args: UI.RescaleEventArgs = {
                     currentPosition: position, element: el,
-                    handle: handle, origin: origin, targetRect: (this._targetRect = desiredRect), startTime: this._startTime
+                    handle: handle, origin: origin, targetRect: desiredRect, startTime: this._startTime
                 };
-                let evt = new UI.RescaleEvent(UI.RescaleEventType.Rescale, UI.RescaleEventArgsClass.fromArgs(args), { cancelable: true });
-                rescaler.dispatchEvent(evt);
-                if (!evt.defaultPrevented) {
+                let rescaleEvt = new UI.RescaleEvent(UI.RescaleEventType.Rescale, UI.RescaleEventArgsClass.fromArgs(args), { cancelable: true }, evt);
+                rescaler.dispatchEvent(rescaleEvt);
+                if (!rescaleEvt.defaultPrevented) {
                     // render resize
                     const m = this._originalTransform;
                     el.style.transform = `matrix(${m.a},${m.b},${m.c},${m.d},${(m.e + desiredRect.x - this._rect.x)},${(m.f + desiredRect.y - this._rect.y)})`;
                     el.style.width = desiredRect.width + 'px';
                     el.style.height = desiredRect.height + 'px';
                 }
+
+                // store targetRect
+                this._targetRect = desiredRect;
             }
         }
 
@@ -119,7 +173,7 @@ namespace Pacem.Components {
             let evt = new UI.RescaleEvent(UI.RescaleEventType.End, UI.RescaleEventArgsClass.fromArgs({
                 element: this._element, origin: this._origin,
                 handle: handle, startTime: this._startTime, currentPosition: this._position, targetRect: this._targetRect
-            }));
+            }), {}, e);
             // body
             Utils.removeClass(document.body, PCSS + '-rescaling rescale-' + handle);
             this._rescaler.dispatchEvent(evt);
@@ -162,15 +216,18 @@ namespace Pacem.Components {
         @Watch({ emit: false, converter: PropertyConverters.Number }) maxWidth: number;
         @Watch({ emit: false, converter: PropertyConverters.Number }) minHeight: number;
         @Watch({ emit: false, converter: PropertyConverters.Number }) maxHeight: number;
+        @Watch({ emit: false, converter: PropertyConverters.Boolean }) keepProportions: boolean;
 
         propertyChangedCallback(name: string, old: any, val: any, first?: boolean) {
             super.propertyChangedCallback(name, old, val, first);
             switch (name) {
                 case 'disabled':
                 case 'handles':
+                case 'keepProportions':
                     const handles = this.handles || [UI.RescaleHandle.All];
                     const all = handles.find(h => h === UI.RescaleHandle.All) != null;
                     const disabled = this.disabled;
+                    const keepProportions = this.keepProportions;
                     for (let el of this._bag) {
                         let frame: { [name: string]: HTMLElement } = GET_VAL(el, RESCALE_FRAME);
                         frame.top.hidden = disabled || (!all && handles.find(h => h === UI.RescaleHandle.Top) == null);
@@ -181,6 +238,13 @@ namespace Pacem.Components {
                         frame.topright.hidden = frame.top.hidden || frame.right.hidden;
                         frame.bottomleft.hidden = frame.bottom.hidden || frame.left.hidden;
                         frame.bottomright.hidden = frame.bottom.hidden || frame.right.hidden;
+
+                        if (keepProportions) {
+                            frame.top.hidden =
+                                frame.bottom.hidden =
+                                frame.left.hidden =
+                                frame.right.hidden = true;
+                        }
                     }
                     break;
             }
@@ -220,7 +284,7 @@ namespace Pacem.Components {
             const coords = CustomEventUtils.getEventCoordinates(evt);
 
             const el = evt.currentTarget,
-                origin: Point = coords.client;
+                origin: Point = coords.page;
 
             const type = /rescale-(.+)/.exec(el['className'])[1];
 

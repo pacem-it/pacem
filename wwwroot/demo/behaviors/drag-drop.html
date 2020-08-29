@@ -159,7 +159,7 @@ By setting the drag data **mode** to `Pacem.UI.DragDataMode.Copy` the drag sourc
         <!-- drag-drop -->
         <pacem-drag-drop id="dragger2"
                          mode="{{ Pacem.UI.DragDataMode.Copy }}"
-                         on-draginit="$event.detail.placeholder = #spawn2.cloneNode(true); $event.detail.placeholder.textContent = 'cloned at ' + $pacem.date(Date.now(), { hour: 'numeric', minute: 'numeric', second: 'numeric' })"
+                         on-draginit="$event.detail.placeholder = #spawn2.cloneNode(true); $event.detail.placeholder.textContent = 'Cloned at ' + $pacem.date(Date.now(), { hour: 'numeric', minute: 'numeric', second: 'numeric' })"
                          on-drop="$event.detail.placeholder.removeAttribute('behaviors')"
                          drop-targets="{{[ #columnD ]}}"
                          spill-behavior="{{ Pacem.UI.DropTargetMissedBehavior.Remove }}"

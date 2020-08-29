@@ -10,7 +10,7 @@ namespace Pacem.UI {
     }
 
     export declare type RescaleEventArgs = {
-        element: HTMLElement,
+        element: HTMLElement | SVGElement,
         origin: Point,
         currentPosition: Point,
         startTime: number,
@@ -65,6 +65,7 @@ namespace Pacem.UI {
         maxWidth: number;
         maxHeight: number;
         minHeight: number;
+        keepProportions: boolean;
 
         addEventListener(evt: RescaleEventType, listener: (evt: SwipeEvent) => void, useCapture?: boolean): void;
         removeEventListener(evt: RescaleEventType, listener: (evt: SwipeEvent) => void, useCapture?: boolean): void;

@@ -100,6 +100,10 @@ namespace Pacem.Components {
             item.item = entity;
         };
 
+        databind() {
+            this._databind();
+        }
+
         @Debounce(true)
         private _databind() {
             // no template? fail.

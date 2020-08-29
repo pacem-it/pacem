@@ -943,16 +943,14 @@
     }
 }
 
-
 .@{PCSS}-field {
 
     > .@{PCSS}-input-container.@{PCSS}-fieldgroup {
         justify-content: start;
-        grid-template-columns: repeat(3, auto);
         align-items: start;
 
-        .@{PCSS}-readonly{
-            // reset the borders-replacers 
+        .@{PCSS}-readonly {
+            // reset the borders-replacers
             // since the fieldgroup already shows borders
             margin: 0;
         }
@@ -1076,6 +1074,11 @@
 
 
 @media (min-width: @threshold_lg) {
+
+    .@{PCSS}-field > .@{PCSS}-input-container.@{PCSS}-fieldgroup {
+        grid-template-columns: repeat(3, auto);
+    }
+
     // stretch
     @{P}-form-field.field-stretch {
 
@@ -1085,8 +1088,6 @@
         }
     }
 }
-
-
 // ANIMATIONS
 .@{PCSS}-body.@{PCSS}-animations {
     @{P}-form-field > .@{PCSS}-field {

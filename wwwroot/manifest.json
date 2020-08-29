@@ -1,5 +1,5 @@
 {
-  "name": "Pacem JS Docs",
+  "name": "Pacem JS",
   "short_name": "Pacem JS",
   "lang": "en-us",
   "icons": [
@@ -18,5 +18,5 @@
   "display": "standalone",
   "scope": "/",
   "background_color": "#e4e7e9",
-  "theme_color": "#090c41"
+  "theme_color": "#0d121d"
 }

@@ -1,6 +1,10 @@
 ﻿/// <reference path="../index.d.ts" />
 namespace Pacem.Tests {
 
+    // aliases
+    const Geom = Pacem.Geometry.Utils,
+        Vector  = Pacem.Geometry.LinearAlgebra.Vector;
+
     export const geom2dTests = [{
 
         name: 'Geom', test: function () {
@@ -199,13 +203,13 @@ namespace Pacem.Tests {
                     A1 = { x: 1, y: -1 },
                     B1 = { x: 2, y: -1 },
                     C1 = { x: 2, y: -1000 };
-                const inside = Pacem.Geom.inTriangle(P1, [A1, B1, C1]);
+                const inside = Geom.inTriangle(P1, [A1, B1, C1]);
                 expect(inside).toBeTruthy();
-                const insideOverload = Pacem.Geom.inPolygon(P1, [A1, B1, C1]);
+                const insideOverload = Geom.inPolygon(P1, [A1, B1, C1]);
                 expect(insideOverload).toEqual(inside);
 
                 const C2 = { x: 2, y: P1.y };
-                const outside = Pacem.Geom.inTriangle(P1, [A1, B1, C2]);
+                const outside = Geom.inTriangle(P1, [A1, B1, C2]);
                 expect(outside).toBeFalsy();
             });
 
@@ -215,11 +219,11 @@ namespace Pacem.Tests {
                     B1 = { x: 2, y: -1 },
                     C1 = { x: 2, y: -1000 },
                     D1 = { x: 1.1, y: -1000 };
-                const inside = Pacem.Geom.inPolygon(P1, [A1, B1, C1, D1]);
+                const inside = Geom.inPolygon(P1, [A1, B1, C1, D1]);
                 expect(inside).toBeTruthy();
 
                 const D2 = { x: 1.9, y: P1.y };
-                const outside = Pacem.Geom.inPolygon(P1, [A1, B1, C1, D2]);
+                const outside = Geom.inPolygon(P1, [A1, B1, C1, D2]);
                 expect(outside).toBeFalsy();
 
                 // real case that let emerge bug
@@ -228,8 +232,33 @@ namespace Pacem.Tests {
                     B = { x: 3.014, y: 6.384 },
                     C = { x: 3.461, y: 6.268 },
                     D = { x: 3.092, y: 5.574 };
-                const inside1 = Pacem.Geom.inPolygon(P, [A, B, C, D]);
+                const inside1 = Geom.inPolygon(P, [A, B, C, D]);
                 expect(inside1).toBeTruthy();
+            });
+
+            it('Opposite sides of a line', function () {
+                const P1 = { x: 1, y:0 },
+                    A = { x: 1.1, y: 1.1 },
+                    B = { x: 2, y: 2 },
+                    P2 = { x: 3, y: 2.1 };
+
+                const vs = Vector.from(A, B),
+                    v1 = Vector.from(A, P1),
+                    v2 = Vector.from(A, P2);
+
+                const cp1 = Geom.cross(vs, v1),
+                    cp2 = Geom.cross(vs, v2);
+                const oppositeSides = cp1 * cp2 < 0;
+
+                expect(oppositeSides).toBeFalsy();
+
+                const dp1 = Geom.dot(vs, v1),
+                    dp2 = Geom.dot(vs, v2);
+
+                const sameDirection = dp1 * dp2 > 0;
+
+                expect(sameDirection).toBeFalsy();
+
             });
         }
     }

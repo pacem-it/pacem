@@ -4,7 +4,7 @@
         display: { icon: 'timer', name: 'Clock', description: 'Timer widget.' },
         props: [
             {
-                prop: 'interval', type: 'number', display: {
+                prop: 'interval', type: EXPRESSION_METADATA_TYPE, display: {
                     name: 'Interval (msec)'
                 }, extra: {
                     selector: '.' + PCSS + '-widget', step: 1000
