@@ -1,0 +1,36 @@
+﻿
+
+<pacem-markdown value="{{ #content0.textContent }}" class="md-tech" root></pacem-markdown>
+
+<pre pacem hidden id="content0">
+## Lightbox
+
+`PacemLightboxElement` eases the popup of a DOM portion that blurs the underlying layout.
+</pre>
+
+<pacemjs-snippet>
+    <template>
+
+        <div class="pacem-panel">
+            <div class="panel-body">
+                <pacem-button class="button" icon-glyph="launch" on-click="#lightbox0.show = true">Open</pacem-button>
+            </div>
+        </div>
+
+        <pacem-shell-proxy>
+            <pacem-lightbox id="lightbox0">
+                <div class="pacem-panel panel-accent">
+                    <h4 class="panel-heading">Lightbox</h4>
+                    <p class="panel-body">
+                        Here's your focused content.<br />
+                        Dismiss the lightbox either by clicking outside the content area, by clicking the <code>X</code> icon in the upper right corner of the layout or by pressing <b>ESC</b>.
+                    </p>
+                </div>
+            </pacem-lightbox>
+        </pacem-shell-proxy>
+
+    </template>
+</pacemjs-snippet>
+
+<pacem-lightbox id="proto" hidden></pacem-lightbox>
+<pacemjs-descriptor target="{{ #proto }}"></pacemjs-descriptor>

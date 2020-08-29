@@ -1,0 +1,221 @@
+﻿@import "../../shared";
+@import "../theme-dark";
+
+@_clr_txt: @color_default;
+
+.@{PCSS}-markdown,
+@{P}-markdown {
+    display: block;
+    //font-size: 20px;
+    color: fade(@_clr_txt, 80);
+    text-rendering: optimizeLegibility;
+
+    h1, h2, h3, h4 {
+        margin: 0 0 .5em 0;
+        padding: 0;
+        font-weight: 700;
+        color: @_clr_txt;
+        font-family: @font_main;
+    }
+
+    b {
+        //color: @_clr_txt;
+    }
+
+    h1 {
+        .FontMainSize(2);
+        line-height: 2rem;
+        border-bottom: 1px solid fade(@_clr_txt, 10);
+        color: @color_accent;
+    }
+
+    h1 when (@uppercase_headings = true) {
+        text-transform: uppercase;
+    }
+
+    h2 {
+        .FontMainSize(1.5);
+        line-height: 1.5rem;
+        color: @color_primary;
+        border-bottom: 1px solid fade(@color_primary, 10);
+    }
+
+    h3 {
+        .FontMainSize(1.25);
+        line-height: 1.25rem;
+    }
+
+    h3 {
+        .FontMainSize(1.125);
+        line-height: 1.125rem;
+    }
+
+    h4 {
+        .FontMainSize(1.0625);
+        line-height: 1.0625rem;
+    }
+
+    code {
+        white-space: pre;
+        margin: 0 0 1em 0;
+        .FontTechSize(1);
+
+        &.@{PCSS}-code-block {
+            display: block;
+            padding: 1em;
+            background-color: @color_codeblock_back;
+
+            &:first-line {
+                line-height: normal;
+            }
+        }
+    }
+
+    p {
+        margin: 0 0 1em 0;
+    }
+
+    ol, ul {
+        margin: 0 1em 1em 1em;
+        /*> li {
+            margin: .5em 0 .5em 1em;
+            list-style-position: outside;
+        }*/
+    }
+
+    a {
+        color: @color_link;
+    }
+
+    blockquote {
+        padding: 0 2em;
+        position: relative;
+        text-align: center;
+        font-size: 1.5em;
+        margin: 1em;
+        font-style: italic;
+        color: fade(@color_primary, 80);
+
+        &:before {
+            .Icon('format_quote', 1.25em);
+            transform: rotate(180deg);
+            top: 0;
+            left: 0;
+        }
+
+        &:after {
+            .Icon('format_quote', 1.25em);
+            bottom: 0;
+            right: 0;
+        }
+
+        > p {
+            margin: .25em 0;
+        }
+
+        a {
+            text-decoration: underline;
+        }
+    }
+
+    &.md-tech {
+
+        blockquote {
+            border: 1px solid @color_border;
+            padding: 1em 1em 1em 2em;
+            position: static;
+            text-align: inherit;
+            font-size: 1em;
+            margin: 1em 0;
+            font-style: normal;
+            color: inherit;
+            background-color: @color_button_back;
+            border-left: @grid_spacing/6 solid @color_accent;
+            border-radius: @border_radius;
+
+            &:before {
+                content: none;
+            }
+
+            &:after {
+                content: none;
+            }
+
+            > p {
+                margin: .25em 0;
+            }
+
+            a {
+                text-decoration: underline;
+            }
+        }
+    }
+}
+
+.@{PCSS}-markdown,
+@{P}-markdown {
+
+    code.@{PCSS}-code-block {
+        color: @color_default;
+        .FontTechSize(.9);
+        line-height: 1.5rem * @font_rem_factor;
+
+        &.js,
+        &.javascript,
+        &.typescript,
+        &.c-sharp {
+
+            .@{PCSS}-keyword {
+                color: #00f;
+                font-weight: bold;
+            }
+
+            .@{PCSS}-number {
+                color: #f00;
+            }
+
+            .@{PCSS}-string-char,
+            .@{PCSS}-string {
+                color: #0088ff;
+            }
+
+            .@{PCSS}-comment {
+                color: #373;
+            }
+        }
+
+
+        &.xml,
+        &.html {
+            .@{PCSS}-tag,
+            .@{PCSS}-tag {
+                color: #00f;
+            }
+
+            .@{PCSS}-tag-name {
+                color: #853233;
+            }
+
+            .@{PCSS}-attribute {
+                color: #f00;
+            }
+
+            .@{PCSS}-comment {
+                color: #aaa;
+            }
+
+            .@{PCSS}-string-char,
+            .@{PCSS}-string {
+                color: #00f;
+            }
+        }
+    }
+}
+
+.@{PCSS}-markdown,
+@{P}-markdown {
+
+    > :last-child {
+        margin-bottom: 0;
+    }
+}

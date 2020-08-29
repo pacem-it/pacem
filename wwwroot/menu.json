@@ -1,0 +1,403 @@
+[
+  {
+    "package": "intro",
+    "label": "Introduction",
+    "items": [
+      {
+        "label": "Welcome",
+        "view": "welcome"
+      },
+      {
+        "label": "Yet another JS Framework",
+        "view": "another_js"
+      },
+      {
+        "label": "Getting Started",
+        "view": "start"
+      },
+      {
+        "label": "Bindings",
+        "view": "bindings"
+      }
+    ]
+  },
+  {
+    "package": "basic",
+    "label": "Basic Elements",
+    "items": [
+      {
+        "label": "Data",
+        "view": "data",
+        "title": "<pacem-data>"
+      },
+      {
+        "label": "Fetch",
+        "view": "fetch",
+        "title": "<pacem-fetch>"
+      },
+      {
+        "label": "Online Status",
+        "view": "online-status",
+        "title": "<pacem-online-status>"
+      },
+      {
+        "label": "Hub Proxy",
+        "view": "hub-proxy",
+        "title": "<pacem-hub-proxy>"
+      },
+      {
+        "label": "ServiceWorker Proxy",
+        "view": "serviceworker-proxy",
+        "title": "<pacem-serviceworker-proxy>"
+      },
+      {
+        "label": "WebWorker Proxy",
+        "view": "webworker-proxy",
+        "title": "<pacem-webworker-proxy>"
+      },
+      {
+        "label": "Panel",
+        "view": "panel",
+        "title": "<pacem-panel>"
+      },
+      {
+        "label": "Repeater",
+        "view": "repeater",
+        "title": "<pacem-repeater>"
+      },
+      {
+        "label": "Text",
+        "view": "text",
+        "title": "<pacem-text>"
+      },
+      {
+        "label": "Router",
+        "view": "router",
+        "title": "<pacem-router>"
+      },
+      {
+        "label": "Localization",
+        "view": "l10n",
+        "title": "Localization"
+      },
+      {
+        "label": "Keyboard Shortcuts",
+        "view": "shortcuts",
+        "title": "<pacem-shortcut>"
+      },
+      {
+        "label": "DataTable",
+        "view": "datatable",
+        "title": "DataTable"
+      }
+    ]
+  },
+  {
+    "package": "behaviors",
+    "label": "Behavior Elements",
+    "items": [
+      {
+        "label": "Drag Drop",
+        "view": "drag-drop",
+        "title": "<pacem-drag-drop>"
+      },
+      {
+        "label": "Rescale",
+        "view": "rescale",
+        "title": "<pacem-rescale>"
+      },
+      {
+        "label": "Swipe",
+        "view": "swipe",
+        "title": "<pacem-swipe>"
+      }
+    ]
+  },
+  {
+    "package": "ui",
+    "label": "UI Elements",
+    "items": [
+      {
+        "label": "Agenda",
+        "view": "agenda",
+        "title": "<pacem-agenda>"
+      },
+      {
+        "label": "Anchor",
+        "view": "anchor",
+        "title": "<pacem-a>"
+      },
+      {
+        "label": "Audio",
+        "view": "audio",
+        "title": "<pacem-audio>"
+      },
+      {
+        "label": "Balloon",
+        "view": "balloon",
+        "title": "<pacem-balloon>"
+      },
+      {
+        "label": "Binder",
+        "view": "binder",
+        "title": "<pacem-binder>"
+      },
+      {
+        "label": "Button",
+        "view": "button",
+        "title": "<pacem-button>"
+      },
+      {
+        "label": "Collapse",
+        "view": "collapse",
+        "title": "<pacem-collapse>"
+      },
+      {
+        "label": "Calendar",
+        "view": "calendar",
+        "title": "<pacem-calendar>"
+      },
+      {
+        "label": "Dialog",
+        "view": "dialog",
+        "title": "<pacem-dialog>"
+      },
+      {
+        "label": "Image",
+        "view": "image",
+        "title": "<pacem-img>"
+      },
+      {
+        "label": "Infinite Scroller",
+        "view": "infinite-scroller",
+        "title": "<pacem-infinite-scroller>"
+      },
+      {
+        "label": "Lightbox",
+        "view": "lightbox",
+        "title": "<pacem-lightbox>"
+      },
+      {
+        "label": "Loader",
+        "view": "loader",
+        "title": "<pacem-loader>"
+      },
+      {
+        "label": "Markdown",
+        "view": "markdown",
+        "title": "<pacem-markdown>"
+      },
+      {
+        "label": "Marquee",
+        "view": "marquee",
+        "title": "<pacem-marquee>"
+      },
+      {
+        "label": "Menu",
+        "view": "menu",
+        "title": "<pacem-menu>"
+      },
+      {
+        "label": "Progressbar",
+        "view": "progressbar"
+      },
+      {
+        "label": "Schedule",
+        "view": "schedule"
+      },
+      {
+        "label": "Snapshot",
+        "view": "snapshot"
+      },
+      {
+        "label": "Tabs",
+        "view": "tabs"
+      },
+      {
+        "label": "Toast",
+        "view": "toast",
+        "title": "<pacem-toast>"
+      },
+      {
+        "label": "Tuner",
+        "view": "tuner"
+      },
+      {
+        "label": "View",
+        "view": "view",
+        "title": "<pacem-view>"
+      },
+      {
+        "label": "Window",
+        "view": "window",
+        "title": "<pacem-window>"
+      }
+    ]
+  },
+  {
+    "package": "maps",
+    "label": "Map Elements",
+    "items": [
+      {
+        "label": "Map",
+        "view": "map"
+      }
+    ]
+  },
+  {
+    "package": "charts",
+    "label": "Chart Elements",
+    "items": [
+      {
+        "label": "Generic",
+        "view": "generic"
+      },
+      {
+        "label": "Pie",
+        "view": "pie"
+      }
+    ]
+  },
+  {
+    "package": "scaffolding",
+    "label": "Scaffolding Elements",
+    "items": [
+      {
+        "label": "Form",
+        "view": "form"
+      },
+      {
+        "label": "Form Field",
+        "view": "form-field",
+        "title": "<pacem-form-field>"
+      },
+      {
+        "label": "Child-Form",
+        "view": "childform",
+        "title": "<pacem-childform>"
+      },
+      {
+        "label": "Numeric",
+        "view": "input-number",
+        "title": "<pacem-input-number>"
+      },
+      {
+        "label": "Text",
+        "view": "input-text",
+        "title": "<pacem-input-text>"
+      },
+      {
+        "label": "Multiline Text",
+        "view": "textarea",
+        "title": "<pacem-textarea>"
+      },
+      {
+        "label": "Select",
+        "view": "select",
+        "title": "<pacem-select>"
+      },
+      {
+        "label": "Checkbox/List",
+        "view": "checkbox",
+        "title": "<pacem-checkbox>"
+      },
+      {
+        "label": "Radio/List",
+        "view": "radio",
+        "title": "<pacem-radio>"
+      },
+      {
+        "label": "Datetime",
+        "view": "datetime-picker",
+        "title": "<pacem-datetime-picker>"
+      },
+      {
+        "label": "Name-Value List / Dictionary",
+        "view": "namevalue",
+        "title": "<pacem-namevalue-list>"
+      },
+      {
+        "label": "Slider",
+        "view": "slider",
+        "title": "<pacem-slider>"
+      },
+      {
+        "label": "Suggest",
+        "view": "suggest",
+        "title": "<pacem-suggest>"
+      },
+      {
+        "label": "Tags",
+        "view": "tags",
+        "title": "<pacem-tags>"
+      },
+      {
+        "label": "File",
+        "view": "upload",
+        "title": "<pacem-upload>"
+      },
+      {
+        "label": "Lat/Lng",
+        "view": "latlng",
+        "title": "<pacem-latlng>"
+      }
+    ]
+  },
+  {
+    "package": "2d",
+    "label": "2D Drawing",
+    "items": [
+      {
+        "label": "Canvas vs SVG",
+        "view": "2d"
+      },
+      {
+        "label": "Stage",
+        "view": "stage",
+        "title": "<pacem-2d>"
+      }
+    ]
+  },
+  {
+    "package": "cms",
+    "label": "CMS",
+    "items": [
+      {
+        "label": "Expression",
+        "view": "expression",
+        "title": "<pacem-expression>"
+      },
+      {
+        "label": "Widgets",
+        "view": "widgets"
+      },
+      {
+        "label": "Data",
+        "view": "data",
+        "title": "<pacem-widget-data>"
+      },
+      {
+        "label": "Api Manifest Scaffolding",
+        "view": "apimanifest",
+        "title": "<pacem-widget-apimanifest>"
+      }
+    ]
+  },
+  {
+    "package": "fx",
+    "label": "Fx",
+    "items": [
+
+      {
+        "label": "List",
+        "view": "list",
+        "title": "<pacem-fx-list>"
+      },
+      {
+        "label": "Ripple",
+        "view": "ripple",
+        "title": "<pacem-fx-ripple>"
+      }
+    ]
+  }
+]

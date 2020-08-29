@@ -1,0 +1,78 @@
+﻿
+
+<pacem-markdown value="{{ #content0.textContent }}" root class="md-tech"></pacem-markdown>
+
+<pre pacem hidden id="content0">
+## Local culture
+
+Every `PacemElement` has a `culture` property/attribute that may contextualize the webcomponent itself in a specific language.  
+> Behind the scenes its change of value reflects onto the `lang` [standard](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/lang) attribute.
+
+Example:
+</pre>
+
+<pacemjs-snippet>
+    <template id="demo0">
+
+        <pacem-data model="{{ Date.now(), once }}" id="date0"></pacem-data>
+        <pacem-timer interval="1000" on-tick="#date0.model = Date.now()"></pacem-timer>
+
+        <!-- $pacem.date Transform function allows Intl.DateTimeFormat
+        see: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DateTimeFormat#Parameters
+        -->
+        <pacem-span culture="{{ #culture0.value }}" text="{{ $pacem.date(#date0.model, { year: 'numeric', month: 'long', weekday: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'  }, Pacem.Utils.lang($this)) }}"></pacem-span>
+
+        <pacem-radio-list value="ja-jp" id="culture0" class="display-block pacem-margin margin-top-1">
+            <pacem-data-item value="en-us"></pacem-data-item>
+            <pacem-data-item value="it-it"></pacem-data-item>
+            <pacem-data-item value="de-de"></pacem-data-item>
+            <pacem-data-item value="ja-jp"></pacem-data-item>
+        </pacem-radio-list>
+
+    </template>
+</pacemjs-snippet>
+
+<pacem-markdown value="{{ #content1.textContent }}" root class="md-tech"></pacem-markdown>
+
+<pre pacem hidden id="content1">
+In the example above the utility function `Pacem.Utils.lang()` is used to retrieve the contextual culture.  
+This function checks the `lang` attribute on the element first, then falls back to the **documentElement** `lang` attribute value.
+
+## Global culture
+
+In order to keep the html (documentElement) in sync with the changes you may use the `&lt;pacem-html-proxy>` custom element.  
+Rewriting the above sample code, would result in:
+
+
+</pre>
+
+
+<pacemjs-snippet>
+    <template id="demo1">
+
+        <pacem-data model="{{ Date.now(), once }}" id="date1"></pacem-data>
+        <pacem-timer interval="1000" on-tick="#date1.model = Date.now()"></pacem-timer>
+
+        <!-- element culture attribute has been removed -->
+        <pacem-span text="{{ $pacem.date(#date1.model, { year: 'numeric', month: 'long', weekday: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'  }, Pacem.Utils.lang($this)) }}"></pacem-span>
+
+        <pacem-html-proxy attr="lang" value="{{ #culture1.value }}"></pacem-html-proxy>
+        <pacem-radio-list value="it-it" id="culture1" class="display-block pacem-margin margin-top-1">
+            <pacem-data-item value="en-us"></pacem-data-item>
+            <pacem-data-item value="it-it"></pacem-data-item>
+            <pacem-data-item value="de-de"></pacem-data-item>
+            <pacem-data-item value="ja-jp"></pacem-data-item>
+        </pacem-radio-list>
+
+    </template>
+</pacemjs-snippet>
+
+<pacem-markdown value="{{ #content2.textContent }}" root class="md-tech"></pacem-markdown>
+
+<pre pacem hidden id="content2">
+Please notice how,
+- In the **first** example, 
+> the change of the `culture` attribute/property **suddenly** triggers a refresh for all the element bindings!
+
+- In the **second** example, the culture change is applied only when the timer ticks and a new value for the `&lt;pacem-data>` model (i.e. a new datetime) is set.
+</pre>

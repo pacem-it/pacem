@@ -1,0 +1,102 @@
+﻿
+
+<pacem-markdown value="{{ #content0.textContent }}" class="md-tech" root></pacem-markdown>
+
+<pre pacem hidden id="content0">
+## Expand/Collapse
+
+The `PacemCollapseElement` is a container empowered with graceful expand/collapse capabilities.
+
+</pre>
+
+<pacemjs-snippet>
+    <template>
+
+        <pacem-collapse collapse="{{ !#collapse0.value }}">
+            <b>TL;DR</b>: He was a genius!
+        </pacem-collapse>
+        <pacem-collapse collapse="{{ #collapse0.value }}">
+
+            <p>
+                [...]
+                Carl’s father made ends meet any way he could, working at different times as a sales assistant, butcher, bricklayer, gardener, and treasurer for a local insurance company. Money was always in short supply. Carl had an older half-brother, Georg, from his father’s first marriage, which ended when his first wife died.
+            </p><p>
+                From the very beginning, Carl showed an unusual talent for numbers; he could calculate before he learned to speak.
+                [...]
+            </p>
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/Bendixen_-_Carl_Friedrich_Gau%C3%9F%2C_1828.jpg/211px-Bendixen_-_Carl_Friedrich_Gau%C3%9F%2C_1828.jpg" />
+
+        </pacem-collapse>
+        <hr />
+        <pacem-checkbox id="collapse0" class="checkbox-switch" true-value="true" false-value="false"></pacem-checkbox>
+
+
+    </template>
+</pacemjs-snippet>
+
+<pacem-markdown value="{{ #content1.textContent }}" class="md-tech" root></pacem-markdown>
+
+<pre pacem hidden id="content1">
+## Accordion
+
+A natural application of the `PacemCollapseElement` is, of course, the **accordion** control.  
+In the following example, an accordion gets easily built-up by simply using declarative components. 
+
+</pre>
+
+<pacemjs-snippet>
+    <template>
+
+        <pre hidden id="datasource1">
+[{
+"name": "Archimedes (288 - 212 BC)", "wiki": "https://en.wikipedia.org/wiki/Archimedes",
+"content": "Archimedes of Syracuse was a Greek mathematician, physicist, engineer, inventor, and astronomer. Although few details of his life are known, he is regarded as one of the leading scientists in classical antiquity."
+},
+{
+"name": "Galileo Galilei (1564 - 1642)", "wiki": "https://en.wikipedia.org/wiki/Galileo_Galilei",
+"content": "Galileo Galilei was an Italian astronomer, physicist and engineer, sometimes described as a polymath, from Pisa. Galileo has been called the \"father of observational astronomy\", the \"father of modern physics\", the \"father of the scientific method\", and the \"father of modern science\"."
+},
+{
+"name": "Isaac Newton (1642 - 1727)", "wiki": "https://en.wikipedia.org/wiki/Isaac_Newton",
+"content": "Sir Isaac Newton PRS was an English mathematician, physicist, astronomer, theologian, and author who is widely recognised as one of the most influential scientists of all time, and a key figure in the scientific revolution."
+},
+{
+"name": "Leonhard Euler (1707 - 1783)", "wiki": "https://en.wikipedia.org/wiki/Leonhard_Euler",
+"content": "Leonhard Euler was a Swiss mathematician, physicist, astronomer, geographer, logician and engineer who made important and influential discoveries in many branches of mathematics."
+},
+{
+"name": "Carl Friedrich Gauss (1777 - 1855)", "wiki": "https://en.wikipedia.org/wiki/Carl_Friedrich_Gauss",
+"content": "Johann Carl Friedrich Gauss was a German mathematician and physicist who made significant contributions to many fields in mathematics and sciences."
+}]
+</pre>
+        <!-- selected-index viewmodel -->
+        <pacem-data id="selectedIndex1"></pacem-data>
+
+        <!-- repeater -->
+        <pacem-repeater datasource="{{ JSON.parse(#datasource1.textContent), once }}" on-itemselect="#selectedIndex1.model = (#selectedIndex1.model === $event.detail) ? -1 : $event.detail">
+            <template>
+
+                <!-- header/toggler -->
+                <pacem-button class="display-block button text-left" command-name="select" command-argument="{{ ^index }}"
+                              css-class="{{ { 'button-primary': ^index === #selectedIndex1.model } }}"
+                              icon-glyph="{{ ^index === #selectedIndex1.model ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}">
+                    <pacem-text text="{{ ^item.name }}"></pacem-text>
+                </pacem-button>
+
+                <!-- collapsible content -->
+                <pacem-collapse collapse="{{ ^index !== #selectedIndex1.model }}">
+                    <div class="pacem-pad pad-top-1 pad-bottom-3 pad-left-4 pacem-margin margin-left-3">
+                        <pacem-text text="{{ ^item.content }}"></pacem-text>
+                        (<pacem-a target="_blank" href="{{ ^item.wiki }}">Wikipedia</pacem-a>)
+                    </div>
+                </pacem-collapse>
+
+            </template>
+        </pacem-repeater>
+
+
+    </template>
+</pacemjs-snippet>
+
+<pacem-collapse id="proto" hidden></pacem-collapse>
+<pacemjs-descriptor target="{{ #proto }}"></pacemjs-descriptor>

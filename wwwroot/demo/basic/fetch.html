@@ -1,0 +1,94 @@
+﻿<pacem-markdown value="{{ #content0.textContent }}" root class="md-tech"></pacem-markdown>
+
+<pre pacem hidden id="content0">
+`PacemFetchElement` is the predefined custom element that handles the asynchronous __http__ communication with the server side of your application.
+
+It basically wraps the [fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API).
+
+## Requests
+`PacemFetchElement` sends a request as soon as `autofetch` is `true` (default) and:
+- A `url` property/attribute is provided **and**...
+- it is not `disabled`.
+
+Then, it will wait for one of the following properties to change in order to **trigger a new request**:  
+- `url`: the target url, 
+- `method`: the case-insensitive HTTP method, 
+- `parameters`: the key-value pairs to be sent in the body/querystring of the request, 
+- `headers`: the key-value pairs to be sent in the header of the request, 
+- `as`: the type of expected response (`"object"`/json, `"text"`/string, `"blob"`, `"image"`), 
+- `type`: possible values are `"json"` (default) or `"raw"` for _application/x-www-form-urlencoded_ content-types, 
+- `mode`: possible values are `"cors"` (default), `"no-cors"`/string, `"navigate"`, `"same-origin"`, 
+- `credentials`: possible values are `"same-origin"` (default), `"omit"`, `"include"`, 
+- `disabled` (in the case it changes to `true`).
+
+Calling the **method** `fetch()` always **triggers a new request** as well (if not disabled, of course).
+
+While a response is awaited, the `fetching` flag is set to `true` (and emits relevant `propertychange` event).
+
+### A couple of tricky flags
+
+- `autofetch` flag property (default: **true**), tells if a new request should be made if any of the above properties change their values.
+
+> If `autofetch` is set to `false` then you manually need to call `fetch()` method.
+
+- `diffByValues` flag property (default: **false**), gives more control on autofetch-ing process specially in case of _parameters_ or _headers_ changes.
+
+Since _parameters_ and _headers_ are complex objects, they can bring the exact same values but trigger the _fetch_ anyway if the very underlying instance reference has changed (default behavior).  
+If you're cheap on networking then set `diffByValues` to **true** and both _parameters_ and _headers_ will be diffed only by their values and not by their instance tokens.
+
+## Responses
+When a response is obtained, the `fetching` flag is set to `false` (and emits...).
+
+Once the response has been successfully returned:
+- `success` custom event is fired (having the response itself as _detail_).
+
+Once the response body has been parsed into the expected entity:
+- `result` property value is set consequently,
+- `fetchresult` custom event is fired (having the entity as _detail_).
+
+> Results type hints can be given to the fetcher by setting the `as` property (above).
+
+If anything went wrong:
+- `error` custom event is fired (having the response itself as _detail_).
+
+</pre>
+
+<pacemjs-snippet>
+    <template>
+        <div class="pacem-grid grid-nospace">
+
+            <!-- fetcher -->
+            <pacem-fetch method="post" id="fetcher" url="{{ #url.model }}" parameters="{{ #entity.model }}" type="{{ #requestType.model }}" autofetch="{{ #autofetch.model }}"></pacem-fetch>
+
+            <!-- some convenient (explicateive) models -->
+            <pacem-data model="{{ #requestType.model == 'raw' ? '/api/test/echoraw' : '/api/test/echo' }}" id="url"></pacem-data>
+            <pacem-data model="'raw'" id="requestType"></pacem-data>
+            <pacem-data model="{{ {'echo': 'echo here' } }}" id="entity"></pacem-data>
+            <pacem-data model="true" id="autofetch"></pacem-data>
+
+            <!-- ui -->
+            <div class="pacem-cell cols-12 cols-hd-2">
+                <pacem-input-text debounce="{{ #autofetch.model ? 2000 : 0 }}" value="{{ #entity.model.echo, twoway }}"></pacem-input-text>
+            </div>
+            <div class="pacem-cell cols-12 cols-hd-2">
+                <pacem-select datasource="{{ ['raw', 'json'] }}" value="{{ #requestType.model, twoway }}"></pacem-select>
+            </div>
+            <div class="pacem-cell cols-12 cols-hd-8">
+                echoed: <b><pacem-text text="{{ #fetcher.result && #fetcher.result.echo }}"></pacem-text></b>
+                (<i><pacem-text text="{{ #requestType.model }}"></pacem-text></i> request)
+            </div>
+            <div class="pacem-cell cols-12 cols-hd-2">
+                <pacem-checkbox value="{{ #autofetch.model, twoway }}" true-value="true" false-value="false" caption="autofetch"></pacem-checkbox>
+            </div>
+            <div class="pacem-cell cols-12 cols-hd-10">
+                <pacem-button class="button" hide="{{ #autofetch.model }}" on-click="#fetcher.fetch()" disabled="{{ #fetcher.fetching }}">fetch!</pacem-button>
+            </div>
+            <pacem-panel hide="{{ !#autofetch.model }}" class="pacem-cell text-smaller">
+                Text changes are debounced off <b>2</b> seconds.
+            </pacem-panel>
+        </div>
+    </template>
+</pacemjs-snippet>
+
+<pacem-fetch id="proto"></pacem-fetch>
+<pacemjs-descriptor target="{{ #proto }}"></pacemjs-descriptor>

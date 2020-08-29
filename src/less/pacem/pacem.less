@@ -1,0 +1,190 @@
+﻿@import "../shared";
+@import "ui/shared";
+
+.reset() when (@shell_only = true), (@full_theme = true) {
+    // reset
+    @import "reset";
+}
+
+.reset();
+
+html .@{PCSS}-preloader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    pointer-events: none;
+    display: grid;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+    z-index: @toast-z-index + 1000;
+    background-color: #fff;
+}
+
+@shell_only: false;
+@full_theme: true;
+
+// variable values that get overridden
+@fonts: "fonts-none"; // <- wasn't able to come up with something that works by exploiting mixin guards
+@theme: "theme-dark";
+
+// theme
+@import "@{theme}";
+
+// bug in Less.js: https://github.com/less/less.js/issues/3388
+// cannot pass variables like 'html[theme=dark]' due to the '=' sign in it
+
+@{shell} when (@shell_only = true), (@full_theme = true) {
+    // basic stuff
+    @import "pacem-animations";
+    @import "attributes";
+    // reset lists
+    ol, ul {
+        margin-top: 0;
+        margin-bottom: 1em; //1rem * @font_rem_factor;
+        padding: 0 0 0 @grid_spacing * 1.25;
+
+        ol, ul {
+            margin-bottom: 0;
+        }
+    }
+    // layout system: -body, header, footer, toolbars...
+    @import "layout/layout";
+    // loader
+    @import "ui/loader";
+    // menu
+    @import "ui/menu";
+}
+
+@{shell} when (@shell_only = false), (@full_theme = true) {
+    // fonts
+    @import "@{fonts}";
+
+    @import "logging/index";
+    @import "body";
+    @import "icons";
+    @import "basic/index";
+    // missing pieces from the shell
+    @import "layout/index";
+    @import "ui/index";
+
+    @import "scaffolding/index";
+    @import "maps/index";
+    @import "3d/index";
+    @import "2d/index";
+    @import "plus/index";
+    @import "charts/index";
+    @import "cms/index";
+    @import "fx/index";
+    @import "transforms/index";
+    /* #region fancy extra */
+    .Gloss(@_clr) {
+        .GradientVertical(50%, 50%, 100%, fade(@_clr, 0), fade(@_clr, 40), fade(@_clr, 10));
+    }
+
+    .Gloss() {
+        .Gloss(#fff);
+    }
+
+    .@{PCSS}-gloss when (@gradients = true) {
+        .Gloss();
+    }
+    /* #region */
+    /* #region background overrides */
+    .Bg(@_clr, @_clr_inv) {
+
+        &.@{PCSS}-gloss when (@shadows = true) {
+            box-shadow: inset @grid_spacing/12 0 @grid_spacing/12 @_clr, inset -@grid_spacing/12 0 @grid_spacing/12 @_clr;
+            text-shadow: 0 1px 0 @_clr, 0 -1px 0 @_clr, -1px 0 0 @_clr, 1px 0 0 @_clr;
+        }
+
+        &.@{PCSS}-gloss when (@gradients = true) {
+            .Gloss(@_clr_inv);
+            background-color: @_clr;
+        }
+
+        background-color: @_clr;
+        color: @_clr_inv;
+    }
+
+    .bg-default {
+        .Bg(@color_background, @color_default);
+    }
+
+    .bg-error {
+        .Bg(@color_error, @color_error_inv);
+    }
+
+    .bg-accent {
+        .Bg(@color_accent, @color_accent_inv);
+    }
+
+    .bg-primary {
+        .Bg( @color_primary, @color_primary_inv);
+    }
+
+    .bg-success {
+        .Bg( @color_success, @color_success_inv);
+    }
+
+    .bg-warning {
+        .Bg( @color_warning, @color_warning_inv);
+    }
+
+    .bg-danger {
+        background-color: @color_danger;
+        color: @color_danger_inv;
+    }
+
+    .bg-invert {
+        .Bg( @color_default, @color_background);
+    }
+    /*#endregion*/
+    @import "text-overrides";
+}
+
+// do not render variables in shell-only mode in order to ease themeable scenarios
+:root when (@shell_only = false), (@full_theme = true) {
+    --color-background: @color_background;
+    --color-root: @color_root_background;
+    --color-default: @color_default;
+    --color-accent: @color_accent;
+    --color-accent-inverse: @color_accent_inv;
+    --color-primary: @color_primary;
+    --color-primary-inverse: @color_primary_inv;
+    --color-danger: @color_danger;
+    --color-danger-inverse: @color_danger_inv;
+    --color-error: @color_error;
+    --color-error-inverse: @color_error_inv;
+    --color-highlight: @color_highlight;
+    --color-highlight-inverse: @color_highlight_fore;
+    --color-warning: @color_warning;
+    --color-warning-inverse: @color_warning_inv;
+    --color-success: @color_success;
+    --color-success-inverse: @color_success_inv;
+    --color-disabled: @color_disabled;
+    // palette
+    --color-green: @palette_green;
+    --color-yellow: @palette_yellow;
+    --color-brown: @palette_brown;
+    --color-red: @palette_red;
+    --color-pink: @palette_pink;
+    --color-blue: @palette_blue;
+    --color-orange: @palette_orange;
+    --color-purple: @palette_purple;
+    --color-teal: @palette_teal;
+    //
+    --grid-cell: @grid_cell;
+    --grid-spacing: @grid_spacing;
+    @double_grid_spacing: 2 * @grid_spacing;
+    --grid-double-spacing: @double_grid_spacing;
+}
+
+// extra
+@extra: "your-extra.less";
+@import (optional) "@{extra}";

@@ -1,0 +1,17 @@
+﻿<div id="splash">
+    <pacem-img adapt="contain" src="{{ '/assets/logo-'+ #themename.model +'.svg' }}"></pacem-img>
+    <pacem-markdown value="{{ #content0.textContent }}" root class="md-tech"></pacem-markdown>
+    <div class="pacem-buttonset">
+        <div class="buttonset-center">
+            <pacem-a class="pacem-button button button-accent" router="#router" href="/intro/start">Get Started</pacem-a>
+        </div>
+    </div>
+</div>
+
+
+<pre pacem hidden id="content0">
+## Hi, Dev!
+
+Pacem JS is a [CustomElements-v1](http://www.w3.org/TR/custom-elements/) based ecosystem for
+reusable web components.  
+It is meant to run in a web page inside a browser.</pre>

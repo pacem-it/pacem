@@ -1,0 +1,92 @@
+﻿
+
+<pacem-markdown value="{{ #content0.textContent }}" root></pacem-markdown>
+
+<pre pacem hidden id="content0">
+
+`PacemBinderElement` visually connects two items with a beziér curve.  
+The connected items can be both **Elements** and **Points** (`Pacem.Point` has type `{x: number, y: number}`).
+
+Example:
+</pre>
+
+<template id="demo1">
+    <pacem-binder from="{{ #from1 }}" to="{{ #to1 }}" class="binder-thin"></pacem-binder>
+    <div style="position: relative; height: 90px;">
+
+        <span id="from1" class="bg-accent text-center" style="display: inline-block; width: 25%; padding: .5rem;">FROM</span>
+        <span id="to1" class="bg-success text-center" style="display: inline-block; width: 25%; position: absolute; right: 0; bottom: 0; padding: .5rem;">TO</span>
+
+    </div>
+</template>
+
+<pacem-tabs>
+    <pacem-tab label="demo">
+        <pacem-view url="#demo1"></pacem-view>
+    </pacem-tab>
+    <pacem-tab label="code">
+        <pacem-markdown value="{{ '```html\n\n'+   pacem.removeLeadingTabs(#demo1.innerHTML) +'\n```' }}" class="text-small"></pacem-markdown>
+    </pacem-tab>
+</pacem-tabs>
+
+<!-- -->
+<pacem-markdown value="{{ #content1.textContent }}" root></pacem-markdown>
+
+<pre pacem hidden id="content1">
+## Customizations
+
+Properties available allow to customize the aspect and the behavior of a binder:
+
+- `fromAnchor`: where to force the anchor on the `from` Element (ignored for points). Can be `top`, `right`, `bottom`, `left`, `auto` (default).
+- `toAnchor`: same as _fromAnchor_, but for the `to` element.
+
+**Custom styling** can be obtained both via `cssClass` and `color` property.
+
+</pre>
+
+<pacemjs-snippet>
+    <template>
+
+        <h4>Drag 'n' drop circles!</h4>
+
+        <style>
+            .binder--circle {
+                width: 96px;
+                height: 96px;
+                border-radius: 50%;
+                border: 10px solid rgba(255,255,255,.5);
+                padding: 24px;
+                background-origin: border-box;
+                box-shadow: 0 4px 16px rgba(0,0,0,.5), inset 0 4px 16px rgba(0,0,0,.25);
+            }
+
+            .circle--small {
+                width: 48px;
+                height: 48px;
+            }
+        </style>
+
+        <pacem-binder from="{{ #end1 }}" to="{{ #end2 }}"></pacem-binder>
+        <pacem-binder from="{{ #end1 }}" to="{{ #end3 }}" class="binder-thin"></pacem-binder>
+        <pacem-binder from="{{ #end1 }}" to="{{ #end4 }}" class="binder-thin"></pacem-binder>
+        <pacem-drag-drop id="dnd"></pacem-drag-drop>
+
+        <div style="overflow: hidden" class="pacem-size size-xl pacem-pad pad-y-6">
+            <div class="pacem-flex flex-center">
+                <div class="pacem-box pacem-flex flex-center">
+                    <pacem-panel id="end1" class="bg-accent text-center binder--circle" behaviors="{{ [ #dnd ] }}"></pacem-panel>
+                </div>
+                <div class="pacem-box pacem-flex flex-center"><pacem-panel id="end2" class="bg-success text-center binder--circle circle--small" behaviors="{{ [ #dnd ] }}"></pacem-panel></div>
+                <div class="pacem-box pacem-flex flex-center"><pacem-panel id="end3" class="bg-primary text-center binder--circle circle--small" behaviors="{{ [ #dnd ] }}"></pacem-panel></div>
+                <div class="pacem-box pacem-flex flex-center"><pacem-panel id="end4" class="bg-warning text-center binder--circle circle--small" behaviors="{{ [ #dnd ] }}"></pacem-panel></div>
+            </div>
+
+
+            <pacem-checkbox true-value="true" false-value="false" value="{{ #end1.hide, twoway }}" caption="hide the big one"></pacem-checkbox>
+        </div>
+    </template>
+</pacemjs-snippet>
+
+
+<pacem-binder id="proto" hidden></pacem-binder>
+<pacemjs-descriptor target="{{ #proto }}"></pacemjs-descriptor>

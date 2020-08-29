@@ -1,0 +1,28 @@
+﻿<pacem-markdown value="{{ #content0.textContent }}" class="md-tech" root></pacem-markdown>
+
+<pre pacem hidden id="content0">
+## DataGrid Widget
+
+The `PacemWidgetDataGridElement` is the ideal widget for tabled data. 
+</pre>
+
+<pacemjs-snippet>
+    <template>
+
+        <div class="display-flex">
+            <pacem-widget-data editable="true" editing="{{ #toggleEdit0.value }}" id="data0" model="{{ [{ foo: 'bar', fee: 10.0 }, {foo: 'baz'}] }}"></pacem-widget-data>
+            <pacem-widget-datagrid editable="true" editing="{{ #toggleEdit0.value }}" id="datagrid0" datasource="{{ #data0.model }}"></pacem-widget-datagrid>
+        </div>
+
+        <hr />
+
+        <label>edit</label>
+        <br />
+        <pacem-checkbox class="checkbox-toggle" id="toggleEdit0" true-value="true" false-value="false" value="false"></pacem-checkbox>
+
+    </template>
+</pacemjs-snippet>
+
+
+<pacem-widget-data id="proto" hidden></pacem-widget-data>
+<pacemjs-descriptor target="{{ #proto }}"></pacemjs-descriptor>

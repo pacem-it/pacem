@@ -1,0 +1,17 @@
+﻿@import "../theme-dark";
+
+@panel_spacing: @grid_spacing / 2;
+
+// renaming with underscores
+@toast_z_index: @max_z_index; 
+@balloon_z_index: @toast_z_index - 100;
+@lightbox_z_index: @balloon_z_index - 100;
+@hamburger_z_index: @lightbox_z_index - 100;
+@header_z_index: @hamburger_z_index - 100;
+
+// deprecated hyphenated
+@toast-z-index: @toast_z_index;
+@balloon-z-index: @balloon_z_index;
+@lightbox-z-index: @lightbox_z_index;
+@hamburger-z-index: @hamburger_z_index;
+@header-z-index: @header_z_index;

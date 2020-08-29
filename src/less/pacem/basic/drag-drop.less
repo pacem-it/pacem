@@ -1,0 +1,75 @@
+﻿@import "../../shared";
+@import "../theme-dark";
+
+@{P}-drag-drop {
+    .Inert();
+}
+
+.Dragging() {
+    opacity: 0;
+    pointer-events: none;
+}
+
+@keyframes drag-lock {
+    0% {
+        //transform: scale(1);
+        filter: brightness(2);
+    }
+
+    50% {
+        opacity: 0.25;
+        filter: brightness(1.5);
+    }
+
+    100% {
+        .Dragging();
+    }
+}
+
+.drag-handle,
+.@{PCSS}-body.@{PCSS}-dragging {
+    cursor: move;
+}
+
+.@{PCSS}-drag-lock:not(.@{PCSS}-dragging) {
+    animation: drag-lock .25s 1 @easing_in_out_sine normal both;
+}
+
+.@{PCSS}-dragging {
+    -ms-user-select: none !important;
+    -moz-user-select: none !important;
+    -webkit-user-select: none !important;
+    user-select: none !important;
+    cursor: move !important;
+}
+
+.@{PCSS}-dragging.drag-placeholder {
+    .Dragging();
+}
+
+.@{PCSS}-drag-floater {
+    opacity: 1;
+    pointer-events: none;
+
+    & when(@shadows = false) {
+        & when(@glows = false) {
+            box-shadow: 0 3px 8px rgba(0,0,0,0.25);
+        }
+    }
+
+    & when(@shadows = true) {
+        box-shadow: 0 2px 24px rgba(0,0,0,.5);
+    }
+
+    & when(@glows = true) {
+        & when(@dark_theme = true) {
+            box-shadow: 0 0 16px fade(@color_default, 25);
+        }
+
+        & when(@dark_theme = false) {
+            box-shadow: 0 0 8px @color_default_inv;
+        }
+    }
+
+    z-index: @lightbox-z-index + 1; // @hamburger-z-index - 1;
+}

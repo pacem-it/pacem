@@ -1,0 +1,42 @@
+﻿
+
+<pacem-markdown value="{{ #content0.textContent }}" class="md-tech" root></pacem-markdown>
+
+<pre pacem hidden id="content0">
+## Dialog Lightbox
+
+The `PacemDialogElement` wraps a lightbox and forces the user to "pick a button" to be able to interact with the layout again.
+
+Calling the `open()` method a `state` can be passed to the dialog and a `Promise` gets returned with the clicked button and the provided state as a value `{ button, state }`.
+
+</pre>
+
+
+<pacemjs-snippet>
+    <template>
+
+        <!-- button (handling the dialog opening and the returned promise) -->
+        <pacem-button class="button button-primary" 
+                      on-click="#dialog1.open(Date.now()).then(v => $pacem.poptoast(#toaster1, v.button === 'ok' ? 'success' : 'danger', 'You clicked <b>'+ v.button.toUpperCase() +'</b>'))">Open dialog</pacem-button>
+
+        <!-- dialog -->
+        <pacem-dialog class="dialog-hd-slim dialog-lg-medium" buttons="okcancel" id="dialog1">
+            <div class="pacem-panel">
+                <h4 class="panel-heading">Clicked at <pacem-text text="{{ $pacem.date(#dialog1.state, 'time') }}"></pacem-text></h4>
+                <p class="panel-body">
+                    <b>Ok</b> and <b>Cancel</b> button are provided in order to close the dialog. Pick one.
+                </p>
+            </div>
+        </pacem-dialog>
+
+        <!-- fancy extra stuff -->
+        <pacem-shell-proxy>
+            <div class="pacem-toaster toaster-center toaster-top toaster-autosize toaster-anim anim-bounce" id="toaster1"></div>
+        </pacem-shell-proxy>
+
+    </template>
+</pacemjs-snippet>
+
+
+<pacem-dialog id="proto" hidden></pacem-dialog>
+<pacemjs-descriptor target="{{ #proto }}"></pacemjs-descriptor>

@@ -1,0 +1,49 @@
+﻿<pacem-markdown value="{{ #content0.textContent }}" class="md-tech" root></pacem-markdown>
+
+<pre pacem hidden id="content0">
+
+`Pacem2DElement` is the stage element for _2D drawings_.  
+It must be associated with a `Pacem2DAdapterElement` in orderr to work, since it is agnostic about the rendering process.
+
+> At the time this doc is being written, the adapters' development is only active on the **SVG-based** one.
+
+
+The following example shows how the _stage_ emitted events are powered with coordinate transformations.
+</pre>
+
+<pacemjs-snippet>
+    <template>
+
+        <b>Drag the square around</b>
+
+        <!-- 2D stuff -->
+        <pacem-2d-svg-adapter id="svg0"></pacem-2d-svg-adapter>
+        <pacem-2d viewbox="-40 -40 80 80"
+                  adapter="#svg0" style="height: 200px" 
+                  on-itemdraginit="#tooltip0.popup()"
+                  on-itemdrag="#tooltip0.target = { x: $event.pageX, y: $event.pageY }; #stageCoords.model = $event.project({ x: $event.pageX, y: $event.pageY })"
+                  on-itemdragend="#tooltip0.popout()">
+
+            <pacem-2d-rect x="-10" y="-10" w="20" h="20" draggable="true" stroke="none" fill="{{ Pacem.Utils.Css.getVariableValue('--color-accent') }}" tag="rectangle"></pacem-2d-rect>
+
+        </pacem-2d>
+
+        <!-- stage coords -->
+        <pacem-data id="stageCoords" model="{{ {x: 0, y: 0} }}"></pacem-data>
+
+        <pacem-shell-proxy>
+            <pacem-balloon id="tooltip0" options='{ "behavior": "inert", "position": "top" }'>
+                <div>
+                    <pacem-text text="{{ 'stage x: '+ #stageCoords.model.x.toFixed(2) }}"></pacem-text>
+                    <pacem-text text="{{ 'y: '+ #stageCoords.model.y.toFixed(2) }}"></pacem-text>
+                </div>
+            </pacem-balloon>
+        </pacem-shell-proxy>
+
+    </template>
+</pacemjs-snippet>
+
+
+
+<pacem-2d id="proto" hidden></pacem-2d>
+<pacemjs-descriptor target="#proto"></pacemjs-descriptor>

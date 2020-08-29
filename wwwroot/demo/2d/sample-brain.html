@@ -1,0 +1,64 @@
+﻿<pacem-fetch url="{{ #sliceUrl.value }}" id="sliceLoader" on-fetchresult="#slice.model = $event.detail"></pacem-fetch>
+<pacem-data id="slice" model="{}"></pacem-data>
+<pacem-data id="palette" model="['#fff', '#999', '#808000', '#80006e', '#d69d73', '#308978', '#429cd6']"></pacem-data>
+
+<pacem-2d-svg-adapter id="adapter2dSvg"></pacem-2d-svg-adapter>
+<!--<pacem-2d-canvas-adapter id="adapter2dCanvas"></pacem-2d-canvas-adapter>-->
+
+<div class="pacem-relative">
+    <!--on-itemover="$event.detail.origStroke = ''+$event.detail.stroke; $event.detail.stroke = '#f00'; $this.draw($event.detail)"
+    on-itemout="$event.detail.stroke = $event.detail.origStroke; $this.draw($event.detail)"-->
+    <pacem-2d adapter="#adapter2dSvg" datasource="{{ $pacem.drawifyBrainSlice(#slice.model, $this, #style.cssReady) }}" id="stage"
+              on-itemover="#neuronInfo.model = $event.detail.draggable && $event.detail.center || #neuronInfo.model; $pacem.handleItemOver($event, #tooltip)"
+              on-itemout="$pacem.handleItemOut($event, #tooltip)"
+              on-itemclick="$pacem.handleItemClick($event, #slice)"
+              on-itemdrag="$pacem.trayBrainBorder($event.detail.item, $event.detail.offset, false)"
+              on-itemdragend="$pacem.trayBrainBorder($event.detail.item, $event.detail.offset, true)"
+              viewbox="-20 -20 40 40" interactive="false" aspect-ratio="xMidYMid meet" class="pacem-stretch"></pacem-2d>
+    <pacem-loader class="pacem-hover" active="{{ #sliceLoader.fetching }}"></pacem-loader>
+</div>
+
+<pacem-shortcut combination="Ctrl+Shift+Down" on-execute="#adapter2dSvg.snapshot(#stage, '#000').then(b => Pacem.Utils.download(b, 'brain.png'))"></pacem-shortcut>
+
+<pre pacem hidden id="help1">
+### Interactivity
+
+In order to interact with the **2D stage**, you can:
+
+- `Alt+MouseWheel` to zoom in/out
+- `Alt+MouseDrag` to pan the view
+
+Specific Brain stuff interaction:
+
+- `Shift+MouseOver` to show tooltips
+- `Ctrl+Click` to split border segment
+</pre>
+
+<pacem-shell-proxy>
+    <pacem-window-area>
+        <pacem-window id="win1" caption="Info" css-class="{{ {'window-corners window-border': $this.floating} }}" floating="false">
+
+            <pacem-markdown value="{{ #help1.textContent }}" class="md-tech" root></pacem-markdown>
+
+        </pacem-window>
+        <pacem-window id="win2" caption="Slices" css-class="{{ {'window-corners window-border': $this.floating} }}" floating="false">
+
+            <pacem-select value="{{ '/demo/2d/brx1.json' }}" id="sliceUrl" class="field-stretch" empty-option="false">
+                <pacem-data-item value="/demo/2d/brx1.json" label="Slice 1"></pacem-data-item>
+                <pacem-data-item value="/demo/2d/brx2.json" label="Slice 2"></pacem-data-item>
+            </pacem-select>
+
+        </pacem-window>
+    </pacem-window-area>
+
+
+    <pacem-data id="neuronInfo"></pacem-data>
+
+    <pacem-balloon options="{{ {mode: 'inert'} }}" id="tooltip" class="pacem-inert">
+        <pacem-text class="text-disabled text-small" text="{{ $pacem.date(#neuronInfo.model.timestamp, 'full', Pacem.Utils.lang($this)) }}"></pacem-text>
+        <div class="pacem-margin margin-top-1">
+            <span class="text-disabled">x:</span> <code><pacem-text text="{{ $pacem.number(#neuronInfo.model.x, { minimumFractionDigits: 2, maximumFractionDigits: 6 }) }}"></pacem-text></code>
+            <span class="text-disabled">y:</span> <code><pacem-text text="{{ $pacem.number(#neuronInfo.model.y, { minimumFractionDigits: 2, maximumFractionDigits: 6 }) }}"></pacem-text></code>
+        </div>
+    </pacem-balloon>
+</pacem-shell-proxy>

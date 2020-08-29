@@ -1,0 +1,65 @@
+﻿<pacem-markdown value="{{ #content0.textContent }}" class="md-tech" root></pacem-markdown>
+
+<pre pacem hidden id="content0">
+## What matters
+
+Everybody knows that:
+
+> Writing Forms is a tedious task.
+
+You have to deal with **type checking**, **validation** in general, button **disabling while submitting**, response **feedbacks**...  
+Over and over. Again.
+
+**Pacem JS** (its predecessors, mainly) is born essentially to give some relief on that.  
+
+The idea is to serve auto-generated form fields (incuding validators) based on entity **metadata**. That's what `&lt;pacem-form-field>` exists for.
+
+typing docs...
+
+</pre>
+
+
+<pacem-markdown value="{{ #content1.textContent }}" class="md-tech" root></pacem-markdown>
+
+<pre pacem hidden id="content1">
+## Input Sets and Groups
+
+Combined input fields:
+</pre>
+
+<div class="pacem-fieldset pacem-spacer spacer-2x">
+    <div class="fieldset-left">
+        <div class="pacem-fieldgroup">
+            <pacem-datetime-picker></pacem-datetime-picker>
+            <div class="fieldgroup-prepend">
+                <i class="pacem-icon hide-xs">event</i>
+            </div>
+        </div>
+        <div class="pacem-fieldgroup">
+            <pacem-datetime-picker precision="day"></pacem-datetime-picker>
+            <div class="fieldgroup-prepend">
+                <i class="pacem-icon hide-xs">date_range</i>
+            </div>
+            <div class="fieldgroup-append"></div>
+        </div>
+    </div>
+</div>
+
+<pacem-markdown value="{{ #content2.textContent }}" class="md-tech" root></pacem-markdown>
+
+<pre pacem hidden id="content2">
+## Extra
+
+Additional content aside the input field:
+</pre>
+
+<div class="pacem-fieldgroup pacem-spacer spacer-2x">
+    <pacem-input-text placeholder="address..."></pacem-input-text>
+    <div class="fieldgroup-prepend">
+        <i class="pacem-icon">place</i>
+    </div>
+    <div class="fieldgroup-append"></div>
+</div>
+
+<pacem-form-field id="proto" hidden></pacem-form-field>
+<pacemjs-descriptor target="{{ #proto }}"></pacemjs-descriptor>

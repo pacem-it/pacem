@@ -1,0 +1,91 @@
+﻿@import "../../shared";
+@import "../theme-dark";
+
+.ChartSeries(@clr) {
+    path {
+        stroke: @clr;
+    }
+
+    &.series-fill {
+        path {
+            fill: fade(@clr, 50);
+        }
+    }
+
+    &.series-light {
+        path {
+            stroke: fade(@clr, 50);
+        }
+
+        &.series-fill {
+            path {
+                fill: fade(@clr, 20);
+            }
+        }
+    }
+}
+
+.@{PCSS}-chart-area {
+    position: relative;
+
+    .@{PCSS}-category-chart {
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+
+        .chart-series {
+            display: block;
+            height: 100%;
+
+            path {
+                stroke-width: 0.2%;
+                fill: none;
+            }
+
+            .ChartSeries(@color_default);
+
+            &.series-accent {
+                .ChartSeries(@color_accent);
+            }
+
+            &.series-primary {
+                .ChartSeries(@color_primary);
+            }
+
+            &.series-success {
+                .ChartSeries(@color_success);
+            }
+
+            &.series-warning {
+                .ChartSeries(@color_warning);
+            }
+
+            &.series-danger {
+                .ChartSeries(@color_danger);
+            }
+
+            &.series-bold {
+                path {
+                    stroke-width: 0.4%;
+                }
+            }
+        }
+
+        .chart-grid {
+            display: block;
+            height: 100%;
+
+            path {
+                stroke-width: 0.06%;
+                stroke: fade(@color_default, 20);
+                fill: none;
+            }
+
+            text {
+                fill: fade(@color_default, 25);
+                .FontTech(.75);
+            }
+        }
+    }
+}

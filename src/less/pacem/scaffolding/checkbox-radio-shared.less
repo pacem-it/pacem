@@ -1,0 +1,118 @@
+﻿@import "shared";
+
+@_pad: @input_padding_horiz;
+
+@{P}-radio,
+@{P}-checkbox,
+@{P}-radio-list,
+@{P}-checkbox-list {
+    .FormFieldItemWrapper();
+}
+
+@{P}-radio-list,
+@{P}-checkbox-list {
+
+    ol {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-content: flex-start;
+
+        > li {
+            flex: 1 1 auto;
+            display: inline-block;
+            padding: 0 2 * @_pad 0 0;
+
+            &:last-child {
+                padding-right: 0;
+            }
+        }
+    }
+}
+
+@{P}-radio,
+@{P}-checkbox {
+
+    .@{PCSS}-input {
+        display: inline;
+        opacity: 0;
+        width: 0;
+        height: 0;
+        border: 0;
+        margin: 0;
+        padding: 0;
+        min-width: 0;
+        min-height: 0;
+        pointer-events: none;
+        // needed in Firefox for proper rendering
+        position: absolute;
+    }
+
+    label.@{PCSS}-label {
+        .FormFieldItem();
+        cursor: pointer;
+        display: inline-block;
+    }
+
+    &.pacem-disabled {
+
+        label.@{PCSS}-label {
+            cursor: default;
+        }
+    }
+
+    label.@{PCSS}-label {
+        padding-left: @grid_spacing + @_pad;
+        padding-right: @_pad;
+        position: relative;
+        font-size: 1.1em;
+        line-height: @field_height;
+    }
+
+    &.@{PCSS}-focus label.@{PCSS}-label::before {
+        color: @color_default;
+    }
+
+    &.@{PCSS}-selected .@{PCSS}-readonly::before {
+        color: @color_primary;
+    }
+}
+
+@{P}-checkbox .@{PCSS}-label.@{PCSS}-checkbox {
+    box-sizing: border-box;
+    width: 100%;
+}
+
+@media (min-width: @threshold_lg) {
+
+    @{P}-checkbox-list @{P}-checkbox,
+    @{P}-checkbox-list @{P}-checkbox:not(.field-stretch),
+    @{P}-radio-list @{P}-radio,
+    @{P}-radio-list @{P}-radio:not(.field-stretch) {
+        min-width: 0;
+    }
+}
+
+// nowrap lists
+@{P}-form-field.field-nowrap {
+
+    @{P}-radio-list,
+    @{P}-checkbox-list {
+        ol {
+            flex-wrap: nowrap;
+
+            > li {
+                flex-grow: 0;
+                flex-shrink: 1;
+
+                @{P}-radio > label {
+                    white-space: nowrap;
+                }
+            }
+        }
+    }
+}

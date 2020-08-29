@@ -1,0 +1,123 @@
+﻿<pacem-markdown value="{{ #content0.textContent }}" class="md-tech" root></pacem-markdown>
+
+<pre pacem hidden id="content0">
+Classic **toaster** element for popping notifications.
+
+Default appearance:
+</pre>
+
+
+<pacemjs-snippet>
+    <template id="demo0">
+
+        <pacem-data id="show0"></pacem-data>
+        <pacem-shell-proxy>
+            <pacem-toast show="{{ #show0.model, twoway }}" css-class="{{ ['toast-' + #style0.value] }}">Popped!</pacem-toast>
+        </pacem-shell-proxy>
+        <pacem-radio-list id="style0" class="display-block pacem-margin margin-bottom-3" value="default" disabled="{{ #show0.model }}">
+            <pacem-data-item value="default"></pacem-data-item>
+            <pacem-data-item value="primary"></pacem-data-item>
+            <pacem-data-item value="accent"></pacem-data-item>
+            <pacem-data-item value="warning"></pacem-data-item>
+            <pacem-data-item value="danger"></pacem-data-item>
+            <pacem-data-item value="success"></pacem-data-item>
+        </pacem-radio-list>
+        <pacem-button class="button" disabled="{{ #show0.model }}" on-click="#show0.model = true">pop!</pacem-button>
+
+    </template>
+</pacemjs-snippet>
+
+<pacem-markdown value="{{ #content1.textContent }}" class="md-tech" root></pacem-markdown>
+
+<pre pacem hidden id="content1">
+## Put it in a Toaster!
+
+To change the poppping position of a toast notification, just put it in a toaster (`.pacem-toaster`).  
+Default spawning position is assumed to be `top right`.
+
+> Multiple toasters overlap each-other.
+</pre>
+
+<pacemjs-snippet>
+    <template id="demo1">
+
+        <pacem-data id="show1"></pacem-data>
+        <pacem-data id="show2"></pacem-data>
+        <pacem-data id="show3"></pacem-data>
+        <pacem-shell-proxy>
+            <pacem-panel class="pacem-toaster" css-class="{{ (#pos1.value && #pos1.value).split(' ').map(p => 'toaster-'+p) }}">
+                <pacem-toast timeout="{{ #dur1.value }}" show="{{ #show1.model, twoway }}" class="toast-primary">Popped 1!</pacem-toast>
+                <pacem-toast timeout="{{ #dur1.value }}" show="{{ #show2.model, twoway }}" class="toast-accent">Popped 2!</pacem-toast>
+                <pacem-toast timeout="{{ #dur1.value }}" show="{{ #show3.model, twoway }}" class="toast-success">Popped 3!</pacem-toast>
+            </pacem-panel>
+        </pacem-shell-proxy>
+        <div class="pacem-margin margin-bottom-3 form-field">
+            <pacem-select id="pos1" value="top right" disabled="{{ #show1.model || #show2.model || #show3.model }}">
+                <pacem-data-item value="top left"></pacem-data-item>
+                <pacem-data-item value="top right"></pacem-data-item>
+                <pacem-data-item value="bottom right"></pacem-data-item>
+                <pacem-data-item value="bottom left"></pacem-data-item>
+            </pacem-select>
+        </div>
+        <div class="pacem-margin margin-bottom-3 form-field">
+            <label class="pacem-label">timeout:</label>
+            <pacem-input-number id="dur1" value="3000" step="500" min="0"></pacem-input-number>
+        </div>
+        <pacem-button class="button" disabled="{{ #show1.model }}" on-click="#show1.model = true">pop 1!</pacem-button>
+        <pacem-button class="button" disabled="{{ #show2.model }}" on-click="#show2.model = true">pop 2!</pacem-button>
+        <pacem-button class="button" disabled="{{ #show3.model }}" on-click="#show3.model = true">pop 3!</pacem-button>
+
+    </template>
+</pacemjs-snippet>
+
+
+<pacem-markdown value="{{ #content2.textContent }}" class="md-tech" root></pacem-markdown>
+
+<pre pacem hidden id="content2">
+## Force persistence
+
+To make the toast to be persistent, force the user to dismiss it:
+</pre>
+
+<pacemjs-snippet>
+    <template id="demo2">
+
+        <pacem-data id="show4"></pacem-data>
+        <pacem-shell-proxy>
+            <div class="pacem-toaster">
+                <pacem-toast show="{{ #show4.model, twoway }}" autohide="false" class="toast-danger">
+                    <i class="pacem-icon">announcement</i>
+                    <div>
+                        Click me to dismiss.
+                    </div>
+                </pacem-toast>
+            </div>
+        </pacem-shell-proxy>
+        <pacem-button class="button" disabled="{{ #show4.model }}" on-click="#show4.model = true">pop!</pacem-button>
+
+    </template>
+</pacemjs-snippet>
+
+
+<pacem-markdown value="{{ #content3.textContent }}" class="md-tech" root></pacem-markdown>
+
+<pre pacem hidden id="content3">
+## Utilities
+
+Pop your toasts programmatically by exploiting the `poptoast()` utility method.
+</pre>
+
+<pacemjs-snippet>
+    <template>
+
+        <pacem-button class="button" 
+                      on-click="$pacem.poptoast(#toaster3, ['danger', 'success', 'warning', 'info'][Math.floor(Math.random() * 4)], '<b>Popped toast</b><p>at <code>' + $pacem.date(Date.now(), 'full') + '</code></p>', {timeout: 3000, autohide: true})"
+                      >Pop a random toast...</pacem-button>
+        <pacem-shell-proxy>
+            <div class="pacem-toaster toaster-center toaster-top toaster-autosize toaster-anim anim-bounce" id="toaster3"></div>
+        </pacem-shell-proxy>
+    </template>
+</pacemjs-snippet>
+
+<pacem-toast id="proto" hidden></pacem-toast>
+<pacemjs-descriptor target="{{ #proto }}"></pacemjs-descriptor>

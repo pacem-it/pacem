@@ -1,0 +1,29 @@
+﻿@import "../theme-dark";
+
+.StretchChildren() {
+    display: flex;
+    align-items: stretch;
+    align-content: stretch;
+    overflow: hidden;
+
+    > * {
+        flex: 1 0 auto;
+    }
+}
+
+@{P}-2d {
+    .StretchChildren();
+
+    .@{P}-resize{
+        display: none !important;
+    }
+
+    .@{PCSS}-2d {
+        .StretchChildren();
+        
+        > canvas,
+        > svg {
+            display: block;
+        }
+    }
+}

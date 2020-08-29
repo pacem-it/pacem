@@ -1,0 +1,123 @@
+﻿@import "../../shared";
+@import "../theme-dark";
+@import "shared";
+
+@{P}-datetime-picker {
+    .FormFieldItemWrapper();
+
+    .@{PCSS}-datetime-picker-fields {
+        width: 100%;
+
+        > div,
+        > @{P}-panel {
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .@{PCSS}-datetime-picker-hours {
+
+            @_sz: @grid_spacing /1.5;
+
+            padding-left: @_sz;
+            position: relative;
+
+            &:before {
+                .Icon('access_time', @grid_spacing / 2);
+                position: absolute;
+                left: 0;
+                top: @grid_spacing / 3;
+            }
+        }
+    }
+
+    .@{PCSS}-datetime-picker {
+        // overriding pacem-select rules...
+        @{P}-select {
+            border: 0;
+            min-width: 56px;
+
+            .@{PCSS}-select {
+                // remove borders
+                min-height: @field_height;
+                line-height: $min-height;
+            }
+        }
+
+        .@{PCSS}-datetime-picker-hours,
+        .@{PCSS}-datetime-picker-minutes,
+        .@{PCSS}-datetime-picker-seconds {
+            min-width: 40px;
+        }
+
+        .@{PCSS}-datetime-picker-fields {
+            display: inline-block;
+        }
+    }
+
+    dl {
+        @_h: @grid_spacing * 1.3333;
+        padding: @grid_spacing/6 0;
+        overflow: hidden;
+        height: @_h;
+
+        dt, dd {
+            line-height: @_h * .5;
+            height: @_h * .5;
+        }
+
+        dt {
+            float: left;
+            vertical-align: middle;
+            width: @grid_spacing / 1.5;
+            background: center center no-repeat;
+            background-size: contain;
+            font-size: 0;
+
+            &:nth-of-type(2)::before {
+                .Icon('language', @grid_spacing * 2 / 4);
+                position: static;
+            }
+
+            &:nth-of-type(1)::before {
+                .Icon('location_on', @grid_spacing * 2 / 4);
+                position: static;
+            }
+        }
+
+        dd {
+            clear: right;
+            margin-left: @grid_spacing;
+            .FontTech(.8);
+
+            &:nth-of-type(2) {
+                color: fade(@color_tech, 100);
+            }
+        }
+
+        &.@{PCSS}-hidden {
+            transition: all .3s;
+            transform: none;
+            height: 0;
+        }
+
+        &.@{PCSS}-shown {
+            transition: all .3s /*cubic-bezier(0.23, 1, 0.32, 1)*/ .1s;
+            transform: none;
+        }
+    }
+
+    .@{PCSS}-readonly {
+        /*padding-left: @grid_spacing;
+        &::before {
+            .Icon('access_time', @field_left);
+            line-height: @field_height;
+            color: @color_primary;
+            left: 0;
+        }*/
+        .FormFieldLabelIcon('access_time');
+
+        &.date::before {
+            content: 'date_range';
+        }
+    }
+}

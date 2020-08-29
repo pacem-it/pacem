@@ -1,0 +1,130 @@
+﻿<pacem-markdown value="{{ #content0.textContent }}" root class="md-tech"></pacem-markdown>
+
+<pre pacem hidden id="content0">
+
+## Getting Started
+Install pacem via **npm**
+
+```
+&gt; npm i pacem
+```
+
+Reference scripts <!--(no ES6 modules yet)-->
+```html
+
+&lt;!-- polyfills and fixings (Microsoft Edge) -->
+&lt;script src="https://github.com/webcomponents/custom-elements/blob/master/custom-elements.min.js">&lt;/script>
+&lt;script src="/node_modules/pacem/dist/js/polyfills/documentfragment.edge.js">&lt;/script>
+
+&lt;!-- scripts -->
+&lt;script src="/node_modules/pacem/dist/js/pacem-foundation.min.js">&lt;/script>
+&lt;script src="/node_modules/pacem/dist/js/pacem-core.min.js">&lt;/script>
+&lt;script src="/node_modules/pacem/dist/js/pacem-ui.min.js">&lt;/script>
+&lt;script src="/node_modules/pacem/dist/js/pacem-scaffolding.min.js">&lt;/script>
+
+&lt;!-- styles -->
+&lt;style src="/node_modules/pacem/dist/css/pacem-light.min.css">&lt;/style >
+```
+
+Start creating...
+
+## CustomElements
+Pacem JS provides a collection of already defined **webcomponents**, nevertheless it allows you, the developer, to build your own.  
+Create your class and add a `@CustomElement` decoration:
+
+```js
+@CustomElement({ tagName: 'my-custom' })
+export class MyCustomElement extends HTMLElement{
+}
+```
+You can take advantage of some basic functionalities by extending classes other than `HTMLElement` directly:  
+
+- **`PacemEventTarget`**: this class provides core **event emitting** capabilities (triggers the `on-&lt;event>` declarative handlers) alongside with **disabled** state management. It is generally meant to be extended by **non-UI** elements.
+- **`PacemElement`**: it extends `PacemEventTarget` and adds **UI** capabilities like `css`, `css-class`, `tooltip`, `behaviors` and others... 
+
+
+## Lifecycle
+
+</pre>
+
+<div class="pacem-timeline pacem-animatable-list">
+    <div class="timeline-step step-primary">
+        <div class="step-icon">
+            <i class="pacem-icon">link</i>
+        </div>
+        <div class="step-pad"></div>
+        <div class="pacem-panel panel-warning pacem-margin margin-bottom-3">
+            <h4 class="panel-heading">Connected</h4>
+            <pacem-markdown value="{{ #contentConnected.textContent }}" root class="md-tech panel-body"></pacem-markdown>
+<pre pacem hidden id="contentConnected">
+The `connectedCallback()` method gets called and the `isConnected` flag is set to `true`.  
+**Bindings do not get processed** yet: a preliminary check is done about the overall DOM state ("completely loaded or not?").  
+</pre>
+        </div>
+    </div>
+    <div class="timeline-step step-primary">
+        <div class="step-icon">
+            <i class="pacem-icon">compare_arrows</i>
+        </div>
+        <div class="step-pad"></div>
+        <div class="pacem-panel panel-warning pacem-margin margin-bottom-3">
+            <h4 class="panel-heading">Property Changed (first change)</h4>
+            <pacem-markdown value="{{ #contentPcf.textContent }}" root class="md-tech panel-body"></pacem-markdown>
+            <pre pacem hidden id="contentPcf"> 
+The first `propertychange` event might be fired due to (either):
+- declaratively assigned attribute on the DOM element,
+- non-null default value assigned to the watched property.   
+
+The `propertyChangedCallback()` method gets hit with a `true` value for the 'firstChange' parameter (the 4th parameter in the method signature).  
+You **cannot** assume to safely access the sub-DOM of the web component when managing this change.
+</pre>
+            <!--<div class="top-left corner"></div>
+            <div class="top-right corner"></div>
+            <div class="bottom-left corner"></div>
+            <div class="bottom-right corner"></div>-->
+        </div>
+    </div>
+    <div class="timeline-step step-primary">
+        <div class="step-icon">
+            <i class="pacem-icon">done_all</i>
+        </div>
+        <div class="step-pad"></div>
+        <div class="pacem-panel panel-success pacem-margin margin-bottom-3">
+            <h4 class="panel-heading">View Activated</h4>
+            <pacem-markdown value="{{ #contentViewActivated.textContent }}" root class="md-tech panel-body"></pacem-markdown>
+            <pre pacem hidden id="contentViewActivated">
+The **custom** (Pacem JS-specific) `viewActivatedCallback()` method gets called and the (also custom) `isReady` flag is set to `true`.  
+**Bindings do get processed**: the overall DOM state is ready and the template of the component has been applied.  
+</pre>
+        </div>
+    </div>
+    <div class="timeline-step step-primary">
+        <div class="step-icon">
+            <i class="pacem-icon">compare_arrows</i>
+        </div>
+        <div class="step-pad"></div>
+        <div class="pacem-panel panel-success pacem-margin margin-bottom-3">
+            <h4 class="panel-heading">Property Changed</h4>
+            <pacem-markdown value="{{ #contentPc.textContent }}" root class="md-tech panel-body"></pacem-markdown>
+            <pre pacem hidden id="contentPc">
+"Property change" generally occurs many times during the lifespan of the webcomponent.  
+The `propertyChangedCallback()` method gets hit with a `false` value for the 'firstChange' parameter (the 4th parameter in the method signature).  
+You can assume to safely access the sub-DOM of the web component when managing this change.
+</pre>
+        </div>
+    </div>
+    <div class="timeline-step step-primary">
+        <div class="step-icon">
+            <i class="pacem-icon">link_off</i>
+        </div>
+        <div class="step-pad"></div>
+        <div class="pacem-panel panel-danger pacem-margin margin-bottom-3">
+            <h4 class="panel-heading">Disconnected</h4>
+            <pacem-markdown value="{{ #contentDiconnected.textContent }}" root class="md-tech panel-body"></pacem-markdown>
+<pre pacem hidden id="contentDiconnected">
+When the element is removed from the DOM, the `disconnectedCallback()` method gets called and the `isConnected` flag is set to `false`.  
+> This is the ideal hook for listeners and resources disposure.
+</pre>
+        </div>
+    </div>
+</div>

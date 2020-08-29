@@ -1,0 +1,62 @@
+﻿
+
+<pacem-markdown value="{{ #content0.textContent }}" class="md-tech" root></pacem-markdown>
+
+<pre pacem hidden id="content0">
+## Anchor
+
+The `PacemAnchorElement` mimicks the `HTMLAnchorElement` common behavior, including routing capabilities when needed.  
+If a **router** is available in the DOM, just refer to it in anchor's `router` property/attribute.
+
+> It handles the usual events (keyboard, mouse, ...) associated with the a `&lt;a>` element.
+
+Example:
+</pre>
+
+<pacemjs-snippet>
+    <template>
+        <div class="pacem-grid">
+            <div class="pacem-cell cols-xl-6 rows-xl-3">
+                <span>As you can see,</span>
+
+                <!-- anchor -->
+                <pacem-a on-click="#prevent.value && Pacem.avoidHandler($event)"
+                         on-mousedown="#prevent.value && Pacem.avoidHandler($event)"
+                         css-class="{{ {'pacem-button button': #buttonLike.value} }}"
+                         download="{{ #download.value }}"
+                         tooltip="{{ 'go to '+ #url.value }}"
+                         href="{{ #url.value }}"
+                         target="{{ #tget.value }}"><pacem-text text="{{ #url.viewValue }}"></pacem-text></pacem-a>
+                <span>is the actual <b>href</b> value.</span>
+            </div>
+            <div class="pacem-cell cols-md-6 cols-lg-4 cols-xl-3">
+
+                <!-- url editor -->
+                <pacem-input-url id="url" value="https://js.pacem.it" placeholder="https://..."></pacem-input-url>
+            </div>
+            <div class="pacem-cell cols-md-6 cols-lg-4 cols-xl-3">
+
+                <!-- style toggler -->
+                <pacem-checkbox true-value="true" false-value="false" id="buttonLike" caption="button like"></pacem-checkbox>
+            </div>
+            <div class="pacem-cell cols-md-6 cols-lg-4 cols-xl-3">
+
+                <!-- event prevention toggler -->
+                <pacem-checkbox true-value="true" false-value="false" id="prevent" caption="prevent navigation"></pacem-checkbox>
+            </div>
+            <div class="pacem-cell cols-md-6 cols-lg-4 cols-xl-3">
+
+                <!-- target window toggler -->
+                <pacem-checkbox true-value="_blank" false-value="" id="tget" caption="target _blank"></pacem-checkbox>
+            </div>
+            <div class="pacem-cell cols-md-6 cols-lg-4 cols-xl-3">
+
+                <!-- download filename editor (if not empty, then download) -->
+                <pacem-input-text id="download" placeholder="download as..."></pacem-input-text>
+            </div>
+        </div>
+    </template>
+</pacemjs-snippet>
+
+<pacem-a id="proto" hidden></pacem-a>
+<pacemjs-descriptor target="{{ #proto }}"></pacemjs-descriptor>

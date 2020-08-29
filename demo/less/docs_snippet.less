@@ -1,0 +1,27 @@
+﻿@import "../../src/less/pacem/theme-dark";
+
+pacemjs-snippet {
+    display: block;
+    margin-bottom: 2 * @grid_spacing;
+}
+
+.snippet-header {
+    @_clr: @color_primary;
+    margin: 0 0 1rem 0;
+    padding: @grid_spacing/6 @grid_spacing/3;
+    display: inline-block;
+    background-color: fade(@_clr, 10);
+    color: @_clr;
+    font-size: 1em;
+    font-family: @font_tech;
+}
+
+// breadcrumbs
+
+@_main_h: 2 * @grid_spacing;
+@_main_w: 3 * @grid_spacing;
+
+#logo {
+    width: @_main_w;
+    height: @_main_h;
+}

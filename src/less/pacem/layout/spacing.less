@@ -1,0 +1,219 @@
+﻿@import "../theme-dark";
+@import "shared";
+
+hr.spacer {
+    margin-bottom: @grid_spacing;
+}
+
+.@{PCSS}-spacer {
+    margin-bottom: @grid_spacing;
+
+    &.spacer-2x {
+        margin-bottom: 2 * @grid_spacing;
+    }
+
+    &.spacer-3x {
+        margin-bottom: 3 * @grid_spacing;
+    }
+}
+
+// amended
+@_segmentation: 3;
+@_spacing_unit: @grid_spacing / @_segmentation;
+
+.Spaced(@what, @prefix, @count, @index) when (@index >= 0) {
+
+    @_spacing_indexed_unit: @index * @_spacing_unit;
+
+    &.@{prefix}-@{index} {
+        @{what}: @_spacing_indexed_unit;
+    }
+
+    &.@{prefix}-y-@{index} {
+        @{what}-top: @_spacing_indexed_unit;
+        @{what}-bottom: @_spacing_indexed_unit;
+    }
+
+    &.@{prefix}-x-@{index} {
+        @{what}-left: @_spacing_indexed_unit;
+        @{what}-right: @_spacing_indexed_unit;
+    }
+
+    &.@{prefix}-top-@{index} {
+        @{what}-top: @_spacing_indexed_unit;
+    }
+
+    &.@{prefix}-right-@{index} {
+        @{what}-right: @_spacing_indexed_unit;
+    }
+
+    &.@{prefix}-bottom-@{index} {
+        @{what}-bottom: @_spacing_indexed_unit;
+    }
+
+    &.@{prefix}-left-@{index} {
+        @{what}-left: @_spacing_indexed_unit;
+    }
+
+    .Spaced(@what,@prefix, @count, @index - 1);
+}
+
+.Spaced(@what, @prefix) {
+    .Spaced(@what, @prefix, 2 * @_segmentation, 2 * @_segmentation);
+
+    &.@{prefix}-auto{
+        @{what}: auto;
+    }
+}
+
+.@{PCSS}-margin {
+    .Spaced(margin, margin);
+}
+
+.@{PCSS}-pad {
+    .Spaced(padding, pad);
+}
+
+.SpacedThresholded(@what, @prefix,@threshold, @count, @index) when (@index >= 0) {
+
+    @_spacing_indexed_unit: @index * @_spacing_unit;
+
+    &.@{prefix}-@{threshold}-@{index} {
+        @{what}: @_spacing_indexed_unit;
+    }
+
+    &.@{prefix}-y-@{threshold}-@{index} {
+        @{what}-top: @_spacing_indexed_unit;
+        @{what}-bottom: @_spacing_indexed_unit;
+    }
+
+    &.@{prefix}-x-@{threshold}-@{index} {
+        @{what}-left: @_spacing_indexed_unit;
+        @{what}-right: @_spacing_indexed_unit;
+    }
+
+    &.@{prefix}-top-@{threshold}-@{index} {
+        @{what}-top: @_spacing_indexed_unit;
+    }
+
+    &.@{prefix}-right-@{threshold}-@{index} {
+        @{what}-right: @_spacing_indexed_unit;
+    }
+
+    &.@{prefix}-bottom-@{threshold}-@{index} {
+        @{what}-bottom: @_spacing_indexed_unit;
+    }
+
+    &.@{prefix}-left-@{threshold}-@{index} {
+        @{what}-left: @_spacing_indexed_unit;
+    }
+
+    .SpacedThresholded(@what,@prefix,@threshold, @count, @index - 1);
+}
+
+.SpacedThresholded(@what, @prefix, @threshold) {
+    .SpacedThresholded(@what, @prefix, @threshold, 2 * @_segmentation, 2 * @_segmentation);
+
+    &.@{prefix}-@{threshold}-auto{
+        @{what}: auto;
+    }
+}
+
+@media (max-width: @threshold_sm - 1) {
+
+    .@{PCSS}-margin {
+        .SpacedThresholded(margin, margin, xs);
+    }
+
+    .@{PCSS}-pad {
+        .SpacedThresholded(padding, pad, xs);
+    }
+}
+
+@media (min-width: @threshold_sm) {
+
+    .@{PCSS}-margin {
+        .SpacedThresholded(margin, margin, sm);
+    }
+
+    .@{PCSS}-pad {
+        .SpacedThresholded(padding, pad, sm);
+    }
+}
+
+@media (min-width: @threshold_md) {
+
+    .@{PCSS}-margin {
+        .SpacedThresholded(margin, margin, md);
+    }
+
+    .@{PCSS}-pad {
+        .SpacedThresholded(padding, pad, md);
+    }
+}
+
+@media (min-width: @threshold_lg) {
+
+    .@{PCSS}-margin {
+        .SpacedThresholded(margin, margin, lg);
+    }
+
+    .@{PCSS}-pad {
+        .SpacedThresholded(padding, pad, lg);
+    }
+}
+
+@media (min-width: @threshold_xl) {
+
+    .@{PCSS}-margin {
+        .SpacedThresholded(margin, margin, xl);
+    }
+
+    .@{PCSS}-pad {
+        .SpacedThresholded(padding, pad, xl);
+    }
+}
+
+@media (min-width: @threshold_hd) {
+
+    .@{PCSS}-margin {
+        .SpacedThresholded(margin, margin, hd);
+    }
+
+    .@{PCSS}-pad {
+        .SpacedThresholded(padding, pad, hd);
+    }
+}
+
+@media (min-width: @threshold_2k) {
+
+    .@{PCSS}-margin {
+        .SpacedThresholded(margin, margin, 2k);
+    }
+
+    .@{PCSS}-pad {
+        .SpacedThresholded(padding, pad, 2k);
+    }
+}
+
+@media (min-width: @threshold_4k) {
+
+    .@{PCSS}-margin {
+        .SpacedThresholded(margin, margin, 4k);
+    }
+
+    .@{PCSS}-pad {
+        .SpacedThresholded(padding, pad, 4k);
+    }
+}
+
+@media (orientation: portrait) {
+
+    .@{PCSS}-margin {
+        .SpacedThresholded(margin, margin, v);
+    }
+
+    .@{PCSS}-pad {
+        .SpacedThresholded(padding, pad, v);
+    }
+}

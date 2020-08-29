@@ -1,0 +1,263 @@
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model Pacem.Js.CustomElements.Models.ViewModel
+@{
+    string pacemjs_version = Model.Version;
+    string version = pacemjs_version + "." + Model.Refresh;
+    string img = "https://pacem.azureedge.net/marketing/logojs_800x800.png";
+    string svg = "https://pacem.azureedge.net/marketing/logojs.svg";
+    string title = "Pacem JS";
+    string desc = "Pacem JS is a CustomElements-v1 based ecosystem for reusable web components.";
+
+    if (!Context.Request.Query.TryGetValue("prefix", out var P))
+    {
+        P = "pacem";
+    }
+}
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <meta name="msapplication-tap-highlight" content="no" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>@title</title>
+    <meta name="og:title" content="@title" />
+    <meta name="twitter:title" content="@title" />
+    <link rel="shortcut icon" href="~/favicon.ico" />
+    <meta name="description" content="@desc" />
+    <meta itemprop="description" content="@desc" />
+    <meta name="twitter:description" content="@desc" />
+    <meta name="og:description" content="@desc" />
+    <meta name="keywords" content="Pacem JS,Web Components v1,JavaScript Framework,TypeScript,ES6,ES2017,Pacem,Cristian Merighi,Merighi" />
+    <meta name="image" content="@img" />
+    <meta itemprop="image" content="@img" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="@img" />
+    <meta name="og:image" content="@img" />
+    <meta name="twitter:creator" content="@@pacem_it">
+    <meta name="og:locale" content="en_us" />
+    <meta name="og:type" content="website" />
+    <script>
+        (function (global) {
+            global.Pacem = Object.assign(global.Pacem || {}, { Configuration: { prefix: "pacem" } });
+        })(window);
+
+        /**/</script>
+    <link href="~/dist/css/pacem-dark-shell.min.css?v=@(version)" rel="stylesheet" />
+    <link href="~/dist/css/pacem-light-shell.min.css?v=@(version)" rel="stylesheet" />
+    <link href="~/dist/css/pacem-phousys-shell.min.css?v=@(version)" rel="stylesheet" />
+    <link href="~/dist/css/pacem-docs-dark-shell.min.css?v=@(version)" rel="stylesheet" />
+    <link href="~/dist/css/pacem-docs-light-shell.min.css?v=@(version)" rel="stylesheet" />
+    <link href="~/dist/css/pacem-docs-phousys-shell.min.css?v=@(version)" rel="stylesheet" />
+
+    <meta name="theme-color" content="#090c41" />
+    <link href="/manifest.json" rel="manifest" />
+
+</head>
+<body>
+
+    <!-- preloader -->
+    <pacem-panel class="pacem-preloader" id="preloader" hide="{{ #style.cssReady && #styleDocs.cssReady }}">
+        <pacem-loader active="{{ !(#style.cssReady && #styleDocs.cssReady) }}" class="loader-full loader-primary"></pacem-loader>
+        <img src="@svg" alt="loading..." />
+    </pacem-panel>
+
+    <pacem-annihilator>
+        <img src="@img" alt="Pacem JS" />
+
+        @Html.Raw(Model.HtmlContent)
+    </pacem-annihilator>
+
+    <pacem-data id="themes" model="[{label: 'Light', value: 'light'}, {label: 'Dark', value: 'dark'}, {label: 'Tech', value: 'phousys'}]"></pacem-data>
+    <pacem-data id="themename" model="'light'" persist-as="theme@(version)"></pacem-data>
+    <pacem-data id="theme" model="{{ #themes.model.find(_ => _.value === #themename.model) }}"></pacem-data>
+    <pacem-data id="route" model="{{ #menu.result && #menu.result.find(_ => _.package === #router.state.package).items.find(_ => _.view === #router.state.view) }}"></pacem-data>
+    <pacem-data id="routetitle" model="{{ (#route.model && (#route.model.title || #route.model.label)) || #router.state.view }}"></pacem-data>
+
+    <pacem-html-proxy attr="{{ #themename.model }}" value="true"></pacem-html-proxy>
+    <pacem-title-proxy value="{{ #routetitle.model + ' | Pacem JS' }}"></pacem-title-proxy>
+    <pacem-meta-proxy content="{{ #routetitle.model }}" name="og:title"></pacem-meta-proxy>
+    <pacem-meta-proxy content="{{ #routetitle.model }}" name="twitter:title"></pacem-meta-proxy>
+
+    <pacem-style-proxy id="style" src="{{ '/dist/css/pacem-'+ #themename.model +'-content.min.css?v=@(version)' }}"></pacem-style-proxy>
+    <pacem-style-proxy id="styleDocs" src="{{ '/dist/css/pacem-docs-'+ #themename.model +'-content.min.css?v=@(version)' }}"></pacem-style-proxy>
+
+
+    <!-- shell layout -->
+    <pacem-panel hidden hide="{{ !(#style.cssReady && #styleDocs.cssReady) }}" css="{{ {opacity: (#style.cssReady && #styleDocs.cssReady ? '1': '0') } }}" class="pacem-body pacem-animations pacem-animatable" header footer aside>
+        <pacem-data id="layoutHeader" model="true"></pacem-data>
+        <pacem-data id="layoutFooter" model="true"></pacem-data>
+        <pacem-data id="layoutBigfooter" model="false"></pacem-data>
+        <pacem-data id="layoutAside" model="true"></pacem-data>
+        <pacem-data id="layoutFootbar" model="false"></pacem-data>
+        <pacem-data id="layoutHeadbar" model="false"></pacem-data>
+        <pacem-data id="layoutHeadbarPrepend" model="false"></pacem-data>
+        <pacem-data id="layoutFootbarAppend" model="false"></pacem-data>
+
+        <pacem-layout-proxy attr="header" value="{{ #layoutHeader.model.toString() }}"></pacem-layout-proxy>
+        <pacem-layout-proxy attr="footer" value="{{ #layoutFooter.model.toString() }}"></pacem-layout-proxy>
+        <pacem-layout-proxy attr="bigfooter" value="{{ #layoutBigfooter.model.toString() }}"></pacem-layout-proxy>
+        <pacem-layout-proxy attr="aside" value="{{ #layoutAside.model.toString() }}"></pacem-layout-proxy>
+        <pacem-layout-proxy attr="footbar" value="{{ #layoutFootbar.model.toString() }}"></pacem-layout-proxy>
+        <pacem-layout-proxy attr="headbar" value="{{ #layoutHeadbar.model.toString() }}"></pacem-layout-proxy>
+        <pacem-layout-proxy attr="footbar-append" value="{{ #layoutFootbarAppend.model.toString() }}"></pacem-layout-proxy>
+        <pacem-layout-proxy attr="headbar-prepend" value="{{ #layoutHeadbarPrepend.model.toString() }}"></pacem-layout-proxy>
+
+        <header class="header-border" pacem>
+            <div class="pacem-breadcrumbs">
+                <pacem-button class="breadcrumb home dropdown-toggle" id="selector" css-class="{{ { 'dropdown-open': #ddl.visible, 'breadcrumb-border breadcrumb-corners breadcrumb-accent': #theme.model.value === 'phousys' } }}">
+                    <span class="breadcrumb-extra">ver. @(pacemjs_version)</span>
+                    <pacem-text text="{{ 'theme: '+ #theme.model.label }}" class="breadcrumb-detail"></pacem-text>
+                    <pacem-img class="breadcrumb-main" adapt="contain" src="{{ '/assets/logo-'+ #themename.model +'.svg' }}"></pacem-img>
+                </pacem-button>
+
+                <pacem-panel class="breadcrumb hide-md hide-v" css-class="{{ {'active': #router.state != null } }}">
+                    <span class="breadcrumb-extra">Pacem JS</span>
+                    <pacem-text class="breadcrumb-detail text-capital" text="{{ #router.state.package }}"></pacem-text>
+                    <pacem-span class="breadcrumb-main text-accent" css-class="{{ {'text-tech': #routetitle.model && #routetitle.model.startsWith('<') } }}"
+                                text="{{ #routetitle.model }}"></pacem-span>
+                </pacem-panel>
+            </div>
+
+            <pacem-panel class="fetch-feedback feedback-primary" css-class="{{ {'fetching': #view.fetching} }}"></pacem-panel>
+        </header>
+        <div class="pacem-toolbar toolbar-header toolbar-border"></div>
+        
+        <!-- dropdown balloon and adapter -->
+        <pacem-adapter id="adapter" hide="true" orientation="vertical"></pacem-adapter>
+        <pacem-balloon options="{{ { trigger:'click', align: 'start', trackPosition: true, size: 'match', position: 'bottom' } }}" target="#selector" id="ddl"
+                       on-popup="#buttonset.index = -1; #buttonset.focus(); #collapse.collapse = false"
+                       on-popout="#collapse.collapse = true"
+                       class="balloon-border balloon-corners">
+            <div class="pacem-grid grid-nogap">
+
+                <div class="pacem-cell cols-lg-3 pacem-panel">
+                    <div class="panel-heading heading-sever">
+                        Version
+                    </div>
+                    <div class="panel-body">
+                        v@(pacemjs_version)
+                    </div>
+                </div>
+                <div class="pacem-cell cols-lg-9 pacem-panel">
+                    <div class="panel-heading heading-sever">
+                        Theme
+                    </div>
+                    <div class="panel-body">
+                        <pacem-radio-list datasource="{{ #themes.model }}" class="radio-list-naked"
+                                          value="{{ #theme.model }}"
+                                          on-change="#ddl.popout(); #themename.model = $this.value.value"
+                                          text-property="label"></pacem-radio-list>
+                    </div>
+                </div>
+                <div class="pacem-cell" pacem hidden>
+
+                    <pacem-checkbox true-value="true" false-value="false" readonly="false" caption="Header" value="{{ #layoutHeader.model, twoway }}"></pacem-checkbox>
+                    <pacem-checkbox true-value="true" false-value="false" caption="Footer" value="{{ #layoutFooter.model, twoway }}"></pacem-checkbox>
+                    <pacem-checkbox true-value="true" false-value="false" caption="Big-footer" value="{{ #layoutBigfooter.model, twoway }}"></pacem-checkbox>
+                    <pacem-checkbox true-value="true" false-value="false" caption="Head bar" value="{{ #layoutHeadbar.model, twoway }}"></pacem-checkbox>
+                    <pacem-checkbox true-value="true" false-value="false" caption="Foot bar" value="{{ #layoutFootbar.model, twoway }}"></pacem-checkbox>
+                    <pacem-checkbox true-value="true" false-value="false" caption="Head bar (prepend)" value="{{ #layoutHeadbarPrepend.model, twoway }}"></pacem-checkbox>
+                    <pacem-checkbox true-value="true" false-value="false" caption="Foot bar (append)" value="{{ #layoutFootbarAppend.model, twoway }}"></pacem-checkbox>
+                    <pacem-checkbox true-value="true" false-value="false" caption="Aside" value="{{ #layoutAside.model, twoway }}"></pacem-checkbox>
+                </div>
+            </div>
+        </pacem-balloon>
+        <!-- /dropdown balloon and adapter -->
+
+        <pacem-data id="m_open" persist-as="menu_open"></pacem-data>
+        <pacem-repeater id="menu_rep" datasource="{{ #menu.result }}">
+            <pacem-menu open="{{ #m_open.model, twoway }}">
+                <pacem-a id="add-to-home" href="#" class="pacem-button" hidden>Install PWA App</pacem-a>
+                <template>
+
+                    <pacem-panel class="menu-group" css-class="{{ {'group-active': #router.state.package === ^item.package, 'collapsed': ^item.collapsed, 'item-space item-separate': ^index > 0 } }}">
+                        <i class="pacem-icon pacem-animatable">keyboard_arrow_down</i>
+                        <pacem-button class="flat" on-click="#menu_rep.datasource.splice(^index, 1, Pacem.Utils.extend({}, ^item, { collapsed: !^item.collapsed}))">
+                            <pacem-text text="{{ ^item.label }}"></pacem-text>
+                        </pacem-button>
+                    </pacem-panel>
+                    <pacem-collapse collapse="{{ ^item.collapsed }}">
+                        <pacem-repeater datasource="{{ ^item.items }}">
+                            <template>
+                                <div class="pacem-menu-item">
+                                    <pacem-a href="{{ '/'+ ^^item.package +'/'+ ^item.view }}"
+                                             router="{{ #router }}"
+                                             css-class="{{ {'item-active': #router.state.package === ^^item.package && #router.state.view === ^item.view } }}">
+                                        <pacem-text text="{{ ^item.label }}"></pacem-text>
+                                    </pacem-a>
+                                </div>
+                            </template>
+                        </pacem-repeater>
+                    </pacem-collapse>
+
+                </template>
+            </pacem-menu>
+        </pacem-repeater>
+
+        <pacem-router template="/{package}/{view}" path="{{ '/@(Model.Package ?? "intro")/@(Model.View ?? "welcome")@(Context.Request.QueryString)' + location.hash }}" id="router"></pacem-router>
+
+        <h1 class="text-accent show-v text-ellipsed" id="heading">
+            <pacem-span css-class="{{ {'text-tech': #routetitle.model && #routetitle.model.startsWith('<') } }}" text="{{ #routetitle.model }}">Pacem JS -@Model.Title</pacem-span>
+        </h1>
+        <pacem-view id="view" url="{{ '/demo/'+ #router.state.package + '/'+ #router.state.view +'.html?v=@(version)' }}" class="pacem-animatable"></pacem-view>
+
+        <pacem-panel class="toc hide-v hide-md" hide="{{ !#toc.hasContent }}">
+            <h3>TOC <i class="pacem-icon">keyboard_arrow_down</i></h3>
+            <pacem-toc id="toc" selector="h2" target="{{ #view }}" offset="108"></pacem-toc>
+        </pacem-panel>
+
+        <footer class="footer-border" pacem>
+            <span>Copyright @(DateTime.UtcNow.Year) - <a href="https://pacem.it" target="_blank">Pacem</a> 
+            @*- <pacem-text text="{{ #router.state.$query.foo }}"></pacem-text> - <pacem-text text="{{ #router.state.$hash }}"></pacem-text>*@
+            </span>
+        </footer>
+        <div class="pacem-toolbar toolbar-footer toolbar-border">
+            <div class="bg-invert"></div>
+        </div>
+    </pacem-panel>
+
+    <script>
+        var pacemdocs = window['pacemdocs'] = window['pacemdocs'] || {};
+    </script>
+
+    <pacem-serviceworker-proxy src="/sw.js" on-register="console.log('Service Worker v@(version) registered.')"></pacem-serviceworker-proxy>
+    <pacem-fetch url="/menu.json?v=@(version)" id="menu" on-fetchresult="pacemdocs.menu = $event.detail"></pacem-fetch>
+
+    <environment include="Development">
+        <script src="~/polyfills/documentfragment.edge.js"></script>
+        <script src="~/polyfills/custom-elements.min.js"></script>
+        <script src="~/dist/js/pacem-foundation.js"></script>
+        <script src="~/dist/js/pacem-core.js"></script>
+        <script src="~/dist/js/pacem-ui.js"></script>
+        <script src="~/dist/js/pacem-scaffolding.js"></script>
+        <script src="~/dist/js/pacem-logging.js"></script>
+        <script src="~/dist/js/pacem-plus.js"></script>
+        <script src="~/dist/js/pacem-fx.js"></script>
+        @*<script src="~/dist/js/pacem-3d.js" asp-append-version="true"></script>*@
+        <script src="~/dist/js/pacem-maps.js"></script>
+        <script src="~/dist/js/pacem-charts.js"></script>
+        <script src="~/dist/js/pacem-2d.js"></script>
+        <script src="~/dist/js/pacem-cms.js"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="//pacem.azureedge.net/pacemjs/polyfills/documentfragment.edge.js" pacem-distinct="src"></script>
+        <script src="//pacem.azureedge.net/pacemjs/polyfills/custom-elements.min.js" pacem-distinct="src"></script>
+        <script src="//pacem.azureedge.net/pacemjs/v@(pacemjs_version)/js/pacem-foundation.js" pacem-distinct="src"></script>
+        <script src="//pacem.azureedge.net/pacemjs/v@(pacemjs_version)/js/pacem-core.js" pacem-distinct="src"></script>
+        <script src="//pacem.azureedge.net/pacemjs/v@(pacemjs_version)/js/pacem-logging.js" pacem-distinct="src"></script>
+        <script src="//pacem.azureedge.net/pacemjs/v@(pacemjs_version)/js/pacem-ui.js" pacem-distinct="src"></script>
+        <script src="//pacem.azureedge.net/pacemjs/v@(pacemjs_version)/js/pacem-scaffolding.js" pacem-distinct="src"></script>
+        <script src="//pacem.azureedge.net/pacemjs/v@(pacemjs_version)/js/pacem-charts.js" pacem-distinct="src"></script>
+        <script src="//pacem.azureedge.net/pacemjs/v@(pacemjs_version)/js/pacem-maps.js" pacem-distinct="src"></script>
+        <script src="//pacem.azureedge.net/pacemjs/v@(pacemjs_version)/js/pacem-fx.js" pacem-distinct="src"></script>
+        <script src="//pacem.azureedge.net/pacemjs/v@(pacemjs_version)/js/pacem-plus.js" pacem-distinct="src"></script>
+        <script src="//pacem.azureedge.net/pacemjs/v@(pacemjs_version)/js/pacem-2d.js" pacem-distinct="src"></script>
+        <script src="//pacem.azureedge.net/pacemjs/v@(pacemjs_version)/js/pacem-cms.js" pacem-distinct="src"></script>
+    </environment>
+
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous" />
+    <script src="~/dist/js/demo/pacem-js.js"></script>
+
+</body>
+</html>

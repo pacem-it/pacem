@@ -1,0 +1,28 @@
+﻿<pacem-markdown value="{{ #content0.textContent }}" class="md-tech" root></pacem-markdown>
+
+<pre pacem hidden id="content0">
+## Data Object Widget
+
+The `PacemWidgetDataElement` is the ideal widget for sharing data across the page. 
+</pre>
+
+<pacemjs-snippet>
+    <template>
+
+        <div class="display-flex">
+            <pacem-widget-data editable="true" editing="{{ #toggleEdit0.value }}" id="data0" model='{ "foo": "bar" }'></pacem-widget-data>
+            <pacem-text class="pacem-margin margin-left-3 text-tech" text="{{ Pacem.Utils.Json.stringify(#data0.model) }}"></pacem-text>
+        </div>
+
+        <hr />
+
+        <label>edit</label>
+        <br />
+        <pacem-checkbox class="checkbox-toggle" id="toggleEdit0" true-value="true" false-value="false" value="false"></pacem-checkbox>
+
+    </template>
+</pacemjs-snippet>
+
+
+<pacem-widget-data id="proto" hidden></pacem-widget-data>
+<pacemjs-descriptor target="{{ #proto }}"></pacemjs-descriptor>

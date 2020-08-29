@@ -1,0 +1,116 @@
+﻿/* #region VARIABLES*/
+
+@grid_cell: 76px;
+@grid_spacing: 24px;
+
+@dark_theme: true;
+@shadows: true;
+@gradients: true;
+@glows: false;
+@border_radius: 0;
+
+@font_weight: 300;
+@font_main: 'PT Sans Narrow', 'Segoe UI Light', Helvetica, sans-serif;
+@font_tech: 'Share Tech Mono', Monotype;
+@font_icons: 'Material Icons';
+@font_size: 14px;
+@font_std: 'Roboto Condensed', 'Segoe UI', Helvetica, sans-serif;
+@font_rem_factor: 1; // <- adjustment factor for @font_std vs @font_size
+
+@color_error: #f00;
+@color_error_inv: #fff;
+@color_highlight: #a7f8ab;
+@color_highlight_fore: #000;
+@color_tech: fade( @color_highlight, 60);
+@color_watermark: #c0c0c0;
+@color_light: #fff;
+@color_dark: #000;
+
+/*#endregion*/
+/*#region STD-VARIABLES */
+@color_default: @color_light; // text-color
+@color_default_inv: @color_dark; // contrast color against _default
+@color_background: #1e2336; // background-color
+@color_success: @color_highlight;
+@color_success_inv: darken(@color_success, 50);
+@color_warning: #d5d033;
+@color_warning_inv: darken(@color_warning, 35);
+@color_danger: @color_error;
+@color_danger_inv: @color_error_inv;
+@color_accent: #ff0085;
+@color_accent_inv: @color_light;
+@color_primary: #429bbb;
+@color_primary_inv: @color_light;
+@color_disabled: @color_watermark;
+
+@uppercase_headings: true;
+@uppercase_carousels: @uppercase_headings;
+@uppercase_buttons: @uppercase_headings;
+
+@size_scrollbar: 10px;
+@color_scrollbar_track: rgba(0,0,0,0.0);
+@color_scrollbar_thumb: #262b3e;
+@color_border: fade(@color_default, 10);
+/*#endregion*/
+/*#region BUTTON VARIABLES*/
+@color_button_border_light: fade(@color_light, 33);
+@color_button_border: fade(@color_light, 0);
+@color_button_border_dark: fade(@color_dark, 0);
+@color_button_back: #262b3e;
+@color_button_fore: @color_light;
+@button_hover_percentage: 10;
+@button_fontfamily: @font_std;
+@button_fontsize: 1.1rem * @font_rem_factor;
+/*#endregion*/
+/*#region UI VARIABLES*/
+@color_link: @color_primary;
+// menu
+@menu_link_color: fade(@color_default, 60);
+@menu_link_hover_color: @color_default;
+@menu_link_active_color: @color_primary;
+@menu_link_active_backgroundcolor: fade(@color_default, 5);
+@menu_link_fontfamily: @font_std;
+@menu_link_fontsize: 1rem * @font_rem_factor;
+// balloon
+@balloon_color: #262b3e;
+@balloon_color_contrast: @color_background;
+// calendar/schedule/agenda
+@color_calendarday_hover: fade(@color_default, 5);
+@color_calendarday_focus: fade(@color_primary, 5);
+@color_calendarday_today: fade(@color_primary, 2.5);
+@color_agenda_clock: fade(@color_default, 25);
+@color_event_back: darken(@balloon_color, 5);
+@color_event_fore: @color_default;
+@color_schedule_header: @color_border;
+@color_schedule_subheader: @color_background;
+// suggest
+@color_suggest_border: #1e2336;
+@color_suggest_back: #262b3e;
+@color_suggest_border_light: rgba(255,255,255,0.1);
+@color_suggest_border_dark: rgba(0,0,0,0.25);
+@color_suggest_highlight: #429bbb;
+@color_suggest_focus_back: #429bbb;
+@color_suggest_focus_fore: @color_light;
+@color_suggest_focus_highlight: #1e2336;
+// tab
+@color_tab_highlight: @color_highlight;
+// lightbox
+@color_lightbox_back: fade(@color_dark, 50);
+// map
+@color_map: @color_dark;
+// marquee
+@color_marquee_back: @color_dark;
+@color_marquee_back2: darken(@color_background, 3);
+@color_marquee_fore: @color_default;
+/*#endregion*/
+/*#region SCAFFOLDING_VARIABLES*/
+@color_field_back: #262b3e;
+@color_field_label: #429bbb;
+@border_field_size: 2px;
+@color_input_toggle: @color_primary;
+@color_input_icon: @color_primary;
+/*#endregion*/
+/*#region MIXINS*/
+.Background() {
+    // add your body background here, if any complex...
+}

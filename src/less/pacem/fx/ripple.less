@@ -1,0 +1,66 @@
+﻿@import "../theme-dark";
+@import "../../shared";
+@import "../ui/shared";
+
+.RippleColorize(@clr) {
+    > .ripple {
+        background-color: fade(@clr, 20);
+    }
+}
+
+@{P}-fx-ripple {
+    pointer-events: none;
+    position: absolute;
+    z-index: @balloon-z-index + 1;
+    overflow: hidden;
+    .RippleColorize(@color_default);
+
+    > .ripple {
+        border-radius: 50%;
+        opacity: 0;
+        transition: opacity @easing_out_sine .2s;
+        transform-origin: center center;
+        position: absolute;
+        animation-duration: .2s;
+        animation-timing-function: @easing_out_sine;
+        animation-fill-mode: both;
+
+        &.ripple-go {
+            transition: none;
+            opacity: 1;
+            animation-name: pop-anim;
+        }
+    }
+
+    &.ripple-primary {
+        .RippleColorize(@color_primary);
+    }
+
+    &.ripple-accent {
+        .RippleColorize(@color_accent);
+    }
+
+    &.ripple-danger {
+        .RippleColorize(@color_danger);
+    }
+
+    &.ripple-success {
+        .RippleColorize(@color_success);
+    }
+
+    &.ripple-warning {
+        .RippleColorize(@color_warning);
+    }
+
+    &.ripple-invert {
+        .RippleColorize(@color_background);
+    }
+
+    &.ripple-dark {
+        .RippleColorize(@color_dark);
+    }
+
+    &.ripple-light {
+        .RippleColorize(@color_light);
+    }
+}

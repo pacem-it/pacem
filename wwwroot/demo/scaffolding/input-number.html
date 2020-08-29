@@ -1,0 +1,69 @@
+﻿
+
+<pacem-markdown value="{{ #content0.textContent }}" class="md-tech" root></pacem-markdown>
+
+<pre pacem hidden id="content0">
+## Numeric Input
+`PacemInputNumberElement` is the suggested webcomponent for numeric (plain, w/ unit, currency, ...) editing. 
+</pre>
+
+<pacemjs-snippet>
+    <template>
+
+        <div class="pacem-panel">
+            <div class="panel-body">
+                <pacem-form id="frm0">
+                    <pacem-input-number name="amount" readonly="{{ #frm0.readonly }}" format="{{ {style: 'currency', currency: 'EUR'} }}" value="500" id="num0"></pacem-input-number>
+                </pacem-form>
+            </div>
+            <div class="panel-footer display-flex">
+                <pacem-span on-click="#frm0.reset()" hide="{{ !#frm0.dirty }}" class="pacem-clickable  pacem-margin margin-right-1">
+                    <i class="pacem-icon text-success text-big">undo</i>
+                </pacem-span>
+                <label class="pacem-margin margin-right-2">readonly</label>
+                <pacem-checkbox class="checkbox-switch" true-value="true" false-value="false" value="{{ #frm0.readonly, twoway }}"></pacem-checkbox>
+            </div>
+        </div>
+
+    </template>
+</pacemjs-snippet>
+
+
+<pacem-markdown value="{{ #content1.textContent }}" class="md-tech" root></pacem-markdown>
+<pre pacem hidden id="content1">
+## Formattable
+`PacemInputNumberElement` edited value can be formatted given straight attribute or relevant metadata. 
+</pre>
+
+<pacemjs-snippet>
+    <template>
+
+        <pre id="metadata1" hidden pacem>
+[
+{"prop": "amount", "type": "float", "dataType": "percentage", "display": { "name": "Progress" },
+"validators": [{
+    "type": "range", "errorMessage": "Nope, you can't", "params": { "min": 0, "max": 1 }
+}]
+}
+]
+</pre>
+
+        <div class="pacem-panel">
+            <div class="panel-body">
+                <pacem-form id="frm1" autogenerate="true" metadata="{{ JSON.parse(#metadata1.textContent) }}" entity="{{ { amount: 0.5 } }}"></pacem-form>
+            </div>
+            <div class="panel-footer display-flex">
+                <pacem-span on-click="#frm1.reset()" hide="{{ !#frm1.dirty }}" class="pacem-clickable  pacem-margin margin-right-1">
+                    <i class="pacem-icon text-success text-big">undo</i>
+                </pacem-span>
+                <label class="pacem-margin margin-right-2">readonly</label>
+                <pacem-checkbox class="checkbox-switch" true-value="true" false-value="false" value="{{ #frm1.readonly, twoway }}"></pacem-checkbox>
+            </div>
+        </div>
+
+    </template>
+</pacemjs-snippet>
+
+
+<pacem-input-number id="proto" hidden></pacem-input-number>
+<pacemjs-descriptor target="#proto"></pacemjs-descriptor>

@@ -1,0 +1,118 @@
+﻿@import "../../shared";
+@import "shared";
+@import "../theme-dark";
+@import "../ui/tuner";
+
+@{P}-upload {
+    display: inline-block;
+
+    > .@{PCSS}-upload.@{PCSS}-viewfinder {
+
+        @_sz: @grid_cell;
+
+        // overflow: hidden;
+        height: @_sz;
+        width: @_sz;
+        display: grid;
+        align-items: center;
+        justify-content: stretch;
+        max-width: @field_min_width_wide;
+
+        @_brd: 1px;
+        @_grd_sz: @_sz - (2 * @_brd);
+        grid-template-columns: @_grd_sz auto;
+        grid-template-rows: @_grd_sz;
+        border: @_brd dashed @color_border;
+        border-radius: @_sz / 2;
+        box-sizing: border-box;
+
+        > * {
+            grid-row: 1;
+            grid-column: 2;
+        }
+
+        > .upload-progress,
+        > .upload-button {
+            // overlapped content
+            grid-column: 1;
+            display: flex;
+            justify-content: center;
+        }
+
+        > .upload-button {
+
+            > @{P}-button {
+                margin: 0;
+
+                &.circular,
+                &.button-circular {
+                    // force tp 48px...
+                    width: min(2 * @grid_spacing, @_sz - 28px);
+                    height: $width;
+                }
+            }
+        }
+
+        > .upload-progress {
+            // transform: scale(.9);
+            @{P}-tuner {
+                .Tuner(@_grd_sz - 2 * @_brd);
+            }
+        }
+
+        &.upload-chosen {
+            width: auto;
+            border-color: @color_success;
+            border-style: solid;
+
+            &.upload-error {
+                border-color: @color_error;
+            }
+        }
+
+        &.upload-readonly {
+            border-width: 0;
+            grid-template-columns: auto auto;
+            grid-gap: @grid_spacing * 2 / 3;
+        }
+    }
+}
+
+.@{PCSS}-animations {
+
+    @{P}-upload {
+        > .@{PCSS}-upload.@{PCSS}-viewfinder {
+
+            > .upload-button {
+                .Animatable(pop-anim, .55s, @easing_out_back);
+            }
+        }
+    }
+}
+
+// inside form field
+.@{PCSS}-field {
+
+    > .@{PCSS}-input-container > :not(@{P}-childform) .@{PCSS}-viewfinder.upload-readonly {
+        border-radius: @border_input_radius;
+
+        & when (@border_field_underline = false) {
+            padding: 0 @grid_spacing * 2/3;
+            border-width: @border_field_size;
+        }
+
+        & when (@border_field_underline = true) {
+            border-top: 0;
+            border-left: 0;
+            border-right: 0;
+            border-bottom-width: @border_field_size;
+            border-bottom-style: solid;
+        }
+    }
+
+    &:not(.@{PCSS}-has-value) {
+        > .@{PCSS}-input-container > :not(@{P}-childform) .@{PCSS}-viewfinder.upload-readonly {
+            border-color: transparent;
+        }
+    }
+}

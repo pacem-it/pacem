@@ -1,0 +1,58 @@
+﻿
+
+<pacem-markdown value="{{ #content0.textContent }}" root class="md-tech"></pacem-markdown>
+
+<pre pacem hidden id="content0">
+
+## Common Scenario
+Having to set up a simple object (_dictionary_, _name-value_ array) as an entity property is a common _use case_.  
+The `PacemNameValueListElement` is tailored to this kind of scenario.
+
+Here's an exemplification of a typical dictionary editing, where names should be unique.  
+Flag `dictionary` is set to **true**;
+</pre>
+
+<pacemjs-snippet>
+    <template>
+
+        <pacem-data id="dict0" model="{ 'en-us': 'Dog', 'it-it': 'Cane', 'de-de': 'Hund', 'fr-fr': 'Chien' }"></pacem-data>
+        <pacem-namevalue-list dictionary="true" value="{{ #dict0.model, twoway }}"></pacem-namevalue-list>
+
+        <code class="display-block pacem-margin margin-top-3 pacem-pad pad-1">
+            <pacem-text text="{{ JSON.stringify(#dict0.model) }}"></pacem-text>
+        </code>
+    </template>
+</pacemjs-snippet>
+
+<pacem-markdown value="{{ #content1.textContent }}" root class="md-tech"></pacem-markdown>
+
+<pre pacem hidden id="content1">
+
+## Name-Value List
+
+If the `dictionary` flag is **false** (default), then the value is interpreted as an array of name / value items (type: `{ name: string, value: any }`).  
+
+> Toggling the `dictionary` flag between `true` and `false` makes the component guess the best translation between object and typed array.
+</pre>
+
+<pacemjs-snippet>
+    <template>
+
+        <pacem-data id="dict1" model="[{name: 'role', value: 'Administrator'}, {name: 'role', value: 'Power User'}, {name: 'group', value: 'Partners'}, {name: 'group', value: 'Customers' }]"></pacem-data>
+        <pacem-data id="flag1" model="false"></pacem-data>
+        <pacem-namevalue-list dictionary="{{ #flag1.model }}" value="{{ #dict1.model, twoway }}"></pacem-namevalue-list>
+
+        <code class="display-block pacem-margin margin-top-3 pacem-pad pad-1">
+
+            <pacem-checkbox true-value="true" false-value="false" value="{{ #flag1.model, twoway }}" caption="unique names (dictionary object)"></pacem-checkbox>
+
+        </code>
+            <code class="display-block pacem-margin margin-top-3 pacem-pad pad-1">
+                <pacem-text text="{{ JSON.stringify(#dict1.model) }}"></pacem-text>
+            </code>
+</template>
+</pacemjs-snippet>
+
+
+<pacem-namevalue-list id="proto" hidden></pacem-namevalue-list>
+<pacemjs-descriptor target="#proto"></pacemjs-descriptor>

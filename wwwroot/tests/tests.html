@@ -1,0 +1,55 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Jasmine Pacem JS Tests</title>
+    <link href="../jasmine/jasmine.css" rel="stylesheet" type="text/css" />
+    <script src="../jasmine/jasmine.js" type="text/javascript"></script>
+    <script src="../jasmine/jasmine-html.js" type="text/javascript"></script>
+    <script src="../jasmine/boot.js" type="text/javascript"></script>
+    <style>
+        #tests {
+            position: fixed;
+            background: #fff;
+            box-shadow: -2px 2px 8px rgba(0,0,0,0.25);
+            padding: 4em 2em 2em 2em;
+            top: 0;
+            right: 0;
+            box-sizing: border-box;
+            max-height: 100vh;
+            overflow: auto;
+            font-family: Arial, sans-serif;
+            font-size: .86em;
+            width: 20vw;
+        }
+
+        .nested {
+            padding-left: 1em;
+            color: #666;
+        }
+
+        pacem-text,
+        pacem-span{
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <script src="../polyfills/custom-elements.min.js"></script>
+    <script src="../polyfills/documentfragment.edge.js"></script>
+    <script src="../dist/js/pacem-foundation.js"></script>
+    <script src="../dist/js/pacem-numerical.js"></script>
+    <script src="../dist/js/pacem-core.js"></script>
+    <script src="../dist/js/pacem-logging.js"></script>
+    <script src="../dist/js/pacem-ui.js"></script>
+    <script src="../dist/js/pacem-scaffolding.js"></script>
+    <script src="../dist/js/pacem-maps.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/85/three.min.js"></script>
+    <script src="../dist/js/pacem-3d.js"></script>
+    <script src="../dist/js/pacem-plus.js"></script>
+    <script src="../dist/js/tests/pacem-tests.js" type="text/javascript"></script>
+
+    <!-- needed in a test -->
+    <pacem-data id="declared"></pacem-data>
+</body>
+</html>

@@ -1,0 +1,24 @@
+﻿
+
+<pacem-markdown value="{{ #content0.textContent }}" class="md-tech" root></pacem-markdown>
+
+<pre pacem hidden id="content0">
+## Percentage in Line
+The `PacemProgressbarElement` helps in rendering a _percentage_ in graphical linear form.  
+
+> The `percentage` must be provided in a normalized value `[0-100]`. 
+
+</pre>
+
+<pacemjs-snippet>
+    <template>
+
+        <pacem-progressbar class="progressbar-primary progressbar-small" percentage="50" id="pbar0"></pacem-progressbar>
+
+        <pacem-timer interval="2500" on-tick="#pbar0.percentage = Math.random() * 100"></pacem-timer>
+
+    </template>
+</pacemjs-snippet>
+
+<pacem-progressbar id="proto" hidden></pacem-progressbar>
+<pacemjs-descriptor target="{{ #proto }}"></pacemjs-descriptor>

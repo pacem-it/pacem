@@ -1,0 +1,89 @@
+﻿
+
+<pacem-markdown value="{{ #content0.textContent }}" class="md-tech" root></pacem-markdown>
+
+<pre pacem hidden id="content0">
+
+## Ripple Effect
+The `PacemFxRippleElement` adds ripple effect on element interaction (click, touch, ...).
+
+</pre>
+
+
+<pacemjs-snippet>
+    <template>
+
+        <pacem-button id="tget0" class="button button-primary">Ripple ahead!</pacem-button>
+        <pacem-fx-ripple target="#tget0" class="ripple-invert"></pacem-fx-ripple>
+
+    </template>
+</pacemjs-snippet>
+
+
+<pacem-markdown value="{{ #content1.textContent }}" class="md-tech" root></pacem-markdown>
+
+<pre pacem hidden id="content1">
+
+## Applicable to any Element
+The `PacemFxRippleElement` can - of course - be applied to any element, not just buttons:
+
+</pre>
+
+
+<pacemjs-snippet>
+    <template>
+
+        <pacem-data id="metadata1" model="{{ [{prop: 'password', dataType: 'password', display: {cssClass: ['field-outline'], name: 'Password, please...'} }] }}"></pacem-data>
+
+        <div class="pacem-grid grid-nospace">
+            <div class="pacem-cell cols-xl-4 cols-lg-6">
+                <div class="pacem-card card-border card-full pacem-clickable" id="tget1">
+                    <pacem-img class="card-img" src="/assets/pwa_icon_512x512_fx.png" adapt="cover"></pacem-img>
+                    <div class="card-heading">
+                        Pacem JS | Card
+                    </div>
+                    <div class="card-body">
+                        Pacem JS is a CustomElements-v1 based ecosystem for reusable web components.
+                    </div>
+                </div>
+
+                <!-- ripple -->
+                <pacem-fx-ripple target="#tget1" class="ripple-light"></pacem-fx-ripple>
+            </div>
+            <div class="pacem-cell cols-xl-4 cols-lg-6">
+                <pacem-shell-proxy>
+
+                    <pacem-dialog id="tget2">
+                        Hi,<br />
+                        My <b>OK</b> button has ripple fx powers!
+                    </pacem-dialog>
+
+                    <pacem-modal-form id="tget5" metadata="{{ #metadata1.model }}"></pacem-modal-form>
+
+                </pacem-shell-proxy>
+                <pacem-button id="tget3" on-click="#tget2.open()" class="button">Open Simple Dialog</pacem-button>
+                <pacem-button id="tget6" on-click="#tget5.open({})" class="button">Open Modal Form</pacem-button>
+
+                <!-- ripple(s) -->
+                <pacem-fx-ripple target="#tget3"></pacem-fx-ripple>
+                <pacem-fx-ripple target="#tget6"></pacem-fx-ripple>
+                <pacem-fx-ripple target="{{ #tget2.dialogButtons.ok }}" class="ripple-dark"></pacem-fx-ripple>
+                <pacem-fx-ripple target="{{ #tget5.modalButtons.ok }}" class="ripple-dark"></pacem-fx-ripple>
+                <pacem-fx-ripple target="{{ #tget5.modalButtons.cancel }}" class="ripple-dark"></pacem-fx-ripple>
+
+            </div>
+            <div class="pacem-cell cols-xl-4 pacem-pad pad-bottom-1 pad-bottom-xl-0">
+
+                <pacem-form id="tget4" autogenerate="true" entity="{}" metadata="{{ #metadata1.model }}" action="./ripple"></pacem-form>
+                <pacem-fx-ripple target="{{ #tget4.formButtons.submit }}" class="ripple-dark"></pacem-fx-ripple>
+                <pacem-fx-ripple target="{{ #tget4.formButtons.reset }}" class="ripple-dark"></pacem-fx-ripple>
+
+            </div>
+        </div>
+
+    </template>
+</pacemjs-snippet>
+
+
+<pacem-fx-ripple id="proto" hidden></pacem-fx-ripple>
+<pacemjs-descriptor target="{{ #proto }}"></pacemjs-descriptor>

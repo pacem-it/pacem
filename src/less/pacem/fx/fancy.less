@@ -1,0 +1,138 @@
+﻿@import "../theme-dark";
+@import "../../shared";
+
+@_offset: -.25 * @grid_spacing;
+
+@_easing: @easing_out_sine;
+
+@keyframes fancy-anim {
+    0% {
+        opacity: 0;
+        //color: fade(@color_light, 0);
+        transform: translateX(@_offset);
+        text-shadow: none;
+    }
+
+    100% {
+        opacity: 1;
+        //color: inherit;
+        transform: translateX(0);
+        text-shadow: inherit;
+    }
+}
+
+@{P}-fancy {
+    .Inert();
+}
+
+.@{PCSS}-fancy {
+
+    .@{PCSS}-fancify {
+        display: inline-block;
+        animation: fancy-anim .5s @_easing both;
+    }
+}
+
+.@{PCSS}-panel.panel-fancy {
+
+    @_delay: .5s;
+
+    > .corner {
+        transition: opacity .5s linear @_delay + .75s;
+    }
+
+    > .panel-side {
+        transition: transform .2s @_easing @_delay - .2s;
+        //transform-origin: @grid_spacing @grid_spacing;
+        transform: translateX(0) translateY(0);
+
+        canvas.@{PCSS}-tuner {
+            stroke: @color_teal;
+        }
+
+       @{P}-tuner {
+            margin-top: @grid_spacing/4;
+
+            .@{PCSS}-content {
+                font-size: 1em;
+                transition: opacity .2s, transform .4s @easing_in_out_sine .1s;
+            }
+        }
+    }
+
+    > .panel-heading {
+        transition: transform .3s @_easing @_delay + .1s, border .2s .3s + @_delay;
+    }
+
+    > .panel-body {
+        transition: transform .3s @_easing @_delay, border .2s .3s + @_delay;
+    }
+
+    &.fancy-off {
+        border-color: transparent;
+
+        > .corner,
+        > .panel-side,
+        > .panel-body,
+        > .panel-heading {
+            transition-delay: 0;
+            transition-duration: @_delay;
+        }
+
+        > .panel-side {
+            transform: translateX(-1 * @_offset) translateY(0);
+
+            canvas.@{PCSS}-tuner {
+                stroke: @color_tech;
+            }
+
+           @{P}-tuner {
+                .@{PCSS}-content {
+                    opacity: 0;
+                    transform: rotate(90deg);
+                }
+            }
+        }
+
+        > .panel-heading {
+            border-color: transparent;
+            transform: translateX(@_offset) translateY(@_offset);
+        }
+
+        > .panel-body {
+            border-color: transparent;
+            transform: translateX(2 * @_offset) translateY(2 * @_offset);
+        }
+
+        > .corner,
+        > .panel-body,
+        > .panel-heading {
+            opacity: 0;
+        }
+    }
+
+    &.fancy-on {
+        /*> .corner {
+            opacity: 1;
+        }
+
+        > .panel-body,
+        > .panel-heading {
+            transform: translateX(0) translateY(0);
+        }
+
+        > .panel-side {
+
+           @{P}-tuner {
+                .@{PCSS}-content {
+                    opacity: 1;
+                    transform: rotate(0);
+                }
+            }
+
+            canvas.@{PCSS}-tuner {
+                stroke: @color_teal;
+            }
+        }*/
+    }
+}

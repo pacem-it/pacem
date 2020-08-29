@@ -1,0 +1,22 @@
+﻿
+
+<pacem-markdown value="{{ #content0.textContent }}" root></pacem-markdown>
+
+<pre pacem hidden id="content0">
+# Theme
+
+Customize the theme for **Pacem JS**. Change the variables and update the layout:
+
+</pre>
+
+<style type="text/css" id="csstheme"></style>
+<style type="text/css" id="csslocal"></style>
+
+<pacem-data id="theme" model="{{PacemJS.DEFAULTS.theme}}" on-propertychange="updateTheme(this.model)" persist-as="theme"></pacem-data>
+
+<pacemjs-themeroller src="/dist/less/pacem/pacem.less?v=1" vars="{{ #theme.model }}" target="{{ #csstheme }}"></pacemjs-themeroller>
+<pacemjs-themeroller src="/dist/less/local/docs.less?v=1" vars="{{ #theme.model }}" target="{{ #csslocal }}"></pacemjs-themeroller>
+
+<pacem-form id="themeroller" autogenerate="true" metadata="{{PacemJS.DEFAULTS.metadata}}" entity="{{ #theme.model, twoway }}"></pacem-form>
+
+<code><pacem-text text="{{ JSON.stringify(#theme.model) }}" class="text-small"></pacem-text></code>

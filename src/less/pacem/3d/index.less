@@ -1,0 +1,22 @@
+﻿@import "../../shared";
+@import "../theme-dark";
+
+@{P}-3d,
+@{P}-3d-object,
+@{P}-3d-light{
+    .Inert();
+}
+
+@{P}-3d + .@{PCSS}-3d-stage {
+    display: block;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    //max-height: 100vh;
+    > canvas {
+        padding: 0;
+        margin: 0;
+        display: block;
+        max-height: 100vh;
+    }
+}

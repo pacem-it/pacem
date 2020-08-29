@@ -1,0 +1,223 @@
+﻿@import "../theme-dark";
+@import "shared";
+
+
+.ToastColor(@clr, @clr_inv) {
+    background: fade( @clr, 75);
+    border-color: @clr;
+    color: @clr_inv;
+
+    & when (@glows = true) {
+        box-shadow: 0 0 8px fade(@clr, 100);
+    }
+}
+
+
+/*#region TOAST*/
+@{P}-toast {
+
+    @_brdt: 1px;
+    @_ht: @grid_cell - @_brdt;
+
+    z-index: @toast-z-index;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: @_ht;
+    overflow: visible;
+    cursor: pointer;
+    background-color: @color_toast_back;
+    border: @_brdt solid;
+    border-color: @color_border;
+    border-top-width: 0;
+    border-right-width: 0;
+    border-left-width: 0;
+    color: @color_default;
+    width: 100vw;
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    align-content: flex-start;
+    .FontMainSize(1.25);
+    height: @_ht;
+    transform: translateY(-@_ht);
+    opacity: 0;
+
+    &.toast-vertical {
+        flex-direction: column;
+    }
+
+    &.toast-show {
+        transform: translateY(0);
+        opacity: 1;
+    }
+
+    &.toast-danger {
+        .ToastColor( @color_danger, @color_danger_inv);
+    }
+
+    &.toast-error,
+    &.fail {
+        .ToastColor( @color_error, @color_error_inv);
+    }
+
+    &.toast-success,
+    &.success {
+        .ToastColor( @color_success, @color_success_inv);
+    }
+
+    &.toast-primary {
+        .ToastColor( @color_primary, @color_primary_inv);
+    }
+
+    &.toast-accent {
+        .ToastColor( @color_accent, @color_accent_inv);
+    }
+
+    &.toast-warning {
+        .ToastColor( @color_warning, @color_warning_inv);
+    }
+}
+
+@{P}-toast when (@shadows = true) {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+/*#endregion*/
+
+.@{PCSS}-toaster {
+    // container for toasts
+    pointer-events: none;
+    position: fixed;
+    z-index: @toast-z-index;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: visible;
+    box-sizing: border-box;
+    padding: @grid_spacing;
+    z-index: @toast-z-index;
+    overflow: visible;
+
+    @_w: @grid_spacing * 10;
+    @_m: @grid_cell;
+
+    @{P}-toast {
+        position: static;
+        z-index: 0;
+        //flex: 0 1 auto;
+        width: @_w;
+        overflow: hidden;
+        opacity: 0;
+        transform: translateX(-@_m) translateY(0) translateZ(0) scale(0.25);
+        transform-origin: right center;
+        border-top-width: 1px;
+        border-right-width: 1px;
+        border-left-width: 1px;
+        padding: @grid_spacing @grid_spacing * 1.5;
+        box-sizing: border-box;
+        margin: 0 0 @grid_spacing 0;
+        pointer-events: none;
+        border-radius: @border_radius;
+        // tweak flexbox
+        justify-content: flex-start;
+        padding: @grid_spacing * 2 / 3;
+
+        &.toast-show {
+            pointer-events: auto;
+            //min-height: @_h;
+            order: -1;
+            opacity: 1;
+            transform: translateX(-@_w);
+        }
+    }
+
+    &.toaster-left {
+        right: auto;
+        left: 0;
+
+        @{P}-toast {
+            transform: translateX(-@_w + @_m) translateY(0) translateZ(0) scale(0.25);
+            transform-origin: left center;
+
+            &.toast-show {
+                transform: translateX(0);
+            }
+        }
+    }
+
+    &.toaster-right {
+    }
+
+    &.toaster-bottom {
+        flex-direction: column-reverse;
+
+        @{P}-toast {
+            margin: @grid_spacing 0 0 0;
+        }
+    }
+
+    &.toaster-top {
+    }
+
+    &.toaster-center {
+        left: 0;
+        width: auto;
+        align-content: center;
+
+        @{P}-toast {
+            align-self: center;
+            transform-origin: 50% 0;
+            transform: translateY(-100%) translateX(0) translateZ(0) scale(0.25);
+
+            &.toast-hide {
+                transform: translateY(100%) translateX(0) translateZ(0);
+                opacity: 0;
+            }
+        }
+
+        &.toaster-bottom @{P}-toast {
+            transform: translateY(100%) translateX(0) translateZ(0) scale(0.25);
+
+            &.toast-hide {
+                transform: translateY(-100%) translateX(0) translateZ(0);
+                opacity: 0;
+            }
+        }
+
+        @{P}-toast.toast-show {
+            transform: translateY(0) translateX(0) translateZ(0);
+        }
+    }
+
+    &.toaster-autosize @{P}-toast {
+        width: auto;
+    }
+}
+
+// animations
+.@{PCSS}-animations {
+
+    @{P}-toast {
+        transition: transform .3s @easing_out_sine, opacity .25s linear;
+
+        &.toast-hide{
+            transition-duration: .125s;
+            transition-timing-function: @easing_in_sine;
+        }
+    }
+
+    .@{PCSS}-toaster.toaster-anim {
+        &.anim-bounce {
+            @{P}-toast.toast-show {
+                transition: transform .3s @easing_out_back, opacity .25s linear;
+            }
+        }
+    }
+}

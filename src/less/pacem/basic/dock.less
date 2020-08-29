@@ -1,0 +1,19 @@
+﻿@import "../theme-dark";
+@{P}-dock {
+    display: block;
+
+    &.@{PCSS}-dock {
+        width: 100vw;
+        left: 0;
+        position: fixed !important;
+        z-index: @hamburger-z-index - 1;
+
+        &.@{PCSS}-dock-top {
+            top: 0;
+        }
+
+        &.@{PCSS}-dock-bottom {
+            bottom: 0;
+        }
+    }
+}

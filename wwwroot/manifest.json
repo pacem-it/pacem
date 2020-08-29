@@ -1,0 +1,22 @@
+{
+  "name": "Pacem JS",
+  "short_name": "Pacem JS",
+  "lang": "en-us",
+  "icons": [
+    {
+      "src": "/assets/pwa_icon_192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/pwa_icon_512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "/intro/welcome",
+  "display": "standalone",
+  "scope": "/",
+  "background_color": "#e4e7e9",
+  "theme_color": "#0d121d"
+}

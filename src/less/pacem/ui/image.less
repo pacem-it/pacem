@@ -1,0 +1,86 @@
+﻿@import "../theme-dark";
+
+@{P}-img {
+    background-position: center center;
+    background-repeat: no-repeat;
+    display: inline-block;
+    position: relative;
+}
+
+@{P}-img::before {
+    @_size: 2 * @grid_spacing;
+    @_brd: @grid_spacing/8;
+
+    display: block;
+    content: '';
+    width: @_size;
+    height: $width;
+    border-radius: 50%;
+    border: @_brd solid @color_border;
+    border-top-color: @color_default;
+    animation: rotate-anim linear 1s infinite both;
+    top: 50%;
+    left: 50%;
+    margin-left: -(@_size * .5 + @_brd);
+    margin-top: $margin-left;
+    position: absolute;
+    transition: transform .2s @easing_in_out_sine, opacity .2s linear;
+    pointer-events: none;
+}
+
+@{P}-img.img-ready::before {
+    transform: scale(0);
+    opacity: 0;
+    animation: none;
+}
+
+.ImageBlend(@clr) {
+    background-color: @clr;
+
+    & when (@blur = true) {
+        opacity: .6667;
+    }
+}
+
+@{P}-img.img-ready {
+
+    &.img-blend {
+        background-blend-mode: luminosity;
+
+        &.blend-accent {
+            .ImageBlend(@color_accent);
+        }
+
+        &.blend-success {
+            .ImageBlend(@color_success);
+        }
+
+        &.blend-warning {
+            .ImageBlend(@color_warning);
+        }
+
+        &.blend-primary {
+            .ImageBlend(@color_primary);
+        }
+
+        &.blend-danger {
+            .ImageBlend(@color_danger);
+        }
+
+        &.blend-error {
+            .ImageBlend(@color_error);
+        }
+
+        &.blend-default {
+            .ImageBlend(@color_background);
+        }
+
+        &.blend-invert {
+            .ImageBlend(@color_default);
+        }
+
+        &.blend-alt {
+            .ImageBlend(@color_background_alt);
+        }
+    }
+}

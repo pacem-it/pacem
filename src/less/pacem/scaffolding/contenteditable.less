@@ -1,0 +1,120 @@
+﻿@import "../../shared";
+@import "../theme-dark";
+@import "shared";
+
+@{P}-contenteditable {
+    .FormFieldItemWrapper();
+
+    div[contenteditable] {
+        max-height: 7.5 * @grid_spacing;
+        overflow: auto;
+        font-size: 1.1em;
+        .FormFieldItem();
+        .FormFieldItemMultiline();
+        min-height: @field_height;
+        padding-bottom: @grid_spacing/2;
+
+        ul, ol {
+            margin: 1em 2em;
+        }
+
+        ul {
+            list-style: disc;
+        }
+
+        ol {
+            list-style: decimal;
+        }
+    }
+
+    &.@{PCSS}-readonly {
+
+        .@{PCSS}-contenteditable {
+            border: none;
+            margin-bottom: @border_field_size;
+
+            & when (@border_field_underline = false) {
+                margin-top: @border_field_size;
+            }
+        }
+
+        div[pacem][readonly] {
+            font-size: 1.1em;
+            min-height: @field_height;
+            padding: @grid_spacing / 3;
+            box-sizing: border-box;
+        }
+    }
+
+    &.@{PCSS}-stretch {
+
+        .@{PCSS}-contenteditable {
+            .FormFieldStretch();
+        }
+    }
+
+    .@{PCSS}-commands {
+        display: inline-block;
+        margin-top: @grid_spacing/1.5;
+
+        @{P}-button.@{PCSS}-command {
+            @_brd: 2px;
+            @_sz: round(@grid_spacing * 1.333333) - 2 * @_brd;
+            width: @_sz;
+            border: @_brd solid @color_default;
+            background: @color_lightblue center center no-repeat;
+            @icon_sz: @_sz / 1.732;
+            height: @_sz;
+            cursor: pointer;
+            font-size: 0;
+            border-radius: 50%;
+            padding: 0;
+            min-width: 0;
+
+            .CmdIcon(@icon) {
+                /*button {
+                    position: relative;
+                }*/
+                &:before {
+                    .Icon(@icon);
+                    //color: @color_light;
+                    top: 0;
+                    left: 0;
+                    line-height: @grid_spacing;
+                    width: @grid_spacing;
+                    font-size: @icon_sz;
+                    font-weight: normal;
+                    pointer-events: none;
+                }
+            }
+
+            &.@{PCSS}-bold {
+                .CmdIcon('format_bold');
+            }
+
+            &.@{PCSS}-italic {
+                .CmdIcon('format_italic');
+            }
+
+            &.@{PCSS}-underline {
+                .CmdIcon('format_underlined');
+            }
+
+            &.@{PCSS}-unorderedlist {
+                .CmdIcon('format_list_bulleted');
+            }
+
+            &.@{PCSS}-orderedlist {
+                .CmdIcon('format_list_numbered');
+            }
+
+            &.@{PCSS}-hyperlink {
+                .CmdIcon('insert_link');
+            }
+
+            + @{P}-button {
+                margin-left: 2 * @_brd;
+            }
+        }
+    }
+}

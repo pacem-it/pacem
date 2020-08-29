@@ -1,0 +1,37 @@
+﻿@import "../../shared";
+
+@{P}-data,
+@{P}-fetch,
+@{P}-hub-proxy,
+@{P}-hub-listener,
+@{P}-tween,
+@{P}-shortcut,
+@{P}-online-status,
+@{P}-template-proxy,
+@{P}-html-proxy,
+@{P}-style-proxy,
+@{P}-layout-proxy,
+@{P}-body-proxy,
+@{P}-title-proxy,
+@{P}-meta-proxy {
+    .Inert();
+}
+@{P}-panel {
+    display: block;
+}
+@{P}-span {
+    display: inline;
+
+    &.label {
+        cursor: default;
+    }
+}
+
+@import "resize";
+@import "repeater";
+@import "dock";
+@import "scroll-aware";
+@import "viewport-aware";
+@import "drag-drop";
+@import "swipe";
+@import "rescale";

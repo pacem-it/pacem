@@ -1,0 +1,110 @@
+﻿
+
+<pacem-markdown value="{{ #content0.textContent }}" root></pacem-markdown>
+
+<pre pacem hidden id="content0">
+## Handy
+The slider scaffolding element might become handy and elegant at the same time when a numeric form field comes with _min_ and _max_ (range) constraints.  
+
+</pre>
+
+
+<pacemjs-snippet>
+    <template>
+        <pacem-slider min="0" max="20" step="any" id="slider0" value="0"></pacem-slider>
+        value:
+        <b><pacem-text text="{{ #slider0.value.toFixed(2) }}"></pacem-text></b>
+    </template>
+</pacemjs-snippet>
+
+<pacem-markdown value="{{ #content1.textContent }}" root></pacem-markdown>
+
+<pre pacem hidden id="content1">
+## Customizable
+The slider has several levels of customization:
+
+- **Label formatting**: intercept the `formatvalue` event to change the labels output.  
+
+</pre>
+
+<pacemjs-snippet>
+    <template>
+        <pacem-slider min="0" max="100" step=".25" id="slider1" value="50" css-class="{{ ['slider-'+ #selCss.value] }}"
+                      thumb-label="true"
+                      on-formatvalue="$event.detail.output = $event.detail.value +'%'"></pacem-slider>
+        value:
+        <b><pacem-text text="{{ #slider1.value.toFixed(2) }}"></pacem-text>%</b>
+
+        <div class="pacem-margin margin-top-3 pacem-grid">
+            <!-- `thumb-label` flag-->
+            <pacem-checkbox class="pacem-cell cols-3 cols-xs-12" caption="thumb label" true-value="true" false-value="false" value="{{ #slider1.thumbLabel, twoway }}"></pacem-checkbox>
+            <div class="pacem-fieldset pacem-cell cols-6 cols-xs-12">
+                <div class="fieldset-left">
+                    <div class="pacem-fieldgroup">
+                        <!-- `min` spinner -->
+                        <pacem-input-number value="{{ #slider1.min, twoway }}" max="{{ #max1.value  }}" id="min1"></pacem-input-number>
+                        <div class="fieldgroup-prepend">
+                            <i class="pacem-icon">first_page</i>
+                        </div>
+                    </div>
+                    <div class="pacem-fieldgroup">
+                        <!-- `max` spinner -->
+                        <pacem-input-number value="{{ #slider1.max, twoway }}" min="{{ #min1.value }}" id="max1"></pacem-input-number>
+                        <div class="fieldgroup-append">
+                            <i class="pacem-icon">last_page</i>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="pacem-fieldgroup pacem-cell cols-3 cols-xs-12">
+                <!-- appearence selector -->
+                <pacem-select datasource="{{ ['default', 'primary', 'accent', 'success', 'warning', 'danger'] }}" id="selCss" value="default"></pacem-select>
+                <pacem-panel class="fieldgroup-prepend" css-class="{{ ['text-'+ #selCss.value] }}">
+                    <i class="pacem-icon">lens</i>
+                </pacem-panel>
+                <div class="fieldgroup-append"></div>
+            </div>
+        </div>
+    </template>
+</pacemjs-snippet>
+
+
+<pacem-markdown value="{{ #content2.textContent }}" root></pacem-markdown>
+
+<pre pacem hidden id="content2">
+## Formattable
+`PacemSliderElement` value can be formatted given straight attribute or relevant metadata. 
+</pre>
+
+<pacemjs-snippet>
+    <template>
+
+        <pre id="metadata2" hidden pacem>
+[
+{"prop": "amount", "type": "float", "dataType": "percentage", "display": { "name": "Progress", "ui": "slider" },
+"validators": [{
+    "type": "range", "errorMessage": "Nope, you can't", "params": { "min": 0, "max": 1 }
+}]
+}
+]
+</pre>
+
+        <div class="pacem-panel">
+            <div class="panel-body">
+                <pacem-form id="frm2" autogenerate="true" metadata="{{ JSON.parse(#metadata2.textContent) }}" entity="{{ { amount: 0.5 } }}"></pacem-form>
+            </div>
+            <div class="panel-footer display-flex">
+                <pacem-span on-click="#frm2.reset()" hide="{{ !#frm2.dirty }}" class="pacem-clickable  pacem-margin margin-right-1">
+                    <i class="pacem-icon text-success text-big">undo</i>
+                </pacem-span>
+                <label class="pacem-margin margin-right-2">readonly</label>
+                <pacem-checkbox class="checkbox-switch" true-value="true" false-value="false" value="{{ #frm2.readonly, twoway }}"></pacem-checkbox>
+            </div>
+        </div>
+
+    </template>
+</pacemjs-snippet>
+
+<pacem-slider id="proto" hidden></pacem-slider>
+<pacemjs-descriptor target="#proto"></pacemjs-descriptor>

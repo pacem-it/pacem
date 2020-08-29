@@ -1,0 +1,31 @@
+﻿
+
+<pacem-markdown value="{{ #content0.textContent }}" root class="md-tech"></pacem-markdown>
+
+<pre pacem hidden id="content0">
+## Curved Progress Bar
+
+A tuner can be seen as a fancy **round** progress-bar or as a gauge.  
+It can be also interactive, thus behaving like an input control.
+
+In the following example the `PacemTunerElement` is set as interactive: 
+> drag the curved line to set new values.
+
+</pre>
+
+<pacemjs-snippet>
+
+    <template>
+
+        <div class="pacem-panel">
+            <div class="panel-body"><pacem-tuner id="tuner0" round="2" interactive="true" value="50" class="tuner-accent"></pacem-tuner></div>
+            <div class="panel-footer">
+                <code>value: <pacem-text text="{{ $pacem.number( #tuner0.value, { minimumIntegerDigits: 2, minimumFractionDigits: 2, maximumFractionDigits: 2}) }}"></pacem-text></code>
+            </div>
+        </div>
+    </template>
+
+</pacemjs-snippet>
+
+<pacem-tuner id="proto" hidden></pacem-tuner>
+<pacemjs-descriptor target="{{ #proto }}"></pacemjs-descriptor>

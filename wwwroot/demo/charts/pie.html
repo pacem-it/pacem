@@ -1,0 +1,155 @@
+﻿
+
+<pacem-markdown value="{{ #content0.textContent }}" root></pacem-markdown>
+
+<pre pacem hidden id="content0">
+
+## Pie or Doughnut
+`PacemPieChartElement` is a handy webcomponent that renders **pie** and **doughnut** charts, it all depends on the bindable `cutout` property.  
+Its `PacemPieSliceElement` children define the slices of the chart.
+
+## Data-driven
+The child-slices of a pie-chart can be easily changed by exploiting a `PacemRepeaterElement`. Everytime a change occurs (number of slices, single slice value, ...)
+a **draw** task gets generated for the whole chart.
+
+The following live example sums up what can be done with a pie-chart webcomponent.
+</pre>
+
+<pacemjs-snippet>
+    <template>
+
+        <pre hidden pacem id="datasource0">
+[
+{"label": "item 1", "color": "success", "value": 2},
+{"label": "item 2", "color": "warning", "value": 1.5},
+{"label": "item 3", "color": "primary", "value": 1.625},
+{"label": "item 4", "color": "error", "value": 0.75}
+]
+</pre>
+        <pacem-data model="{{ JSON.parse(#datasource0.textContent), once }}" id="ds0"></pacem-data>
+        <div class="pacem-panel pacem-margin margin-bottom-1">
+            <div class="panel-body pacem-grid">
+                <div class="pacem-cell cols-md-6 cols-xl-8">
+
+                    <pacem-repeater datasource="{{ #ds0.model }}" on-repeateritemcreate="$event.detail.dom[0].id = 'slice'+ $event.detail.index">
+
+                        <!-- pie-chart wrapped in a repeater -->
+                        <pacem-pie-chart cutout="{{ #cutout0.value }}">
+
+                            <template>
+
+                                <!-- pie-slice repeated -->
+                                <pacem-pie-slice value="{{ ^item.value }}" color="{{ Pacem.Utils.Css.getVariableValue('--color-'+ ^item.color) }}" label="{{ ^item.label }}"></pacem-pie-slice>
+                            </template>
+
+                        </pacem-pie-chart>
+                    </pacem-repeater>
+                </div>
+                <div class="pacem-cell cols-md-6 cols-xl-4">
+
+                    <pacem-repeater datasource="{{ #ds0.model }}"
+                                    on-repeateritemcreate="$event.detail.dom[0].children.item(3).setAttribute('to', '{{ #slice' + $event.detail.index + '.getCenterOfMass(#slice' + $event.detail.index + '.normalizedPolarCoords) }}'); $event.detail.dom[0].children.item(3).setAttribute('from', '#' + ($event.detail.dom[0].children.item(0).id = 'from' + $event.detail.index))">
+                        <ul class="pacem-list list-unstyled">
+
+                            <template>
+                                <li class="pacem-margin margin-bottom-1">
+                                    <pacem-span css="{{ {color: Pacem.Utils.Css.getVariableValue('--color-'+ ^item.color)} }}" class="display-inline-block"><i class="pacem-icon">label</i></pacem-span>
+                                    <pacem-text text="{{ ^item.label }}"></pacem-text>
+                                    <pacem-slider min="0" max="5" value="{{ ^item.value, twoway }}" change-policy="drag" class="slider-primary"></pacem-slider>
+                                    <pacem-binder hide="{{ !(^item.value > 0) }}"></pacem-binder>
+                                </li>
+                            </template>
+
+                        </ul>
+                    </pacem-repeater>
+
+                </div>
+            </div>
+            <div class="panel-footer pacem-grid">
+                <div class="pacem-cell cols-md-1 show-md text-right text-upper">cutout:</div>
+                <div class="pacem-cell cols-md-11"><pacem-slider min="0" max="0.9" id="cutout0"></pacem-slider></div>
+            </div>
+        </div>
+
+
+    </template>
+</pacemjs-snippet>
+
+
+<pacem-markdown value="{{ #content1.textContent }}" class="md-tech" root></pacem-markdown>
+
+<pre pacem hidden id="content1">
+
+## Styling
+Preconfigured coloring can be applied either to the whole chart (results in gradient coloring) or per-single slice.  
+Involved css classes are, respectively, `chart-&lt;color>` and `slice-&lt;color>`.
+
+## Behavior
+Declarative listeners can be added to the single _slices_ in order to intercept `click`, `mouseover`, `touchstart`, `mouseout`, ... events.  
+In the following example, tooltip capabilities are added by intercepting slices' `mouseenter` and chart's `mouseleave` events.
+
+</pre>
+
+<pacemjs-snippet>
+    <template>
+
+        <pre pacem hidden id="datasource1">
+[
+{"label": "item 1", "value": 2},
+{"label": "item 2", "value": 1.5},
+{"label": "item 3", "value": 1.625},
+{"label": "item 4", "value": 0.75},
+{"label": "item 5", "value": 1.75},
+{"label": "item 6", "value": 0.275},
+{"label": "item 7", "value": 0.7},
+{"label": "item 8", "value": 2.15},
+{"label": "item 9", "value": 1.333}
+]</pre>
+
+        <pacem-data model="{{ JSON.parse(#datasource1.textContent), once }}" id="ds1"></pacem-data>
+        <pacem-data id="item1"></pacem-data>
+
+        <pacem-repeater datasource="{{ ['chart-default','chart-primary','chart-accent','chart-success','chart-warning','chart-error'] }}"
+                        on-repeateritemcreate="$event.detail.dom[0].children.item(1).setAttribute('target', '#'+ ($event.detail.dom[0].children.item(0).id = 'chartarea_' + $event.detail.index))">
+            <div class="pacem-grid">
+                <template>
+                    <div class="pacem-cell cols-lg-3 cols-hd-2 text-center">
+
+                        <!-- this panel is dynamically set as the target chart-area -->
+                        <pacem-panel css-class="{{ [^item] }}" class="display-flex flex-fill chart-small"
+                                     on-mouseleave="#tooltip1.popout()"></pacem-panel>
+
+                        <!-- pie-chart -->
+                        <pacem-pie-chart cutout=".5">
+                            <pacem-repeater datasource="{{ #ds1.model }}">
+
+                                <template>
+
+                                    <!-- pie-slice repeated -->
+                                    <pacem-pie-slice value="{{ ^item.value }}" label="{{ ^item.label }}"
+                                                     on-mouseenter="#item1.model = ^item; #tooltip1.target = $this.getCenterOfMass($this.normalizedPolarCoords); #tooltip1.popup()"></pacem-pie-slice>
+                                </template>
+
+                            </pacem-repeater>
+                        </pacem-pie-chart>
+
+                        <pacem-text text="{{ ^item.split('-')[1] }}"></pacem-text>
+
+                    </div>
+                </template>
+            </div>
+        </pacem-repeater>
+
+        <pacem-shell-proxy>
+            <pacem-balloon options="{{ {mode: 'inert', hoverTimeout: 0, hoverDelay: 0} }}" id="tooltip1" class="pacem-inert">
+                <pacem-text text="{{ #item1.model.label }}"></pacem-text>:
+                <code><pacem-text text="{{ $pacem.number(#item1.model.value, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}"></pacem-text></code>
+            </pacem-balloon>
+        </pacem-shell-proxy>
+    </template>
+</pacemjs-snippet>
+
+<pacem-pie-chart id="proto"></pacem-pie-chart>
+<pacemjs-descriptor target="#proto"></pacemjs-descriptor>
+<pacem-pie-slice id="proto2"></pacem-pie-slice>
+<pacemjs-descriptor target="#proto2"></pacemjs-descriptor>

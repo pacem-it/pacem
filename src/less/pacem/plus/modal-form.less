@@ -1,0 +1,12 @@
+﻿@import "../ui/dialog-vars";
+
+@{P}-modal-form {
+    display: block;
+
+    .DialogWithFixedButtons();
+    .DialogSize(modal);
+
+    @{P}-loader {
+        z-index: @lightbox-z-index;
+    }
+}

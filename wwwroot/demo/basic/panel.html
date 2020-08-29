@@ -1,0 +1,331 @@
+﻿<pacem-markdown value="{{ #content0.textContent }}" root></pacem-markdown>
+
+<pre pacem hidden id="content0">
+
+## Dynamic Panel
+Consider `PacemPanelElement` as a general purpose `&lt;div>`. It has the basic characteristics of a `PacemElement` (abstract **visual** class that allows css classes and inline css bindings)
+plus dynamic **html** content, just in case.
+
+```html
+&lt;pacem-panel>&lt;!-- content goes here -->&lt;/pacem-panel>
+```
+## Styling
+`.pacem-panel` is also a css class that eases content disposition.  
+**Heading**, **Body** and **Footer** (also **Tools** and other stuff) can be arranged with no effort at all. 
+</pre>
+
+
+<div class="pacem-flex">
+    <div class="pacem-box box-lg-4 box-12 box-md-6">
+        <pacem-panel class="pacem-panel">
+            <div class="panel-heading">
+                Panel Heading
+            </div>
+            <div class="panel-body">
+                Lorem Ipsum dolorsit amet...
+            </div>
+            <div class="panel-footer">
+                Panel Footer
+            </div>
+        </pacem-panel>
+    </div>
+
+    <div class="pacem-box box-lg-4 box-12 box-md-6">
+        <pacem-panel class="pacem-panel panel-filled panel-border">
+            <div class="panel-heading">
+                Panel Heading
+            </div>
+            <div class="panel-body">
+                Filled and bordered.
+            </div>
+            <div class="panel-footer">
+                Panel Footer
+            </div>
+        </pacem-panel>
+    </div>
+
+    <div class="pacem-box box-lg-4 box-12 box-md-6">
+        <pacem-panel class="pacem-panel panel-filled panel-border">
+            <div class="panel-heading">
+                Panel Heading
+            </div>
+            <div class="panel-body">
+                Filled, bordered and with some corners highlighted.
+            </div>
+            <div class="panel-footer">
+                Panel Footer
+            </div>
+
+            <div class="corner top-right"></div>
+            <div class="corner bottom-left"></div>
+        </pacem-panel>
+    </div>
+
+    <!-- row break -->
+
+    <div class="pacem-box box-lg-4 box-12 box-md-6">
+        <pacem-panel class="pacem-panel" css-class="{{ { 'panel-fullscreen': #vm_panelexpand.model }  }}">
+            <div class="panel-heading">
+                Panel Heading
+            </div>
+            <pacem-collapse collapse="{{ #vm_panelcollapse.model }}" class="panel-content">
+                <div class="panel-body">
+                    Tooling stuff included (toggle).
+                </div>
+                <div class="panel-footer">
+                    Panel Footer
+                </div>
+            </pacem-collapse>
+            <pacem-data id="vm_panelcollapse"></pacem-data>
+            <pacem-data id="vm_panelexpand"></pacem-data>
+            <div class="panel-tools">
+                <pacem-button class="button-flat toggle" css-class="{{ { 'fullscreen-exit': #vm_panelexpand.model, 'fullscreen': !#vm_panelexpand.model }  }}"
+                              on-click="#vm_panelexpand.model = !#vm_panelexpand.model"></pacem-button>
+
+                <pacem-button class="button-flat toggle"
+                              on-click="#vm_panelcollapse.model = !#vm_panelcollapse.model"
+                              css-class="{{ {'expand': #vm_panelcollapse.model, 'collapse': !#vm_panelcollapse.model } }}"></pacem-button>
+            </div>
+
+            <div class="corner top-left"></div>
+            <div class="corner bottom-left"></div>
+            <div class="corner top-right"></div>
+            <div class="corner bottom-right"></div>
+        </pacem-panel>
+    </div>
+
+
+
+    <div class="pacem-box box-lg-2 box-6">
+        <pacem-panel class="pacem-panel panel-filled panel-border panel-primary">
+            <div class="panel-heading">
+                Primary
+            </div>
+            <div class="panel-body">
+                Panel Body
+            </div>
+            <div class="panel-footer">
+                Panel Footer
+            </div>
+
+            <div class="corner top-left"></div>
+            <div class="corner bottom-left"></div>
+            <div class="corner top-right"></div>
+            <div class="corner bottom-right"></div>
+        </pacem-panel>
+    </div>
+
+    <div class="pacem-box box-lg-2 box-6">
+        <pacem-panel class="pacem-panel panel-filled panel-border panel-success">
+            <div class="panel-heading">
+                Ok!
+            </div>
+            <div class="panel-body">
+                Panel Body
+            </div>
+            <div class="panel-footer">
+                Panel Footer
+            </div>
+
+            <div class="corner top-left"></div>
+            <div class="corner bottom-left"></div>
+            <div class="corner top-right"></div>
+            <div class="corner bottom-right"></div>
+        </pacem-panel>
+    </div>
+
+    <div class="pacem-box box-lg-2 box-6">
+        <pacem-panel class="pacem-panel panel-filled panel-border panel-warning">
+            <div class="panel-heading">
+                Warning!
+            </div>
+            <div class="panel-body">
+                Panel Body
+            </div>
+            <div class="panel-footer">
+                Panel Footer
+            </div>
+
+            <div class="corner top-left"></div>
+            <div class="corner bottom-left"></div>
+            <div class="corner top-right"></div>
+            <div class="corner bottom-right"></div>
+        </pacem-panel>
+    </div>
+
+    <div class="pacem-box box-lg-2 box-6">
+        <pacem-panel class="pacem-panel panel-filled panel-border panel-error">
+            <div class="panel-heading">
+                Error!
+            </div>
+            <div class="panel-body">
+                Panel Body
+            </div>
+            <div class="panel-footer">
+                Panel Footer
+            </div>
+
+            <div class="corner top-left"></div>
+            <div class="corner bottom-left"></div>
+            <div class="corner top-right"></div>
+            <div class="corner bottom-right"></div>
+        </pacem-panel>
+    </div>
+
+    <!-- row break -->
+
+    <div class="pacem-box box-lg-8 box-12">
+
+        <div class="pacem-wrapper">
+            <div class="pacem-panel panel-master">
+                <div class="panel-heading">
+                    Master
+                </div>
+                <pacem-data id="vm_panelcollapse2"></pacem-data>
+                <pacem-collapse collapse="{{ #vm_panelcollapse2.model }}" class="panel-content">
+
+                    <pacem-map-adapter-leaflet id="leafletjs" class="panel-body"
+                                               tiles="//api.mapbox.com/styles/v1/mapbox/light-v9/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiY21lcmlnaGkiLCJhIjoiY2lsZHIxdGJmMDAxOHc4bHowamxpZ2Z2OCJ9.7I7ndF-rAkx_1Sqi0bw3Ew"
+                                               attribution='Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>'></pacem-map-adapter-leaflet>
+
+                    <pacem-map adapter="{{ #leafletjs }}"></pacem-map>
+
+                    <div class="panel-footer">
+                        Footer master
+                    </div>
+                </pacem-collapse>
+
+                <div class="tools">
+                    <pacem-button class="button-flat toggle"
+                                  on-click="#vm_panelcollapse2.model = !#vm_panelcollapse2.model"
+                                  css-class="{{ {'expand': #vm_panelcollapse2.model, 'collapse': !#vm_panelcollapse2.model } }}"></pacem-button>
+                </div>
+
+
+            </div>
+
+            <div class="pacem-row">
+                <div class="pacem-column col-6">
+                    <div class="pacem-panel">
+                        <div class="panel-heading">
+                            Heading 1
+                        </div>
+                        <div class="panel-body">
+                            Body 1
+                        </div>
+                        <div class="corner top-left"></div>
+                        <div class="corner bottom-left"></div>
+                        <div class="corner top-right"></div>
+                        <div class="corner bottom-right"></div>
+                    </div>
+                </div>
+                <div class="pacem-column col-6">
+                    <div class="pacem-panel">
+                        <div class="panel-heading">
+                            Heading 2
+                        </div>
+                        <div class="panel-body">
+                            Body 2
+                        </div>
+                        <div class="corner top-left"></div>
+                        <div class="corner bottom-left"></div>
+                        <div class="corner top-right"></div>
+                        <div class="corner bottom-right"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="pacem-box box-lg-4 box-12 box-md-6">
+        <div class="pacem-flex flex-vertical">
+            <div class="pacem-box box-5">
+                <div class="pacem-panel panel-side-left side-auto panel-filled panel-border">
+
+                    <div class="panel-side pacem-pad pad-top-2">
+                        <div class="pacem-led led-on led-blink led-accent led-smaller"></div>
+                    </div>
+
+                    <div class="panel-heading heading-bigger heading-sever">
+                        <h3 class="text-accent">Combo Heading (Severed)</h3>
+                    </div>
+
+                    <div class="panel-tools">
+                        <pacem-button class="button-flat button-circle circle-small" icon-glyph="close"></pacem-button>
+                    </div>
+
+                    <div class="pacem-grid panel-body grid-nogap">
+
+                        <div class="pacem-cell cols-6">
+                            <div class="pacem-panel panel-primary">
+                                <div class="panel-heading">
+                                    <h3>Subtitle 1</h3>
+                                </div>
+                                <div class="panel-body">
+                                    Sub content 1.
+                                </div>
+                                <div class="panel-footer">
+                                    Sub footer 1
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="pacem-cell cols-6">
+                            <div class="pacem-panel panel-primary">
+                                <div class="panel-heading">
+                                    <h3>Subtitle 2</h3>
+                                </div>
+                                <div class="panel-body">
+                                    Sub content 2.
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="pacem-cell cols-12">
+                            <div class="pacem-panel panel-primary">
+                                <div class="panel-footer">
+                                    Sub footer 3.
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="corner top-left"></div>
+                    <div class="corner bottom-left"></div>
+                    <div class="corner top-right"></div>
+                    <div class="corner bottom-right"></div>
+
+                </div>
+            </div>
+            <div class="pacem-box box-7">
+                <address class="pacem-panel panel-card">
+                    <div class="panel-heading">
+                        Address Card
+                    </div>
+                    <div class="panel-body card-body">
+                        <p class="place">Strada Torrazza, 42<br />43124 - Parma (IT)</p>
+                        <p class="phone">+39 0000 000000</p>
+                    </div>
+                    <div class="panel-footer">
+                        Footer on the bottom.
+                    </div>
+
+                    <div class="corner top-left"></div>
+                    <div class="corner bottom-left"></div>
+                    <div class="corner top-right"></div>
+                    <div class="corner bottom-right"></div>
+
+                </address>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<pacem-panel id="proto" hidden></pacem-panel>
+<pacemjs-descriptor target="{{ #proto }}"></pacemjs-descriptor>

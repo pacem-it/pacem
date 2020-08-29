@@ -1,0 +1,21 @@
+﻿@import "shared";
+
+@{P}-textarea {
+    .FormFieldItemMultiline();
+    /*textarea.@{PCSS}-input {
+        //display: block;
+        line-height: 1;
+        flex: 1 0 100%;
+    }*/
+    .@{PCSS}-readonly {
+        white-space: pre-line;
+    }
+
+    &.@{PCSS}-readonly {
+        min-width: unset;
+    }
+
+    &.@{PCSS}-stretch {
+        .FormFieldStretch();
+    }
+}

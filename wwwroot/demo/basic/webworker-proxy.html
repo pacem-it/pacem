@@ -1,0 +1,34 @@
+﻿
+
+<pacem-markdown value="{{ #content0.textContent }}" root class="md-tech"></pacem-markdown>
+
+<pre pacem hidden id="content0">
+## WebWorker Proxy
+`PacemWebWorkerProxyElement` establishes a communication channel between the main thread and a `WebWorker`.
+
+Here an example for the utilization:  
+
+```html
+&lt;pacem-webworker-proxy id="proxy" src="/path/to/worker.js" message="sent" autosend="true" on-receive="console.log($event.detail)">&lt;/pacem-webworker-proxy>  
+```
+
+
+</pre>
+
+<pacemjs-snippet>
+    <template id="demo0">
+
+        <pacem-webworker-proxy id="proxy0" src="/dist/js/workers/echo.js"
+                               message="{{ #message0.value }}"></pacem-webworker-proxy>
+
+        <div class="pacem-pad pad-1 display-flex flex-stretch">
+            <pacem-input-text id="message0" placeholder="message here..."></pacem-input-text>
+        </div>
+        <hr />
+        <p>Echoed from worker: <code><pacem-text text="{{ #proxy0.result }}"></pacem-text></code></p>
+
+    </template>
+</pacemjs-snippet>
+
+<pacem-webworker-proxy id="proto"></pacem-webworker-proxy>
+<pacemjs-descriptor target="#proto"></pacemjs-descriptor>

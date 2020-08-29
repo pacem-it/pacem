@@ -1,0 +1,43 @@
+﻿
+
+<foo-markdown value="{{ #content0.textContent }}" root class="md-tech"></foo-markdown>
+
+<pre pacem hidden id="content0">
+For any reason you may have, legitimate or not, you're allowed to change the normal `pacem-` prefix of **Pacem JS** web components, at runtime.  
+You might prefer a `foo-` prefix, then just put the following statement before any **Pacem JS** component declaration:
+
+```html
+&lt;script>
+(function (global) {
+    global.Pacem = Object.assign(global.Pacem || {}, { Configuration: { prefix: "foo" }});
+})(window);
+&lt;/script>
+```
+
+> Be **careful**! Prefix change affects your app **globally**.
+
+That means you **cannot** mix different prefixes for **embedded Pacem JS components**.
+
+Moreover, you must then provide a consistent css theme that matches your favorite configuration in case of visual elements utilization.  
+
+</pre>
+
+
+
+<pacemjs-snippet>
+    <template id="demo0">
+
+        <foo-data id="myTicks" model="0"></foo-data>
+        <foo-timer interval="1000" on-tick="#myTicks.model++"></foo-timer>
+        <p>timer:</p>
+        <i class="pacem-icon">timer</i>
+        <b><foo-text text="{{ #myTicks.model }}"></foo-text></b>
+        <div class="pacem-buttonset buttons">
+            <div class="buttonset-left">
+                <foo-button class="button" on-click="#myTicks.model++">add extra ticks</foo-button>
+                <foo-button class="button" on-click="#myTicks.model = 0">reset</foo-button>
+            </div>
+        </div>
+
+    </template>
+</pacemjs-snippet>

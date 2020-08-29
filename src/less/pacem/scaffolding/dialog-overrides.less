@@ -1,0 +1,32 @@
+﻿@import "../theme-dark";
+
+@{P}-dialog {
+
+   @{P}-input-search {
+        display: block;
+
+        .@{PCSS}-input {
+            display: block;
+            width: 100%;
+            box-sizing: border-box;
+            //color: @color_lightblue;
+            //border-color: fade(@color_teal, 20);
+            //&:focus {
+            //    color: @color_blue;
+            //    border-color: @color_teal;
+            //}
+        }
+    }
+
+   @{P}-contenteditable {
+        .@{PCSS}-contenteditable {
+            border-color: fade(@color_default, 10);
+        }
+
+        &.@{PCSS}-focus {
+            .@{PCSS}-contenteditable {
+                border-color: fade(@color_default, 40);
+            }
+        }
+    }
+}

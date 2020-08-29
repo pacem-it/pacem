@@ -1,0 +1,45 @@
+﻿@import "../theme-dark";
+
+.IconA(@icon) {
+    .IconCore();
+    content: @icon;
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: .1em; //.1rem * @font_rem_factor;
+    line-height: 1;
+}
+
+@{P}-a {
+    display: inline-block;
+    color: @color_link;
+    cursor: default;
+
+    &:hover {
+        color: lighten(@color_link, 10);
+    }
+
+    &.a-target::after {
+        .IconA('launch');
+    }
+
+    &.a-url {
+        cursor: pointer;
+    }
+
+    &.a-download::after {
+        .IconA('vertical_align_bottom');
+    }
+
+    // disabled link
+    &.@{PCSS}-disabled {
+        color: @color_disabled;
+
+        &:hover {
+            color: @color_disabled;
+        }
+
+        &.a-url {
+            cursor: default;
+        }
+    }
+}

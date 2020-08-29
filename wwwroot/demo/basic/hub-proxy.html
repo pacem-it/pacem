@@ -1,0 +1,14 @@
+﻿<pacem-markdown value="{{ #content0.textContent }}" root></pacem-markdown>
+
+<pre pacem hidden id="content0">
+
+Handles the connection and communication with a SignalR hub.  
+May wrap many `&lt;pacem-hub-listener>` elements that specifically handle messages pushed by the hub.
+
+</pre>
+
+<pacem-hub-proxy id="proto"></pacem-hub-proxy>
+<pacemjs-descriptor target="{{ #proto }}"></pacemjs-descriptor>
+
+<pacem-hub-listener id="proto2"></pacem-hub-listener>
+<pacemjs-descriptor target="{{ #proto2 }}"></pacemjs-descriptor>

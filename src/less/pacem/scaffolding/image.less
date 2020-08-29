@@ -1,0 +1,196 @@
+﻿@import "../../shared";
+@import "../theme-dark";
+@import "shared";
+
+@_tools_margin: round(@grid_spacing * 1.3333);
+
+@{P}-dialog {
+
+    @{P}-edit-image {
+        overflow: hidden;
+        display: block;
+
+        @{P}-img {
+            display: inline-block;
+            font-size: 0;
+            border: solid @grid_spacing / 3 transparent;
+            width: 25%;
+            box-sizing: border-box;
+            min-height: 90px;
+
+            &.@{PCSS}-selected {
+                border-color: @color_highlight;
+            }
+        }
+
+        .@{PCSS}-edit-image {
+            transition: transform @easing_default .3s;
+            display: flex;
+            flex-direction: row;
+
+            > div {
+                position: relative;
+                flex: 0 0 100%;
+
+                &:nth-child(2) {
+                    display: flex;
+                    justify-content: center;
+                }
+            }
+
+            &.@{PCSS}-snapshot-enabled,
+            &.@{PCSS}-upload-enabled {
+                @{P}-input-search {
+                    margin-right: @_tools_margin;
+                }
+            }
+
+            @{P}-upload {
+                position: absolute;
+                top: 0;
+                right: 0;
+
+                .@{PCSS}-upload-filewrapper:before {
+                    .Icon('file_upload');
+                    cursor: pointer;
+                }
+            }
+
+            @{P}-button.@{PCSS}-snapshot {
+                position: absolute;
+                top: 0;
+                right: 0;
+                width: @grid_spacing;
+                height: @grid_spacing;
+
+                &:before {
+                    .Icon('add_a_photo');
+                }
+            }
+
+            @{P}-snapshot {
+            }
+
+            &.@{PCSS}-snapshot-enabled.@{PCSS}-upload-enabled {
+                @{P}-input-search {
+                    margin-right: @grid_spacing * 4;
+                }
+
+                @{P}-upload {
+                    right: @grid_spacing * 2;
+                }
+            }
+
+            &.@{PCSS}-snapshot {
+                transform: translateX(-100%);
+            }
+        }
+
+        @{P}-progressbar {
+            margin: 2 * @grid_spacing 0;
+
+            .@{PCSS}-progressbar {
+                @_thickness: 10px;
+                @_overall: 32px;
+                .GradientVertical(0, @_overall - @_thickness, @_overall - @_thickness, @_overall, transparent, transparent, rgba(0,0,0,0.1), rgba(0,0,0,0.1));
+            }
+        }
+    }
+}
+
+@{P}-input-image {
+    display: inline-block;
+
+    .@{PCSS}-input-image {
+        position: relative;
+        min-height: 2 * @grid_spacing;
+        .FormFieldItemMultiline();
+        padding-right: @_tools_margin;
+
+        @{P}-img {
+            //min-width: @grid_spacing * 5;
+            min-height: @grid_spacing * 5;
+            width: 100%;
+            height: 100%;
+            background-color: fade(@color_default, 10);
+        }
+
+        .@{PCSS}-input-image-dashboard {
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: @grid_spacing;
+            height: 100%;
+
+            @{P}-button {
+                display: block;
+                font-size: 0;
+                width: @grid_spacing;
+                height: @grid_spacing;
+                background: transparent;
+
+                &.@{PCSS}-edit:before {
+                    .Icon('edit');
+                }
+
+                &.@{PCSS}-clear:before {
+                    .Icon('clear');
+                }
+
+                &::before {
+                    left: 0;
+                    top: 0;
+                }
+            }
+        }
+
+        @{P}-input-url {
+            display: block;
+            margin-top: @grid_spacing/4;
+
+            .@{PCSS}-input {
+                min-width: @field_min_width_wide;
+            }
+        }
+    }
+
+
+    dl {
+        @_h: @grid_spacing * 1.3333;
+        padding: @grid_spacing/6 0;
+        overflow: hidden;
+        height: @_h;
+
+        dt, dd {
+            line-height: @_h * .5;
+            height: @_h * .5;
+        }
+
+        dt {
+            float: left;
+            vertical-align: middle;
+            width: @grid_spacing / 1.5;
+            background: center center no-repeat;
+            background-size: contain;
+            font-size: 0;
+
+            &:nth-of-type(2):before {
+                .Icon('file_download', @grid_spacing * 2 / 4);
+            }
+
+            &:nth-of-type(1):before {
+                .Icon('crop_free', @grid_spacing * 2 / 4);
+            }
+        }
+
+        dd {
+            clear: right;
+            margin-left: @grid_spacing;
+            .FontTech(.8);
+
+            &:nth-of-type(2) {
+                //color: fade(@color_tech, 100);
+            }
+        }
+    }
+}

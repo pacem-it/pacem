@@ -1,0 +1,36 @@
+﻿<pacem-markdown value="{{ #content0.textContent }}" root class="md-tech"></pacem-markdown>
+
+<pre pacem hidden id="content0">
+
+`PacemRouterElement` is the custom element that handles the browser __history__ state both in reading and in writing mode.
+
+It wraps the core functionalities included in the HTML5 [History API](https://developer.mozilla.org/en-US/docs/Web/API/History_API).
+
+## Template, Path and State
+
+The router `template` property/attribute gets explicited in a string where curly braced trunks signify **state** properties, like:
+```
+/{controller}/{view}/{id?}
+```
+
+Given a navigated url, the router deserializes an object with the read-only `controller`, `view` and `id` (optional) properties.
+The router may be forced to update its state by calling the `navigate()` method.
+
+Example:  
+This whole web app exploits this routing system. Feel free to lurk into the source code. Here's a hint:
+
+```html
+
+&lt;pacem-router template="/{package}/{view}" path="/intro/welcome" 
+    id="router">&lt;/pacem-router>
+&lt;pacem-view id="view" 
+    url="{{ '/views/'+ #router.state.package + '/'+ #router.state.view +'.html' }}">&lt;/pacem-view>
+&lt;pacem-a href="/basic/router" router="#router">
+Go to router page
+&lt;/pacem-a>
+```
+</pre>
+
+
+<pacem-router id="proto"></pacem-router>
+<pacemjs-descriptor target="#proto"></pacemjs-descriptor>

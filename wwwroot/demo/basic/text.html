@@ -1,0 +1,46 @@
+﻿
+
+<pacem-markdown value="{{ #content0.textContent }}" root class="md-tech"></pacem-markdown>
+
+<pre pacem hidden id="content0">
+`PacemTextElement` is the fastest way to write **plain text** onto the screen.  
+Do target its `text` property to render your string bindings:
+
+```html
+&lt;pacem-text text="{{ binding }}">&lt;/pacem-text>
+```
+</pre>
+
+<pacemjs-snippet>
+    <template id="demo0">
+
+        <pacem-data id="timestamp0"></pacem-data>
+        <pacem-data id="items0" model="{{ Math.min(200, #count0.value) }}"></pacem-data>
+        <pacem-timer interval="17" on-tick="#timestamp0.model = $pacem.date(Date.now(), 'iso')"></pacem-timer>
+        <pacem-input-number step="10" value="10" id="count0" min="0" max="200"></pacem-input-number>
+
+        <!-- fps -->
+        <i class="pacem-icon">timer</i>
+        <code class="text-tiny">
+            current: <pacem-text text="{{ Math.round(#fps.model.current) }}"></pacem-text>fps
+            (avg: <pacem-text text="{{ Math.round(#fps.model.average) }}"></pacem-text>, min: <pacem-text text="{{ Math.round(#fps.model.min) }}"></pacem-text>,
+            max: <pacem-text text="{{ Math.round(#fps.model.max) }}"></pacem-text>)
+        </code>
+        <pacem-fps id="fps0"></pacem-fps>
+        <pacem-data id="fps" model="{{ #fps0.data }}" debounce="1000" throttle="true"></pacem-data>
+        <!-- /fps -->
+
+        <pacem-repeater datasource="{{ Array(#items0.model) }}" class="display-block pacem-margin margin-top-3">
+            <template>
+
+                <!-- pacem-text -->
+                <pacem-text text="{{ #timestamp0.model }}" class="display-inline-block"></pacem-text> -
+            </template>
+        </pacem-repeater>
+
+    </template>
+</pacemjs-snippet>
+
+
+<pacem-text id="proto"></pacem-text>
+<pacemjs-descriptor target="#proto"></pacemjs-descriptor>

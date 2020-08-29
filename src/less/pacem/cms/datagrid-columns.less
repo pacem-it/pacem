@@ -1,0 +1,41 @@
+﻿@import "shared";
+
+@{P}-datacolumns {
+
+    > .@{PCSS}-datacolumns {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        grid-column-gap: @grid_spacing;
+        align-items: stretch;
+
+        > .datacolumns-main {
+            overflow: auto;
+            background-color: @menu_link_active_backgroundcolor;
+
+            *[drop-target] {
+                border: 2px dashed transparent;
+                min-height: @grid_cell;
+
+                &.@{PCSS}-dropping {
+                    border-color: @color_accent;
+                    background-color: none;
+                }
+
+                > * {
+                    width: 14 * @grid_spacing;
+                    border-right: 1px dashed @color_border;
+                    align-self: stretch;
+
+                    &:hover{
+                        background-color: fade(@color_default, 2);
+                    }
+                }
+            }
+        }
+
+        > .datacolumns-props {
+            padding: 0 0 0 @grid_spacing;
+            border-left: 1px dashed @color_border;
+        }
+    }
+}

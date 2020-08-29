@@ -1,0 +1,70 @@
+﻿
+
+<pacem-markdown value="{{ #content0.textContent }}" class="md-tech" root></pacem-markdown>
+
+<pre pacem hidden id="content0">
+## Map-Based Input
+`PacemLatLngElement` is the webcomponent that handles georeferenced values.
+
+> The managed **value** is an object having the following structure: `{ "lat": number, "lng": number }`.
+</pre>
+
+<pacemjs-snippet>
+    <template>
+
+        <div class="pacem-panel">
+            <div class="panel-body">
+                <pacem-form id="frm0">
+                    <pacem-latlng value="44.714188025077984,10.296516444873811" 
+                                  name="position" readonly="{{ #frm0.readonly }}" options="{{ { 'zoomControl': 'topleft' } }}"></pacem-latlng>
+                </pacem-form>
+            </div>
+            <div class="panel-footer display-flex">
+                <pacem-span on-click="#frm0.reset()" hide="{{ !#frm0.dirty }}" class="pacem-clickable  pacem-margin margin-right-1">
+                    <i class="pacem-icon text-success text-big">undo</i>
+                </pacem-span>
+                <label class="pacem-margin margin-right-2">readonly</label>
+                <pacem-checkbox class="checkbox-switch" true-value="true" false-value="false" value="{{ #frm0.readonly, twoway }}"></pacem-checkbox>
+            </div>
+        </div>
+
+    </template>
+</pacemjs-snippet>
+
+
+<pacem-markdown value="{{ #content1.textContent }}" class="md-tech" root></pacem-markdown>
+<pre pacem hidden id="content1">
+## Metadata
+`PacemLatLngElement` can be injected into an autogenerating form the following way: 
+</pre>
+
+<pacemjs-snippet>
+    <template>
+
+        <pre id="metadata1" hidden pacem>
+[
+{"prop": "position", "type": "complex", "dataType": "latLng", "display": { "name": "Position" },
+"extra": { "icon": { "url": "/assets/pp_w_s.png", "size": {"width": 45, "height": 45}, "anchor": {"x": 15, "y": 45} }, "mousewheel": false }
+}
+]
+</pre>
+
+        <div class="pacem-panel">
+            <div class="panel-body">
+                <pacem-form id="frm1" autogenerate="true" metadata="{{ JSON.parse(#metadata1.textContent) }}" entity="{{ { position: { lat: 44.714188025077984, lng: 10.296516444873811 } } }}"></pacem-form>
+            </div>
+            <div class="panel-footer display-flex">
+                <pacem-span on-click="#frm1.reset()" hide="{{ !#frm1.dirty }}" class="pacem-clickable  pacem-margin margin-right-1">
+                    <i class="pacem-icon text-success text-big">undo</i>
+                </pacem-span>
+                <label class="pacem-margin margin-right-2">readonly</label>
+                <pacem-checkbox class="checkbox-switch" true-value="true" false-value="false" value="{{ #frm1.readonly, twoway }}"></pacem-checkbox>
+            </div>
+        </div>
+
+    </template>
+</pacemjs-snippet>
+
+
+<pacem-input-number id="proto" hidden></pacem-input-number>
+<pacemjs-descriptor target="#proto"></pacemjs-descriptor>

@@ -1,0 +1,62 @@
+﻿
+
+<pacem-markdown value="{{ #content0.textContent }}" root class="md-tech"></pacem-markdown>
+
+<pre pacem hidden id="content0">
+## ServiceWorker Proxy
+`PacemServiceWorkerProxyElement` manages the registration of the `ServiceWorker` and keeps track of the relevant `ServiceWorkerRegistration` to exploit its functionalities.
+
+Here an example for the utilization:  
+
+```html
+&lt;pacem-serviceworker-proxy id="sw" src="/sw.js" on-register="console.log($event.detail)" on-subscribe="console.log($event.detail)">&lt;/pacem-serviceworker-proxy>  
+```
+
+In the following snippet it is shown how to simply **declaratively** subscribe/unsubscribe to **Push Notifications**.
+> Don't worry: **no notifications** will actually be sent.
+</pre>
+
+<pacemjs-snippet>
+    <template id="demo0">
+
+        <!-- the service worker proxy -->
+        <pacem-serviceworker-proxy id="sw0" src="/sw.js"></pacem-serviceworker-proxy>
+
+        <!-- already subscribed? -->
+        <pacem-data model="{{ !$pacem.isNull(#sw0.pushSubscription) }}" id="subscribed0"></pacem-data>
+
+        <div class="pacem-grid">
+            <div class="pacem-cell pacem-panel">
+
+                <div class="panel-body">
+                    <!-- change public key here -->
+                    <pacem-textarea id="publicKey0" placeholder="public key here..."
+                                    value="BBiX2bJACEi3mDu58vOTFnhN5o59vZeryi4MHhLyNDXKtoemvD3qDS6ZYSBwKn5bqUcunv1TBcNmCpt52q-aoYc"></pacem-textarea>
+                </div>
+                <div class="panel-footer">
+
+                    <!-- button -->
+                    <pacem-button class="button"
+                                  on-click="#subscribed0.model ? #sw0.unsubscribe(#sw0.pushSubscription) : #sw0.subscribe(#publicKey0.value)"
+                                  css-class="{{ { 'button-primary': !#subscribed0.model } }}"
+                                  icon-glyph="{{ !#subscribed0.model ? 'notifications_active' : 'notifications_paused' }}">
+                        <pacem-text text="{{ #subscribed0.model ? 'Click to Unsubscribe' : 'Click to Subscribe' }}"></pacem-text>
+                    </pacem-button>
+
+                </div>
+            </div>
+            <div class="pacem-cell">
+                <hr />
+            </div>
+            <div class="pacem-cell">
+
+                <!-- output -->
+                <pacem-markdown value="{{ '```javascript\n'+ JSON.stringify(#sw0.pushSubscription || { 'empty': 'no subscription' }, null, 1) +'\n```' }}"></pacem-markdown>
+            </div>
+        </div>
+
+    </template>
+</pacemjs-snippet>
+
+<pacem-webworker-proxy id="proto"></pacem-webworker-proxy>
+<pacemjs-descriptor target="#proto"></pacemjs-descriptor>

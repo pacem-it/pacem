@@ -1,0 +1,167 @@
+﻿@import "../../shared";
+@import "../theme-dark";
+
+.@{PCSS}-brightout {
+    -moz-animation: bright-out 1s 1 normal;
+    -o-animation: bright-out 1s 1 normal;
+    -webkit-animation: bright-out 1s 1 normal;
+    animation: bright-out 1s 1 normal;
+}
+
+.ButtonHidden() {
+    font-size: 0;
+    transform: scale(0);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform .333s @easing_default, opacity .2s;
+    width: @grid_spacing;
+    height: @grid_spacing;
+}
+
+.ButtonVisible() {
+    transform: scale(1);
+    opacity: 1;
+    pointer-events: all;
+    cursor: pointer;
+    transition-delay: .333s;
+}
+
+@{P}-snapshot {
+    display: block;
+
+    @_dim_w: @grid_spacing * 10;
+    @_dim_h: @_dim_w;
+    @_brd: @grid_spacing / 8;
+    @_btn_w: @grid_cell - 2 * @_brd;
+    @_btn_h: @_btn_w;
+
+    @_cdwn_h: @_btn_w;
+    @_cdwn_w: @_btn_h;
+
+    width: @_dim_w + 2 * @_brd;
+    height: @_dim_h + 2 * @_brd;
+
+    .@{PCSS}-snapshot {
+        position: relative;
+        height: 100%;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        &.@{PCSS}-ongoing {
+        }
+
+       @{P}-button {
+            // default: disabled
+            .ButtonHidden();
+            color: @color_light;
+            text-shadow: 0 1px 1px @color_default_inv;
+            //
+            &.@{PCSS}-countdown {
+                font-size: 0;
+
+                &:before {
+                    .Icon('timer_3');
+                }
+            }
+        }
+        // cascade-based visibility
+        &.@{PCSS}-steady @{P}-button.@{PCSS}-camera,
+        &.@{PCSS}-preview @{P}-button.@{PCSS}-confirm,
+        &.@{PCSS}-ongoing @{P}-button.@{PCSS}-undo,
+        &.@{PCSS}-video @{P}-button.@{PCSS}-countdown {
+            .ButtonVisible();
+        }
+
+        &.@{PCSS}-video @{P}-button.@{PCSS}-countdown {
+            pointer-events: /*still*/ none;
+        }
+        // taking picture vs countdown rolling
+        &.@{PCSS}-video.@{PCSS}-countdown {
+
+           @{P}-button.@{PCSS}-countdown {
+                font-size: @grid_spacing;
+                text-align: center;
+
+                &:before {
+                    display: none;
+                }
+            }
+        }
+
+        .@{PCSS}-camera {
+            z-index: 1;
+
+            &:before {
+                .Icon('photo_camera');
+            }
+        }
+
+        .@{PCSS}-undo:before {
+            .Icon('arrow_back');
+        }
+
+        .@{PCSS}-confirm:before {
+            .Icon('check');
+            color: @color_highlight;
+        }
+
+        canvas, video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            box-sizing: border-box;
+            border: @_brd solid @color_light;
+            object-fit: cover;
+            // hack to avoid the video element to exceed the allowed size: :S
+            border-radius: @grid_spacing / @grid_spacing;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        &.@{PCSS}-steady .@{PCSS}-preview,
+        &.@{PCSS}-preview.@{PCSS}-taking .@{PCSS}-preview,
+        &.@{PCSS}-video video {
+            visibility: visible;
+            pointer-events: all;
+        }
+
+        &.@{PCSS}-preview.@{PCSS}-taking .@{PCSS}-preview {
+            border-color: @color_highlight;
+        }
+
+        video {
+            background-color: #000; // only visible in edge(?) that doesn't obey to object-fit `cover`
+            cursor: pointer;
+        }
+
+        @_pad: @grid_spacing/4;
+
+        .@{PCSS}-confirm,
+        .@{PCSS}-undo,
+        .@{PCSS}-countdown {
+            position: absolute;
+            top: @_pad;
+        }
+
+        .@{PCSS}-undo {
+            left: @_pad;
+        }
+
+        .@{PCSS}-confirm,
+        .@{PCSS}-countdown {
+            right: @_pad;
+        }
+    }
+}
+
+
+.@{PCSS}-animations {
+
+   @{P}-snapshot {
+        .Animatable(pop-anim, .4s, @easing_out_back);
+    }
+}

@@ -1,0 +1,661 @@
+﻿@import "../../shared";
+@import "../theme-dark";
+
+@_brd_clr: @color_border;
+@_dis_clr: @color_calendarday_hover;
+@_pad: 2px;
+
+@{P}-calendar-event {
+    .Inert();
+}
+
+.EventItem() {
+    display: block;
+    background: @color_event_back;
+    //margin: 0 @_pad @_pad @_pad;
+    box-sizing: border-box;
+    border: 1px solid transparent;
+    padding: 0 2 * @_pad;
+    font-size: .9em;
+    pointer-events: auto;
+
+    &:focus {
+        border-color: @color_border;
+    }
+
+    .event-caption,
+    .event-startdate {
+        display: inline-block;
+        pointer-events: none;
+    }
+
+    .event-startdate {
+        margin-right: @_pad;
+        //font-weight: 700;
+    }
+
+    .event-caption {
+        color: @color_event_fore;
+        font-weight: 700;
+    }
+}
+
+.InteractiveTile() {
+    &:hover {
+        background-color: @color_calendarday_hover;
+    }
+
+    &.@{PCSS}-disabled,
+    &.@{PCSS}-disabled:hover {
+        background-color: @_dis_clr;
+        opacity: 0.5;
+    }
+}
+
+/* #region calendar*/
+.Day(@count, @index, @offset) when (@index > 0) {
+    &.day-@{index} {
+        grid-column: @index + @offset;
+    }
+    // next iteration
+    .Day( @count, @index - 1, @offset);
+}
+
+.Day(@count) {
+    .Day(@count, 0);
+}
+
+.Day(@count, @offset) {
+    .Day(@count, @count, @offset);
+}
+
+.DayStart(@count, @index) when (@index > 0) {
+    &.day-start-@{index} {
+        grid-column-start: @index;
+    }
+    // next iteration
+    .DayStart(@count, @index - 1);
+}
+
+.DayStart() {
+    .DayStart(7, 7);
+}
+
+.DayEnd(@count, @index) when (@index > 1) {
+    &.day-end-@{index} {
+        grid-column-end: @index;
+    }
+    // next iteration
+    .DayEnd(@count, @index - 1);
+}
+
+.DayEnd() {
+    .DayEnd(8, 8);
+}
+
+.Week(@count, @index) when (@index > 0) {
+    &.week-@{index} {
+        grid-row: @index;
+    }
+    // next iteration
+    .Week( @count, @index - 1);
+}
+
+.Week(@count) {
+    .Week(@count, @count);
+}
+
+@{P}-calendar {
+    display: block;
+
+    .@{PCSS}-calendar {
+
+        &.calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            grid-template-rows: repeat(6, auto);
+
+            .calendar-day {
+                padding: @grid_spacing / 3;
+                margin: 0;
+                border: 0;
+                border-right: 1px solid @_brd_clr;
+                border-bottom: 1px solid @_brd_clr;
+                box-sizing: border-box;
+
+                &.viewday {
+                    // background-color: @color_calendarday_focus;
+                }
+
+                &.today {
+                    background-color: @color_calendarday_today;
+                }
+
+                .InteractiveTile();
+
+                &:not(.viewmonth) {
+                    color: @color_disabled;
+                }
+
+                &::before {
+                    content: '';
+                    float: left;
+                    padding-top: 100%;
+                }
+
+                .Week(6);
+                .Day(7);
+
+                &.week-1 {
+                    border-top: 1px solid @_brd_clr;
+                }
+
+                &.day-1 {
+                    border-left: 1px solid @_brd_clr;
+                }
+            }
+
+            .calendar-week {
+                // events
+                box-sizing: border-box;
+                padding: @grid_spacing * 1.5 @_pad @_pad @_pad;
+                overflow: hidden;
+                grid-column: ~"1/8";
+                display: grid;
+                grid-auto-rows: min-content;
+                grid-template-columns: repeat(7, 1fr);
+                grid-gap: @_pad 2 * @_pad;
+                grid-auto-flow: dense;
+                pointer-events: none;
+
+                &:nth-child(43) {
+                    grid-row: 1;
+                }
+
+                &:nth-child(44) {
+                    grid-row: 2;
+                }
+
+                &:nth-child(45) {
+                    grid-row: 3;
+                }
+
+                &:nth-child(46) {
+                    grid-row: 4;
+                }
+
+                &:nth-child(47) {
+                    grid-row: 5;
+                }
+
+                &:nth-child(48) {
+                    grid-row: 6;
+                }
+
+                .calendar-event {
+                    .EventItem();
+                    height: @grid_spacing;
+                    line-height: @grid_spacing;
+                    .Ellipsed();
+                    .DayStart();
+                    .DayEnd();
+                }
+            }
+        }
+    }
+}
+/* #endregion */
+
+/* #region agenda */
+
+@_agenda_slot_size: 1.5 * @grid_spacing;
+
+.Hour (@count, @index) when (@index > 0 ) {
+
+    &.hour-@{index} {
+        grid-row: @index + 1;
+    }
+    // next iteration
+    .Hour( @count, @index - 1);
+}
+
+.Hour (@count) {
+    .Hour(@count, @count);
+}
+
+.Hour() {
+    .Hour(48);
+}
+
+.Slot(@count, @index) when (@index > 0) {
+    &.day-@{index} {
+        grid-column: @index+1;
+    }
+    // next iteration
+    .Slot( @count, @index - 1);
+}
+
+.Slot(@count) {
+    .Slot(@count, @count);
+}
+
+.ClockHourSlot(@count, @hours) when (@hours >= 0) {
+    &.hour-@{hours} {
+        grid-row: 2 * @hours + 2;
+    }
+    // next iteration
+    .ClockHourSlot( @count, @hours - 1);
+}
+
+.ClockHourSlot(@count) {
+    .ClockHourSlot( @count, @count)
+}
+
+.ClockHourSlot() {
+    .ClockHourSlot(23);
+}
+
+.ClockMinuteSlot(@count, @mins) when (@mins >= 0) {
+    &.minute-@{mins} {
+        transform: translateY(round(@_agenda_slot_size * @mins / 30));
+    }
+    // next iteration
+    .ClockMinuteSlot( @count, @mins - 1);
+}
+
+.ClockMinuteSlot(@count) {
+    .ClockMinuteSlot( @count, @count)
+}
+
+.ClockMinuteSlot() {
+    .ClockMinuteSlot(59);
+}
+
+.HourStart(@count, @index) when (@index > 0) {
+    &.hour-start-@{index} {
+        grid-row-start: @index;
+    }
+    // next iteration
+    .HourStart(@count, @index - 1);
+}
+
+.HourStart() {
+    .HourStart(48, 48);
+}
+
+.HourEnd(@count, @index) when (@index > 1) {
+    &.hour-end-@{index} {
+        grid-row-end: @index;
+    }
+    // next iteration
+    .HourEnd(@count, @index - 1);
+}
+
+.HourEnd() {
+    .HourEnd(49, 49);
+}
+
+@{P}-clock {
+    display: block;
+}
+
+@{P}-agenda {
+    font-size: .76em;
+    display: block;
+
+    @_slot_size: @_agenda_slot_size;
+
+    .@{PCSS}-agenda {
+        &.agenda-grid {
+            display: grid;
+            grid-template-columns: @_slot_size repeat(7, 1fr);
+            grid-template-rows: repeat(49, auto);
+            transition: grid-template-columns @easing_out_sine .2s;
+
+            .agenda-slot {
+                height: @_slot_size;
+                box-sizing: border-box;
+                font-family: @font_tech;
+                border-left: 1px solid @_brd_clr;
+                .Hour();
+                .Slot(7);
+                border-bottom: 1px solid @_brd_clr;
+
+                &.hour-whole {
+                    border-bottom-style: dashed;
+                }
+
+                .InteractiveTile();
+            }
+
+            .agenda-left {
+                grid-column: 1;
+                grid-row: span 2;
+                .Hour();
+
+                &.hour-half {
+                    border-bottom: 1px solid @_brd_clr;
+                }
+            }
+
+            .all-day {
+                border-bottom: @grid_spacing/8 solid @_brd_clr;
+                grid-row: 1;
+                .Slot(7);
+                height: auto;
+            }
+
+            .today {
+                background-color: @color_calendarday_today;
+            }
+
+            @{P}-clock {
+                pointer-events: none;
+                border-top: 2px dotted @color_agenda_clock;
+                grid-column: ~"2/9";
+                .ClockHourSlot();
+                .ClockMinuteSlot();
+            }
+
+            .agenda-allday {
+                box-sizing: border-box;
+                padding: @_pad @_pad @_slot_size @_pad;
+                overflow: hidden;
+                grid-column: ~"2/9";
+                grid-row: 1;
+                grid-template-columns: repeat(7, 1fr);
+                grid-gap: @_pad 2 * @_pad;
+                grid-auto-flow: dense;
+                pointer-events: none;
+                display: grid;
+
+                .agenda-event {
+                    .EventItem();
+                    height: @grid_spacing;
+                    line-height: @grid_spacing;
+                    .Ellipsed();
+                    .DayStart();
+                    .DayEnd();
+                }
+            }
+
+            .agenda-day {
+                // events
+                box-sizing: border-box;
+                padding: @_pad @grid_spacing/2 @_pad @_pad;
+                overflow: hidden;
+                grid-row: ~"2/50";
+                display: grid;
+                //grid-auto-columns: max-content;
+                grid-template-rows: repeat(48, 1fr);
+                grid-template-columns: min-content;
+                grid-gap: @_pad 2 * @_pad;
+                grid-auto-flow: dense;
+                pointer-events: none;
+
+                &:nth-child(370) {
+                    grid-column: 2;
+                }
+
+                &:nth-child(371) {
+                    grid-column: 3;
+                }
+
+                &:nth-child(372) {
+                    grid-column: 4;
+                }
+
+                &:nth-child(373) {
+                    grid-column: 5;
+                }
+
+                &:nth-child(374) {
+                    grid-column: 6;
+                }
+
+                &:nth-child(375) {
+                    grid-column: 7;
+                }
+
+                &:nth-child(376) {
+                    grid-column: 8;
+                }
+
+                .agenda-event-wrapper {
+                    .HourStart();
+                    .HourEnd();
+                    position: relative;
+
+                    .agenda-event {
+                        .EventItem();
+                        position: absolute;
+                        width: 100%;
+                    }
+
+                    &.day-start-false,
+                    &.day-end-false {
+                        width: round(@grid_spacing * .3333);
+
+                        .agenda-event {
+                            font-size: 0;
+                            opacity: .5;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+/* #endregion 
+*/
+@_headr_height: 1.5 * @grid_spacing;
+
+@{P}-schedule {
+    display: block;
+
+    .@{PCSS}-schedule {
+
+        .schedule-header {
+            background-color: @color_schedule_header;
+
+            &.schedule-grid {
+                display: grid;
+                grid-template-columns: @_headr_height repeat(7, 1fr);
+
+                .schedule-left {
+                    grid-column: 1;
+                }
+
+                .schedule-heading {
+                    .Slot(7);
+                    //font-weight: 700;
+                    text-align: center;
+                    line-height: @_headr_height;
+                }
+            }
+
+            position: sticky;
+            top: 0;
+            z-index: 2;
+        }
+
+        @{P}-agenda {
+            .agenda-allday,
+            .all-day {
+                position: sticky;
+                top: @_headr_height;
+                z-index: 1;
+            }
+
+            .all-day,
+            .all-day.today {
+                background-color: @color_schedule_subheader;
+            }
+        }
+
+        &.schedule-month {
+            @{P}-agenda {
+                display: none;
+            }
+
+            .schedule-header.schedule-grid {
+                grid-template-columns: 0 repeat(7, 1fr);
+            }
+        }
+
+        &:not(.schedule-month) {
+            @{P}-calendar {
+                display: none;
+            }
+        }
+
+        &.schedule-day {
+
+            @{P}-agenda {
+
+                .@{PCSS}-agenda.agenda-grid {
+                    grid-template-columns: @grid_spacing * 1.5 1fr;
+
+                    .agenda-slot {
+                        grid-column: 2;
+
+                        &:not(.viewday) {
+                            display: none;
+                        }
+                    }
+
+                    .agenda-allday {
+                        grid-template-columns: 1fr;
+                    }
+
+                    @{P}-clock {
+                        grid-column-end: 3;
+                    }
+                }
+            }
+
+            .schedule-header.schedule-grid {
+                grid-template-columns: @grid_spacing * 1.5 1fr;
+
+                .schedule-heading {
+                    grid-column: 2;
+
+                    &:not(.viewday) {
+                        display: none;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@keyframes schedule-month {
+    0% {
+        transform: translateX(@grid_spacing);
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+@keyframes schedule-week {
+    0% {
+        transform: translateX(@grid_spacing);
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+@keyframes schedule-day {
+    0% {
+        transform: translateX(@grid_spacing);
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+@keyframes schedule-events {
+    0% {
+        transform: translateY(@grid_spacing);
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+.@{PCSS}-animations {
+    @{P}-schedule.@{PCSS}-animatable,
+    @{P}-schedule.@{PCSS}-anim {
+
+        @{P}-calendar, @{P}-agenda {
+            animation: default-anim .2s @easing_in_out_sine both;
+
+            .agenda-day,
+            .agenda-allday,
+            .calendar-week {
+                animation: default-anim .125s @easing_in_out_sine both .1s;
+            }
+        }
+
+        .schedule-month @{P}-calendar {
+            animation-name: schedule-month;
+        }
+
+        .schedule-week @{P}-agenda {
+            animation-name: schedule-week;
+        }
+
+        .schedule-day @{P}-agenda {
+            animation-name: schedule-day;
+
+            .agenda-day,
+            .agenda-allday,
+            .calendar-week {
+                animation-name: schedule-events;
+            }
+        }
+
+        @{P}-calendar.viewdate-next,
+        @{P}-agenda.viewdate-next {
+            animation-name: list-item-right;
+        }
+
+        @{P}-calendar.viewdate-previous,
+        @{P}-agenda.viewdate-previous {
+            animation-name: list-item-left;
+        }
+    }
+
+    @{P}-calendar.@{PCSS}-animatable,
+    @{P}-calendar.@{PCSS}-anim,
+    @{P}-agenda.@{PCSS}-anim,
+    @{P}-agenda.@{PCSS}-animatable {
+        &.viewdate-next {
+            animation: list-item-right .2s @easing_out_sine both;
+        }
+
+        &.viewdate-previous {
+            animation: list-item-left .2s @easing_out_sine both;
+        }
+
+        .agenda-day,
+        .agenda-allday,
+        .calendar-week {
+            animation: default-anim .125s @easing_in_out_sine both .1s;
+        }
+    }
+}

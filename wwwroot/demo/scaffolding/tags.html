@@ -1,0 +1,75 @@
+﻿
+
+<pacem-markdown value="{{ #content0.textContent }}" class="md-tech" root></pacem-markdown>
+
+<pre pacem hidden id="content0">
+Tagging control for **string array** values.
+
+## Free text
+Just add tags by typing, then `tab`- or `arrow`- or `mouse`-selecting.  
+Set the `allowNew` property to `true` so that anything goes. 
+</pre>
+
+<pacemjs-snippet>
+    <template id="demo0">
+
+        <pacem-tags placeholder="Type anything..." allow-new="true"></pacem-tags>
+
+    </template>
+</pacemjs-snippet>
+
+<pacem-markdown value="{{ #content1.textContent }}" class="md-tech" root></pacem-markdown>
+
+<pre pacem hidden id="content1">
+## Constrained values
+
+Tags can be forced to be picked only from a specific `datasource` or set of data:
+</pre>
+
+
+<pacemjs-snippet>
+    <template id="demo1">
+
+        <pacem-tags placeholder="US state..." value="Florida,Alabama" datasource="{{ #states.model }}"></pacem-tags>
+        <pacem-data id="states" model="['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming']">
+        </pacem-data>
+
+    </template>
+</pacemjs-snippet>
+
+<pacem-markdown value="{{ #content1.textContent }}" class="md-tech" root></pacem-markdown>
+
+
+<pacem-markdown value="{{ #content1.textContent }}" class="md-tech" root></pacem-markdown>
+<pre pacem hidden id="content1">
+## Metadata
+`PacemTagsElement` can be injected into an autogenerating form the following way: 
+</pre>
+
+<pacemjs-snippet>
+    <template>
+
+        <pre id="metadata1" hidden pacem>
+[
+{"prop": "tags", "type": "array", "display": { "name": "Tags", "ui": "tags" },
+"extra": { "allowNew": true, "allowDuplicates": false }
+}
+]
+</pre>
+
+        <div class="pacem-panel">
+            <div class="panel-body">
+                <pacem-form id="frm1" autogenerate="true" metadata="{{ JSON.parse(#metadata1.textContent) }}" entity="{{ #entity1.model, twoway }}"></pacem-form>
+            </div>
+            <div class="panel-footer display-flex">
+                <label class="pacem-margin margin-right-2">readonly</label>
+                <pacem-checkbox class="checkbox-switch" true-value="true" false-value="false" value="{{ #frm1.readonly, twoway }}"></pacem-checkbox>
+                <pacem-data model='{ "tags": ["tag #1", "tag #2"] }' id="entity1"></pacem-data>
+            </div>
+        </div>
+
+    </template>
+</pacemjs-snippet>
+
+<pacem-tags id="proto" hidden></pacem-tags>
+<pacemjs-descriptor target="#proto"></pacemjs-descriptor>

@@ -1,0 +1,70 @@
+﻿
+
+<pacem-markdown value="{{ #content0.textContent }}" root class="md-tech"></pacem-markdown>
+
+<pre pacem hidden id="content0">
+
+## Canvas- vs SVG-based Adapter
+Feel free to toggle seamlessly between the two possible adapters:
+
+</pre>
+
+<pacemjs-snippet>
+    <template>
+
+        <!-- interactive feedbacks -->
+        <pacem-data id="hovertag1"></pacem-data>
+        <div class="pacem-margin margin-bottom-2">
+            hovering: <b><pacem-text text="{{ #hovertag1.model || '' }}"></pacem-text></b>
+        </div>
+        <pacem-shell-proxy>
+            <pacem-panel class="pacem-toaster toaster-bottom toaster-right" id="toaster0"></pacem-panel>
+        </pacem-shell-proxy>
+
+        <!-- 2D stuff -->
+        <pacem-2d-svg-adapter id="svg0"></pacem-2d-svg-adapter>
+        <pacem-2d-canvas-adapter id="canvas0"></pacem-2d-canvas-adapter>
+        <pacem-data id="adapter0" model="{{ #svg0 }}"></pacem-data>
+        <pacem-2d adapter="{{ #adapter0.model }}" style="height: 210px" viewbox="0,0,200,200" aspect-ratio="xMinYMax meet"
+                  on-draw="console.log('drawn!')"
+                  on-itemout="#hovertag1.model = null"
+                  on-itemover="#hovertag1.model = $event.detail.tag"
+                  on-itemclick="$pacem.poptoast(#toaster0, 'info', 'Clicked: <b>'+ $event.detail.tag + '</b>')">
+
+            <pacem-2d-image x="170" y="50" width="50" src="/assets/pwa_icon_192x192.png" tag="image"></pacem-2d-image>
+            <pacem-2d-rect x="125" y="125" w="125" h="50" stroke="#f40" fill="#fffcc0" tag="rectangle"></pacem-2d-rect>
+            <pacem-2d-circle radius="{{ #slider1.value }}" center="100,100" line-width="10" stroke="#f00" fill="none" tag="circle" dash-array="5,3"></pacem-2d-circle>
+            <pacem-2d-text text="Hello World!" anchor="250,120" text-anchor="end" tag="text"></pacem-2d-text>
+
+        </pacem-2d>
+
+        <!-- radius slider -->
+        <pacem-slider min="25" max="75" step=".25" id="slider1" value="50" thumb-label="true"
+                      on-formatvalue="$event.detail.output = $event.detail.value +'px'"></pacem-slider>
+
+        <pacem-radio-list value="{{ #adapter0.model, twoway }}">
+            <pacem-data-item value="{{ #canvas0 }}" label="Canvas (Context2D)" disabled="true"></pacem-data-item>
+            <pacem-data-item value="{{ #svg0 }}" label="SVG"></pacem-data-item>
+        </pacem-radio-list>
+
+    </template>
+</pacemjs-snippet>
+
+<pacem-markdown value="{{ #content1.textContent }}" root class="md-tech"></pacem-markdown>
+
+<pre pacem hidden id="content1">
+
+## Samples
+More probing samples below:
+
+</pre>
+
+<ul>
+    <li>
+        <pacem-a router="#router" href="/2d/sample-brain">Brain slice neurons plot</pacem-a>
+    </li>
+</ul>
+
+
+<pacem-2d-canvas-adapter id="proto" hidden></pacem-2d-canvas-adapter>
+<pacemjs-descriptor target="#proto"></pacemjs-descriptor>

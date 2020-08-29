@@ -1,0 +1,76 @@
+﻿@import "shared";
+
+
+.@{PCSS}-widget:not(.ui-widget) {
+
+    @_size: @grid_spacing * 2;
+    @_brd: @color_border;
+
+    .IconCore();
+    display: block;
+    width: @_size;
+    height: $width;
+    line-height: @_size - 2px;
+    font-size: @_size * .707;
+    text-align: center;
+    box-sizing: border-box;
+
+    &[data-icon]::before {
+        content: attr(data-icon);
+        color: fade(@_brd, 100);
+    }
+
+    border: 1px solid @_brd;
+
+    &when (@border_radius > 0) {
+        border-radius: 50%;
+    }
+
+    &when (@border_radius = 0) {
+        @brd1: fade(@_brd, 100);
+        @brd2: escape("@{brd1}");
+        background-origin: border-box;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Cpath stroke='@{brd2}' fill='transparent' stroke-width='1' d='M0,6 V0 H6 M42,0 H48 V6 M48,42 V48 H42 M6,48 H0 V42'%3E%3C/path%3E%3C/svg%3E");
+    }
+
+    &.widget-editing {
+        line-height: @_size - 4px;
+        border-style: dashed;
+        border-width: 2px;
+        background-image: none;
+    }
+}
+
+.@{PCSS}-widget.ui-widget {
+    display: block;
+    position: relative;
+
+    &.widget-editing {
+        border: 2px dashed @color_border;
+    }
+
+    &.@{PCSS}-dragging.drag-placeholder,
+    &.@{PCSS}-rescalable.@{PCSS}-rescaling {
+        opacity: .5;
+        pointer-events: none;
+        background-color: fade(@color_primary, 50);
+    }
+}
+
+@{P}-widget-toolbar {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: nowrap;
+
+    > * {
+        flex: 1 0 auto;
+    }
+
+    > .toolbar-text {
+        .Ellipsed();
+        max-width: 120px;
+    }
+}

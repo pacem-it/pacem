@@ -1,0 +1,32 @@
+{
+  "version": "0.10.0",
+  "name": "pacem-less",
+  "homepage": "https://js.pacem.it",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pacem-it/pacem.git"
+  },
+  "files": [
+    "pacem/*.less",
+    "pacem/**/*.less",
+    "*.less",
+    "README.md",
+    "LICENSE",
+    "package.json"
+  ],
+  "author": {
+    "name": "Pacem",
+    "url": "https://pacem.it"
+  },
+  "maintainers": [
+    {
+      "name": "Cristian Merighi",
+      "url": "https://pacem.it/blogs/polyhedric"
+    }
+  ],
+  "license": "MIT",
+  "description": "Pacem JS theme generator. LESS-based.",
+  "devDependencies": {
+    "less": "3.11.1"
+  }
+}

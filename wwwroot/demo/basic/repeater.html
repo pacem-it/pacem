@@ -1,0 +1,184 @@
+﻿<pacem-markdown value="{{ #content0.textContent }}" class="md-tech" root></pacem-markdown>
+
+<pre pacem hidden id="content0">
+
+`PacemRepeaterElement` is the element that allows to iterate through arrays, contextualizing data into portions of DOM.  
+All it needs is a `&lt;template>` descendant that represents the item DOM. For instance:
+
+```html
+&lt;pacem-repeater datasource="{{ ['apples', 'apricots', 'raspberries'] }}">
+    &lt;ul>
+        &lt;li>Fruit:&lt;/li>
+        &lt;template>
+            &lt;li>&lt;pacem-text text="{{ ^item }}">&lt;pacem-text>&lt;/li>
+        &lt;/template>
+    &lt;/ul>
+&lt;/pacem-repeater>
+```
+
+## Bindings
+
+`^item` and `^index` are the accessors respectively to the **data**-item and to the item-**index**.  
+Iterations can be nested and multi-level. In order to access upper-level items just prefix `^item` and `^index` with the proper number of `^`.
+
+See example below:
+
+</pre>
+
+<pacemjs-snippet>
+    <template>
+        <pacem-data id="myArray"
+                    model="{{ [{name: 'Newton', born: 1642, books: [{ name: 'Principia Mathematica', year: 1687 }, { name: 'Arithmetica Universalis', year: 1707 }]}, {name: 'Gauss', born: 1777, books: [{ name: 'Disquisitiones Arithmeticae', year: 1801 }]}] }}"></pacem-data>
+
+        <pacem-repeater datasource="{{ #myArray.model }}">
+            <ol class="pacem-list list-unstyled">
+                <template>
+                    <li class="pacem-margin margin-bottom-3">
+                        <pacem-text text="{{ ^index+1 }}"></pacem-text>. <b><pacem-text text="{{ ^item.name }}"></pacem-text></b> (born: <b><pacem-text text="{{ ^item.born }}"></pacem-text></b>)
+                        <p>some books:</p>
+                        <pacem-repeater datasource="{{ ^item.books }}">
+                            <ul class="pacem-list list-unstyled">
+                                <template>
+                                    <li><i class="pacem-icon">chevron_right</i> <i><pacem-text text="{{ ^item.name }}"></pacem-text></i> (<b><pacem-text text="{{ ^item.year - ^^item.born }}"></pacem-text></b>yo)</li>
+                                </template>
+                            </ul>
+                        </pacem-repeater>
+
+                    </li>
+                </template>
+            </ol>
+        </pacem-repeater>
+    </template>
+</pacemjs-snippet>
+
+
+<pacem-markdown value="{{ #content2.textContent }}" class="md-tech" root></pacem-markdown>
+<pre pacem hidden id="content2">
+
+## Item Commands
+
+Items in a repeater can bubble item-relevant command events. The command name can be generic a generic:
+
+Intercepting the item-command is as simple as writing the handler attiibute on-...
+```html
+
+&lt;pacem-repeater on-itemcommand="dosomethingWith($event.detail)">
+    &lt;template>
+        &lt;pacem-button command-name="foo" command-argument="{{ ^item }}">foo&lt;/pacem-button>
+...
+```
+The custom event `detail` property carries the following payload:
+- `commandName`: string,
+- `commandArgument`: any
+
+
+Shortcuts for **standard** item-commands like **select**, **edit** and **delete** are also provided.
+```html
+
+&lt;pacem-repeater on-itemselect="selectAt($event.detail)" on-itemdelete="delete($event.detail)">
+    &lt;template>
+        &lt;pacem-button command-name="select" command-argument="{{ ^index }}">select&lt;/pacem-button>
+        &lt;pacem-button command-name="delete" command-argument="{{ ^item }}">delete&lt;/pacem-button>
+...
+```
+
+In this case, the custom event `detail` property carries only:
+- `commandArgument`: any
+
+The most common 'use case' for an editable list, in its quickest fashion.
+
+</pre>
+
+<pacemjs-snippet>
+    <template>
+
+        <!-- datasource -->
+        <pacem-data id="todos2" model="[{ done: false, todo: 'fill this list' }]"></pacem-data>
+
+        <p>Purely declarative TODO list</p>
+        <h4 class="pacem-margin margin-bottom-3">TODO list (<pacem-text text="{{ #todos2.model.filter(t => !t.done).length }}"></pacem-text>)</h4>
+
+        <!-- list -->
+        <pacem-repeater datasource="{{  #todos2.model }}" on-itemdelete="#todos2.model.splice($event.detail, 1)">
+            <template>
+
+                <div class="pacem-fieldgroup pacem-margin margin-bottom-1">
+                    <pacem-input-text value="{{ ^item.todo, twoway }}"></pacem-input-text>
+                    <div class="fieldgroup-prepend">
+                        <pacem-checkbox class="checkbox-naked pacem-margin margin-left-1" value="{{ ^item.done, twoway }}" true-value="true" false-value="false"></pacem-checkbox>
+                    </div>
+                    <div class="fieldgroup-append">
+                        <pacem-button command-name="delete" command-argument="{{ ^index }}" class="flat delete pacem-margin margin-right-1 margin-bottom-0"></pacem-button>
+                    </div>
+                </div>
+
+            </template>
+        </pacem-repeater>
+
+        <pacem-button class="flat add" on-click="#todos2.model.push({ todo: 'New Task' })"></pacem-button>
+
+    </template>
+</pacemjs-snippet>
+
+<pacem-markdown value="{{ #content1.textContent }}" class="md-tech" root></pacem-markdown>
+<pre pacem hidden id="content1">
+
+## Tree View
+**Template proxying**: a special custom element (`&lt;pacem-template-proxy>`) might be allowed in place of a standard `&lt;template>`.  
+The `PacemTemplateProxyElement` webcomponent allows to reference an external template, which can be used as the repeater's item template. This enables **recursive loop** scenarios.
+
+</pre>
+
+<pacemjs-snippet>
+    <template>
+
+        <pre id="json1" hidden>
+[{  
+    "name": "root", 
+    "children": [{
+        "name": "branch1",
+        "children": [
+            { "name": "leaf1"},
+            { "name": "leaf2"},
+            { "name": "leaf3"}
+        ]
+    },{
+        "name": "branch2",
+        "children": [
+            { "name": "leaf4"},
+            { "name": "leaf5"}
+        ]
+    }]
+}]
+</pre>
+        <!-- tree data -->
+        <pacem-data model="{{ JSON.parse(#json1.textContent) }}" id="data1"></pacem-data>
+
+        <!-- referenced template -->
+        <template id="tmpl1">
+            <li>
+                <pacem-text text="{{ ^item.name }}"></pacem-text>
+                <pacem-repeater datasource="{{ ^item.children || [] }}">
+                    <ul class="pacem-list">
+                        <!-- recursion here -->
+                        <pacem-template-proxy target="#tmpl1"></pacem-template-proxy>
+                    </ul>
+                </pacem-repeater>
+            </li>
+        </template>
+
+        <!-- main repeater -->
+        <pacem-repeater datasource="{{ #data1.model }}">
+            <ul class="pacem-list">
+                <pacem-template-proxy target="#tmpl1"></pacem-template-proxy>
+            </ul>
+        </pacem-repeater>
+
+    </template>
+</pacemjs-snippet>
+
+<pacem-repeater id="proto">
+    <template>
+    </template>
+</pacem-repeater>
+<pacemjs-descriptor target="#proto"></pacemjs-descriptor>

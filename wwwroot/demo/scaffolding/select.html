@@ -1,0 +1,106 @@
+﻿
+
+<pacem-markdown value="{{ #content0.textContent }}" root class="md-tech"></pacem-markdown>
+
+<pre pacem hidden id="content0">
+
+## Databinding
+The select scaffolding component (combobox) simply wraps the standard `&lt;select>` element.  
+It provides nonetheless **databinding capabilities** for handy connects against datasources:
+
+</pre>
+
+<pacemjs-snippet>
+    <template>
+
+        <pacem-select id="fruit0" placeholder="pick a fruit..." datasource="{{ ['apples', 'bananas', 'cucumbers', 'dates', 'elderberries', 'figs', 'grapefruits', 'hackberries'] }}"></pacem-select>
+
+        <div class="pacem-margin margin-top-3">
+            value:
+            <code><pacem-text text="{{ #fruit0.value }}"></pacem-text></code>
+        </div>
+    </template>
+</pacemjs-snippet>
+
+<pacemjs-snippet>
+    <template>
+
+        <pacem-select id="fruit00" placeholder="pick a fruit..." datasource="{{ [{name: 'apples'}, {name: 'bananas'}, {name: 'cucumbers'}, {name: 'dates', disabled: true}, {name: 'elderberries'}, {name: 'figs'}, {name: 'grapefruits'}, {name: 'hackberries'}] }}"
+                      value-property="name" text-property="name" disabled-property="disabled"></pacem-select>
+
+        <div class="pacem-margin margin-top-3">
+            value:
+            <code><pacem-text text="{{ #fruit00.value }}"></pacem-text></code>
+        </div>
+    </template>
+</pacemjs-snippet>
+
+<pacem-markdown value="{{ #content1.textContent }}" root class="md-tech"></pacem-markdown>
+
+<pre pacem hidden id="content1">
+
+## Declarative usage
+Same results can be achieved in a more declarative way by wrapping a list of `&lt;pacem-data-item>` elements.
+>  Any `PacemDatasourceElement` can wrap `&lt;pacem-data-item>` elements as a datasource.
+</pre>
+
+<pacemjs-snippet>
+    <template>
+        <pacem-select id="fruit1" placeholder="pick a fruit...">
+            <pacem-data-item value="apples"></pacem-data-item>
+            <pacem-data-item value="bananas"></pacem-data-item>
+            <pacem-data-item value="cucumbers"></pacem-data-item>
+            <pacem-data-item disabled="true" value="dates"></pacem-data-item>
+            <pacem-data-item value="elderberries"></pacem-data-item>
+            <pacem-data-item value="figs"></pacem-data-item>
+            <pacem-data-item value="grapefruits"></pacem-data-item>
+            <pacem-data-item value="hackberries"></pacem-data-item>
+        </pacem-select>
+
+        <div class="pacem-margin margin-top-3">
+            value:
+            <code><pacem-text text="{{ #fruit1.value }}"></pacem-text></code>
+        </div>
+    </template>
+</pacemjs-snippet>
+
+<pacem-markdown value="{{ #content2.textContent }}" root class="md-tech"></pacem-markdown>
+
+<pre pacem hidden id="content2">
+
+## Default option
+The default - empty - option is **on by default** and shows the `placeholder` value, if provided.  
+Even if `required` as a field, the end-user should be asked to pick an option and not be unaware "victim" of automatic selections.
+
+If preventing the default option is mandatory, then just set `emptyOption` property to `false`. See the behavior below:
+
+</pre>
+
+<pacemjs-snippet>
+    <template>
+
+        <pacem-select id="fruit2" placeholder="pick a fruit...">
+            <pacem-data-item value="apples"></pacem-data-item>
+            <pacem-data-item value="bananas"></pacem-data-item>
+            <pacem-data-item value="cucumbers"></pacem-data-item>
+            <pacem-data-item value="dates"></pacem-data-item>
+            <pacem-data-item value="elderberries"></pacem-data-item>
+            <pacem-data-item value="figs"></pacem-data-item>
+            <pacem-data-item value="grapefruits"></pacem-data-item>
+            <pacem-data-item value="hackberries"></pacem-data-item>
+        </pacem-select>
+
+        <div class="pacem-margin margin-top-3 pacem-grid">
+            <div class="pacem-cell cols-hd-2 cols-6 cols-xs-12">
+                <pacem-checkbox true-value="true" false-value="false" value="{{ #fruit2.emptyOption, twoway }}" caption="{{ 'default option '+ ( $this.value ? 'on' : 'off' ) }}"></pacem-checkbox>
+            </div>
+            <div class="pacem-cell cols-hd-10 cols-6 cols-xs-12">
+                value:
+                <code><pacem-text text="{{ #fruit2.value }}"></pacem-text></code>
+            </div>
+        </div>
+    </template>
+</pacemjs-snippet>
+
+<pacem-select id="proto" hidden></pacem-select>
+<pacemjs-descriptor target="#proto"></pacemjs-descriptor>

@@ -1,0 +1,33 @@
+﻿
+
+<pacem-markdown value="{{ #content0.textContent }}" class="md-tech" root></pacem-markdown>
+
+<pre pacem hidden id="content0">
+## Datetime
+`PacemDatetimePickerElement` is the suggested webcomponent for date editing. 
+</pre>
+
+<pacemjs-snippet>
+    <template>
+
+        <div class="pacem-panel">
+            <div class="panel-body">
+                <pacem-form id="frm0">
+                    <pacem-datetime-picker precision="second" name="from" readonly="{{ #frm0.readonly }}" value="{{ Date.now() }}" id="dte0"></pacem-datetime-picker>
+                </pacem-form>
+            </div>
+            <div class="panel-footer display-flex flex-middle">
+                <pacem-span on-click="#frm0.reset()" hide="{{ !#frm0.dirty }}" class="pacem-clickable  pacem-margin margin-right-1">
+                    <i class="pacem-icon text-success text-big">undo</i>
+                </pacem-span>
+                <label class="pacem-margin margin-right-2">readonly</label>
+                <pacem-checkbox class="checkbox-switch" true-value="true" false-value="false" value="{{ #frm0.readonly, twoway }}"></pacem-checkbox>
+            </div>
+        </div>
+
+    </template>
+</pacemjs-snippet>
+
+
+<pacem-input-number id="proto" hidden></pacem-input-number>
+<pacemjs-descriptor target="#proto"></pacemjs-descriptor>

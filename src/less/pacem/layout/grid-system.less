@@ -1,0 +1,183 @@
+﻿@import "shared";
+@import "../../shared";
+@import "../theme-dark";
+
+/* #region FLEXBOX */
+
+.Cells (@prefix, @count, @index) when (@index > 0 ) {
+
+    &.@{prefix}-@{index} {
+        flex-grow: 0;
+        flex-basis: 100% * @index / @count;
+    }
+    // next iteration
+    .Cells(@prefix, @count, @index - 1);
+}
+
+.CellsMid (@prefix, @mid, @count, @index) when (@index > 0 ) {
+
+    &.@{prefix}-@{mid}-@{index} {
+        flex-grow: 0;
+        flex-basis: 100% * @index / @count;
+    }
+    // next iteration
+    .CellsMid(@prefix, @mid, @count, @index - 1);
+}
+
+.Cells (@prefix, @count) {
+    .Cells(@prefix, @count, @count);
+}
+
+.CellsMid (@prefix, @mid, @count) {
+    .CellsMid(@prefix, @mid, @count, @count);
+}
+
+/* #endregion */
+
+.@{PCSS}-flex,
+.@{PCSS}-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    margin-left: -@panel_spacing;
+    margin-right: $margin-left;
+    align-items: stretch;
+}
+
+.@{PCSS}-flex.flex-vertical {
+    flex-direction: column;
+}
+
+.@{PCSS}-row .@{PCSS}-column,
+.@{PCSS}-flex .@{PCSS}-box {
+    margin: 0;
+    padding: 0 @panel_spacing @panel_spacing * 2 @panel_spacing;
+    box-sizing: border-box;
+}
+
+.@{PCSS}-row .@{PCSS}-column,
+.@{PCSS}-flex .@{PCSS}-box {
+    flex-basis: auto;
+    flex-shrink: 1;
+    flex-grow: 1;
+}
+
+.@{PCSS}-row .@{PCSS}-column {
+    .Cells(col, 12);
+}
+
+.@{PCSS}-flex .@{PCSS}-box {
+    .Cells(box, 12);
+}
+
+@media (max-width: @threshold_sm - 1)  {
+
+    .@{PCSS}-row .@{PCSS}-column {
+        .CellsMid(col, xs, 12);
+    }
+
+    .@{PCSS}-flex .@{PCSS}-box {
+        .CellsMid(box, xs, 12);
+    }
+}
+
+@media (min-width: @threshold_sm) {
+
+    .@{PCSS}-row .@{PCSS}-column {
+        .CellsMid(col, sm, 12);
+    }
+
+    .@{PCSS}-flex .@{PCSS}-box {
+        .CellsMid(box, sm, 12);
+    }
+}
+
+@media (min-width: @threshold_md) {
+
+    .@{PCSS}-row .@{PCSS}-column {
+        .CellsMid(col, md, 12);
+    }
+
+    .@{PCSS}-flex .@{PCSS}-box {
+        .CellsMid(box, md, 12);
+    }
+}
+
+@media (min-width: @threshold_lg) {
+
+    .@{PCSS}-row .@{PCSS}-column {
+        .CellsMid(col, lg, 12);
+    }
+
+    .@{PCSS}-flex .@{PCSS}-box {
+        .CellsMid(box, lg, 12);
+    }
+}
+
+@media (min-width: @threshold_xl) {
+
+    .@{PCSS}-row .@{PCSS}-column {
+        .CellsMid(col, xl, 12);
+    }
+
+    .@{PCSS}-flex .@{PCSS}-box {
+        .CellsMid(box, xl, 12);
+    }
+}
+
+@media (min-width: @threshold_hd) {
+
+    .@{PCSS}-row .@{PCSS}-column {
+        .CellsMid(col, hd, 12);
+    }
+
+    .@{PCSS}-flex .@{PCSS}-box {
+        .CellsMid(box, hd, 12);
+    }
+}
+
+@media (min-width: @threshold_2k) {
+
+    .@{PCSS}-row .@{PCSS}-column {
+        .CellsMid(col, 2k, 12);
+    }
+
+    .@{PCSS}-flex .@{PCSS}-box {
+        .CellsMid(box, 2k, 12);
+    }
+}
+
+@media (min-width: @threshold_4k) {
+
+    .@{PCSS}-row .@{PCSS}-column {
+        .CellsMid(col, 4k, 12);
+    }
+
+    .@{PCSS}-flex .@{PCSS}-box {
+        .CellsMid(box, 4k, 12);
+    }
+}
+
+@media (orientation: portrait) {
+
+    .@{PCSS}-row .@{PCSS}-column {
+        .CellsMid(col, v, 12); // v := vertical
+    }
+
+    .@{PCSS}-flex .@{PCSS}-box {
+        .CellsMid(box, v, 12); // v := vertical
+    }
+}
+
+.@{PCSS}-flex {
+    flex-wrap: wrap;
+}
+
+.@{PCSS}-body.@{PCSS}-animations {
+    .@{PCSS}-column.@{PCSS}-animatable,
+    .@{PCSS}-column.@{PCSS}-anim,
+    .@{PCSS}-box.@{PCSS}-animatable,
+    .@{PCSS}-box.@{PCSS}-anim {
+        transition: flex-basis .333s @easing_in_out_sine;
+    }
+}

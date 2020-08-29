@@ -1,0 +1,75 @@
+﻿@import "../theme-dark";
+@import "../ui/shared";
+
+.pos-relative {
+    position: relative;
+}
+.pos-absolute {
+    position: absolute;
+
+    &.absolute-top {
+        top: 0;
+    }
+
+    &.absolute-left {
+        left: 0;
+    }
+
+    &.absolute-bottom {
+        bottom: 0;
+    }
+
+    &.absolute-right {
+        right: 0;
+    }
+}
+.pos-static {
+    position: static;
+}
+.pos-fixed {
+    position: fixed;
+    z-index: @hamburger-z-index - 100;
+
+    &.fixed-top {
+        top: 0;
+    }
+
+    &.fixed-left {
+        left: 0;
+    }
+
+    &.fixed-bottom {
+        bottom: 0;
+    }
+
+    &.fixed-right {
+        right: 0;
+    }
+}
+.pos-sticky {
+    position: sticky;
+    top: 0;
+    z-index: @hamburger-z-index - 100;
+
+    &.sticky-top {
+        top: 0;
+    }
+
+    &.sticky-bottom {
+        bottom: 0;
+    }
+}
+
+// kept names from known bootstrap classes
+.caret,
+.pull-right {
+    float: right;
+}
+
+.pull-left {
+    float: left;
+}
+
+.clearfix {
+    clear: both;
+}

@@ -1,0 +1,241 @@
+﻿@import "../../shared";
+@import "../theme-dark";
+@import "../layout/shared";
+
+@field_min_width: 199px;
+@field_min_width_wide: 417px;
+@field_forecolor: @color_field_fore;
+@field_focus_forecolor: @color_field_fore_focus;
+
+@field_left: @grid_spacing * 5 / 6;
+@field_height: @grid_spacing * 1.25;
+@input_padding_horiz: @grid_spacing / 3;
+
+@field_readonly_top: .2 * (@field_height / 1.5);
+@field_icon_size: 1.1rem * @font_rem_factor;
+@field_padding_top: @grid_spacing/3;
+@field_minimal_label_height: @field_minimal_fontsize * @font_size * 1.5625;
+
+.LabelTopMargin() {
+    & when (@border_field_underline = false) {
+        margin-top: @field_padding_top + @field_readonly_top + @border_field_size;
+    }
+
+    & when (@border_field_underline = true) {
+        margin-top: @field_padding_top + @field_readonly_top;
+    }
+}
+
+.Watermark() {
+    color: @color_watermark;
+    font-style: italic;
+    font-family: @font_std;
+    //font-size: .86em;
+}
+
+.Outline(@clr) when (@field_outline_width > 0) {
+    .Outline(@field_outline_width, @clr);
+}
+
+.Outline(@width, @clr) {
+    // hack: since outline has no outline-radius support
+    box-shadow: 0 0 0 @width @clr;
+}
+
+.NoOutline() {
+    box-shadow: none;
+}
+
+.FormFieldItemFocused() {
+    color: @field_focus_forecolor;
+
+    .@{PCSS}-input,
+    .@{PCSS}-viewfinder {
+        border-color: fade(@color_default, 40);
+        .Outline(@color_field_outline);
+    }
+}
+
+.FormFieldItemBorder() {
+    .FormFieldItemBorders();
+    border-color: fade(@color_default, 20);
+}
+
+.FormFieldItemInline() {
+    min-width: 0;
+    width: 100%;
+    line-height: @field_height;
+}
+
+.FormFieldItemMultiline() {
+    min-width: @field_min_width_wide;
+
+    textarea.@{PCSS}-input {
+        line-height: 1.5;
+        display: block;
+        width: 100%;
+        resize: none;
+    }
+}
+
+.FormFieldStretch() {
+    display: flex;
+    align-content: stretch;
+    align-items: stretch;
+
+    > [pacem] {
+        flex: 1 0 100%;
+    }
+}
+
+.FormFieldItem() {
+    .FormFieldItem(@field_height);
+}
+
+.FormFieldItem(@f_height) {
+    padding: 0 @input_padding_horiz;
+
+    &when (@border_field_underline = true) {
+        .FormFieldItemSize(@f_height, @border_field_size);
+    }
+
+    &when (@border_field_underline = false) {
+        .FormFieldItemSize(@f_height, 2 * @border_field_size);
+    }
+    //background: none;
+    box-sizing: border-box;
+    color: @field_forecolor;
+
+    .Watermark() {
+        color: @color_watermark;
+        font-style: italic;
+        font-family: @font_std;
+        //font-size: .86em;
+    }
+
+    &::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+        .Watermark();
+    }
+
+    &::-moz-placeholder { /* Firefox 19+ */
+        .Watermark();
+    }
+
+    &:-ms-input-placeholder { /* IE 10+ */
+        .Watermark();
+    }
+
+    &:-moz-placeholder { /* Firefox 18- */
+        .Watermark();
+    }
+}
+
+.FormFieldItemSize(@f_height, @brds) {
+    .FontStd(1.1 * @f_height / @field_height);
+    min-height: @f_height + @brds;
+}
+
+.FormFieldItemWrapper() {
+    //
+    font-size: 1em;
+    position: relative;
+    display: block;
+    /*&when (@field_outline_width > 0) {
+        margin: @field_outline_width;
+    }*/
+    @media (min-width: @threshold_lg) {
+
+        &:not(.field-stretch) {
+            min-width: @field_min_width;
+            display: inline-block;
+        }
+    }
+
+    .@{PCSS}-viewfinder,
+    .@{PCSS}-input {
+        .FormFieldItemBorder();
+        background-color: @color_input_back;
+        border-radius: @border_input_radius;
+    }
+
+    .@{PCSS}-viewfinder {
+        // nested .@{PCSS}-input ot .@{PCSS}-viewfinder don't show borders
+        .@{PCSS}-input,
+        .@{PCSS}-viewfinder {
+            border: none;
+            border-radius: 0;
+            background: none;
+        }
+
+        .@{PCSS}-input {
+            padding: 0;
+        }
+    }
+
+    &.@{PCSS}-focus {
+        .FormFieldItemFocused();
+
+        &.@{PCSS}-outline when (@field_outline_width = 0) {
+            .@{PCSS}-input,
+            .@{PCSS}-viewfinder {
+                .Outline(2px, @color_default);
+            }
+        }
+
+        .@{PCSS}-viewfinder {
+            // nested .@{PCSS}-input ot .@{PCSS}-viewfinder don't show outline when focused
+            .@{PCSS}-input,
+            .@{PCSS}-viewfinder {
+                .NoOutline();
+            }
+        }
+    }
+
+    .@{PCSS}-readonly {
+        .FontStdSize(1.1);
+        display: block;
+        min-height: @field_height;
+        line-height: 1.5;
+        margin-bottom: @border_field_size; // <- replaces the bottom border
+        & when (@border_field_underline = true) {
+            margin-top: 0; //@field_readonly_top;
+        }
+
+        & when (@border_field_underline = false) {
+            margin-top: /*@field_readonly_top +*/ @border_field_size; // <- replaces the top border
+        }
+    }
+
+    *[hidden] {
+        display: none !important;
+    }
+}
+
+.FormFieldIcon(@icon) {
+    position: relative;
+    @_pad: @input_padding_horiz;
+
+    .@{PCSS}-input {
+        padding-left: @field_height;
+        box-sizing: border-box;
+    }
+
+    &::before {
+        .Icon(@icon, @field_icon_size); //@field_left);
+        line-height: @field_height;
+        left: @_pad;
+        top: 1px; // t.b.d.
+    }
+}
+
+.FormFieldLabelIcon(@icon) {
+    padding-left: @grid_spacing;
+
+    &::before {
+        .Icon(@icon, @field_icon_size);
+        line-height: 1.5 * 1.1 * @font_rem_factor;
+        color: @color_input_toggle;
+        left: 0;
+        top: 0; // @input_padding_horiz / 1.5;
+    }
+}

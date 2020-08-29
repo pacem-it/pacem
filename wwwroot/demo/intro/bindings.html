@@ -1,0 +1,80 @@
+﻿<pacem-markdown value="{{ #content0.textContent }}" root class="md-tech"></pacem-markdown>
+
+<pre pacem hidden id="content0">
+##  Properties vs Attributes
+
+Based on [CustomElements-v1](http://www.w3.org/TR/custom-elements/),
+**Pacem JS** identifies the observable attributes of its components via `@Watch` decorators (**ES2017** feature) on the corresponding properties, we'll return on that in a near future.  
+Observable attributes are *evaluated* the **MVVM** way in the declarative markup either as a static or dynamic outcome (**binding**). Bindings have their own peculiar syntax.
+
+The syntax provided for bindings will likely change, but the current state of the art is the following:
+
+- Only `Watched` properties are subject to binding;
+- `Watched` properties are evaluated against their attribute counterpart (properties are the **camelCased** version of the **kebab-cased** attributes, and viceversa);
+- Bindings are explicited with double handlebars `{{...}}` syntax;
+- Bindings can be two-way directional, in that case they have the following form: `{{ ..., **twoway**}}`;
+- Available _Scope_ is the whole DOM. Element references are resolved via `id` attributes, prepending a `#` (like in css selectors).
+
+Example:
+
+</pre>
+
+<pacemjs-snippet>
+    <template id="demo1">
+        <pacem-data id="myModel" 
+                    model="{{ { text: '' } }}" 
+                    persist-as="demoText"></pacem-data>
+
+        <p>type here:</p>
+        <i class="pacem-icon">keyboard</i>
+        <pacem-input-text value="{{ #myModel.model.text, twoway }}"></pacem-input-text>
+
+        <p></p>
+        <p>see result here:</p>
+        <p>
+            <i class="pacem-icon">compare_arrows</i>
+            <pacem-text text="{{ #myModel.model.text }}"></pacem-text>
+        </p>
+    </template>
+</pacemjs-snippet>
+
+<pacem-markdown value="{{ #content1.textContent }}" root></pacem-markdown>
+
+<pre pacem hidden id="content1">
+
+##  Other Bindings
+
+Bindings might also want to refer to:
+
+- The element itself, then use `{{ this.property }}`;
+- A dynamic `RepeaterItem` inside a `&lt;pacem-repeater>`, then use `{{ ^item.property }}` to access the current item properties, or `{{ ^index }}` for the current item index;
+- **Nested** repeaters: to access upper level dynamic items just prepend more `^`! 
+
+Example:
+</pre>
+
+<pacemjs-snippet>
+    <template id="demo2">
+        <pacem-data id="myArray"
+                    model="{{ [{name: 'Newton', born: 1642, books: [{ name: 'Principia Mathematica', year: 1687 }, { name: 'Arithmetica Universalis', year: 1707 }]}, {name: 'Gauss', born: 1777, books: [{ name: 'Disquisitiones Arithmeticae', year: 1801 }]}] }}"></pacem-data>
+
+        <pacem-repeater datasource="{{ #myArray.model }}">
+            <ol class="pacem-list list-unstyled">
+                <template>
+                    <li>
+                        <b><pacem-text text="{{ ^index+1 }}"></pacem-text></b>. <pacem-text text="{{ ^item.name }}"></pacem-text> (born: <pacem-text text="{{ ^item.born }}"></pacem-text>)
+                        <p>some books:</p>
+                        <pacem-repeater datasource="{{ ^item.books }}">
+                            <ul class="pacem-list list-unstyled">
+                                <template>
+                                    <li>&gt; <pacem-text text="{{ ^item.name }}"></pacem-text> (<pacem-text text="{{ ^item.year - ^^item.born }}"></pacem-text>yo)</li>
+                                </template>
+                            </ul>
+                        </pacem-repeater>
+                        ---
+                    </li>
+                </template>
+            </ol>
+        </pacem-repeater>
+    </template>
+</pacemjs-snippet>

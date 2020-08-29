@@ -1,0 +1,91 @@
+﻿
+
+<pacem-markdown value="{{ #content0.textContent }}" root></pacem-markdown>
+
+<pre pacem hidden id="content0">
+## Dynamic Audio
+
+`PacemAudioElement` allows to dynamically play audio files.
+
+</pre>
+
+<pacemjs-snippet>
+    <template>
+
+        <!-- the Audio element -->
+        <pacem-audio id="audio1" src="{{ #select1.value }}" autoplay="{{ #autoplay1.value }}" on-end="#disabler1.model = false"></pacem-audio>
+
+        <!-- disabled state viewmodel (keeps the button disabled while playing) -->
+        <pacem-data id="disabler1"></pacem-data>
+
+        <div class="pacem-fieldset">
+            <div class="fieldset-left">
+                <div class="pacem-fieldgroup">
+
+                    <!-- fx options -->
+                    <pacem-select value="/assets/multimedia/Button 1.m4a" id="select1" empty-option="false">
+                        <pacem-data-item value="/assets/multimedia/Button 1.m4a" label="Button 1"></pacem-data-item>
+                        <pacem-data-item value="/assets/multimedia/Button 2.m4a" label="Button 2"></pacem-data-item>
+                        <pacem-data-item value="/assets/multimedia/Button 3.m4a" label="Button 3"></pacem-data-item>
+                        <pacem-data-item value="/assets/multimedia/Button 4.m4a" label="Button 4"></pacem-data-item>
+                        <pacem-data-item value="/assets/multimedia/Button 5.m4a" label="Button 5"></pacem-data-item>
+                        <pacem-data-item value="/assets/multimedia/Button 6.m4a" label="Button 6"></pacem-data-item>
+                        <pacem-data-item value="/assets/multimedia/Button 7.m4a" label="Button 7"></pacem-data-item>
+                    </pacem-select>
+                    <div class="fieldgroup-prepend pacem-pad pad-left-1">
+
+                        <!-- play button -->
+                        <pacem-button disabled="{{ #disabler1.model }}" icon-glyph="play_arrow"
+                                      hide="{{ #autoplay1.value }}"
+                                      class="button-accent button-circle circle-smaller pacem-anim anim-pop anim-sudden anim-quick"
+                                      on-click="#audio1.play().then(_ => { #disabler1.model = true; })"></pacem-button>
+                    </div>
+                </div>
+                <div class="pacem-fieldgroup">
+                    <!-- autoplay mode -->
+                    <pacem-checkbox true-value="true" false-value="false" id="autoplay1" caption="autoplay"></pacem-checkbox>
+                    <div class="fieldgroup-append">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="pacem-pad pad-1 pacem-margin margin-top-1">Select a button fx from the drop-down, then click the "play" button on the left.</div>
+        <div class="bg-invert pacem-pad pad-1 pacem-margin margin-y-1">Thanks to <a href="https://facebook.design/soundkit" target="_blank">Facebook Sound Kit</a> for providing such great sound effects.</div>
+
+    </template>
+</pacemjs-snippet>
+
+<pre pacem hidden id="content0">
+## Combine it with Vibration
+
+Sound/Audio can be annoying when they pop out from a desktop computer in a quiet environment (office). On the contrary, they may give a precious feedback
+while using a mobile device, perhaps alongside with some vibration.
+
+Let's put together a quick sample that takes in consideration all that we just said.
+
+</pre>
+
+<pacemjs-snippet>
+    <template>
+
+        <!-- checks for screen wider than 1200 -->
+        <pacem-media-query query="{{ Pacem.Components.UI.MEDIAQUERY_MD }}" id="largeScreen2"></pacem-media-query>
+
+        <!-- vibration component -->
+        <pacem-vibrate pattern="100" disabled="{{ #largeScreen2.isMatch }}" id="vibrate2"></pacem-vibrate>
+        <!-- audio component -->
+        <pacem-audio src="/assets/multimedia/Button 1.m4a" disabled="{{ #largeScreen2.isMatch }}" id="audio2" on-end="#ringing2.model = false"></pacem-audio>
+
+        <!-- disabled state viewmodel (keeps the button disabled while playing) -->
+        <pacem-data id="ringing2"></pacem-data>
+
+        <pacem-button on-click="#audio2.play().then(_ => { #ringing2.model = true; #vibrate2.vibrate(); })" class="button button-primary"
+                      icon-glyph="{{ #ringing2.model ? 'notifications_active' : 'notifications' }}">Accept notification</pacem-button>
+
+        <div class="pacem-pad pad-1 pacem-margin margin-top-1">Click the button above on screens narrower than 1200px to experience sound + vibration.</div>
+
+    </template>
+</pacemjs-snippet>
+
+<pacem-audio id="proto" hidden></pacem-audio>
+<pacemjs-descriptor target="{{ #proto }}"></pacemjs-descriptor>
