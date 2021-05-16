@@ -25,6 +25,7 @@ const PREFETCHED = [
     '/dist/css/pacem-phousys-content.min.css',
     '/polyfills/documentfragment.edge.js',
     '/polyfills/custom-elements.min.js',
+    '/dist/js/pacem-foundation.js',
     '/dist/js/pacem-core.js',
     '/dist/js/pacem-ui.js',
     '/dist/js/pacem-scaffoldings.js',
@@ -56,7 +57,9 @@ function _tryCache(request, response) {
             }
         }
         const cache = yield caches.open(CACHE_KEY);
-        cache.put(request, response.clone());
+        if (response.status === 200) {
+            cache.put(request, response.clone());
+        }
     });
 }
 const _cacheFirst = (evt) => {

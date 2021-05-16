@@ -73,7 +73,7 @@ namespace Pacem.Components.Scaffolding {
         </${P}-panel>
     </template>
     </div>
-    <${P}-button tab-order="-1" class="flat circular circle-small add" hide="{{ :host.lockItems || :host.readonly || :host.mode !== 'array' }}" on-click=":host._addItem($event)"></${P}-button>
+    <${P}-button tab-order="-1" class="flat circular circle-small add" hide="{{ :host.lockItems || :host.readonly || !(:host.mode === 'array' || $pacem.isNullOrEmpty(:host._model)) }}" on-click=":host._addItem($event)"></${P}-button>
 </${P}-repeater>
 <div class="${PCSS}-childform-item-floater ${PCSS}-panel panel-border">
     <div class="corner top-left"></div><div class="corner top-right"></div><div class="corner bottom-left"></div><div class="corner bottom-right"></div>
@@ -187,19 +187,24 @@ namespace Pacem.Components.Scaffolding {
             // prevent the event to bubble (nested scenarios).
             avoidHandler(evt.srcEvent);
 
+            const model = this._model;
             if (this.mode === 'array') {
-                this._model.splice(evt.detail, 1);
+                model.splice(evt.detail, 1);
             } else {
-                this._model.splice(0, this._model.length, {});
+                model.splice(0, model.length);
             }
             this._triggerChange();
         }
 
         private _addItem(evt: Event) {
-            if (this.mode === 'array') {
-                this._model.push({});
-                this._triggerChange();
+            const mode = this.mode,
+                model = this._model;
+            if (mode === 'array') {
+                model.push({});
+            } else {
+                model.splice(0, model.length, {});
             }
+            this._triggerChange();
         }
 
         private _triggerChange() {
@@ -218,7 +223,11 @@ namespace Pacem.Components.Scaffolding {
                     const model = this._model,
                         length = model.length;
                     if (length !== 1 || model[0] !== entity) {
-                        model.splice(0, length, entity || {});
+                        if (!Utils.isNull(entity)) {
+                            model.splice(0, length, entity);
+                        } else {
+                            model.splice(0, length);
+                        }
                     }
                     break;
             }

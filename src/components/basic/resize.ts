@@ -1,5 +1,4 @@
 ﻿/// <reference path="../../core/decorators.ts" />
-/// <reference path="../../../dist/js/resize-observer.d.ts" />
 /// <reference path="types.ts" />
 
 namespace Pacem.Components {

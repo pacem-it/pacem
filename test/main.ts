@@ -4,9 +4,12 @@
 /// <reference path="geom-tests.ts" />
 /// <reference path="deepclone-tests.ts" />
 /// <reference path="json-tests.ts" />
+/// <reference path="date-tests.ts" />
 /// <reference path="uri-tests.ts" />
 /// <reference path="transformer-tests.ts" />
 /// <reference path="geom2d-tests.ts" />
+/// <reference path="contenteditable-tests.ts" />
+/// <reference path="encoding-tests.ts" />
 
 namespace Pacem.Tests {
 
@@ -29,6 +32,12 @@ namespace Pacem.Tests {
     });
 
     deepCloneTests.forEach(test => {
+
+        describe(test.name, test.test);
+
+    });
+
+    dateTests.forEach(test => {
 
         describe(test.name, test.test);
 
@@ -60,8 +69,25 @@ namespace Pacem.Tests {
 
     mdTests.forEach(test => {
 
+        describe(test.name, test.test);
+
+    });
+
+    mdParserTests.forEach(test => {
+
+        describe(test.name, test.test);
+
+    });
+
+    richTextTests.forEach(test => {
+
         describe(test.name, test.test); 
 
     });
 
+    encodingTests.forEach(test => {
+
+        describe(test.name, test.test);
+
+    });
 }

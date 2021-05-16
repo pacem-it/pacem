@@ -3,6 +3,17 @@
 namespace Pacem.Components.Scaffolding {
 
     const emptyVal = '';
+    const JsonOrStringConverter: PropertyConverter = {
+        convert: (attr, el) => {
+            return /\{.+\}/.test(attr) ? PropertyConverters.Json.convert(attr) : PropertyConverters.String.convert(attr);
+        },
+        convertBack: (prop, el) => {
+            if (typeof prop === 'string') {
+                return prop;
+            }
+            return PropertyConverters.Json.convertBack(prop, el);
+        }
+    };
 
     type MonthSelectDataItem = { value: number, date: Date, label: string };
     type DateSelectDataItem = { value: number, date: Date, label: string, disabled: boolean };
@@ -43,13 +54,13 @@ namespace Pacem.Components.Scaffolding {
     </${ P}-select></${P}-panel>
 
     </div>
-    <${ P}-panel hide="{{ Pacem.Utils.isNullOrEmpty(:host.dateValue) || :host.precision === 'day' || :host.readonly }}">
-    <dl class="${PCSS}-datetime-picker-preview">
-        <dt>local:</dt><dd><${ P}-text text="{{ :host.viewValue }}"></${P}-text></dd>
-        <dt>iso:</dt><dd><${ P}-text text="{{ (:host.dateValue && :host.dateValue.toISOString()) || '' }}"></${P}-text></dd>
-    </dl>
-    </${ P}-panel>
-    <${ P}-span class="${PCSS}-readonly" css-class="{{ { 'date': :host.precision === 'day', 'datetime': :host.precision !== 'day' } }}" content="{{ :host.viewValue }}" hide="{{ !:host.readonly }}"></${P}-span>
+    <${P}-panel class="${PCSS}-datetime-picker-preview" hide="{{ Pacem.Utils.isNullOrEmpty(:host.dateValue) || :host.precision === 'day' || :host.readonly }}">
+        <dl>
+            <dt>local:</dt><dd><${ P}-text text="{{ :host.viewValue }}"></${P}-text></dd>
+            <dt>iso:</dt><dd><${ P}-text text="{{ (:host.dateValue && :host.dateValue.toISOString()) || '' }}"></${P}-text></dd>
+        </dl>
+    </${P}-panel>
+    <${P}-span class="${PCSS}-readonly" css-class="{{ { 'date': :host.precision === 'day', 'datetime': :host.precision !== 'day' } }}" content="{{ :host.viewValue }}" hide="{{ !:host.readonly }}"></${P}-span>
 </div>`
     })
     export class PacemDatetimePickerElement extends PacemBaseElement {
@@ -83,7 +94,7 @@ namespace Pacem.Components.Scaffolding {
         @Watch({ converter: PropertyConverters.Datetime }) min: string | Date;
         @Watch({ converter: PropertyConverters.Datetime }) max: string | Date;
         @Watch({ converter: PropertyConverters.String }) precision: 'day' | 'minute' | 'second' = 'day';
-        @Watch({ emit: false, converter: PropertyConverters.Json }) format: Intl.DateTimeFormatOptions;
+        @Watch({ emit: false, converter: JsonOrStringConverter }) format: Intl.DateTimeFormatOptions | string;
 
         connectedCallback() {
             super.connectedCallback();
@@ -126,8 +137,9 @@ namespace Pacem.Components.Scaffolding {
                 case 'min':
                 case 'max':
                     if (!Utils.isNullOrEmpty(this.min)
-                        && !Utils.isNullOrEmpty(this.max))
-                        this.setupYears();
+                        && !Utils.isNullOrEmpty(this.max)) {
+                        this._setupYears();
+                    }
                     break;
                 case 'year':
                 case 'month':
@@ -175,7 +187,7 @@ namespace Pacem.Components.Scaffolding {
         @Watch() private minutes: number | string = '00';
         @Watch() private seconds: number | string = '00';
 
-        private setupYears() {
+        private _setupYears() {
             let years = [];
             const min = Utils.parseDate(this.min),
                 max = Utils.parseDate(this.max);
@@ -200,7 +212,7 @@ namespace Pacem.Components.Scaffolding {
         private _buildupDates(evt?: Event) {
             if (evt) evt.stopPropagation();
             const v = this,
-                options = { weekday: 'short', day: 'numeric' },
+                options : Intl.DateTimeFormatOptions = { weekday: 'short', day: 'numeric' },
                 isDate = (k: number) => {
                     try {
                         let monthvalue = +v.month, parsed = new Date(+v.year, +v.month, k);
@@ -261,7 +273,7 @@ namespace Pacem.Components.Scaffolding {
             const v =  /*this.dateValue ||*/ val;
             if (v) {
 
-                return Utils.core.date(v, this.precision != 'day' ? 'full' : 'short', Utils.lang(this));
+                return Utils.core.date(v, this.format || (this.precision != 'day' ? 'full' : 'short'), Utils.lang(this));
             }
             return '';
         }

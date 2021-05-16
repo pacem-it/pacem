@@ -19,6 +19,7 @@ const PREFETCHED = [
 
     '/polyfills/documentfragment.edge.js',
     '/polyfills/custom-elements.min.js',
+    '/dist/js/pacem-foundation.js',
     '/dist/js/pacem-core.js',
     '/dist/js/pacem-ui.js',
     '/dist/js/pacem-scaffoldings.js',
@@ -62,7 +63,9 @@ async function _tryCache(request: Request, response: Response) {
     }
     // if caching is allowed for this request, then...
     const cache = await caches.open(CACHE_KEY);
-    cache.put(request, /* responses might be allowed to be used only once, thus cloning */ response.clone());
+    if (response.status === 200) {
+        cache.put(request, /* responses might be allowed to be used only once, thus cloning */ response.clone());
+    }
 }
 const _cacheFirst = (evt: FetchEvent) => {
     // Offline first, falling back to network.

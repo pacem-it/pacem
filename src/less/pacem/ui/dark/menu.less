@@ -1,0 +1,464 @@
+﻿@import "../shared";
+
+@_w: @layout_aside_width;
+
+@_clr_a: @menu_link_color;
+@_clr_a_hover: @menu_link_hover_color;
+@_clr_a_bg: transparent;
+@_clr_a_active: @menu_link_active_color;
+@_clr_a_active_hover: @menu_link_active_color;
+@_clr_a_active_bg: @menu_link_active_backgroundcolor;
+@_clr_a_active_decor: @menu_link_active_decorcolor;
+
+@_header_height: @layout_header_height;
+@_toolbar_height: @layout_toolbar_height;
+@_footer_height: @layout_footer_height;
+@_bigfooter_height: @layout_bigfooter_height;
+
+@_brd_a: 3px;
+
+/*#region OVERLAPPING MENU*/
+@{P}-menu {
+    display: block;
+    width: 0;
+    overflow: visible;
+}
+
+@{P}-menu,
+@{P}-button.@{PCSS}-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: @hamburger_z_index;
+}
+
+.@{PCSS}-hamburger-menu {
+    display: grid;
+    grid-template-rows: @_header_height // header 1
+    @_toolbar_height // toolbar 2
+    1fr // main 3
+    @_toolbar_height // toolbar 4
+    @_footer_height; // footer 5
+    width: 100vw;
+    height: 100vh;
+    transition: transform .3s cubic-bezier(0.39, 0.575, 0.565, 1) .2s, background-color .25s linear .1s;
+    background-color: rgba(0,0,0,0);
+
+    nav {
+        grid-row: ~"1/6";
+        position: relative;
+        .Background(@menu_nav_background);
+        //box-shadow: @grid_spacing/4 0 @grid_spacing/3 fade(@color_blue, 50);
+        overflow: auto;
+        width: 33vw;
+        min-width: @_w;
+        box-sizing: border-box;
+        padding: @grid_cell 0 @grid_spacing 0;
+        border-right: 1px solid fade(@color_default, 10);
+        transition: transform .325s cubic-bezier(0.39, 0.575, 0.565, 1) .5s;
+
+        .menu-item when (@menuitem_borders = true) {
+            border-top: 1px solid @color_border_light;
+            border-bottom: 1px solid @color_border_dark;
+        }
+
+        .@{PCSS}-menu-item when (@menuitem_borders = true) {
+            border-top: 1px solid @color_border_light;
+            border-bottom: 1px solid @color_border_dark;
+        }
+
+        .@{PCSS}-menu-group, .menu-group {
+            padding-left: @grid_spacing;
+        }
+
+        .@{PCSS}-menu-group, .menu-group {
+            margin-bottom: @grid_spacing/3;
+
+            @{P}-button, .@{PCSS}-button {
+                margin: 0;
+            }
+
+            &.group-active {
+                .@{PCSS}-icon {
+                    color: @_clr_a_active;
+                }
+            }
+        }
+
+        .@{PCSS}-menu-item, .menu-item {
+
+            @{P}-button, button,
+            @{P}-a, a {
+                display: block;
+                cursor: pointer;
+                box-sizing: border-box;
+                .Ellipsed();
+            }
+
+            @{P}-button,
+            @{P}-a.@{PCSS}-button {
+                margin: 0;
+            }
+
+            @{P}-button {
+                padding: .25 * @grid_spacing @grid_spacing .25 * @grid_spacing 2 * @grid_spacing;
+            }
+
+            @{P}-a,
+            a {
+                padding: .25 * @grid_spacing @grid_spacing .25 * @grid_spacing @grid_spacing - @_brd_a;
+                font-family: @menu_link_fontfamily;
+                font-size: @menu_link_fontsize;
+                border-left: @_brd_a solid fade(@_clr_a_active, 0);
+            }
+
+            @{P}-button::before {
+                left: round(5 * @grid_spacing / 6);
+                top: round(@grid_spacing/8);
+            }
+
+            @{P}-button,
+            button,
+            @{P}-a,
+            a {
+                text-align: left;
+                text-transform: none;
+                color: @_clr_a;
+                background-color: @_clr_a_bg;
+
+                &:hover {
+                    color: @_clr_a_hover;
+                }
+            }
+
+            &:first-child {
+                // just in case @menuitem_borders were set
+                border-top: none;
+            }
+
+            &:last-child {
+                // just in case @menuitem_borders were set
+                border-bottom: none;
+            }
+
+            .item-active,
+            .active {
+                color: @_clr_a_active;
+                background-color: @_clr_a_active_bg;
+                cursor: default;
+                border-color: @_clr_a_active_decor;
+
+                &:hover {
+                    color: @_clr_a_active_hover;
+                }
+            }
+        }
+
+        .item-space {
+            margin-top: @grid_spacing / 1.5;
+        }
+
+        .item-separate {
+            border-top: 1px solid @color_border;
+            padding-top: @grid_spacing;
+        }
+
+        @{P}-collapse {
+            .@{PCSS}-menu-item,
+            .menu-item {
+                @{P}-a, a {
+                    padding-left: 2 * @grid_spacing;
+                }
+            }
+        }
+
+        & when (@blur = true) {
+            .Blur(6px, @menu_nav_background);
+        }
+    }
+
+    &.menu-close,
+    &.@{PCSS}-hidden {
+        // reset from .@{PCSS}-hidden
+        opacity: 1;
+        //
+        transform: translateX(-100%) translateY(0) translateZ(0);
+
+        nav {
+            transform: translateX(-100%) translateY(0) translateZ(0);
+        }
+    }
+
+    &.menu-open,
+    &.@{PCSS}-shown {
+        background-color: @color_lightbox_back;
+        transform: translateX(0) translateY(0) translateZ(0);
+
+        nav {
+            transform: translateX(0) translateY(0) translateZ(0);
+        }
+    }
+}
+
+
+@{P}-button.@{PCSS}-menu.@{PCSS}-back,
+@{P}-button.@{PCSS}-menu.@{PCSS}-hamburger {
+    // reset from pacem-button
+    padding: 0;
+    min-width: 0;
+    line-height: normal;
+    margin: auto;
+    //
+    font-size: 0;
+    border: none;
+    top: 0;
+    cursor: pointer;
+    height: @layout_header_height;
+    width: $height;
+    background: center center no-repeat;
+    background-size: .8 * @layout_header_height;
+    margin: 0;
+
+    button.@{PCSS}-button {
+        font-size: 0;
+    }
+}
+
+@{P}-button.@{PCSS}-menu {
+    @_avail: @layout_header_height;
+    @_sz: round(.5 * @_avail);
+    @_pad: round(.5 * (@_avail - @_sz));
+
+    &.@{PCSS}-hamburger,
+    &.@{PCSS}-back {
+        top: 0;
+        left: 0;
+
+        &::before {
+            top: @_pad;
+            left: @_pad;
+            width: @_sz;
+            height: @_sz;
+        }
+    }
+
+    &.@{PCSS}-back {
+        left: @_w - @_avail;
+        transform: translateX(-@_avail - @_w);
+        transition: transform .25s ease-out .075s, opacity .3s;
+
+        &::before {
+            .Icon('chevron_left', @_sz);
+        }
+
+        &.menu-open,
+        &.@{PCSS}-shown {
+            transition-delay: .625s;
+            transform: translateX(0) translateY(0) translateZ(0);
+        }
+    }
+
+    &.@{PCSS}-hamburger {
+        transition: transform .25s ease-in-out, opacity .3s;
+        left: 0;
+
+        &::before {
+            .Icon('menu', @_sz);
+            //color: @color_light;
+        }
+
+        &.menu-open,
+        &.@{PCSS}-shown {
+            transition-delay: .4s;
+            transform: scale(1) translateZ(0);
+        }
+
+        &.menu-close,
+        &.@{PCSS}-hidden {
+            //opacity: 1;
+            transform: scale(0) translateZ(0);
+        }
+    }
+}
+
+.@{PCSS}-body {
+    // Toolbar on top of the layout? Hamburger button IS dependent from it.
+    &[headbar]:not([header]),
+    &[headbar-prepend] {
+        // Shift it down.
+        @{P}-button.@{PCSS}-menu.@{PCSS}-hamburger {
+            top: @_toolbar_height;
+        }
+    }
+}
+
+/*#endregion*/
+
+/*#region ASIDE MENU */
+@media screen and (min-width: @threshold_lg) {
+
+    @{P}-menu {
+        font-size: .8em;
+        z-index: @header_z_index - 10;
+
+        .@{PCSS}-hamburger-menu {
+            width: @_w;
+
+            nav {
+                transition-delay: 0.2s;
+            }
+
+            &.menu-open,
+            &.@{PCSS}-shown {
+                transform: translateX(-100%) translateY(0) translateZ(0);
+
+                nav {
+                    transition-delay: .4s;
+                    transform: translateX(100%) translateY(0) translateZ(0);
+                }
+            }
+
+            nav {
+                background: none;
+                backdrop-filter: none;
+                grid-row: ~"1/9";
+                width: @_w;
+                padding-top: @grid_spacing + @layout_header_height;
+            }
+        }
+    }
+
+    .@{PCSS}-body {
+        /* #region all grid row template configurations*/
+        .@{PCSS}-hamburger-menu {
+            grid-template-rows: @_toolbar_height // 1 header 1/2
+            max(0, @_header_height - @_toolbar_height) // 2 header 2/2
+            @_toolbar_height // 3 toolbar
+            1fr // 4 main
+            @_toolbar_height // 5 toolbar
+            max(0, @_footer_height - @_toolbar_height) // 6 footer 1/3
+            @_toolbar_height // 7 footer 2/3
+            auto; // 8 footer 3/3
+        }
+
+        &[bigfooter] {
+            .@{PCSS}-hamburger-menu {
+                grid-template-rows: @_toolbar_height // 1 header 1/2
+                @_header_height - @_toolbar_height // 2 header 2/2
+                @_toolbar_height // 3 toolbar
+                1fr // 4 main
+                @_toolbar_height // 5 toolbar
+                @_footer_height - @_toolbar_height // 6 footer 1/3
+                @_bigfooter_height - @_footer_height // 7 footer 2/3
+                @_toolbar_height; // 8 footer 3/3
+            }
+        }
+        /* #endregion*/
+        // layout with a header?
+        &[header] {
+            @{P}-menu {
+                .@{PCSS}-hamburger-menu {
+
+                    nav {
+                        padding-top: @grid_spacing;
+                        grid-row-start: 3;
+                    }
+                }
+            }
+            // layout with header AND headbar?
+            &[headbar],
+            &[headbar-prepend] {
+                @{P}-menu {
+                    .@{PCSS}-hamburger-menu {
+
+                        nav {
+                            grid-row-start: 4;
+                        }
+                    }
+                }
+            }
+        }
+        // headbars without header?
+        &[headbar], &[headbar-prepend] {
+
+            &:not([header]) {
+                @{P}-menu {
+                    .@{PCSS}-hamburger-menu {
+
+                        nav {
+                            grid-row-start: 2;
+                        }
+                    }
+                }
+            }
+        }
+        // layout with footers?
+        &[footer], &[bigfooter] {
+            @{P}-menu {
+                .@{PCSS}-hamburger-menu {
+                    nav {
+                        grid-row-end: 6;
+                    }
+                }
+            }
+            // layout with footer AND footbar?
+            &[footbar],
+            &[footbar-append] {
+                @{P}-menu {
+                    .@{PCSS}-hamburger-menu {
+                        nav {
+                            grid-row-end: 5;
+                        }
+                    }
+                }
+            }
+        }
+        // toolbar on top? Then move down the buttons
+        &[headbar]:not([header]),
+        &[headbar-prepend] {
+
+            @{P}-button.@{PCSS}-menu.@{PCSS}-back,
+            @{P}-button.@{PCSS}-menu.@{PCSS}-hamburger {
+                top: @_toolbar_height;
+            }
+        }
+        // footbars without footer?
+        &[footbar],
+        &[footbar-append] {
+
+            &:not([footer]):not([bigfooter]) {
+                .@{PCSS}-hamburger-menu {
+
+                    nav {
+                        grid-row-end: 7;
+                    }
+                }
+            }
+        }
+    }
+
+    @{P}-button.@{PCSS}-menu.@{PCSS}-hamburger {
+        @_avail: @grid_cell;
+        @_sz: round(.5 * @_header_height);
+        @_pad: round(.5 * (@_avail - @_sz));
+
+        width: @_avail;
+
+        &::before {
+            left: @_pad;
+        }
+    }
+
+    /* #endregion */
+    // see body modifications in `../body.less`
+    .@{PCSS}-animations {
+
+        .@{PCSS}-menu-item, .menu-item {
+
+            @{P}-button, button,
+            @{P}-a, a {
+                transition: background-color .2s, border-color ease-in .25s;
+            }
+        }
+    }
+}

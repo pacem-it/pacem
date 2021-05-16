@@ -48,6 +48,7 @@
 // @font_tech: Inconsolata, Monospace;
 @font_tech: 'Fira Mono', Monospace;
 @font_icons: 'Material Icons';
+@font_icon_size: @grid_spacing;
 @font_size: 14px;
 @font_rem_factor: 1;
 @font_std: 'Roboto Condensed', 'Segoe UI', Helvetica, sans-serif;
@@ -156,6 +157,7 @@
 @color_secondary: @color_teal;
 @color_secondary_inv: @color_light;
 @color_disabled: @color_watermark;
+@color_disabled_inv: @color_default;
 @color_title: @color_accent;
 @color_title_inv: transparent;
 @color_code: @color_default;
@@ -214,6 +216,9 @@
 @menu_link_fontfamily: @font_std;
 @menu_link_fontsize: 1rem * @font_rem_factor;
 @menu_nav_background: @color_background;
+
+// breadcrumb
+@color_breadcrumb_home_fore: @color_teal;
 
 // balloon
 @balloon_color: darken(@color_lightblue, 2);
@@ -278,6 +283,9 @@
 // toast
 @color_toast_back: fade( @color_background, 75);
 
+// timeline
+@color_timeline_frame: @color_primary;
+
 /*#endregion*/
 
 /*#region SCAFFOLDING_VARIABLES*/
@@ -286,6 +294,7 @@
 @color_field_label: @color_teal;
 @field_outline_width: 0;
 @field_minimal_fontsize: .9142857;
+@field_height: @grid_spacing * 1.25;
 @color_field_outline: fade(@color_teal, 40);
 @border_field_size: 2px;
 @border_field_underline: true;
@@ -544,7 +553,7 @@
 /*#region MIXINS3*/
 
 .Icon(@icon) {
-    .Icon(@icon, 24px);
+    .Icon(@icon, @font_icon_size);
 }
 
 .Icon(@icon, @size) {

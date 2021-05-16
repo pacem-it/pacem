@@ -1,37 +1,2 @@
-﻿@{P}-form,@{P}-contenteditable {
-    display: block;
-}
-@{P}-input-email,@{P}-input-number,@{P}-input-password,@{P}-input-search,@{P}-input-tel,@{P}-input-text,@{P}-input-url,@{P}-select,@{P}-radio,@{P}-checkbox,@{P}-textarea {
-    display: inline-block;
-}
-@{P}-data-item,@{P}-input-hidden {
-    .Inert();
-}
-
-label.@{PCSS}-label{
-    user-select: none;
-}
-
-@import "validators";
-@import "input";
-@import "textarea";
-@import "markdown";
-@import "select";
-@import "datepicker";
-@import "latlng";
-@import "upload";
-@import "checkbox-radio-shared";
-@import "checkbox";
-@import "radio";
-@import "contenteditable";
-@import "search";
-@import "url";
-@import "tel";
-@import "color";
-@import "number";
-@import "suggest";
-@import "tags";
-@import "image";@import "slider";@import "namevalue-list";@import "element-picker";@import "property-picker";@import "expression";
-@import "char-counter";@import "childform";
-@import "formfield";
-@import "dialog-overrides";
+﻿// theme-dark is the 'cookie-cutter'
+@import "@{theme}/index";

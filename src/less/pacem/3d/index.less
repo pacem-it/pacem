@@ -1,22 +1,22 @@
 ﻿@import "../../shared";
 @import "../theme-dark";
+@import "stage";
 
-@{P}-3d,
+@{P}-3d-light,
+@{P}-3d-camera,
 @{P}-3d-object,
-@{P}-3d-light{
+@{P}-3d-mesh,
+@{P}-3d-group,
+@{P}-3d-primitive-sphere,
+@{P}-3d-primitive-cylinder,
+@{P}-3d-primitive-plane,
+@{P}-3d-primitive-torus,
+@{P}-3d-primitive-box,
+@{P}-3d-primitive-tetrahedron,
+@{P}-3d-primitive-hexahedron,
+@{P}-3d-primitive-octahedron,
+@{P}-3d-primitive-icosahedron,
+@{P}-3d-primitive-dodecahedron,
+@{P}-3d-three-adapter {
     .Inert();
-}
-
-@{P}-3d + .@{PCSS}-3d-stage {
-    display: block;
-    padding: 0;
-    margin: 0;
-    width: 100%;
-    //max-height: 100vh;
-    > canvas {
-        padding: 0;
-        margin: 0;
-        display: block;
-        max-height: 100vh;
-    }
 }

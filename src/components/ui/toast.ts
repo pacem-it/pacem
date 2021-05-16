@@ -50,8 +50,9 @@ namespace Pacem.Components.UI {
 
         private _show() {
             window.clearTimeout(this._handle);
-            if (this.disabled)
+            if (this.disabled) {
                 return;
+            }
             if (this.autohide) {
                 this._handle = window.setTimeout(() => { this.show = false; }, this.timeout);
             }

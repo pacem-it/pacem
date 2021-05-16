@@ -4,11 +4,17 @@
     display: grid;
     padding: 0;
 
-    rect.grid-cell {
-        fill: none;
-        stroke-width: 1px;
-        stroke-dasharray: 4;
-        stroke: fade(@color_default, 25);
+    svg.grid-cell-wrapper {
+
+        box-sizing: border-box;
+        padding: 1px;
+
+        > rect.grid-cell {
+            fill: none;
+            stroke-width: 1px;
+            stroke-dasharray: 4;
+            stroke: fade(@color_default, 17);
+        }
     }
 
     .@{PCSS}-widget.ui-widget.widget-editing {

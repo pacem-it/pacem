@@ -1,0 +1,61 @@
+﻿@import "shared";
+
+.@{PCSS}-chart-area {
+    position: relative;
+
+    .@{PCSS}-column-chart {
+        .chart-series {
+
+            rect {
+                stroke-opacity: 0;
+                stroke-width: 0;
+
+                &:hover {
+                    stroke-opacity: 0.5;
+                    stroke-width: 0.5%;
+                    z-index: 1;
+                }
+            }
+
+            &.series-shade {
+                .SeriesFade(.67);
+            }
+
+            &.series-light {
+
+                linearGradient {
+                    stop {
+                        stop-opacity: .5;
+                    }
+                }
+
+                rect {
+                    &:hover {
+                        stroke-opacity: 0.25;
+                    }
+                }
+
+                &.series-shade {
+                    .SeriesFade(.25);
+                }
+            }
+
+            &.series-fade {
+                .SeriesFade(0);
+            }
+        }
+    }
+}
+
+.@{PCSS}-animations {
+    .@{PCSS}-chart-area {
+        .@{PCSS}-column-chart {
+            .chart-series {
+                rect {
+                    transform-origin: left bottom;
+                    transition: stroke-width .2s @easing_in_out_sine, stroke-opacity .1s, x .1s, y .5s @easing_in_out_sine, width .1s, height .5s @easing_in_out_sine;
+                }
+            }
+        }
+    }
+}

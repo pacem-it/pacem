@@ -1,13 +1,92 @@
 ﻿
 
-<pacem-markdown value="{{ #content0.textContent }}" root></pacem-markdown>
+<pacem-markdown value="{{ #content0.textContent }}" class="md-tech" root></pacem-markdown>
 
 <pre pacem hidden id="content0">
-# `&lt;pacem-markdown>`
+## Markdown Parser
 
-typing docs...
+Yes, an embedded - **yet _EXTENSIBLE_** - markdown parser is included in Pacem JS.  
+Feel free to play with it, below.
+
+> _By the way_: this **whole** site renders markdown text as `html markup`.
 
 </pre>
+
+
+<pacem-data id="mdtxt" model="'# Heading1\nParagraph'" persist-as="markdown_sample"></pacem-data>
+
+<div class="pacem-grid">
+    <div class="pacem-cell cols-xl-6 display-flex flex-fill">
+        <pacem-textarea value="{{ #mdtxt.model, twoway }}" class="display-flex flex-fill"></pacem-textarea>
+    </div>
+    <div class="pacem-cell cols-xl-6">
+        <pacem-select empty-option="false" class="pacem-margin margin-bottom-1" id="renderer">
+            <pacem-data-item label="HTML" value="html"></pacem-data-item>
+            <pacem-data-item label="Tokens (Lexer output)" value="tokens"></pacem-data-item>
+            <pacem-data-item label="Text (raw markup)" value="markup"></pacem-data-item>
+        </pacem-select>
+        <pacem-panel class="pacem-panel panel-border" hide="{{ #renderer.value !== 'html' }}">
+            <div class="panel-body pacem-pad pad-top-3">
+                <pacem-markdown value="{{ #mdtxt.model }}" id="md"></pacem-markdown>
+            </div>
+        </pacem-panel>
+        <pacem-panel class="pacem-panel panel-border" hide="{{ #renderer.value !== 'tokens' }}">
+            <div class="panel-body pacem-pad pad-top-3">
+                <pre style="white-space: pre-wrap"><pacem-text text="{{ JSON.stringify(#md.tokens(#mdtxt.model), null, 1) }}"></pacem-text></pre>
+            </div>
+        </pacem-panel>
+        <pacem-panel class="pacem-panel panel-border" hide="{{ #renderer.value !== 'markup' }}">
+            <div class="panel-body pacem-pad pad-top-3">
+                <pre style="white-space: pre-wrap"><pacem-text text="{{ #md.html(#mdtxt.model) }}"></pacem-text></pre>
+            </div>
+        </pacem-panel>
+    </div>
+</div>
+
+<pacem-markdown value="{{ #content1.textContent }}" class="md-tech" root></pacem-markdown>
+
+<pre pacem hidden id="content1">
+## Extensibility
+
+The underlying _base_ parser for the `PacemMarkdownElement` is provided as-a-service in the _foundations_ package of Pacem JS (thus usable in WebWorkers).  
+The actual component itself exploits this extensibility including - so far - a couple of custom `Rule`s that allow to embed **YouTube** videos and **Twitter** status.
+
+The process is quite simple: you define both the rules (either `inline`, `block` or `code`) and the output rendering mode.
+
+</pre>
+
+<pacemjs-snippet>
+    <template>
+
+
+        <div class="pacem-grid">
+
+            <div class="pacem-cell cols-lg-6">
+
+                <!-- youtube markdown extension example-->
+                <pacem-input-text value="eaoTYxuudJs" debounce="500" id="ytmd1" placeholder="YT video id..."></pacem-input-text>
+                <pacem-data model="{{ 'Extended markup allows to embed **YouTube**!  \n{yt500x315}(' + #ytmd1.value + ')' }}" id="mdtxt1a"></pacem-data>
+                <pre class="pacem-margin margin-top-1">
+<pacem-text text="{{ #mdtxt1a.model }}"></pacem-text>
+            </pre>
+                <pacem-markdown value="{{ #mdtxt1a.model }}"></pacem-markdown>
+            </div>
+            <div class="pacem-cell cols-lg-6">
+
+                <!-- twitter markdown extension example-->
+                <pacem-input-text value="1270711678691241984" debounce="500" id="twmd1" placeholder="Twitter embed id..."></pacem-input-text>
+                <pacem-data model="{{ 'Extended markup allows to embed **Twitter**!  \n{tweet}(' + #twmd1.value + ')' }}" id="mdtxt1b"></pacem-data>
+                <pre class="pacem-margin margin-top-1">
+<pacem-text text="{{ #mdtxt1b.model }}"></pacem-text>
+            </pre>
+                <pacem-markdown value="{{ #mdtxt1b.model }}"></pacem-markdown>
+            </div>
+        </div>
+
+
+
+    </template>
+</pacemjs-snippet>
 
 <pacem-markdown id="proto" hidden></pacem-markdown>
 <pacemjs-descriptor target="{{ #proto }}"></pacemjs-descriptor>

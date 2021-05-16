@@ -177,6 +177,49 @@ The `PacemTemplateProxyElement` webcomponent allows to reference an external tem
     </template>
 </pacemjs-snippet>
 
+<pacem-markdown value="{{ #content3.textContent }}" class="md-tech" root></pacem-markdown>
+<pre pacem hidden id="content3">
+
+## Dynamic Template
+Item templates can also be dynamically injected into the repeater: the `target` property of `PacemTemplateProxyElement` reacts to changes and notifies the repeater about them.
+
+> Template changes might necessitate massive repaint effort from the browser.
+
+</pre>
+
+<pacemjs-snippet>
+    <template>
+
+        <pre id="json3" hidden>
+[{  
+    "name": "Peter Parker", "hero": "Spiderman"
+},{  
+    "name": "Bruce Wayne", "hero": "Batman"
+},{  
+    "name": "Clark Kent", "hero": "Superman"
+},{  
+    "name": "Tony Stark", "hero": "Ironman"
+}]
+</pre>
+        <template id="civil">
+            <li><pacem-text text="{{ ^item.name }}"></pacem-text></li>
+        </template>
+        <template id="hero">
+            <li><pacem-text text="{{ ^item.hero }}"></pacem-text></li>
+        </template>
+
+        <pacem-select datasource="{{ [{name: 'Civil name', tmpl: #civil}, {name: 'Superhero alter-ego', tmpl: #hero}] }}" text-property="name" empty-option="false" id="picker3"></pacem-select>
+        
+        <hr />
+        <pacem-repeater datasource="{{ JSON.parse(#json3.textContent) }}">
+            <ol>
+                <pacem-template-proxy target="{{ #picker3.value.tmpl }}"></pacem-template-proxy>
+            </ol>
+        </pacem-repeater>
+
+    </template>
+</pacemjs-snippet>
+
 <pacem-repeater id="proto">
     <template>
     </template>

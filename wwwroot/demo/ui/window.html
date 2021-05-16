@@ -41,7 +41,8 @@ You can even dock the window on the side of the screen and use them like full-he
 
         <p>Change the second window's title:</p>
         <pacem-input-text value="{{ #win2.caption, twoway }}" id="txt2"></pacem-input-text>
-        <pacem-timer on-tick="#series1.datasource.unshift({ label: Date.now(), value: Math.random() * 2 * Math.sin(Date.now() * .005) }); #series1.datasource.splice(50)" interval="20"></pacem-timer>
+        <pacem-data id="xLabel0" model="0"></pacem-data>
+        <pacem-timer on-tick="#series1.datasource.unshift({ label: #xLabel0.model++, value: Math.random() * 2 * Math.sin(Date.now() * .005) }); #series1.datasource.splice(50)" interval="{{ #series1.datasource.length >= 50 ? 200 : 10 }}"></pacem-timer>
 
         <pacem-shell-proxy>
             <pacem-window-area>
@@ -54,7 +55,7 @@ You can even dock the window on the side of the screen and use them like full-he
                             </span>
                         </div>
                     </div>
-                    <pacem-chart x-axis-type="date" type="spline" target="#chart1">
+                    <pacem-chart x-axis-type="number" type="spline" target="#chart1">
                         <pacem-chart-series id="series1" class="series-light series-accent series-bold" datasource="[]"></pacem-chart-series>
                     </pacem-chart>
 
@@ -62,7 +63,7 @@ You can even dock the window on the side of the screen and use them like full-he
                 <pacem-window id="win2" caption="You Only Live Once!" style="transform: translate3d(24px, 24px, 0)" css-class="{{ {'window-corners window-border': $this.floating} }}" floating="true">
 
                     <div class="pacem-card full-height">
-                        <pacem-img adapt="cover" class="card-img img-blend blend-default" src="https://www.jpl.nasa.gov/spaceimages/images/largesize/PIA03519_hires.jpg"></pacem-img>
+                        <pacem-img adapt="cover" class="card-img img-blend blend-default" src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/Cassiopeia_A_Spitzer_Crop.jpg/946px-Cassiopeia_A_Spitzer_Crop.jpg"></pacem-img>
                         <div class="card-heading">
                             Cassiopeia A
                         </div>

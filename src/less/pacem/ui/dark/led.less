@@ -1,0 +1,142 @@
+﻿@import "../shared";
+
+.LedSize(@size) {
+    width: @size;
+    height: $width;
+
+    & when (@dark_theme = true) {
+        padding: ceil($width / 8);
+    }
+
+    & when (@dark_theme = false) {
+        padding: ceil($width / 12);
+    }
+}
+
+.LedOn(@clr) {
+    &::before {
+        background-color: @clr;
+
+        & when (@gradients = true) {
+            .LedOutset(@clr);
+        }
+
+        & when (@glows = true) {
+            .LedGlow(@clr)
+        }
+    }
+
+    &.led-outset::before {
+        .LedOutset(@clr);
+    }
+
+    &.led-glow::before {
+        .LedGlow(@clr)
+    }
+}
+
+.LedOutset(@clr) {
+    .GradientRadial(0, 50%, lighten(@clr, 10), @clr);
+}
+
+.LedGlow(@clr) {
+    box-shadow: 0 0 8px @clr;
+}
+
+.LedInset() {
+    & when (@dark_theme = false) {
+        .GradientVertical(0, 100%, rgba(0,0,0,.25), rgba(255,255,255,1));
+    }
+
+    & when (@dark_theme = true) {
+        .GradientVertical(0, 100%, rgba(0,0,0,.5), rgba(255,255,255,.2));
+    }
+}
+
+@keyframes led-blink {
+    0% {
+        opacity: .5;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+.@{PCSS}-led {
+    border-radius: 50%;
+    display: inline-block;
+    background-color: transparent;
+    .LedSize( @grid_spacing);
+
+    & when(@shadows = true) {
+        .LedInset();
+    }
+
+    &.led-inset {
+        .LedInset();
+    }
+
+    &::before {
+        display: block;
+        border-radius: 50%;
+        height: 100%;
+        content: '';
+        background-color: @color_background;
+    }
+
+    &.led-small {
+        .LedSize(@grid_spacing * 2 / 3);
+    }
+
+    &.led-smaller {
+        .LedSize(@grid_spacing / 2);
+    }
+
+    &.led-tiny {
+        .LedSize(@grid_spacing / 3);
+    }
+
+    &.led-big {
+        .LedSize(@grid_spacing * 1.25);
+    }
+
+    &.led-bigger {
+        .LedSize(@grid_spacing * 1.5);
+    }
+
+    &.led-on {
+
+        &.led-accent {
+            .LedOn(@color_accent);
+        }
+
+        &.led-primary {
+            .LedOn(@color_primary);
+        }
+
+        &.led-success {
+            .LedOn(@color_success);
+        }
+
+        &.led-error {
+            .LedOn(@color_error);
+        }
+
+        &.led-warning {
+            .LedOn(@color_warning);
+        }
+
+        &.led-danger {
+            .LedOn(@color_danger);
+        }
+
+        &.led-disabled {
+            .LedOn(@color_disabled);
+        }
+
+        &.led-blink::before {
+            animation: led-blink .3s ease-in-out alternate-reverse infinite;
+        }
+    }
+}

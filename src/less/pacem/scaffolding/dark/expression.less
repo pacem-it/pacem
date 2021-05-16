@@ -1,0 +1,34 @@
+﻿@import "../../../shared";
+@import "../shared";
+
+
+@{P}-expression {
+    .FormFieldItemWrapper();
+
+    textarea.@{PCSS}-input,
+    input.@{PCSS}-input {
+        .FontTech(1);
+    }
+
+    .expression-builder {
+        padding-left: @grid_spacing / 1.5;
+        border-left: @border_field_size dashed @color_border;
+    }
+
+    span.@{PCSS}-viewfinder {
+        line-height: @field_height;
+        min-height: @field_height;
+    }
+
+    &.@{PCSS}-readonly {
+        .@{PCSS}-viewfinder {
+            border-color: transparent !important;
+            background-color: $border-color;
+        }
+
+        .@{PCSS}-fieldset-left, .@{PCSS}-fieldset-center, .@{PCSS}-fieldset-right, .@{PCSS}-fieldset-auto,
+        .fieldset-left, .fieldset-center, .fieldset-right, .fieldset-auto {
+            background-color: transparent !important;
+        }
+    }
+}

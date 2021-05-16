@@ -25,6 +25,9 @@ namespace Pacem {
         String: {
             convert: (attr: string) => attr, convertBack: (prop: any) => prop
         },
+        StringArray: {
+            convert: (attr: string) => attr && attr.trim().split(/[ ,]+/), convertBack: (prop: any) => Utils.isArray(prop) && prop.join(' ') || ''
+        },
         Number: {
             convert: (attr: string) => parseFloat(attr), convertBack: (prop: any) => prop.toString()
         },

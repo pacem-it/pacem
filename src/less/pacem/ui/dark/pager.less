@@ -1,0 +1,98 @@
+﻿@import "../shared";
+
+@{P}-pager {
+    display: block;
+
+   @{P}-repeater.@{PCSS}-pager {
+        display: block;
+
+        .@{PCSS}-buttonset {
+
+           @{P}-button.@{PCSS}-page {
+                min-width: @grid_spacing * 1.25;
+                height: @grid_spacing;
+                line-height: @grid_spacing;
+                .FontTech(.8);
+                transition: all @easing_in_out_sine .125s;
+                border-radius: 0;
+
+                &.currentpage:not(.@{PCSS}-disabled) {
+                    @_clr: @color_primary;
+                    @_clr_fore: @color_primary_inv;
+
+                    background: @_clr;
+                    color: @_clr_fore;
+
+                    &:focus,
+                    &:hover {
+                        background: darken(@_clr, @button_hover_percentage);
+                    }
+
+                    &:focus when (@glows = true) {
+                        text-shadow: 0 0 8px @_clr_fore;
+                    }
+
+                    &:hover when (@glows = true) {
+                        text-shadow: 0 0 8px @_clr_fore;
+                    }
+                }
+
+                &.firstpage::before {
+                    .Icon('first_page');
+                }
+
+                &.previouspage::before {
+                    .Icon('chevron_left');
+                }
+
+                &.nextpage::before {
+                    .Icon('chevron_right');
+                }
+
+                &.lastpage::before {
+                    .Icon('last_page');
+                }
+
+                &.firstpage, &.previouspage, &.nextpage, &.lastpage {
+                    font-size: 0;
+
+                    &::before {
+                        left: 0;
+                        top: 0;
+                        width: 100%;
+                        height: 100%;
+                        .FontTechSize(1);
+                        line-height: @grid_spacing;
+                    }
+                }
+            }
+        }
+    }
+
+    .@{PCSS}-buttonset {
+        padding: 0;
+
+        .pager-buttons {
+            display: flex;
+            flex-direction: row;
+            overflow: hidden;
+            border-radius: @border_radius;
+        }
+    }
+
+    .@{PCSS}-buttonset .pager-buttons when (@shadows = true) {
+        box-shadow: 0 2px @grid_spacing / 3 rgba(0,0,0,0.5);
+    }
+    // see button.less
+    &.pager-left .@{PCSS}-buttonset .pager-buttons {
+        grid-area: left;
+    }
+
+    &.pager-center .@{PCSS}-buttonset .pager-buttons {
+        grid-area: center;
+    }
+
+    &.pager-right .@{PCSS}-buttonset .pager-buttons {
+        grid-area: right;
+    }
+}

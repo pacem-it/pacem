@@ -1,0 +1,84 @@
+﻿@import "../../../shared";
+@import "../../theme-dark";
+
+.ChartSeries(@clr) {
+
+    rect,
+    path {
+        stroke: @clr;
+    }
+
+    linearGradient {
+        stop {
+            stop-color: @clr;
+            stop-opacity: 1;
+        }
+    }
+}
+
+.SeriesFade(@to) {
+    linearGradient {
+        &:not(.bottom-up) {
+            stop:last-child {
+                stop-opacity: @to;
+            }
+        }
+
+        &.bottom-up {
+            stop:first-child {
+                stop-opacity: @to;
+            }
+        }
+    }
+}
+
+.Chart() {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    .chart-series {
+        display: block;
+        height: 100%;
+
+        .ChartSeries(@color_default);
+
+        &.series-accent {
+            .ChartSeries(@color_accent);
+        }
+
+        &.series-primary {
+            .ChartSeries(@color_primary);
+        }
+
+        &.series-success {
+            .ChartSeries(@color_success);
+        }
+
+        &.series-warning {
+            .ChartSeries(@color_warning);
+        }
+
+        &.series-danger {
+            .ChartSeries(@color_danger);
+        }
+
+    }
+
+    .chart-grid {
+        display: block;
+        height: 100%;
+
+        path {
+            stroke-width: 0.06%;
+            stroke: fade(@color_default, 20);
+            fill: none;
+        }
+
+        text {
+            fill: fade(@color_default, 25);
+            .FontTech(.75);
+        }
+    }
+}

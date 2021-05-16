@@ -129,6 +129,7 @@ html .@{PCSS}-preloader {
 
             span {
                 display: inline-block;
+                vertical-align: top;
             }
             /*&.@{PCSS}-code-block {
             //.GradientVertical(0, 100%, transparent, @color_code_back);
@@ -234,22 +235,25 @@ html .@{PCSS}-preloader {
     }
 
     dl {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        grid-column-gap: 0;
+        grid-row-gap: 0;
+
         dt {
-            display: block;
-            width: @grid_cell;
+            grid-column: 1;
+            max-width: @grid_cell;
             .Ellipsed();
             text-align: right;
             font-weight: bold;
-            float: left;
             border-bottom: 1px solid @border_color;
             padding-right: @grid_spacing/3;
         }
 
         dd {
-            margin-left: @grid_cell + @grid_spacing/3;
+            grid-column: 2;
             padding-left: @grid_spacing/3;
             font-family: @font_tech;
-            clear: right;
             border-left: 1px solid @border_color;
             border-bottom: 1px solid @border_color;
         }
@@ -324,5 +328,5 @@ html .@{PCSS}-preloader {
     @import "docs_themeroller";
 }
 
-@theme: "theme-dark";
-@import "../../src/less/pacem/@{theme}";
+@theme: "dark";
+@import "../../src/less/pacem/theme-@{theme}";

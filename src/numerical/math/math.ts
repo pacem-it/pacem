@@ -4,7 +4,7 @@
     export class Utils {
 
         static lcd(...args: number[]): number {
-            if (args.length <= 1) {
+            if (NullChecker.isNullOrEmpty(args) || args.length <= 1) {
                 throw 'Insufficient set of numbers.';
             }
 
@@ -17,11 +17,21 @@
                 return x * y / ex9(x, y);
             }
 
-            let result = args[0];
+            let result = Math.round(args[0]);
             for (let j = 1; j < args.length; j++) {
-                result = ex10(result, args[j]);
+                result = ex10(result, Math.round(args[j]));
             }
             return result;
+        }
+
+        static gcd(a: number, b: number) {
+            // force integers
+            a = Math.round(a),
+                b = Math.round(b);
+            if (a === 0) {
+                return b;
+            }
+            return Utils.gcd(b % a, a);
         }
 
     }

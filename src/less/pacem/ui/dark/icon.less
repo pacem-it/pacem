@@ -1,0 +1,29 @@
+﻿@import "../shared";
+
+@{P}-icon {
+    display: inline-block;
+    vertical-align: middle;
+
+    > i, 
+    > i.@{PCSS}-icon, 
+    > img, 
+    > svg {
+        display: block;
+    }
+
+    &.icon-text-bottom {
+        vertical-align: text-bottom;
+    }
+
+    &.icon-text-top {
+        vertical-align: text-top;
+    }
+
+    &.icon-top {
+        vertical-align: top;
+    }
+
+    &.icon-bottom {
+        vertical-align: bottom;
+    }
+}

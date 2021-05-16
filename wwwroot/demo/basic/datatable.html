@@ -221,7 +221,7 @@
                                 <pacem-text text="{{ ^item.ip_address }}"></pacem-text>
                             </pacem-panel>
 
-                            <pacem-panel style="grid-column: 3;" css="{{ {'grid-row': ^index+2} }}" class="pacem-datacell datacell-middle datacell-corners">
+                            <pacem-panel style="grid-column: 3;" css="{{ {'grid-row': ^index+2} }}" class="pacem-datacell datacell-middle datacell-corners datacell-truncate">
                                 <pacem-text text="{{ ^item.last_name +', '+ ^item.first_name }}"></pacem-text>
                             </pacem-panel>
 
@@ -234,7 +234,7 @@
                             </pacem-panel>
 
                             <pacem-panel style="grid-column: 6;" css="{{ {'grid-row': ^index+2} }}" class="pacem-datacell datacell-middle datacell-corners">
-                                <pacem-context-menu command-argument="{{ {item: ^item, index: ^index} }}" icon="more_horiz text-primary text-big-steady">
+                                <pacem-context-menu command-argument="{{ {item: ^item, index: ^index} }}" icon="more_vert text-primary text-big-steady">
                                     <pacem-context-menuitem-command caption="{{ 'Copy '+ ^item.email }}" icon-glyph="file_copy" command-name="copyEmail"></pacem-context-menuitem-command>
                                     <pacem-context-menuitem-command caption="Delete" confirmation-dialog="#dialog0" icon-glyph="delete" command-name="delete"></pacem-context-menuitem-command>
                                     <pacem-context-menuitem-separator></pacem-context-menuitem-separator>

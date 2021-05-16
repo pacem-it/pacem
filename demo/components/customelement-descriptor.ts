@@ -6,13 +6,16 @@ namespace Pacem.Components.Js {
         tagName: 'pacemjs-descriptor', shadow: false,
         template: `<${ P }-repeater>
     <template>
-        <${ P }-if match="{{ ^index == 0 }}" class="${PCSS}-panel">
-            
-            <div class="panel-tools"><${ P }-checkbox value="{{ :host.showInherited, twoway }}" class="checkbox-toggle"
-                                    true-value="true"
-                                    false-value="false"></${ P }-checkbox> <small>inherited</small></div>
-            <h2 class="panel-heading"><${ P }-text text="{{ ^item.type }}"></${ P }-text></h2>
-            
+        <${P}-media-query query="${ Pacem.Components.UI.MEDIAQUERY_LG }"></${P}-media-query>
+
+        <${ P }-if match="{{ ^index == 0 }}" class="display-block ${PCSS}-pad pad-bottom-3">
+            <${P}-panel css-class="{{ { 'display-flex flex-fill flex-nowrap': ::_mq.isMatch } }}">
+            <h2 class="${PCSS}-cell cols-lg-8"><${ P}-text text="{{ ^item.type }}"></${P }-text></h2>
+
+            <div class="flex-auto"><${ P }-checkbox value="{{ :host.showInherited, twoway }}"
+                                    true-value="true" caption="show inherited" css-class="{{ {'checkbox-naked': ::_mq.isMatch } }}"
+                                    false-value="false"></${ P }-checkbox></div>
+            </${P}-panel>
         </${ P }-if>
         <${ P }-if match="{{ ^index != 0 }}">
             <h4><${ P }-text text="{{ ^item.type }}"></${ P }-text></h4>
@@ -34,7 +37,7 @@ namespace Pacem.Components.Js {
         </${ P }-repeater>
 
     </template>
-</${ P }-repeater>`
+</${ P }-repeater><!-- hack to trigger FontAwesome import. To be revisited in a future (along with demo css tweaks) --><${P}-icon icon="fas fa-dice-6" hide="true"></${P}-icon>`
     })
     export class PacemCustomElementDescriptorElement extends PacemElement {
 
@@ -42,6 +45,7 @@ namespace Pacem.Components.Js {
         @Watch({ converter: PropertyConverters.Boolean }) showInherited: boolean;
 
         @ViewChild(P +"-repeater") private _repeater: PacemRepeaterElement;
+        @ViewChild(P + "-media-query") private _mq: PacemRepeaterElement;
 
         propertyChangedCallback(name: string, old: any, val: any, first?: boolean) {
             super.propertyChangedCallback(name, old, val, first);

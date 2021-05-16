@@ -29,11 +29,14 @@ It provides nonetheless **databinding capabilities** for handy connects against 
 <pacemjs-snippet>
     <template>
 
-        <pacem-checkbox-list id="fruit0" placeholder="pick some fruit..." datasource="{{ ['apples', 'bananas', 'cucumbers', 'dates', 'elderberries', 'figs', 'grapefruits', 'hackberries'] }}"></pacem-checkbox-list>
+        <pacem-data id="fruit0" model="{{ { fruits: ['apples']} }}"></pacem-data>
+        <pacem-form entity="{{ #fruit0.model, twoway }}">
+            <pacem-checkbox-list placeholder="pick some fruit..." name="fruits" datasource="{{ ['apples', 'bananas', 'cucumbers', 'dates', 'elderberries', 'figs', 'grapefruits', 'hackberries'] }}"></pacem-checkbox-list>
+        </pacem-form>
 
         <div class="pacem-margin margin-top-3">
             value:
-            <code><pacem-text text="{{ #fruit0.value }}"></pacem-text></code>
+            <code><pacem-text text="{{ #fruit0.model.fruits }}"></pacem-text></code>
         </div>
     </template>
 </pacemjs-snippet>
@@ -108,6 +111,35 @@ The `PacemCheckboxElement` gets the aspect of a switcher just by applying the `c
             </div>
         </div>
 
+    </template>
+</pacemjs-snippet>
+
+<pacem-markdown value="{{ #content4.textContent }}" root class="md-tech"></pacem-markdown>
+
+<pre pacem hidden id="content4">
+
+## Metadata
+The `PacemCheckboxListElement` can be injected into an autogenerating form via proper metadata.  
+Assign the relevant property a `manyToMany` ui hint:
+</pre>
+
+<pacemjs-snippet>
+    <template>
+
+
+        <pre id="metadata4" hidden pacem>
+[
+{"prop": "states", "type": "array", "display": { "name": "Visited states", "ui": "manyToMany" },
+"extra": { "source": ["Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming"] }
+}
+]
+</pre>
+        <pacem-data id="entity4" model="{ states: ['Alabama', 'Florida', 'Mississippi', 'Lousiana', 'California', 'Colorado', 'Hawaii'] }"></pacem-data>
+        <pacem-form id="modal4" autogenerate="true" entity="{{ #entity4.model, twoway }}" metadata="{{ JSON.parse(#metadata4.textContent) }}"></pacem-form>
+
+        <div class="pacem-margin margin-top-3">
+            value: <code><pacem-text text="{{ #entity4.model.states }}"></pacem-text></code>
+        </div>
     </template>
 </pacemjs-snippet>
 

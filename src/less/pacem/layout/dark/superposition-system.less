@@ -1,0 +1,116 @@
+﻿@import "../shared";
+
+.@{PCSS}-relative {
+    position: relative;
+
+    > .@{PCSS}-hover {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+
+        &.top {
+            height: auto;
+        }
+
+        &.bottom {
+            height: auto;
+            top: auto;
+            bottom: 0;
+        }
+
+        &.left {
+            width: auto;
+        }
+
+        &.right {
+            width: auto;
+            left: auto;
+            right: 0;
+        }
+    }
+}
+
+
+.@{PCSS}-overlap {
+    display: grid;
+    /* #region horiz (with relevant default vert) */
+    &.overlap-center {
+        align-items: center; // vertical
+        justify-content: center; // horizontal
+    }
+
+    &.overlap-fill {
+        align-items: stretch;
+        justify-content: stretch;
+    }
+
+    &.overlap-start {
+        align-items: start;
+        justify-content: start;
+    }
+
+    &.overlap-end {
+        align-items: end;
+        justify-content: end;
+    }
+    /* #endregion */
+    /* #region vert override */
+    &.overlap-middle {
+        align-items: center;
+    }
+
+    &.overlap-top {
+        align-items: start;
+    }
+
+    &.overlap-bottom {
+        align-items: end;
+    }
+
+    &.overlap-stretch {
+        align-items: stretch;
+    }
+    /* #endregion */
+    > * {
+        grid-row: 1;
+        grid-column: 1;
+
+        &.overlap-self-center {
+            align-self: center; // vertical
+            justify-self: center; // horizontal
+        }
+
+        &.overlap-self-fill {
+            align-self: stretch;
+            justify-self: stretch;
+        }
+
+        &.overlap-self-start {
+            align-self: start;
+            justify-self: start;
+        }
+
+        &.overlap-self-end {
+            align-self: end;
+            justify-self: end;
+        }
+
+        &.overlap-self-middle {
+            align-self: center;
+        }
+
+        &.overlap-self-top {
+            align-self: start;
+        }
+
+        &.overlap-self-bottom {
+            align-self: end;
+        }
+
+        &.overlap-self-stretch {
+            align-self: stretch;
+        }
+    }
+}

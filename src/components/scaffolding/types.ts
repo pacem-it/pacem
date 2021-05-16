@@ -24,11 +24,17 @@ namespace Pacem.Scaffolding {
         | { type: 'range', errorMessage: string, params: { min?: number | string | Date, max?: number | string | Date } }
         | { type: 'regex', errorMessage: string, params: { pattern: string | RegExp } }
         | { type: 'binary', errorMessage: string, params: { pattern?: string, maxSize?: number } }
-        | { type: 'compare', errorMessage: string, params: { value: any, operator?: CompareValidatorOperator } | { to: string, operator?: CompareValidatorOperator } }
+        | { type: 'compare', errorMessage: string, params: { value: any, operator?: CompareValidatorOperator } | { to: string, operator?: CompareValidatorOperator } | { toProperty: string, operator?: CompareValidatorOperator } }
         | { type: 'async', errorMessage: string, params: { url: string, verb?: Pacem.Net.HttpMethod, dependsOn?: DependsOn[] } }
         ;
 
-    export declare type ValidatorMetadata = KnownValidatorMetadata | { type: Omit<string, 'required' | 'email' | 'length' | 'range' | 'regex' | 'binary' | 'compare' | 'async'>, errorMessage: string, params?: any };
+    export declare type ValidatorType = Omit<string, 'required' | 'email' | 'length' | 'range' | 'regex' | 'binary' | 'compare' | 'async'>;
+    export declare type ValidatorManifest = { [name: string]: string };
+    export declare type PropertyMetadataValidatorFactory = (host: Element, hostRef?: string, entityRef?: string) => ValidatorManifest;
+
+    export declare type ValidatorMetadata = KnownValidatorMetadata
+        | { type: ValidatorType, errorMessage: string, params?: any }
+        | { type: ValidatorType, attributes: PropertyMetadataValidatorFactory };
 
     export declare type CommandMetadata = { name: string, tooltip?: string, icon: string, cssClass?: string[], prepend?: boolean, dependsOnValue?: boolean };
 
@@ -39,17 +45,30 @@ namespace Pacem.Scaffolding {
         hide?: boolean
     }
 
-    type PropertyMetadataExtraCore = { dependsOn?: DependsOn[] }
-        & { tooltip?: true | false | 'html' | 'md' | 'markdown' };
+    type TooltipTypeMetadata = 'html' | 'md' | 'markdown' | 'text' | boolean;
+    export declare type TooltipBalloonMetadata = {
+        type: TooltipTypeMetadata,
+        position?: Pacem.Components.UI.BalloonPosition,
+        trigger?: Pacem.Components.UI.BalloonTrigger,
+        align?: Pacem.Components.UI.BalloonAlignment
+    };
+    export declare type TooltipMetadata = {
+        tooltip?: TooltipTypeMetadata | TooltipBalloonMetadata
+    }
+
+    type PropertyMetadataExtraCore = { dependsOn?: DependsOn[] | PropertyMetadataDependsOnFactory }
+        & TooltipMetadata;
 
     type PropertyMetadataExtraDatasource = { source?: Function | any[], sourceUrl?: string, verb?: Pacem.Net.HttpMethod, valueProperty?: string, textProperty?: string, disabledProperty?: string }
-        & { enum?: any[] };
+        & { /* radio-list */ enum?: any[] }
+        & { /* suggest */ itemtemplate?: string | HTMLTemplateElement, filterFields?: string[] | string };
 
     type PropertyMetadataExtraSnapshot = { width?: number, height?: number, thumbHeight?: number, thumbWidth?: number, snapshot?: boolean, uploadUrl?: string, fetchUrl?: string };
     type PropertyMetadataExtraTags = { allowNew?: boolean, allowDuplicates?: boolean };
     type PropertyMetadataExtraChildform = { lockItems?: boolean };
     type PropertyMetadataExtraUpload = { maxImageWidth?: number, maxImageHeight?: number, parallelism?: number, chunkSize?: number, uploadUrl?: string };
     type PropertyMetadataExtraSlider = { step?: 'any' | number };
+    type PropertyMetadataExtraDatetime = { format?: string | Intl.DateTimeFormatOptions };
 
     export declare type PropertyMetadataExtra = PropertyMetadataExtraCore
         & (
@@ -65,14 +84,20 @@ namespace Pacem.Scaffolding {
             & PropertyMetadataExtraUpload
             // slider
             & PropertyMetadataExtraSlider
+            // datetime
+            & PropertyMetadataExtraDatetime
         );
 
-    export declare type PropertyMetadataTypeGenerator = (host: Element, hostRef?: string, entityRef?: string) => { tagName: string, attrs: { [name: string]: string } };
+    export declare type FieldManifest = { tagName: string, attrs?: { [name: string]: string }, children?: FieldManifest[] };
+    export declare type PropertyMetadataFieldFactory = (host: Element, hostRef?: string, entityRef?: string) => FieldManifest;
+
+    export declare type DependsOnManifest = { disabledAttr: string, hideAttr?: string, /**@ dependency parameters */parameterAttrs?: { [alias: string]: string } };
+    export declare type PropertyMetadataDependsOnFactory = (host: Element, hostRef?: string, entityRef?: string, fieldEntityRef?: string) => DependsOnManifest;
 
     // to be continued
     export declare type PropertyMetadata = {
         prop: string,
-        type: 'object' | 'array' | string | /* let the possibility to inject custom scaffolding elements */ PropertyMetadataTypeGenerator,
+        type: 'object' | 'array' | string | /* let the possibility to inject custom scaffolding elements */ PropertyMetadataFieldFactory,
         display?: DisplayMetadata,
         extra?: PropertyMetadataExtra
         // leave space to immagination
@@ -81,7 +106,7 @@ namespace Pacem.Scaffolding {
         dataType?: string,
         isComplexType?: boolean,
         isNullable?: boolean,
-        validators?: ValidatorMetadata[]
+        validators?: ValidatorMetadata[],
         commands?: CommandMetadata[],
         // child entities
         /** Either the metadata of an 'object' or the metadata of the single item of an homogeneous 'array'. */
@@ -123,7 +148,8 @@ namespace Pacem.Components.Scaffolding {
     }
 
     export declare type BinaryValue = {
-        name: string, size: number, type: string, lastModified: number | string | Date, /** base64 binary string */content: string
+        name: string, size: number, type: string, lastModified: number | string | Date, /** base64 binary string */content: string,
+        encoding?: string
     };
 
     const ORIGINAL_VALUE_FIELD = 'pacem:model:original-value';
@@ -142,8 +168,20 @@ namespace Pacem.Components.Scaffolding {
 
         viewActivatedCallback() {
             super.viewActivatedCallback();
-            if (!Utils.isNullOrEmpty(this.name)) {
-                this.form && this.form.registerField(this.name, this);
+            const name = this.name,
+                form = this.form;
+            if (!Utils.isNullOrEmpty(name) && !Utils.isNull(form)
+                && (!this.hasAttribute('autobind')
+                    || (this.getAttribute('autobind') !== 'off' && this.getAttribute('autobind') !== 'false')
+                )) {
+                form.registerField(name, this);
+
+                // automatic bind value given the field name
+                if (!this.hasAttribute('value')) {
+
+                    const formId = form.id = form.id || 'frm_' + Utils.uniqueCode();
+                    this.setAttribute('value', `{{ #${formId}.entity.${name}, twoway }}`);
+                }
             }
             this._setAsOriginalValue(this.value);
         }
@@ -249,8 +287,7 @@ namespace Pacem.Components.Scaffolding {
         @Watch({ converter: PropertyConverters.Boolean }) readonly: boolean;
         @Watch({ converter: PropertyConverters.String }) name: string;
 
-        @Watch({ converter: PropertyConverters.String })
-        placeholder: string;
+        @Watch({ converter: PropertyConverters.String }) placeholder: string;
 
         protected abstract get inputFields(): HTMLElement[];
 
@@ -448,11 +485,76 @@ namespace Pacem.Components.Scaffolding {
         }
     }
 
-    export declare type DataSourceItem = { value: any, viewValue: string, disabled?: boolean };
+    export declare type DataSourceItem = { value: any, viewValue: string, disabled?: boolean, data: any };
     export declare type DataSource = DataSourceItem[];
 
+    export abstract class PacemItemElement<TContainer extends PacemItemsContainerBaseElement<any>> extends PacemElement {
+
+        #container: TContainer;
+
+        /** @overridable */
+        protected findContainer(): TContainer {
+            return CustomElementUtils.findAncestor(this, n => n instanceof PacemItemsContainerBaseElement);
+        }
+
+        protected get container() {
+            return this.#container;
+        }
+
+        viewActivatedCallback() {
+            super.viewActivatedCallback();
+            const container = this.#container = this.findContainer();
+            if (!Utils.isNull(container)) {
+                container.register(this);
+            }
+        }
+
+        disconnectedCallback() {
+            if (!Utils.isNull(this.#container)) {
+                this.#container.unregister(this);
+            }
+            super.disconnectedCallback();
+        }
+    }
+
+    export abstract class PacemItemsContainerBaseElement<TItem extends HTMLElement> extends PacemBaseElement implements ItemsContainer<TItem> {
+
+        @Watch(/* can only be databound or assigned at runtime */) items: TItem[];
+
+        /**
+         * Registers a new item among the items.
+         * @param item {PacemDataItemElement} Item to be enrolled
+         */
+        register(item: TItem) {
+            let flag = true;
+            if (Utils.isNull(this.items)) {
+                this.items = [item];
+            }
+            else if (this.items.indexOf(item) === -1) {
+                this.items.push(item);
+            } else {
+                flag = false;
+            }
+            return flag;
+        }
+
+        /**
+         * Removes an existing element from the items.
+         * @param item {PacemDataItemElement} Item to be removed
+         */
+        unregister(item: TItem) {
+            const ndx = !Utils.isNull(this.items) && this.items.indexOf(item);
+            if (ndx >= 0) {
+                this.items.splice(ndx, 1)[0];
+                return true;
+            }
+            return false;
+        }
+
+    }
+
     @CustomElement({ tagName: P + '-data-item' })
-    export class PacemDataItemElement extends HTMLElement {
+    export class PacemDataItemElement extends PacemItemElement<PacemDataSourceElement> {
 
         @Watch({
             converter: {
@@ -474,32 +576,13 @@ namespace Pacem.Components.Scaffolding {
         @Watch({ converter: PropertyConverters.String }) label: string;
         @Watch({ converter: PropertyConverters.Boolean }) disabled: boolean;
 
-        private _container: PacemDataSourceElement;
-
-        /** @overridable */
-        private _findContainer(): PacemDataSourceElement {
-            return CustomElementUtils.findAncestor(this, n => n instanceof PacemDataSourceElement);
-        }
-
-        viewActivatedCallback() {
-            const container = this._container = this._findContainer();
-            if (!Utils.isNull(container))
-                container.register(this);
-        }
-
-        disconnectedCallback() {
-            if (!Utils.isNull(this._container))
-                this._container.unregister(this);
-        }
     }
 
-    export abstract class PacemDataSourceElement extends PacemBaseElement implements ItemsContainer<PacemDataItemElement> {
+    export abstract class PacemDataSourceElement extends PacemItemsContainerBaseElement<PacemDataItemElement> {
 
         constructor(protected multipleChoice: boolean = false) {
             super();
         }
-
-        @Watch(/* can only be databound or assigned at runtime */) items: PacemDataItemElement[];
 
         @Watch({ emit: false, converter: PropertyConverters.Json })
         datasource: any[];
@@ -524,15 +607,7 @@ namespace Pacem.Components.Scaffolding {
          * @param item {PacemDataItemElement} Item to be enrolled
          */
         register(item: PacemDataItemElement) {
-            let flag = true;
-            if (Utils.isNull(this.items)) {
-                this.items = [item];
-            }
-            else if (this.items.indexOf(item) === -1) {
-                this.items.push(item);
-            } else {
-                flag = false;
-            }
+            const flag = super.register(item);
             if (flag) {
                 item.addEventListener(PropertyChangeEventName, this._itemPropertyChangedHandler, false);
             }
@@ -544,13 +619,11 @@ namespace Pacem.Components.Scaffolding {
          * @param item {PacemDataItemElement} Item to be removed
          */
         unregister(item: PacemDataItemElement) {
-            const ndx = !Utils.isNull(this.items) && this.items.indexOf(item);
-            if (ndx >= 0) {
-                let item = this.items.splice(ndx, 1)[0];
+            const flag = super.register(item);
+            if (flag) {
                 item.removeEventListener(PropertyChangeEventName, this._itemPropertyChangedHandler, false);
-                return true;
             }
-            return false;
+            return flag;
         }
 
         private _itemPropertyChangedHandler = (evt: PropertyChangeEvent) => {
@@ -581,19 +654,22 @@ namespace Pacem.Components.Scaffolding {
          * @param value {any} value to match
          */
         protected isItemSelected(item: any, value: any = this.value) {
-            if (Utils.isNullOrEmpty(value))
+            if (Utils.isNullOrEmpty(value)) {
                 return false;
+            }
             const v = this.mapEntityToValue(item),
                 c = this.compareBy;
+
             if (this.multipleChoice && Utils.isArray(value))
                 return !Utils.isNull((<any[]>value).find(j =>
                     // caution: numbers and strings might be compared, ease the comparison by loosing equality constraints: `===` to `==`.
                     j /* value item */ ==/*=*/ v /* datasource item */ || (typeof j === 'object' && !Utils.isNullOrEmpty(c) && c in v && c in j && v[c] ==/*=*/ j[c]))
                 );
-            else if (!this.multipleChoice)
+            else if (!this.multipleChoice) {
                 return value ==/*=*/ v || (typeof value === 'object' && !Utils.isNullOrEmpty(c) && c in v && c in value && v[c] ==/*=*/ value[c]);
-            else
+            } else {
                 return false;
+            }
         }
 
         /**
@@ -613,54 +689,63 @@ namespace Pacem.Components.Scaffolding {
                 // caution: numbers and strings might be compared, ease the comparison by loosing equality constraints: `===` to `==`.
                 let found = (<any[]>value).find(j => j ==/*=*/ item.value || (typeof j === 'object' && !Utils.isNullOrEmpty(c) && c in j && !Utils.isNullOrEmpty(item.value) && c in item.value && j[c] ==/*=*/ item.value[c]));
                 return !Utils.isNull(found);
-            } else if (!this.multipleChoice)
+            } else if (!this.multipleChoice && !Utils.isNullOrEmpty(item.value)) {
                 return value ==/*=*/ item.value || (typeof value === 'object' && !Utils.isNullOrEmpty(c) && c in value && !Utils.isNullOrEmpty(item.value) && c in item.value && value[c] ==/*=*/ item.value[c]);
-            else
+            } else {
                 return false;
+            }
         }
 
         protected mapEntityToValue(entity: any): any {
             if (entity == null)
                 throw 'entity cannot be null';
+
             // declared
             if (entity instanceof PacemDataItemElement) {
                 return entity.value;
             }
+
             // databound
             let value = entity, prop;
-            if (prop = this.valueProperty)
+            if (prop = this.valueProperty) {
                 value = entity[prop];
+            }
             return value;
         }
 
         protected mapEntityToViewValue(entity: any): string {
             if (entity == null)
                 throw 'entity cannot be null';
+
             // declared
             if (entity instanceof PacemDataItemElement) {
                 return entity.label || entity.value;
             }
+
             // databound
             let viewValue = entity.toString(), prop;
-            if (prop = this.textProperty)
+            if (prop = this.textProperty) {
                 viewValue = entity[prop];
+            }
             return viewValue;
         }
 
         protected mapEntityToItem(entity: any): DataSourceItem {
             if (entity == null)
                 throw 'entity cannot be null';
+
             // declared
             if (entity instanceof PacemDataItemElement) {
-                return { value: entity.value, viewValue: entity.label || entity.value, disabled: entity.disabled };
+                return { value: entity.value, viewValue: entity.label || entity.value, disabled: entity.disabled, data: entity };
             }
+
             // databound
             let disabled = false;
             const disabledProp = this.disabledProperty;
             if (!Utils.isNullOrEmpty(disabledProp)) {
                 disabled = entity[disabledProp] || false;
             }
-            return { value: this.mapEntityToValue(entity), viewValue: this.mapEntityToViewValue(entity), disabled: disabled };
+            return { value: this.mapEntityToValue(entity), viewValue: this.mapEntityToViewValue(entity), disabled: disabled, data: entity };
         }
 
         private _handle: number;
@@ -690,8 +775,9 @@ namespace Pacem.Components.Scaffolding {
         }
 
         protected getViewValue(val: any): string {
-            if (Utils.isNullOrEmpty(this.datasource))
+            if (Utils.isNullOrEmpty(this.datasource)) {
                 return undefined;
+            }
             return this.datasource.filter(i => this.isItemSelected(i)).map(i => this.mapEntityToViewValue(i)).join(', ');
         }
 

@@ -1,17 +1,8 @@
 {
+  "extends": "../../../tsbaseconfig.json",
   "compilerOptions": {
-    "noImplicitAny": false,
-    "noEmitOnError": true,
-    "removeComments": false,
-    "sourceMap": false,
-    "target": "es6",
-    "module": "amd",
     "outFile": "../../../dist/js/pacem-plus.js",
-    "experimentalDecorators": true,
-    "declaration": true,
-    "lib": [ "es2015", "dom" ],
     "types": [ "@aspnet/signalr", "@types/leaflet" ]
   },
-  "compileOnSave": false,
-  "exclude": ["markdown-editor.ts"]
+  "exclude": [ "markdown-editor.ts" ]
 }

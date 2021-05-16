@@ -1,0 +1,36 @@
+﻿
+
+<pacem-markdown value="{{ #content0.textContent }}" root></pacem-markdown>
+
+<pre pacem hidden id="content0">
+## Dynamic Pictures
+
+`PacemPictureElement` allows to dynamically render image sets onto the screen.  
+It may contain `PacemPictureSourceElement` items that may adapt and provide the best possible source based on the actual browser.
+
+</pre>
+
+<pacemjs-snippet>
+    <template>
+
+        <!-- pacem-picture -->
+        <div class="display-flex flex-center">
+            <pacem-picture id="pic0" class="picture-contain picture-center picture-middle display-flex flex-fill" style="width: 192px; height: 192px;" src="/assets/pwa_icon_192x192.png">
+                <pacem-picture-source srcset="/assets/logojs.svg" type="image/svg+xml" disabled="{{ #dis0.value }}"></pacem-picture-source>
+            </pacem-picture>
+        </div>
+
+        <!-- interactive feedback -->
+        <hr />
+        <div class="display-flex flex-middle">
+            <pacem-checkbox css-class="{{ {'checkbox-danger': $this.value} }}" class="checkbox-naked" true-value="true" false-value="false" id="dis0" 
+                            caption="{{ $this.value ? 'SVG source is now disabled!' : 'disable SVG source' }}"></pacem-checkbox>
+            <span class="pacem-pad pad-x-1 text-disabled">|</span>
+            <span>current image source: <code><pacem-text text="{{ #pic0.currentSrc }}"></pacem-text></code></span>
+        </div>
+
+    </template>
+</pacemjs-snippet>
+
+<pacem-picture id="proto" hidden></pacem-picture>
+<pacemjs-descriptor target="{{ #proto }}"></pacemjs-descriptor>

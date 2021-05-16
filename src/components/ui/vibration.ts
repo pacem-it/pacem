@@ -6,8 +6,8 @@ namespace Pacem.Components.UI {
 
         @Watch({
             emit: false, converter: {
-                convert: (attr) => attr.split(',').map(i => parseInt(i)),
-                convertBack: (prop) => prop.join(',')
+                convert: (attr) => attr?.split(/[ ,]+/).map(i => parseInt(i)),
+                convertBack: (prop) => prop?.join(' ')
             }
         }) pattern: number[]; 
 

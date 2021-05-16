@@ -20,6 +20,8 @@
                         return obj.map(clone);
                     } else if (obj instanceof Date) {
                         return new Date(obj.valueOf());
+                    } else if (obj instanceof RegExp) {
+                        return new RegExp(obj);
                     } else {
                         if (seen.has(obj)) {
                             return seen.get(obj);

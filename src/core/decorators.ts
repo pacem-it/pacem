@@ -89,12 +89,13 @@ namespace Pacem {
     function retrieveTemplateAndWaitForDOMReady(config: CustomElementConfig): PromiseLike<string> {
         var deferred = DeferPromise.defer<string>();
         const on_load = (tmpl: string) => {
-            if (Utils.isDOMReady())
+            if (Utils.isDOMReady()) {
                 deferred.resolve(tmpl);
-            else
+            } else {
                 Utils.onDOMReady((evt) => {
                     deferred.resolve(tmpl);
                 });
+            }
         };
         //
         if (config.template) {
@@ -109,8 +110,9 @@ namespace Pacem {
                 console.error(err.message);
                 on_load(null);
             });
-        } else
+        } else {
             on_load(null);
+        }
         //
         return deferred.promise;
     }
@@ -246,8 +248,9 @@ namespace Pacem {
                                 var root: ShadowRoot | HTMLElement;
                                 if (config.shadow) {
                                     root = element.attachShadow({ mode: 'open' });
-                                } else
+                                } else {
                                     root = element;
+                                }
 
                                 var currentChildren = currentContent.content.children;
                                 //for (var j = currentChildren.length - 1; j >= 0; j--) {
@@ -331,7 +334,7 @@ namespace Pacem {
                             // fire original viewActivatedCallback
                             // when all the descendant templated elements have already fired
                             Promise.all(promises)
-                                .then(f => fireViewActivated());
+                                .then(_ => fireViewActivated());
                         });
 
 
@@ -452,7 +455,7 @@ namespace Pacem {
                                 if (options
                                     && options.reflectBack === true
                                     && /* not polyfilled */ !CustomElementUtils.polyfilling
-                                    ) {
+                                ) {
                                     var attrName = CustomElementUtils.camelToKebab(name),
                                         attr = _this.attributes.getNamedItem(attrName);
 

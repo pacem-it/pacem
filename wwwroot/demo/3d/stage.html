@@ -1,0 +1,167 @@
+﻿<!-- capture here innerHTML before actual stage3D initialization... -->
+<pacem-data model="{{  '<!-- 3d stage -->\n'+ #stage1.outerHTML }}" id="code1"></pacem-data>
+<div class="pacem-grid grid-nogap grid-nospace">
+    <pre class="pacem-cell cols-lg-6 pacem-relative pacem-stretch">
+<pacem-3d orbit="true" adapter="#three1" id="stage1" class="pacem-stretch">
+
+    <!-- camera -->
+    <pacem-3d-camera id="cam1"
+                 position="0,2,7"
+                 look-at="{{ {x: 0, y: #tilt1.model, z: 0} }}">
+    </pacem-3d-camera>
+
+    <!-- mesh -->
+    <pacem-3d-mesh geometry="{{ $pacem.parse3D(#obj1.result, 'obj') }}"
+               rotate="{{ #quaternion1.model }}"
+               material="{{ { map: '/assets/3d/astronaut/astronaut_basecolor.png', shader: 'basic' } }}">
+    </pacem-3d-mesh>
+
+</pacem-3d>
+<pacem-panel class="pos-absolute absolute-bottom text-smaller-steady pacem-pad" css-class="{{ { 'absolute-left pad-bottom-3': #lgScreen.isMatch, 'absolute-right pad-bottom-5': !#lgScreen.isMatch } }}">
+<a href="https://poly.google.com/view/dLHpzNdygsg" target="_blank">Astronaut</a> by <a href="https://poly.google.com/user/4aEd8rQgKu2" target="_blank">Poly</a>, licensed under <a href="https://creativecommons.org/licenses/by/2.0/" target="_blank">CC-BY</a>.</pacem-panel>
+</pre>
+    <div class="pacem-panel pacem-cell cols-lg-6 panel-filled">
+        <pacem-markdown value="{{ '```html\n<!-- CODE ANATOMY -->\n'+ #content1.innerHTML + '\n\n'+ #code1.model +'\n```' }}" class="panel-body"></pacem-markdown>
+    </div>
+
+</div>
+
+<pacem-media-query query="{{ Pacem.Components.UI.MEDIAQUERY_LG }}" id="lgScreen"></pacem-media-query>
+
+<pre pacem hidden id="content1">
+
+<!-- OBJ model fetcher -->
+<pacem-fetch url="/assets/3d/astronaut/astronaut.obj.txt" id="obj1" as="text"></pacem-fetch>
+
+<!-- THREEjs adapter -->
+<pacem-3d-three-adapter id="three1"></pacem-3d-three-adapter>
+
+<!-- camera look-at 'y' value -->
+<pacem-data id="tilt1" model="2"></pacem-data>
+
+<!-- rotation angle -->
+<pacem-data id="rho1" model="0"></pacem-data>
+
+<!-- rotation quaternion -->
+<pacem-data id="quaternion1" model="{{ Pacem.Geometry.LinearAlgebra.Quaternion.fromAxisAngle({ x:0, y: 1, z: 0 }, #rho1.model) }}"></pacem-data>
+
+<!-- rotation timer -->
+<pacem-timer interval="20" on-tick="#rho1.model += .1"></pacem-timer>
+</pre>
+
+<!--<pacem-3d-light intensity="1" position="0,5,5"></pacem-3d-light>
+<pacem-3d-light intensity="1" position="0,0,-5"></pacem-3d-light>
+<pacem-3d-light intensity="1" position="-5,0,0"></pacem-3d-light>
+<pacem-3d-light intensity="1" position="5,0,0"></pacem-3d-light>-->
+<!--<dl>
+    <dt>camera look at tilt:</dt>
+    <dd><pacem-slider min="0" max="4" value="{{ #tilt1.model, twoway }}" thumb-label="true" step=".1"></pacem-slider></dd>
+</dl>-->
+<pacem-markdown value="{{ #content0.textContent }}" class="md-tech pacem-margin margin-top-3" root></pacem-markdown>
+
+<pre pacem hidden id="content0">
+
+## 3D Stage
+
+`Pacem3DElement` is the stage element for _3D drawings_.  
+It must be associated with a `Pacem3DAdapterElement` in order to work, since it is agnostic about the rendering process.
+
+> Right now, the only adapter implementation available is based on [threejs](https://threejs.org).
+
+</pre>
+
+<pacemjs-snippet>
+    <template>
+
+
+        <!-- 3D stuff -->
+        <pacem-3d-three-adapter id="three0"></pacem-3d-three-adapter>
+        <pacem-3d interactive="true"
+                  orbit="true"
+                  adapter="#three0" style="height: 33vh"
+                  on-itemclick="$pacem.poptoast(#toaster0, 'info', 'Clicked: <b>'+ $event.detail.tag + '</b>')"
+                  on-itemover="#hovering0.model = true; #stageCoords.model = { x: $event.pageX, y: $event.pageY, tag: $event.detail.tag }; #tooltip0.popup()"
+                  on-itemout="#hovering0.model = false">
+
+            <pacem-3d-camera position="{{ {x: 0, y: #tilt0.value, z: 10} }}"></pacem-3d-camera>
+            <pacem-3d-light id="light0" intensity="1" position="0,0,5"></pacem-3d-light>
+
+            <!-- carousel group -->
+            <pacem-3d-group rotate="{{ #quaternion0.model }}">
+                <pacem-3d-mesh geometry="{{ #tetrageom0.geometry }}" material="{{ #tetramat0.material }}" tag="tetrahedron" position="{{ { x: #radius0.model, y: 0, z: 0 } }}"></pacem-3d-mesh>
+                <pacem-3d-mesh geometry="{{ #octageom0.geometry }}" material="{{ #octamat0.material }}" tag="octahedron" position="{{ { x: Math.cos(#theta0.model) * #radius0.model, y: 0, z: Math.sin(#theta0.model) * #radius0.model } }}"></pacem-3d-mesh>
+                <pacem-3d-mesh geometry="{{ #hexageom0.geometry }}" material="{{ #hexamat0.material }}" tag="hexahedron" position="{{ { x: Math.cos(#theta0.model * 2) * #radius0.model, y: 0, z: Math.sin(#theta0.model * 2) * #radius0.model } }}"></pacem-3d-mesh>
+                <pacem-3d-mesh geometry="{{ #icosageom0.geometry }}" material="{{ #icosamat0.material }}" tag="icosahedron" position="{{ { x: Math.cos(#theta0.model * 3) * #radius0.model, y: 0, z: Math.sin(#theta0.model * 3) * #radius0.model } }}"></pacem-3d-mesh>
+                <pacem-3d-mesh geometry="{{ #dodecageom0.geometry }}" material="{{ #dodecamat0.material }}" tag="dodecahedron" position="{{ { x: Math.cos(#theta0.model * 4) * #radius0.model, y: 0, z: Math.sin(#theta0.model * 4) * #radius0.model } }}"></pacem-3d-mesh>
+
+            </pacem-3d-group>
+            <pacem-3d-mesh geometry="{{ #xgeom0.geometry }}" inert="true" material="{{ #xmat0.material }}"></pacem-3d-mesh>
+            <pacem-3d-mesh geometry="{{ #ygeom0.geometry }}" inert="true" material="{{ #ymat0.material }}"></pacem-3d-mesh>
+            <pacem-3d-mesh geometry="{{ #zgeom0.geometry }}" inert="true" material="{{ #zmat0.material }}"></pacem-3d-mesh>
+
+        </pacem-3d>
+
+        <!-- geometries -->
+        <pacem-3d-primitive-tetrahedron id="tetrageom0"></pacem-3d-primitive-tetrahedron>
+        <pacem-3d-primitive-octahedron id="octageom0"></pacem-3d-primitive-octahedron>
+        <pacem-3d-primitive-hexahedron id="hexageom0"></pacem-3d-primitive-hexahedron>
+        <pacem-3d-primitive-icosahedron id="icosageom0"></pacem-3d-primitive-icosahedron>
+        <pacem-3d-primitive-dodecahedron id="dodecageom0"></pacem-3d-primitive-dodecahedron>
+
+        <pacem-3d-primitive-line id="xgeom0" positions="{{ [{x: 0, y: 0, z: 0}, {x: 1, y: 0, z: 0}] }}"></pacem-3d-primitive-line>
+        <pacem-3d-primitive-line id="ygeom0" positions="{{ [{x: 0, y: 0, z: 0}, {x: 0, y: 1, z: 0}] }}"></pacem-3d-primitive-line>
+        <pacem-3d-primitive-line id="zgeom0" positions="{{ [{x: 0, y: 0, z: 0}, {x: 0, y: 0, z: 1}] }}"></pacem-3d-primitive-line>
+
+        <!-- materials -->
+        <pacem-3d-material-standard id="tetramat0" color="#c00" flat-shading="true" roughness="1" metalness="0"></pacem-3d-material-standard>
+        <pacem-3d-material-standard id="octamat0" color="#069" flat-shading="true" roughness="1" metalness="0"></pacem-3d-material-standard>
+        <pacem-3d-material-standard id="hexamat0" color="#fa0" flat-shading="true" roughness="1" metalness="0"></pacem-3d-material-standard>
+        <pacem-3d-material-standard id="icosamat0" color="#080" flat-shading="true" roughness="1" metalness="0"></pacem-3d-material-standard>
+        <pacem-3d-material-standard id="dodecamat0" color="#222" flat-shading="true" roughness="1" metalness="0"></pacem-3d-material-standard>
+
+        <pacem-3d-material-line id="xmat0" color="#f00"></pacem-3d-material-line>
+        <pacem-3d-material-line id="ymat0" color="#0f0"></pacem-3d-material-line>
+        <pacem-3d-material-line id="zmat0" color="#00f"></pacem-3d-material-line>
+
+        <!-- constant: 72deg -->
+        <pacem-data id="theta0" model="{{ 72 * Math.PI / 180 }}"></pacem-data>
+
+        <!-- rotation -->
+        <pacem-data id="rho0" model="0"></pacem-data>
+        <pacem-data id="quaternion0" model="{{ Pacem.Geometry.LinearAlgebra.Quaternion.fromAxisAngle({ x:0, y: 1, z: 0 }, #rho0.model) }}"></pacem-data>
+        <pacem-timer interval="20" on-tick="#rho0.model++" disabled="{{ #hovering0.model }}"></pacem-timer>
+
+        <!-- 3d carousel radius -->
+        <pacem-data id="radius0" model="3"></pacem-data>
+
+        <!-- 3d carousel radius slider -->
+        <dl>
+            <dt>radius:</dt>
+            <dd><pacem-slider min="2" max="4" value="{{ #radius0.model, twoway }}" thumb-label="true" step="0.01"></pacem-slider></dd>
+            <dt>light intensity:</dt>
+            <dd><pacem-slider min="0" max="6" value="{{ #light0.intensity, twoway }}" thumb-label="true" step="0.1"></pacem-slider></dd>
+            <dt>camera tilt:</dt>
+            <dd><pacem-slider min="0" max="10" id="tilt0" value="3" thumb-label="true" step="0.01"></pacem-slider></dd>
+        </dl>
+
+
+        <!-- stage coords -->
+        <pacem-data id="stageCoords" model="{{ {x: 0, y: 0} }}"></pacem-data>
+        <pacem-data id="hovering0" model="false" debounce="100" on-propertychange="$this.model ? #tooltip0.popup() : #tooltip0.popout()"></pacem-data>
+
+        <pacem-shell-proxy>
+            <pacem-balloon id="tooltip0" class="balloon-primary pacem-inert" options='{ "behavior": "inert", "position": "top" }' target="{{ #stageCoords.model }}">
+                <div>
+                    <pacem-text text="{{ #stageCoords.model.tag }}"></pacem-text>
+                </div>
+            </pacem-balloon>
+            <pacem-panel class="pacem-toaster toaster-bottom toaster-right" id="toaster0"></pacem-panel>
+        </pacem-shell-proxy>
+
+    </template>
+</pacemjs-snippet>
+
+
+
+<pacem-3d id="proto" hidden></pacem-3d>
+<pacemjs-descriptor target="#proto"></pacemjs-descriptor>

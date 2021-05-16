@@ -1,0 +1,1130 @@
+﻿@import "../shared";
+@import "../../ui/shared";
+
+@keyframes pacem-rotate-anim {
+    0% {
+        transform: rotate(0);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes pacem-autocomplete-anim {
+    0% {
+        opacity: 0;
+        transform: translateY(@grid_spacing);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@_left: @grid_spacing * 5 / 6;
+@_h: @_left;
+
+@keyframes pacem-label-anim {
+    0% {
+        //transform: translateY(@_h) scale(1.125) translateX(0) translateZ(0);
+    }
+
+    100% {
+        //transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes pacem-label-before-anim {
+    0% {
+        transform: rotate(-180deg);
+    }
+
+    100% {
+        transform: rotate(0);
+    }
+}
+
+@keyframes pacem-label-before-anim-inline {
+    0% {
+        transform: rotate(-90deg);
+    }
+
+    100% {
+        transform: rotate(0);
+    }
+}
+
+@keyframes pacem-input-container-anim {
+    0% {
+        // DO NOT ANIMATE this, FireFox and IE will get the correct positioning of the auto-complete component broken.
+        //transform: /*translateX(0) translateY(0) translateZ(0)*/ scale(.1);
+        //opacity: .0; // opacity animation is EVIL!
+    }
+
+    100% {
+        //transform: /*translateX(0)*/ scale(1);
+        //opacity: 1;
+    }
+}
+
+@{P}-form-field {
+    display: flex;
+    align-content: stretch;
+    align-items: stretch;
+
+    > @{P}-form {
+        flex: 1 1 auto;
+    }
+}
+
+@_input_container_pad_top: @field_padding_top;
+
+.@{PCSS}-field {
+    margin-bottom: @grid_spacing / 3;
+    z-index: 0;
+    padding: @grid_spacing/3 0 @_h 0;
+    border-radius: @border_field_radius;
+    transition: background linear .3s, border linear .3s;
+
+    @_thumb_border: @grid_spacing/12; // 2px
+    > label.@{PCSS}-label {
+        position: relative;
+        //height: @_h;
+        //line-height: @_h;
+        padding-left: @_h;
+        display: inline-block;
+        // align-items: center;
+        color: @color_field_label;
+        .FontMain(1.05);
+        animation: pacem-label-anim .25s ease-in-out both;
+        // field appearance borrowed from -inline:
+        min-height: @field_height;
+        .LabelTopMargin();
+    }
+
+    .@{PCSS}-input-container {
+        padding: @_input_container_pad_top @_left 0 @_left;
+        animation: pacem-input-container-anim .3s ease-in .2s both;
+    }
+
+    .@{PCSS}-validators {
+        list-style-type: none;
+        color: @color_danger;
+        margin-top: @border_field_size;
+
+        > * {
+            // display: list-item;
+            //min-height: @grid_spacing;
+            //line-height: @grid_spacing;
+        }
+    }
+
+    img.@{PCSS}-readonly {
+        padding: 0;
+        border: @_thumb_border solid @color_default;
+        margin: @grid_spacing/3 0 @grid_spacing/3 @_left;
+    }
+
+    .@{PCSS}-viewfinder,
+    .@{PCSS}-input {
+        transition: border-color .22s linear;
+    }
+
+    &.@{PCSS}-invalid {
+        > .@{PCSS}-input-container {
+            > :not(@{P}-childform) /* childform should break the rule */ {
+
+                .@{PCSS}-viewfinder,
+                .@{PCSS}-input {
+                    border-color: fade(@color_error, 20);
+                }
+            }
+
+            &.@{PCSS}-fieldgroup {
+                > .fieldgroup-prepend, > .fieldgroup-append {
+                    border-color: fade(@color_error, 20);
+                }
+            }
+        }
+
+        &.@{PCSS}-dirty {
+            > .@{PCSS}-input-container {
+                > :not(@{P}-childform) /* childform should break the rule */ {
+                    .@{PCSS}-viewfinder,
+                    .@{PCSS}-input {
+                        border-color: @color_error;
+                    }
+                }
+
+                &.@{PCSS}-fieldgroup {
+                    > .fieldgroup-prepend, > .fieldgroup-append {
+                        border-color: @color_error;
+                    }
+                }
+            }
+        }
+
+        > .@{PCSS}-input-container {
+            > .@{PCSS}-focus:not(@{P}-childform) /* childform should break the rule */ {
+
+                .@{PCSS}-viewfinder,
+                .@{PCSS}-input {
+                    .Outline(fade(@color_error, 40));
+                }
+            }
+        }
+    }
+
+    &.@{PCSS}-has-value {
+
+        &.@{PCSS}-valid {
+
+            &.@{PCSS}-dirty {
+
+                > .@{PCSS}-input-container {
+                    > :not(@{P}-childform) /* childform should break the rule */ {
+
+                        .@{PCSS}-viewfinder,
+                        .@{PCSS}-input {
+                            border-color: fade( @color_success, 100);
+                        }
+                    }
+
+                    &.@{PCSS}-fieldgroup {
+                        > .fieldgroup-prepend, > .fieldgroup-append {
+                            border-color: fade( @color_success, 100);
+                        }
+                    }
+                }
+            }
+
+            &.@{PCSS}-pristine {
+
+                > .@{PCSS}-input-container {
+                    > :not(@{P}-childform) /* childform should break the rule */ {
+                        .@{PCSS}-viewfinder,
+                        .@{PCSS}-input {
+                            border-color: fade( @color_success, 40);
+                        }
+                    }
+
+                    &.@{PCSS}-fieldgroup {
+                        > .fieldgroup-prepend, > .fieldgroup-append {
+                            border-color: fade(@color_success, 40);
+                        }
+                    }
+                }
+            }
+
+            > .@{PCSS}-input-container {
+                > .@{PCSS}-focus:not(@{P}-childform) /* childform should break the rule */ {
+
+                    .@{PCSS}-viewfinder,
+                    .@{PCSS}-input {
+                        .Outline(fade(@color_success, 40));
+                    }
+                }
+            }
+        }
+    }
+}
+
+// lazy-validation
+.lazy-validation > @{P}-form-field > .@{PCSS}-field.@{PCSS}-pristine {
+    .@{PCSS}-viewfinder,
+    .@{PCSS}-input {
+        .Outline(@color_field_outline);
+        border-color: @color_border;
+    }
+}
+
+// force outline
+@{P}-form-field.field-outline when (@field_outline_width = 0) {
+
+    .@{PCSS}-field {
+
+        > .@{PCSS}-input-container > .@{PCSS}-focus:not(@{P}-childform) /* childform should break the rule */ {
+
+            .@{PCSS}-viewfinder,
+            .@{PCSS}-input {
+                .Outline(2px, @color_field_outline);
+            }
+        }
+
+
+        &.@{PCSS}-invalid {
+
+            > .@{PCSS}-input-container > .@{PCSS}-focus:not(@{P}-childform) /* childform should break the rule */ {
+
+                .@{PCSS}-viewfinder,
+                .@{PCSS}-input {
+                    .Outline(2px, fade(@color_error, 40));
+                }
+            }
+        }
+
+        &.@{PCSS}-has-value.@{PCSS}-valid {
+
+            > .@{PCSS}-input-container > .@{PCSS}-focus:not(@{P}-childform) /* childform should break the rule */ {
+
+                .@{PCSS}-viewfinder,
+                .@{PCSS}-input {
+                    .Outline(2px, fade(@color_success, 40));
+                }
+            }
+        }
+    }
+}
+
+.lazy-validation > @{P}-form-field.field-outline when (@field_outline_width = 0) {
+    .@{PCSS}-field.@{PCSS}-valid,
+    .@{PCSS}-field.@{PCSS}-invalid {
+        &.@{PCSS}-pristine {
+            > .@{PCSS}-input-container > .@{PCSS}-focus:not(@{P}-childform) /* childform should break the rule */ {
+
+                .@{PCSS}-viewfinder,
+                .@{PCSS}-input {
+                    .Outline(2px, @color_field_outline);
+                }
+            }
+        }
+    }
+}
+
+.@{PCSS}-field when (@border_field_underline = false) {
+    border: @border_field_size solid transparent;
+}
+
+.@{PCSS}-field when (@border_field_underline = true) {
+    border-bottom: @border_field_size solid transparent;
+}
+
+.FieldInline() {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: flex-start;
+    align-content: stretch;
+
+    > label.@{PCSS}-label {
+        flex: 0 0 @grid_spacing * 5 - @grid_spacing;
+    }
+
+    > .@{PCSS}-input-container {
+        flex: 1 1 auto;
+    }
+
+    &.@{PCSS}-editable {
+
+        > label.@{PCSS}-label {
+
+            &::before {
+                .Icon('keyboard_arrow_right', @grid_spacing / 1.5);
+                top: 3px;
+                left: 3px;
+                animation: pacem-label-before-anim-inline .3s ease-in .5s both;
+            }
+        }
+    }
+
+    &.@{PCSS}-readonly {
+        > label.@{PCSS}-label {
+            flex-basis: @grid_spacing * 5;
+            margin-left: 0;
+        }
+
+        > .@{PCSS}-input-container {
+            & when (@border_field_underline = false) {
+                margin-top: @field_readonly_top + @border_field_size;
+            }
+
+            & when (@border_field_underline = true) {
+                margin-top: @field_readonly_top;
+            }
+        }
+    }
+}
+
+@{P}-form-field.field-inline > .@{PCSS}-field {
+    .FieldInline();
+}
+
+@{P}-form-field.field-center > .@{PCSS}-field > .@{PCSS}-input-container {
+    text-align: center;
+}
+
+.@{PCSS}-field.@{PCSS}-editable {
+
+    &:not(.@{PCSS}-has-value) {
+
+        select.@{PCSS}-select:not(:focus) /*,
+        input::-webkit-datetime-edit */ {
+            .Watermark();
+        }
+    }
+
+    div[contenteditable][pacem]:focus,
+    .@{PCSS}-input:focus,
+    .@{PCSS}-input:focus + label,
+    select.@{PCSS}-select:focus /*,
+        input::-webkit-datetime-edit */ {
+        color: @color_input_fore_focus;
+    }
+}
+
+.@{PCSS}-animations {
+    .@{PCSS}-field {
+        div[contenteditable][pacem]:focus,
+        .@{PCSS}-input:focus,
+        .@{PCSS}-input:focus + label,
+        select.@{PCSS}-select:focus /*,
+        input::-webkit-datetime-edit */ {
+            transition: color .2s;
+        }
+    }
+}
+
+.@{PCSS}-input-container .@{PCSS}-latlng {
+    .@{PCSS}-latlng-fields[hidden] {
+        display: none !important;
+    }
+}
+// EDITABLE VS READONLY
+.@{PCSS}-field.@{PCSS}-editable {
+    background-color: @color_field_back;
+    border-color: transparent;
+
+    > label.@{PCSS}-label {
+        margin-left: @_h;
+
+        &::before {
+            .Icon('keyboard_arrow_down', @grid_spacing / 1.5);
+            position: absolute;
+            top: @_h * .1;
+            left: 0;
+            display: block;
+            width: @_h * .8;
+            height: @_h * .8;
+            animation: pacem-label-before-anim .3s ease-in .5s both;
+        }
+    }
+}
+
+.@{PCSS}-form {
+    .@{PCSS}-buttonset.buttons {
+        padding-top: 0;
+    }
+}
+
+// fetching
+.@{PCSS}-field.@{PCSS}-editable {
+
+    &.@{PCSS}-fetching {
+        label.@{PCSS}-label::before {
+            .Icon('refresh', @grid_spacing / 1.5);
+            animation: pacem-rotate-anim .67s linear infinite;
+        }
+    }
+}
+
+/* #region "minimal" aspect */
+
+.form-minimal > @{P}-form-field:not(.field-full),
+@{P}-form-field.field-minimal {
+
+    > @{P}-form.@{PCSS}-field {
+        background-color: transparent;
+        box-shadow: none;
+        border: 0;
+        margin: 0;
+        padding-top: 0;
+        padding-bottom: @grid_spacing/3;
+
+        > label.@{PCSS}-label {
+            margin: 0;
+            .FontMainSize(@field_minimal_fontsize);
+            min-height: 0;
+            height: @field_minimal_label_height;
+            line-height: $height;
+        }
+
+        &.@{PCSS}-editable {
+            > label.@{PCSS}-label {
+
+                &::after {
+                    display: none;
+                }
+            }
+        }
+
+        &.@{PCSS}-readonly > label.@{PCSS}-label {
+            padding-left: 0;
+        }
+
+        &.@{PCSS}-editable {
+            > label.@{PCSS}-label:not(.@{PCSS}-tooltip) {
+                padding-left: 0;
+
+                &::before {
+                    display: none;
+                }
+            }
+        }
+
+        > .@{PCSS}-input-container {
+            padding-left: 0;
+            padding-right: 0;
+        }
+
+        &.@{PCSS}-readonly > .@{PCSS}-input-container {
+            // padding-top: @grid_spacing/3;
+            .@{PCSS}-readonly:not(@{P}-childform) {
+                .@{PCSS}-readonly {
+                    display: flex;
+                    align-items: center;
+                }
+            }
+
+            > @{P}-childform.@{PCSS}-readonly {
+
+                @{P}-form.@{PCSS}-readonly, @{P}-childform.@{PCSS}-readonly {
+                    display: block;
+                }
+            }
+
+            .@{PCSS}-readonly::before {
+                line-height: @field_height;
+            }
+        }
+    }
+}
+
+.form-minimal > @{P}-form-field:not(.field-full),
+@{P}-form-field.field-minimal {
+    > @{P}-form.@{PCSS}-field.@{PCSS}-editable.@{PCSS}-fetching {
+        label.@{PCSS}-label::after {
+            .Icon('refresh', @grid_spacing / 1.5);
+            animation: pacem-rotate-anim .67s linear infinite;
+        }
+    }
+}
+
+/* #endregion */
+
+// no label
+.form-nolabels > @{P}-form-field:not(.field-label),
+@{P}-form-field.field-nolabel {
+    > .@{PCSS}-field > label.@{PCSS}-label {
+        display: none;
+    }
+}
+
+@media (min-width: @threshold_lg) {
+    // stretch
+    @{P}-form-field.field-stretch {
+
+        @{P}-input-text,
+        @{P}-input-password,
+        @{P}-input-tel,
+        @{P}-input-url,
+        @{P}-input-email,
+        @{P}-input-search,
+        @{P}-suggest,
+        @{P}-select,
+        @{P}-checkbox,
+        @{P}-radio,
+        @{P}-textarea,
+        @{P}-textarea-markdown,
+        @{P}-input-number {
+            // min-width: @field_min_width;
+            display: block;
+        }
+    }
+}
+// #region screen sizes
+@media (max-width: @threshold_sm - 1) {
+
+    @{P}-form-field.field-xs-inline > .@{PCSS}-field {
+        .FieldInline();
+    }
+
+    .form-xs-nolabels > @{P}-form-field:not(.field-label),
+    @{P}-form-field.field-xs-nolabel {
+        > .@{PCSS}-field > label.@{PCSS}-label {
+            display: none;
+        }
+    }
+
+    @{P}-form-field.field-xs-label > .@{PCSS}-field > label.@{PCSS}-label {
+        display: inherit;
+    }
+}
+
+@media (min-width: @threshold_sm) {
+
+    @{P}-form-field.field-sm-inline > .@{PCSS}-field {
+        .FieldInline();
+    }
+
+    .form-sm-nolabels > @{P}-form-field:not(.field-label),
+    @{P}-form-field.field-sm-nolabel {
+        > .@{PCSS}-field > label.@{PCSS}-label {
+            display: none;
+        }
+    }
+
+    @{P}-form-field.field-sm-label > .@{PCSS}-field > label.@{PCSS}-label {
+        display: inherit;
+    }
+}
+
+@media (min-width: @threshold_md) {
+
+    @{P}-form-field.field-md-inline > .@{PCSS}-field {
+        .FieldInline();
+    }
+
+    .form-md-nolabels > @{P}-form-field:not(.field-label),
+    @{P}-form-field.field-md-nolabel {
+        > .@{PCSS}-field > label.@{PCSS}-label {
+            display: none;
+        }
+    }
+
+    @{P}-form-field.field-md-label > .@{PCSS}-field > label.@{PCSS}-label {
+        display: inherit;
+    }
+}
+
+@media (min-width: @threshold_lg) {
+
+    @{P}-form-field.field-lg-inline > .@{PCSS}-field {
+        .FieldInline();
+    }
+
+    .form-lg-nolabels > @{P}-form-field:not(.field-label),
+    @{P}-form-field.field-lg-nolabel {
+        > .@{PCSS}-field > label.@{PCSS}-label {
+            display: none;
+        }
+    }
+
+    @{P}-form-field.field-lg-label > .@{PCSS}-field > label.@{PCSS}-label {
+        display: inherit;
+    }
+}
+
+@media (min-width: @threshold_xl) {
+
+    @{P}-form-field.field-xl-inline > .@{PCSS}-field {
+        .FieldInline();
+    }
+
+    .form-xl-nolabels > @{P}-form-field:not(.field-label),
+    @{P}-form-field.field-xl-nolabel {
+        > .@{PCSS}-field > label.@{PCSS}-label {
+            display: none;
+        }
+    }
+
+    @{P}-form-field.field-xl-label > .@{PCSS}-field > label.@{PCSS}-label {
+        display: inherit;
+    }
+}
+
+@media (min-width: @threshold_hd) {
+
+    @{P}-form-field.field-hd-inline > .@{PCSS}-field {
+        .FieldInline();
+    }
+
+    .form-hd-nolabels > @{P}-form-field:not(.field-label),
+    @{P}-form-field.field-hd-nolabel {
+        > .@{PCSS}-field > label.@{PCSS}-label {
+            display: none;
+        }
+    }
+
+    @{P}-form-field.field-hd-label > .@{PCSS}-field > label.@{PCSS}-label {
+        display: inherit;
+    }
+}
+
+@media (min-width: @threshold_2k) {
+
+    @{P}-form-field.field-2k-inline > .@{PCSS}-field {
+        .FieldInline();
+    }
+
+    .form-2k-nolabels > @{P}-form-field:not(.field-label),
+    @{P}-form-field.field-2k-nolabel {
+        > .@{PCSS}-field > label.@{PCSS}-label {
+            display: none;
+        }
+    }
+
+    @{P}-form-field.field-2k-label > .@{PCSS}-field > label.@{PCSS}-label {
+        display: inherit;
+    }
+}
+
+@media (min-width: @threshold_4k) {
+
+    @{P}-form-field.field-4k-inline > .@{PCSS}-field {
+        .FieldInline();
+    }
+
+    .form-4k-nolabels > @{P}-form-field:not(.field-label),
+    @{P}-form-field.field-4k-nolabel {
+        > .@{PCSS}-field > label.@{PCSS}-label {
+            display: none;
+        }
+    }
+
+    @{P}-form-field.field-4k-label > .@{PCSS}-field > label.@{PCSS}-label {
+        display: inherit;
+    }
+}
+
+@media (orientation: landscape) {
+
+    @{P}-form-field.field-h-inline > .@{PCSS}-field {
+        .FieldInline();
+    }
+
+    .form-h-nolabels > @{P}-form-field:not(.field-label),
+    @{P}-form-field.field-h-nolabel {
+        > .@{PCSS}-field > label.@{PCSS}-label {
+            display: none;
+        }
+    }
+
+    @{P}-form-field.field-h-label > .@{PCSS}-field > label.@{PCSS}-label {
+        display: inherit;
+    }
+}
+
+@media (orientation: portrait) {
+
+    @{P}-form-field.field-v-inline > .@{PCSS}-field {
+        .FieldInline();
+    }
+
+    .form-v-nolabels > @{P}-form-field:not(.field-label),
+    @{P}-form-field.field-v-nolabel {
+        > .@{PCSS}-field > label.@{PCSS}-label {
+            display: none;
+        }
+    }
+
+    @{P}-form-field.field-v-label > .@{PCSS}-field > label.@{PCSS}-label {
+        display: inherit;
+    }
+}
+// #endregion
+
+/* #region label tooltip*/
+.@{PCSS}-field {
+    &.@{PCSS}-editable {
+        > label.@{PCSS}-label {
+
+            &.@{PCSS}-tooltip::before {
+                content: 'info' !important;
+                animation: none !important;
+            }
+
+            &.@{PCSS}-required:after {
+                content: '*';
+                .FontTech(1.1);
+            }
+        }
+    }
+}
+
+@{P}-balloon.@{PCSS}-field-tooltip {
+    // pick reference (DRY!) eventually
+    @_balloon_arrow_offset: @grid_spacing / 3; // < when 'start' or 'end' -aligned
+    @_balloon_arrow_size: @grid_spacing;
+    @_info_icon_size: @grid_spacing / 1.5;
+    @_y_padding: (@field_height - @_info_icon_size)/2;
+
+    @_adjustment: -@_balloon_arrow_offset - @_balloon_arrow_size/2 + @_info_icon_size/2; // -@_left * .7
+    &.balloon-top.balloon-start,
+    &.balloon-bottom.balloon-start {
+        margin-left: @_adjustment;
+    }
+
+    &.balloon-top.balloon-end,
+    &.balloon-bottom.balloon-end {
+        margin-left: -@_adjustment - @_y_padding;
+    }
+
+    &.balloon-left.balloon-start,
+    &.balloon-right.balloon-start {
+        margin-top: @_adjustment;
+    }
+
+    &.balloon-left.balloon-end,
+    &.balloon-right.balloon-end {
+        margin-top: -@_adjustment - @_y_padding;
+    }
+}
+/* #endregion*/
+
+.@{PCSS}-field.@{PCSS}-editable when (@shadows = true) {
+    box-shadow: 0 2px @grid_spacing / 3 rgba(0,0,0,0.25);
+}
+
+.@{PCSS}-field.@{PCSS}-editable when (@shadows = false) {
+    box-shadow: 0 2px @grid_spacing / 8 rgba(0,0,0,0.05);
+}
+
+.@{PCSS}-field.@{PCSS}-readonly {
+    background-color: transparent;
+    box-shadow: none;
+    border-color: fade(@color_default, 5);
+}
+
+// FieldSet
+.@{PCSS}-fieldset {
+    .HorizontalItemSet(field);
+
+    .@{PCSS}-fieldset-left, .@{PCSS}-fieldset-center, .@{PCSS}-fieldset-right, .@{PCSS}-fieldset-auto,
+    .fieldset-left, .fieldset-center, .fieldset-right, .fieldset-auto {
+        background-color: @color_input_back;
+        border-radius: @border_input_radius;
+
+        .@{PCSS}-viewfinder,
+        .@{PCSS}-input {
+
+            &:not(.@{PCSS}-fieldgroup):not(.input-group) {
+                background: none;
+                border-radius: 0;
+            }
+        }
+
+        > * {
+
+            &:first-child when (@border_input_radius > 0) {
+                .@{PCSS}-viewfinder, .@{PCSS}-input {
+                    border-top-left-radius: @border_input_radius;
+                    border-bottom-left-radius: @border_input_radius;
+                }
+            }
+
+            &:last-child when (@border_input_radius > 0) {
+                .@{PCSS}-viewfinder, .@{PCSS}-input {
+                    border-top-right-radius: @border_input_radius;
+                    border-bottom-right-radius: @border_input_radius;
+                }
+            }
+
+            &:not(:last-child):not(.fieldset-last)::after {
+                // content: '|';
+            }
+        }
+    }
+}
+
+.@{PCSS}-fieldgroup,
+.input-group {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    justify-content: start;
+    grid-template-areas: "prepend main append";
+
+    > * {
+        min-height: @field_height;
+        grid-area: main;
+
+        &.fieldgroup-prepend,
+        &.input-group-prepend,
+        &.fieldgroup-append,
+        &.input-group-append {
+            background-color: @color_input_back;
+            color: @color_field_fore;
+            min-width: @border_input_radius;
+
+            .@{PCSS}-icon {
+                font-size: @grid_spacing;
+                height: @field_height;
+                line-height: @field_height;
+            }
+
+            @{P}-button {
+                line-height: 1;
+                margin: .5 *( @field_height - @grid_spacing) @grid_spacing / 3 0 0;
+
+                &::before {
+                    display: block;
+                }
+            }
+        }
+
+        &.fieldgroup-prepend,
+        &.input-group-prepend {
+            grid-area: prepend;
+            border-top-left-radius: @border_input_radius;
+            border-bottom-left-radius: @border_input_radius;
+        }
+
+        &.fieldgroup-append,
+        &.input-group-append {
+            grid-area: append;
+            border-top-right-radius: @border_input_radius;
+            border-bottom-right-radius: @border_input_radius;
+        }
+
+        .@{PCSS}-viewfinder, .@{PCSS}-input {
+            border-radius: 0 !important;
+            border-left: none !important;
+            border-right: none !important;
+        }
+    }
+
+    .@{PCSS}-focus ~ .fieldgroup-prepend,
+    .@{PCSS}-focus ~ .input-group-prepend {
+        color: @color_input_fore_focus;
+    }
+
+    .@{PCSS}-focus ~ .fieldgroup-append,
+    .@{PCSS}-focus ~ .input-group-append {
+        color: @color_input_fore_focus;
+    }
+
+    &:not(.@{PCSS}-viewfinder) {
+
+        > * {
+
+            &.fieldgroup-prepend,
+            &.input-group-prepend,
+            &.fieldgroup-append,
+            &.input-group-append {
+                .FormFieldItemBorder();
+            }
+
+            &.fieldgroup-prepend,
+            &.input-group-prepend {
+                border-right: none;
+            }
+
+            &.fieldgroup-append,
+            &.input-group-append {
+                border-left: none;
+            }
+        }
+
+        .@{PCSS}-focus ~ .fieldgroup-prepend,
+        .@{PCSS}-focus ~ .input-group-prepend {
+            border-color: fade(@color_default, 40);
+        }
+
+        .@{PCSS}-focus ~ .fieldgroup-append,
+        .@{PCSS}-focus ~ .input-group-append {
+            border-color: fade(@color_default, 40);
+        }
+    }
+    // Remove outline from fields in fieldgroups (they look ugly).
+    // TODO: think about a pure CSS solution.
+    > *.@{PCSS}-focus {
+
+        .@{PCSS}-viewfinder,
+        .@{PCSS}-input {
+            .NoOutline();
+        }
+    }
+}
+// reset bg for groups nested inside sets
+.@{PCSS}-fieldset {
+
+    .@{PCSS}-fieldgroup,
+    input-group {
+
+        .fieldgroup-prepend,
+        .input-group-prepend,
+        .fieldgroup-append,
+        .input-group-append {
+            background: none;
+        }
+
+        &:not(:first-child) {
+
+            .fieldgroup-prepend,
+            .input-group-prepend {
+                border-radius: 0;
+                border-left: none;
+            }
+        }
+
+        &:not(:last-child) {
+
+            .fieldgroup-append,
+            .input-group-append {
+                border-radius: 0;
+                border-right: none;
+            }
+        }
+    }
+}
+
+.@{PCSS}-field {
+
+    > .@{PCSS}-input-container.@{PCSS}-fieldgroup {
+        justify-content: start;
+        align-items: start;
+
+        .@{PCSS}-readonly {
+            // reset the borders-replacers
+            // since the fieldgroup already shows borders
+            margin: 0;
+        }
+
+        .fieldgroup-append,
+        //.input-group-prepend,
+        //.input-group-append,
+        .fieldgroup-prepend {
+            display: flex;
+            flex: 0 0 auto;
+            flex-wrap: nowrap;
+            align-items: center;
+
+            > @{P}-button {
+                box-sizing: border-box;
+                height: @field_height;
+                margin: 0;
+                display: block;
+
+                &::before {
+                    font-size: 1.1rem;
+                    line-height: @field_height;
+                }
+                //&.button {
+                padding: 0 @grid_spacing/3;
+
+                &::before {
+                    margin: 0;
+                }
+                //}
+            }
+        }
+
+        .fieldgroup-prepend.@{PCSS}-buttonset {
+            /*& when (@border_field_underline = false) {
+                padding-left: @border_field_size;
+            }*/
+            > @{P}-button {
+                &:first-of-type {
+                    border-top-left-radius: @border_input_radius;
+                    border-bottom-left-radius: @border_input_radius;
+                }
+
+                &:last-of-type {
+                    border-top-right-radius: 0;
+                    border-bottom-right-radius: 0;
+                }
+            }
+        }
+
+        .fieldgroup-append.@{PCSS}-buttonset {
+            /*& when (@border_field_underline = false) {
+                padding-right: @border_field_size;
+            }*/
+            > @{P}-button {
+
+                &:last-of-type {
+                    border-top-right-radius: @border_input_radius;
+                    border-bottom-right-radius: @border_input_radius;
+                }
+
+                &:first-of-type {
+                    border-top-left-radius: 0;
+                    border-bottom-left-radius: 0;
+                }
+            }
+        }
+    }
+
+    &.@{PCSS}-readonly {
+        &.@{PCSS}-invalid,
+        &.@{PCSS}-valid,
+        &.@{PCSS}-has-value {
+            > .@{PCSS}-input-container.@{PCSS}-fieldgroup {
+
+                @_bdr_grp_clr: @color_border;
+                @_grp_bckgrnd: none;
+
+                > .fieldgroup-append,
+                //.input-group-prepend,
+                //.input-group-append,
+                > .fieldgroup-prepend {
+                    border-color: @_bdr_grp_clr !important;
+                    border-style: dashed;
+                    background: @_grp_bckgrnd;
+                }
+
+                > .fieldgroup-prepend {
+                    border-right: 0;
+                    padding-right: @grid_spacing/4;
+                }
+
+                > .fieldgroup-append {
+                    border-left: 0;
+                    padding-left: @grid_spacing/4;
+                }
+
+                .@{PCSS}-readonly when (@border_field_underline = false) {
+                    border-top: @border_field_size dashed @_bdr_grp_clr;
+                    border-bottom: $border-top;
+                }
+
+                .@{PCSS}-readonly when (@border_field_underline = true) {
+                    border-bottom: @border_field_size dashed @_bdr_grp_clr;
+                }
+
+                // make readonly 'inline'and ellipsed
+                .@{PCSS}-readonly:not([hidden]) {
+                    display: block !important;
+                    .Ellipsed();
+                }
+
+                // nested readonly (remove border)
+                .@{PCSS}-readonly {
+                    background: @_grp_bckgrnd;
+
+                    .@{PCSS}-readonly {
+                        border: 0;
+                        background: none;
+                        // TODO: review this
+                        line-height: @field_height;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media (min-width: @threshold_lg) {
+
+    .@{PCSS}-field > .@{PCSS}-input-container.@{PCSS}-fieldgroup {
+        grid-template-columns: repeat(3, auto);
+    }
+
+    // stretch
+    @{P}-form-field.field-stretch > .@{PCSS}-field {
+
+        > .@{PCSS}-input-container.@{PCSS}-fieldgroup {
+            grid-template-columns: auto 1fr auto;
+            justify-content: stretch;
+        }
+    }
+}
+// ANIMATIONS
+.@{PCSS}-body.@{PCSS}-animations {
+    @{P}-form-field > .@{PCSS}-field {
+
+        > label.@{PCSS}-label {
+            transition: margin .2s @easing_in_out_sine, flex .2s @easing_in_out_sine;
+        }
+    }
+}

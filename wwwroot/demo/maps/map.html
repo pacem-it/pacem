@@ -27,6 +27,7 @@ Currently available adapters are:
         <pacem-map-adapter-leaflet id="leafletjs"></pacem-map-adapter-leaflet>
         <pacem-map-adapter-google id="googlemaps" api-key="AIzaSyBt15YF6PFozZ8oDbiGcz3HRvqMP5rQWCs"></pacem-map-adapter-google>
         <pacem-map-adapter-azure id="azuremaps" subscription-key="1KOQE3tYl_TxUBDGq5FrLfOhFmOyZwUXkQJNUPp-GsI"></pacem-map-adapter-azure>
+        <pacem-map-adapter-amap id="amapmaps" api-key="494ca0c3b70df8478b317f1a506f6005"></pacem-map-adapter-amap>
 
         <!-- utilities (fetching and storage) -->
         <pacem-fetch id="reverse_geocode"></pacem-fetch>
@@ -47,13 +48,14 @@ Currently available adapters are:
                     <pacem-data-item label="leafletjs" value="{{ #leafletjs }}"></pacem-data-item>
                     <pacem-data-item label="azure maps" value="{{ #azuremaps }}"></pacem-data-item>
                     <pacem-data-item label="google maps" value="{{ #googlemaps }}"></pacem-data-item>
+                    <!--<pacem-data-item label="amap (alibaba)" value="{{ #amapmaps }}"></pacem-data-item>-->
                 </pacem-radio-list>
             </div>
 
             <div class="pacem-cell">
 
                 <!-- map control -->
-                <pacem-map adapter="{{ #adapter0.model }}" autofit="{{ #autofit0.model }}" padding-top="50" padding-bottom="50" padding-left="150" padding-right="150" zoom-control="bottomright">
+                <pacem-map id="map0" adapter="{{ #adapter0.model }}" autofit="{{ #autofit0.model }}" padding-top="50" padding-bottom="50" padding-left="150" padding-right="150" zoom-control="bottomright">
 
                     <!-- markers -->
                     <pacem-map-marker position="[44.714188025077984,10.296516444873811]"
@@ -71,6 +73,11 @@ Currently available adapters are:
                         <span>Google HeadQuarters</span>
                     </pacem-map-marker>
                 </pacem-map>
+            </div>
+
+            <div class="pacem-cell">
+                <span>center:</span> <code><pacem-text text="{{ #map0.center && (#map0.center.lat.toFixed(6) +':'+ #map0.center.lng.toFixed(6)) }}"></pacem-text></code>
+                - <span>zoom:</span> <code><pacem-text text="{{ #map0.zoom }}"></pacem-text></code>
             </div>
         </div>
 

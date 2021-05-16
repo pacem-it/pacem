@@ -3,13 +3,6 @@
 
 namespace Pacem.Components {
 
-    const handlesConverter: PropertyConverter = {
-        convert: attr => {
-            return attr && attr.trim().split(' ');
-        },
-        convertBack: prop => (prop && prop.join(' ')) || ''
-    };
-
     class RescaleElementDelegate {
         constructor(private _element: HTMLElement, private _type: string, private _rescaler: Pacem.UI.Rescaler
             , private _logFn: (level: Logging.LogLevel, message: string, category?: string) => void) {
@@ -211,7 +204,7 @@ namespace Pacem.Components {
             this._removeFrame(el);
         }
 
-        @Watch({ emit: false, converter: handlesConverter }) handles: Pacem.UI.RescaleHandle[];
+        @Watch({ emit: false, converter: PropertyConverters.StringArray }) handles: Pacem.UI.RescaleHandle[];
         @Watch({ emit: false, converter: PropertyConverters.Number }) minWidth: number;
         @Watch({ emit: false, converter: PropertyConverters.Number }) maxWidth: number;
         @Watch({ emit: false, converter: PropertyConverters.Number }) minHeight: number;
@@ -300,6 +293,9 @@ namespace Pacem.Components {
             if (initEvent.defaultPrevented) {
                 return;
             }
+
+            // stop evt propagation (may cause page reload on touch/mobile devices)
+            avoidHandler(evt);
 
             SET_VAL(target, MOUSE_DOWN, origin);
             SET_VAL(target, DELEGATE, new RescaleElementDelegate(target, type, this,

@@ -42,28 +42,31 @@ namespace Pacem.Components.Scaffolding {
         tagName: P + '-upload', shadow: Defaults.USE_SHADOW_ROOT
         , template: `<${P}-button on-click=":host._dispatchDownload($event)" class="${PCSS}-upload ${PCSS}-viewfinder flat" css-class="{{ {'upload-chosen': !Pacem.Utils.isNullOrEmpty(:host.value) && !:host.uploading, 'upload-error': ${ERROR_BINDING}, 'upload-readonly': :host.readonly } }}">
 
-        <${P}-panel class="upload-button" hide="{{ (:host.uploading || :host.failed) && !Pacem.Utils.isNullOrEmpty(:host.url) }}">
-            <${P}-button tooltip="{{ :host.readonly ? :host.viewValue : 'upload' }}" class="circular pos-relative overflow-hidden" icon-glyph="{{ :host._getMimeIcon(:host.value, :host.uploading) }}" 
-                on-mouseover="$this.iconGlyph = :host._getMimeIcon(:host.readonly ? :host.value : '', :host.uploading)" on-mouseout="$this.iconGlyph = :host._getMimeIcon(:host.value, :host.uploading)"
-                css-class="{{ {'${PCSS}-anim anim-rotate': :host.uploading, 'button-error': :host.invalidFile, 'button-primary': Pacem.Utils.isNullOrEmpty(:host.value) && !:host.invalidFile, 'button-success': !Pacem.Utils.isNullOrEmpty(:host.value) && !:host.invalidFile } }}">
-                <input type="file" class="${PCSS}-transparent ${PCSS}-clickable pos-absolute absolute-left absolute-right absolute-top absolute-bottom" />
-            </${P}-button>
-        </${P}-panel>
-        <${P}-panel class="upload-button" hide="{{ !:host.failed }}">
-            <${P}-button class="circular flat" icon-glyph="refresh"
-            tooltip="{{ :host.retryCaption }}" on-click=":host._retry($event)"><${P}-text text="{{ :host.retryCaption }}"></${P}-text></${P}-button>
-        </${P}-panel>
-        <${P}-panel class="upload-button" hide="{{ !:host.uploading || Pacem.Utils.isNullOrEmpty(:host.url) }}">
-            <${P}-button class="circular flat" icon-glyph="clear" tooltip="{{ :host.undoCaption }}" 
-                on-click=":host._undo($event)"><${P}-text text="{{ :host.undoCaption }}"></${P}-text></${P}-button>
-        </${P}-panel>
+    <${P}-panel class="upload-button" hide="{{ (:host.uploading || :host.failed) && !Pacem.Utils.isNullOrEmpty(:host.url) }}">
+        <${P}-button tooltip="{{ :host.readonly ? :host.viewValue : 'upload' }}" class="circular pos-relative overflow-hidden" icon-glyph="{{ :host._getMimeIcon(:host.value, :host.uploading) }}" 
+            on-mouseover="$this.iconGlyph = :host._getMimeIcon(:host.readonly ? :host.value : '', :host.uploading)" on-mouseout="$this.iconGlyph = :host._getMimeIcon(:host.value, :host.uploading)"
+            css-class="{{ {'${PCSS}-anim anim-rotate': :host.uploading, 'button-error': :host.invalidFile, 'button-primary': Pacem.Utils.isNullOrEmpty(:host.value) && !:host.invalidFile, 'button-success': !Pacem.Utils.isNullOrEmpty(:host.value) && !:host.invalidFile } }}">
+            <input type="file" class="${PCSS}-transparent ${PCSS}-clickable pos-absolute absolute-left absolute-right absolute-top absolute-bottom" />
+        </${P}-button>
+    </${P}-panel>
+    <${P}-panel class="upload-button" hide="{{ !:host.failed }}">
+        <${P}-button class="circular flat" icon-glyph="refresh"
+        tooltip="{{ :host.retryCaption }}" on-click=":host._retry($event)"><${P}-text text="{{ :host.retryCaption }}"></${P}-text></${P}-button>
+    </${P}-panel>
+    <${P}-panel class="upload-button" hide="{{ !:host.uploading || Pacem.Utils.isNullOrEmpty(:host.url) }}">
+        <${P}-button class="circular flat" icon-glyph="clear" tooltip="{{ :host.undoCaption }}" 
+            on-click=":host._undo($event)"><${P}-text text="{{ :host.undoCaption }}"></${P}-text></${P}-button>
+    </${P}-panel>
 
-        <${P}-span tooltip="{{ :host.viewValue }}" hide="{{ $pacem.isNullOrEmpty(:host.value) || :host.uploading }}" class="readonly text-reset display-block ${PCSS}-anim text-truncate text-left text-pre ${PCSS}-pad pad-right-3" text="{{ :host.viewValue }}"></${P}-span>
+    <${P}-span tooltip="{{ :host.viewValue }}"
+                hide="{{ $pacem.isNullOrEmpty(:host.value) || :host.uploading }}" class="upload-data readonly text-reset display-block ${PCSS}-anim text-truncate text-left ${PCSS}-pad pad-right-3" text="{{ :host.viewValue }}"></${P}-span>
 
-        <${P}-panel class="upload-progress hit-none" hide="{{ :host.readonly || (!Pacem.Utils.isNullOrEmpty(:host.value) && !:host.uploading) }}">
-            <${P}-tuner value="{{ :host.percentage }}" css-class="{{ {'tuner-success': !:host.invalidFile, 'tuner-error': :host.invalidFile} }}" interactive="false"></${P}-tuner>
-        </${P}-panel>
+    <${P}-panel class="upload-progress hit-none" hide="{{ :host.readonly || (!Pacem.Utils.isNullOrEmpty(:host.value) && !:host.uploading) }}">
+        <${P}-tuner value="{{ :host.percentage }}" css-class="{{ {'tuner-success': !:host.invalidFile, 'tuner-error': :host.invalidFile} }}" interactive="false"></${P}-tuner>
+    </${P}-panel>
 
+    <${P}-button class="circular flat clear-button" icon-glyph="clear" hide="{{ $pacem.isNullOrEmpty(:host.value) }}" tooltip="{{ :host.clearCaption }}" on-click=":host._clear($event)"></${P}-button>
+        
 </${P}-button>`
     })
     export class PacemUploadElement extends PacemBaseElement implements Net.OAuthFetchable {
@@ -90,6 +93,7 @@ namespace Pacem.Components.Scaffolding {
 
         @Watch({ converter: PropertyConverters.String }) undoCaption: string = 'undo';
         @Watch({ converter: PropertyConverters.String }) retryCaption: string = 'retry';
+        @Watch({ converter: PropertyConverters.String }) clearCaption: string = 'clear';
 
         @Watch({ emit: false, reflectBack: true, converter: PropertyConverters.String }) pattern: string;
         @Watch({ emit: false, reflectBack: true, converter: PropertyConverters.String }) url: string;
@@ -392,56 +396,65 @@ namespace Pacem.Components.Scaffolding {
                     resolve(file);
 
                 } else {
+
                     let Uploader = this,
                         input = <HTMLInputElement>Uploader._fileupload;
 
-                    var file = input.files[0],
-                        filename = file.name,
-                        blob: Blob = file;
+                    if (input.files.length === 0) {
 
-                    // validate file
-                    if (!this._validate(file) && !Utils.isNullOrEmpty(this.url)) {
-
-                        // do not start uploads with an invalid file
-                        resolve(this.value = await this._buildLocalValue(file));
+                        // clear
+                        resolve(this.value = null);
 
                     } else {
 
-                        if (/\.(jpe?g|png)$/i.test(filename) && this.maxImageWidth > 0 && this.maxImageHeight > 0) {
-                            blob = await Utils.resizeImage(blob, this.maxImageWidth, this.maxImageHeight, .6);
-                        }
+                        var file = input.files[0],
+                            filename = file.name,
+                            blob: Blob = file;
 
-                        await this._buildLocalValue(file, filename, blob);
+                        // validate file
+                        if (!this._validate(file) && !Utils.isNullOrEmpty(this.url)) {
 
-                        if (Utils.isNullOrEmpty(this.url)) {
-
-                            // mimic upload
-                            this.uploading = true; // <- triggers anim
-                            if (!Utils.isNullOrEmpty(this.value)) {
-                                this.percentage = 0;
-
-                                await Utils.waitForAnimationEnd(this._tuner);
-                            } else {
-                                await Utils.idle(250);
-                            }
-
-                            await this._tweener.run(0, 100, 500, 0, Pacem.Animations.Easings.sineInOut, (t, v) => {
-                                this.percentage = v;
-                            });
-
-                            // reset pct
-                            this.percentage = .0;
-                            this.uploading = false;
-
-                            // no direct upload? set the value to the very File
-                            resolve(this.value = this._localValue);
-
+                            // do not start uploads with an invalid file
+                            resolve(this.value = await this._buildLocalValue(file));
 
                         } else {
 
-                            // upload, then wait for resulting filename (value will be the filename string) 
-                            Uploader._upload(blob, input.value);
-                            resolve(this.value);
+                            if (/\.(jpe?g|png)$/i.test(filename) && this.maxImageWidth > 0 && this.maxImageHeight > 0) {
+                                blob = await Utils.resizeImage(blob, this.maxImageWidth, this.maxImageHeight, .6);
+                            }
+
+                            await this._buildLocalValue(file, filename, blob);
+
+                            if (Utils.isNullOrEmpty(this.url)) {
+
+                                // mimic upload
+                                this.uploading = true; // <- triggers anim
+                                if (!Utils.isNullOrEmpty(this.value)) {
+                                    this.percentage = 0;
+
+                                    await Utils.waitForAnimationEnd(this._tuner);
+                                } else {
+                                    await Utils.idle(250);
+                                }
+
+                                await this._tweener.run(0, 100, 500, 0, Pacem.Animations.Easings.sineInOut, (t, v) => {
+                                    this.percentage = v;
+                                });
+
+                                // reset pct
+                                this.percentage = .0;
+                                this.uploading = false;
+
+                                // no direct upload? set the value to the very File
+                                resolve(this.value = this._localValue);
+
+
+                            } else {
+
+                                // upload, then wait for resulting filename (value will be the filename string) 
+                                Uploader._upload(blob, input.value);
+                                resolve(this.value);
+                            }
                         }
                     }
                 }
@@ -500,6 +513,24 @@ namespace Pacem.Components.Scaffolding {
             e.stopPropagation();
             this.failed = false;
             this._manage();
+        }
+
+        private _clear(e: Event) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            this.url = null;
+            this.invalidFile = false;
+            const input = this.inputFields[0];
+
+            // https://stackoverflow.com/a/35323290
+            input.value = '';
+            if (!/safari/i.test(navigator.userAgent)) {
+                input.type = ''
+                input.type = 'file'
+            }
+
+            this.changeHandler(null);
         }
 
     }

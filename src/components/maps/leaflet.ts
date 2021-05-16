@@ -55,7 +55,7 @@ namespace Pacem.Components.Maps {
                 marker = L.marker(
                     item.position
                 ).addTo(ctrl._map.map);
-                marker.on('click', (e) => ctrl._openInfoWindow(item, e));
+                marker.on('click', (e) => ctrl.openInfoWindow(item, e));
                 marker.on('drag', () => ctrl._map.fitBounds(true));
                 marker.on('dragend', (e) => ctrl._onDragEnd(item, e));
                 ctrl._markers.set(item, marker);
@@ -86,9 +86,15 @@ namespace Pacem.Components.Maps {
             ctrl._setDraggable(marker, item.draggable);
         }
 
-        private _openInfoWindow(item: PacemMapMarkerElement, evt?: L.LeafletEvent) {
+        closeInfoWindow(item: PacemMapMarkerElement, evt?: L.LeafletEvent) {
+            const ctrl = this,
+                marker: L.Marker = evt?.target || ctrl._markers.get(item);
+            marker.closePopup();
+        }
+
+        openInfoWindow(item: PacemMapMarkerElement, evt?: L.LeafletEvent) {
             var ctrl = this,
-                marker: L.Marker = evt.target || ctrl._markers.get(item),
+                marker: L.Marker = evt?.target || ctrl._markers.get(item),
                 content = item.caption;
             if (!MapUtils.isContentEmpty(item)) {
 
@@ -188,7 +194,7 @@ namespace Pacem.Components.Maps {
             switch (mode) {
                 case 'wms':
                     let wms = L.tileLayer.wms(item.url, { layers: (item.include || []).join(','), minZoom: item.minZoom, maxZoom: item.maxZoom, transparent: true, format: 'image/png' }).addTo(map);
-                    bag.set(item, wms);                    
+                    bag.set(item, wms);
                     break;
                 default:
                     let tms = L.tileLayer(item.url, { tms: mode === 'tms', minZoom: item.minZoom, maxZoom: item.maxZoom }).addTo(map);
@@ -213,6 +219,18 @@ namespace Pacem.Components.Maps {
             super();
             this._markersAdapter = new PacemLeafletMarkerAdapter(this);
             this._layersAdapter = new PacemLeafletLayerAdapter(this);
+        }
+
+        popupInfoWindow(item: MapRelevantElement) {
+            if (item instanceof PacemMapMarkerElement) {
+                this._markersAdapter.openInfoWindow(item);
+            }
+        }
+
+        popoutInfoWindow(item: MapRelevantElement) {
+            if (item instanceof PacemMapMarkerElement) {
+                this._markersAdapter.closeInfoWindow(item);
+            }
         }
 
         setView(zoom: number);
@@ -252,6 +270,10 @@ namespace Pacem.Components.Maps {
 
         // #region ABSTRACT IMPLEMENTATION
 
+        destroy(_: PacemMapElement) {
+            this._map.clearAllEventListeners();
+        }
+
         async initialize(container: PacemMapElement): Promise<HTMLElement> {
 
             await Promise.all([CustomElementUtils.importjs(consts.API_JS, consts.API_JS_INTEGRITY, true),
@@ -286,10 +308,14 @@ namespace Pacem.Components.Maps {
             canvas.appendChild(mapElement);
             var map = this._map = L.map(<HTMLElement>mapElement, mapOptions);
 
-            map.on('zoomend', (e) => {
-                ctrl.zoom = map.getZoom();
+            ['zoomend', 'moveend'].forEach(evt => {
+
+                map.on(evt, _ => {
+                    this._idleFiller();
+                    this._mapUpdateHandler();
+                });
             });
-            map.on('moveend', () => this._idleFiller());
+
             map.on('load', () => {
                 if (scale && ctrl.zoomControl) {
                     map.zoomControl.setPosition(ctrl['zoomControl']);
@@ -349,11 +375,20 @@ namespace Pacem.Components.Maps {
 
         //#endregion
 
+        private _mapUpdateHandler = () => {
+            const map = this._map,
+                ctrl = this._container;
+            if (!Utils.isNull(map) && !Utils.isNull(ctrl)) {
+                this.updateMapElement(ctrl, map.getCenter(), map.getZoom());
+            }
+        }
+
         @Debounce(500)
         private _idleFiller() {
             var ctrl = this;
-            if (ctrl.map)
+            if (ctrl.map) {
                 ctrl.map.fire('idle');
+            }
         }
 
         private _tileLayer: L.TileLayer = null;
@@ -397,7 +432,7 @@ namespace Pacem.Components.Maps {
                     ne = bounds.getNorthEast(),
                     sw = bounds.getSouthWest();
                 try {
-                    this.map.fitBounds([[ne.lat, ne.lng],[sw.lat, sw.lng]], pads);
+                    this.map.fitBounds([[ne.lat, ne.lng], [sw.lat, sw.lng]], pads);
                 } catch (e) {
                     throw e;
                 }

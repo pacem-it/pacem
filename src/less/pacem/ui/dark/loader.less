@@ -1,0 +1,218 @@
+﻿@import "../shared";
+
+@keyframes rotate-anim {
+
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.Spinner(@_brd, @_size, @_background, @_gap) {
+    @__size: @_size - 2 * @_brd;
+    width: @__size;
+    height: @__size;
+    border-radius: 50%;
+    border: @_brd solid @_background;
+    position: relative;
+
+    > div when (@_gap > 0) {
+        position: absolute;
+        border: @_brd solid @_background;
+
+        .SpinnerNested(@_ndx) {
+            @_pad: @_gap + (@_brd + @_gap) * (@_ndx - 1);
+            @___size: @__size - 2 * @_ndx * (@_brd + @_gap);
+            top: @_pad;
+            left: @_pad;
+            width: @___size;
+            height: @___size;
+            border-radius: 50%;
+            opacity: 1 - .25 * @_ndx
+        }
+
+        &:nth-child(1) {
+            .SpinnerNested(1);
+        }
+
+        &:nth-child(2) {
+            .SpinnerNested(2);
+        }
+    }
+}
+
+.Spinner(@_brd, @_size) {
+    .Spinner(@_brd, @_size, fade(@color_default, 10), 0);
+}
+
+@{P}-loader {
+    display: block;
+    height: 100%;
+    pointer-events: none;
+
+    > div.@{PCSS}-loader {
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    @_max_size: 108px;
+
+    div.@{PCSS}-spinner {
+        .Spinner(@grid_spacing * .5, @_max_size);
+    }
+
+    &.loader-full {
+        div.@{PCSS}-spinner {
+            .Spinner(2px, @_max_size, transparent, @grid_spacing/3);
+        }
+
+
+        &.loader-small {
+            div.@{PCSS}-spinner {
+                .Spinner(1px, @grid_cell, transparent, @grid_spacing/4);
+            }
+        }
+
+        &.loader-smaller {
+            div.@{PCSS}-spinner {
+                .Spinner(1px, 2 * @grid_spacing, transparent, @grid_spacing/6);
+            }
+        }
+    }
+
+    &.loader-small {
+        div.@{PCSS}-spinner {
+            .Spinner(@grid_spacing * .3333, @grid_cell);
+        }
+    }
+
+    &.loader-smaller {
+        div.@{PCSS}-spinner {
+            .Spinner(@grid_spacing * .25, 2 * @grid_spacing);
+        }
+    }
+
+    &.loader-thin{
+        div.@{PCSS}-spinner{
+            border-width: @grid_spacing/8;
+        }
+    }
+
+    div.@{PCSS}-spinner,
+    &.loader-full div.@{PCSS}-spinner {
+        border-top-color: @color_default;
+        animation: rotate-anim linear 1s infinite both;
+
+        > div:nth-child(1) {
+            border-top-color: @color_default;
+            animation: rotate-anim linear 2s infinite both;
+        }
+
+        > div:nth-child(2) {
+            border-top-color: @color_default;
+            animation: rotate-anim linear 3s infinite both;
+        }
+    }
+
+    &.loader-accent.loader-full,
+    &.loader-accent {
+        div.@{PCSS}-spinner,
+        div.@{PCSS}-spinner > div {
+            border-top-color: @color_accent;
+        }
+    }
+
+    &.loader-primary.loader-full,
+    &.loader-primary {
+        div.@{PCSS}-spinner,
+        div.@{PCSS}-spinner > div {
+            border-top-color: @color_primary;
+        }
+    }
+
+    &.loader-success.loader-full,
+    &.loader-success {
+        div.@{PCSS}-spinner,
+        div.@{PCSS}-spinner > div {
+            border-top-color: @color_success;
+        }
+    }
+
+    &.loader-warning.loader-full,
+    &.loader-warning {
+        div.@{PCSS}-spinner,
+        div.@{PCSS}-spinner > div {
+            border-top-color: @color_warning;
+        }
+    }
+
+    &.loader-danger.loader-full,
+    &.loader-danger {
+        div.@{PCSS}-spinner,
+        div.@{PCSS}-spinner > div {
+            border-top-color: @color_danger;
+        }
+    }
+
+    svg.@{PCSS}-spinner {
+        height: @_max_size;
+        width: @_max_size;
+
+        g.gear {
+            > circle {
+                fill: @color_default;
+            }
+
+            animation: rotate-anim cubic-bezier(0.86, 0, 0.07, 1) 1.7s infinite both;
+        }
+
+        g.bounds {
+            > path {
+                stroke: @color_accent;
+                // fill: transparent is needed for Firefox to work! :|
+                fill: transparent;
+            }
+
+            animation: rotate-anim cubic-bezier(0.645, 0.045, 0.355, 1) 2.3s infinite reverse both;
+        }
+
+        g {
+            transform-box: fill-box;
+            transform-origin: center center;
+        }
+
+        circle.circle1 {
+            stroke: @color_primary;
+        }
+
+        circle.circle2 {
+            stroke: @color_accent;
+        }
+    }
+}
+
+@{P}-loader {
+
+    .@{PCSS}-loader {
+        transition: transform .25s @easing_in_back;
+        transform: scale(0);
+
+        &.active {
+            transition-timing-function: @easing_out_back;
+            transform: scale(1);
+        }
+    }
+}
+
+.@{PCSS}-preloader{
+    // background
+    .GradientRadial(0%, 50%, @color_background, @color_root_background);
+    background-color: @color_root_background;
+    background-size: contain;
+
+}

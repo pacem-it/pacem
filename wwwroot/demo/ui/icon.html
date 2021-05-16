@@ -1,0 +1,71 @@
+﻿
+
+<pacem-markdown value="{{ #content0.textContent }}" root></pacem-markdown>
+
+<pre pacem hidden id="content0">
+## Dynamic Icons
+
+`PacemIconElement` allows to dynamically render icons onto the screen.  
+The default iconset in Pacem JS is the [Material IconSet](https://material.io/resources/icons), which you can plainly use exploiting the default
+embedded themes:
+
+```html
+&lt;!-- exploits ligatures -->
+&lt;i class="pacem-icon">sentiment_very_satisfied&lt;/i>
+```
+
+## Material, FontAwesome, URLs, ...
+The same above result can be obtained using the `&lt;pacem-icon>` element,
+which ultimately defaults to the material icon set:
+
+```html
+&lt;pacem-icon icon="sentiment_very_satisfied">&lt;/pacem-icon>
+```
+
+Nevertheless you can include [FontAwesome library](https://fontawesome.com/) and, similarly:
+
+```html
+&lt;pacem-icon icon="far fa-laugh">&lt;/pacem-icon>
+```
+
+URLs are also welcome.
+</pre>
+
+<pacemjs-snippet>
+    <template>
+
+        <dl>
+            <dt title="Material (implicit)">Material (implicit)</dt>
+            <dd>
+                <pacem-icon icon="sentiment_very_satisfied" class="text-accent icon-text-bottom"></pacem-icon>
+            </dd>
+            <dt title="Material (explicit)">Material (explicit)</dt>
+            <dd>
+                <pacem-icon icon="material sentiment_very_satisfied text-rootsize" class="text-accent icon-text-bottom"></pacem-icon>
+            </dd>
+            <dt title="FontAwesome">FontAwesome</dt>
+            <dd>
+                <pacem-icon icon="far fa-laugh" class="text-primary icon-text-bottom"></pacem-icon>
+            </dd>
+            <dt>LineIcons</dt>
+            <dd>
+                <pacem-icon icon="lni lni-emoji-happy" class="text-primary icon-text-bottom"></pacem-icon>
+            </dd>
+            <dt>CoreUI</dt>
+            <dd>
+                <pacem-icon icon="cil-mood-good" class="text-primary icon-text-bottom"></pacem-icon>
+            </dd>
+            <dt>
+                URL
+            </dt>
+            <dd>
+                <pacem-icon icon="/assets/icons/smiling.png" class="icon-text-bottom"></pacem-icon>
+                <span class="text-tiny-steady text-disabled">(icons made by <a href="https://icon54.com/" title="Pixel perfect" target="_blank">Pixel perfect</a> from <a href="https://www.flaticon.com/" title="Flaticon" target="_blank"> www.flaticon.com</a>)</span>
+            </dd>
+        </dl>        
+
+    </template>
+</pacemjs-snippet>
+
+<pacem-icon id="proto" hidden></pacem-icon>
+<pacemjs-descriptor target="{{ #proto }}"></pacemjs-descriptor>

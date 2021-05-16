@@ -36,7 +36,7 @@ namespace Pacem.Js.CustomElements.Controllers
         {
             int ndx = 1;
             var regions = Regions.OrderBy(r => r)
-                    .Select(r => new { ID = ndx++, Name = r });
+                    .Select(r => new { ID = ndx++, Name = r, Disabled = r == "Valle d'Aosta" });
             var result = regions.Where(r =>
 
                 (!string.IsNullOrEmpty(q) && r.Name.ToLowerInvariant().Contains(q.ToLowerInvariant()))

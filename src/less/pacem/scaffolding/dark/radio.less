@@ -1,0 +1,75 @@
+﻿@import "../../../shared";
+@import "../shared";
+
+//.@{PCSS}-field {
+//.@{PCSS}-input-container {
+
+.@{PCSS}-readonly.@{PCSS}-radio,
+label.@{PCSS}-label.@{PCSS}-radio,
+@{P}-radio-list .@{PCSS}-readonly.@{PCSS}-radio {
+
+    &::before {
+        .Icon('radio_button_unchecked', 1.1rem * @font_rem_factor);
+        left: @input_padding_horiz;
+        line-height: @field_height;
+        color: @color_input_toggle;
+    }
+}
+
+@{P}-radio {
+
+    &.@{PCSS}-selected label.@{PCSS}-label.@{PCSS}-radio:before {
+        content: 'radio_button_checked';
+    }
+}
+
+@{P}-radio-list,
+@{P}-radio {
+
+    .@{PCSS}-readonly.@{PCSS}-radio {
+        .FormFieldLabelIcon('check_circle');
+    }
+
+    &.@{PCSS}-disabled {
+        .@{PCSS}-readonly.@{PCSS}-radio,
+        label.@{PCSS}-label.@{PCSS}-radio {
+            color: @color_disabled;
+
+            &:before {
+                color: @color_disabled;
+            }
+        }
+    }
+}
+
+// just the radio
+.form-minimal > @{P}-form-field:not(.field-full) @{P}-radio-list,
+@{P}-form-field.field-minimal @{P}-radio-list,
+@{P}-radio-list.radio-list-naked {
+    .@{PCSS}-radio-list {
+        min-width: 0;
+        // height: @field_height;
+        background: none;
+
+        label.@{PCSS}-radio {
+            border: 0;
+            padding-left: @grid_spacing/3;
+            position: static;
+            line-height: 1.5;
+            min-width: 0;
+            min-height: 0;
+            vertical-align: middle;
+            .FontStdSize(@field_minimal_fontsize);
+
+            &::before {
+                position: static;
+                vertical-align: middle;
+                margin-right: @grid_spacing/4;
+            }
+        }
+
+        /*> li:first-child when (@border_field_underline = false) {
+            padding-left: @grid_spacing/4;
+        }*/
+    }
+}

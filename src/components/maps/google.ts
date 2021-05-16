@@ -54,7 +54,7 @@ namespace Pacem.Components.Maps {
                     position: {lat: 0, lng: 0},
                     map: ctrl.map.map
                 });
-                marker.addListener('click', (e) => ctrl._openInfoWindow(item, e));
+                marker.addListener('click', (e) => ctrl.openInfoWindow(item, e));
                 marker.addListener('drag', () => ctrl.map.fitBounds(true));
                 marker.addListener('dragend', (e) => ctrl._onDragEnd(item, e));
                 ctrl.markers.set(item, marker);
@@ -71,15 +71,11 @@ namespace Pacem.Components.Maps {
                 // structured icon
                 let options: google.maps.Icon = { url: item.icon.url };
                 if (!Utils.isNullOrEmpty(item.icon.size)) {
-                    Utils.extend(options, {
-                        size: new google.maps.Size(item.icon.size.width, item.icon.size.height),
-                        anchor: new google.maps.Point(item.icon.size.width / 2, item.icon.size.height)
-                    });
+                    options.size = new google.maps.Size(item.icon.size.width, item.icon.size.height);
+                    options.anchor = new google.maps.Point(item.icon.size.width / 2, item.icon.size.height);
                 }
                 if (!Utils.isNullOrEmpty(item.icon.anchor)) {
-                    Utils.extend(options, {
-                        anchor: new google.maps.Point(item.icon.anchor.x, item.icon.anchor.y)
-                    });
+                    options.anchor = new google.maps.Point(item.icon.anchor.x, item.icon.anchor.y);
                 }
                 marker.setIcon(options);
             }
@@ -87,7 +83,15 @@ namespace Pacem.Components.Maps {
             marker.setDraggable(item.draggable);
         }
 
-        private _openInfoWindow(item: PacemMapMarkerElement, evt?: google.maps.MouseEvent) {
+        closeInfoWindow(item: PacemMapMarkerElement, evt?: AMap.Event) {
+            const ctrl = this;
+            if (ctrl.infoWindows.has(item)) {
+                const info = ctrl.infoWindows.get(item);
+                info.close();
+            }
+        }
+
+        openInfoWindow(item: PacemMapMarkerElement, evt?: google.maps.MouseEvent) {
             var ctrl = this,
                 marker: google.maps.Marker = ctrl.markers.get(item),
                 content = item.caption;
@@ -100,13 +104,21 @@ namespace Pacem.Components.Maps {
 
                 var info: google.maps.InfoWindow;
                 if (!ctrl.infoWindows.has(item)) {
-                    info = new google.maps.InfoWindow();
+                    let offsX = 0;
+                    if (typeof item.icon !== 'string' && !Utils.isNull(item.icon)) {
+                        offsX = ((item.icon.size?.width ?? 0) / 2) -
+                            item.icon.anchor?.x ?? 0;
+                    }
+                    info = new google.maps.InfoWindow({
+                        pixelOffset: new google.maps.Size(-offsX, 0)
+                    });
                     info.addListener('closeclick', function () {
                         ctrl._onClose(item);
                     });
                     ctrl.infoWindows.set(item, info);
-                } else
+                } else {
                     info = ctrl.infoWindows.get(item);
+                }
                 info.setContent(content);
                 info.open(ctrl.map.map, marker);
                 ctrl._onInfo(item);
@@ -115,8 +127,22 @@ namespace Pacem.Components.Maps {
 
     }
 
+    const MAP_EVENTS = ['dragend', 'zoom_changed'];
+
     @CustomElement({ tagName: P + '-map-adapter-google' })
     export class PacemGoogleMapAdapterElement extends PacemMapAdapterElement {
+
+        popupInfoWindow(item: MapRelevantElement) {
+            if (item instanceof PacemMapMarkerElement) {
+                this._markersAdapter.openInfoWindow(item);
+            }
+        }
+
+        popoutInfoWindow(item: MapRelevantElement) {
+            if (item instanceof PacemMapMarkerElement) {
+                this._markersAdapter.closeInfoWindow(item);
+            }
+        }
 
         constructor() {
             super();
@@ -140,6 +166,7 @@ namespace Pacem.Components.Maps {
         private _markersAdapter: PacemGoogleMarkerAdapter;
         private _map: google.maps.Map;
         private _container: PacemMapElement;
+        private _listeners: google.maps.MapsEventListener[] = [];
 
         get map(): google.maps.Map {
             return this._map;
@@ -158,7 +185,13 @@ namespace Pacem.Components.Maps {
 
         // #region ABSTRACT IMPLEMENTATION
 
-        // TODO: promisify initialization and manage the script resolution inside the adapter
+        destroy(_: PacemMapElement) {
+            //const map = this._map;
+            const listeners = this._listeners;
+            while (listeners.length) {
+                google.maps.event.removeListener(listeners.pop());
+            }
+        }
 
         async initialize(container: PacemMapElement): Promise<HTMLElement> {
 
@@ -228,8 +261,10 @@ namespace Pacem.Components.Maps {
                 });
             }
 
-            map.addListener('dragend', () => this._idleFiller());
-            map.addListener('center_changed', () => this._idleFiller());
+            const listeners = this._listeners;
+            MAP_EVENTS.forEach(evt => {
+                listeners.push(map.addListener(evt, this._mapUpdateHandler));
+            });
 
             // setting now the center and zoom, triggers the "load" event and activates the child-components, if any.
             map.setCenter(center);
@@ -252,8 +287,9 @@ namespace Pacem.Components.Maps {
 
         invalidateSize() {
             var ctrl = this;
-            if (ctrl.map)
+            if (ctrl.map) {
                 google.maps.event.trigger(ctrl.map, "resize");
+            }
         }
 
         removeItem(item: MapRelevantElement) {
@@ -280,11 +316,13 @@ namespace Pacem.Components.Maps {
 
         //#endregion
 
-        @Debounce(500)
-        private _idleFiller() {
-            var ctrl = this;
-            if (ctrl.map)
-                google.maps.event.trigger(ctrl.map, 'idle');
+        private _mapUpdateHandler = () => {
+            const map = this._map,
+                ctrl = this._container;
+            if (!Utils.isNull(map) && !Utils.isNull(ctrl)) {
+                const center = map.getCenter();
+                this.updateMapElement(ctrl, {lat: center.lat(), lng: center.lng()}, map.getZoom());
+            }
         }
 
         private _shapes = new Map<any, google.maps.Circle | google.maps.Rectangle>();

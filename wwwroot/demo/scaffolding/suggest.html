@@ -44,11 +44,12 @@ Define a `textProperty` and eventually a `valueProperty` to teach the autocomple
         <div class="pacem-margin margin-bottom-3">
 
             <!-- pacem-suggest -->
-            <pacem-suggest id="region" 
-                           text-property="name" 
+            <pacem-suggest id="region"
+                           text-property="name"
                            value-property="id"
-                           placeholder="Pick an Italian region..." 
-                           max-suggestions="5" 
+                           disabled-property="disabled"
+                           placeholder="Pick an Italian region..."
+                           max-suggestions="5"
                            datasource="{{ #regions.result }}"></pacem-suggest>
         </div>
         <div>
@@ -59,5 +60,163 @@ Define a `textProperty` and eventually a `valueProperty` to teach the autocomple
     </template>
 </pacemjs-snippet>
 
-<pacem-tags id="proto" hidden></pacem-tags>
+<pacem-markdown value="{{ #content2.textContent }}" class="md-tech" root></pacem-markdown>
+<pre pacem hidden id="content2">
+## Custom template
+
+`PacemSuggestElement` can have a custom `itemtemplate`, just make the relevant property/attribute point to a custom `HTMLTemplateElement`.
+</pre>
+
+<pacemjs-snippet>
+    <template>
+
+        <!-- datasource serialized -->
+        <pre id="json2" hidden>
+[{  
+    "name": "Archimedes", "pic": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Domenico-Fetti_Archimedes_1620.jpg/180px-Domenico-Fetti_Archimedes_1620.jpg", "disabled": true
+},{  
+    "name": "Galileo Galilei", "pic": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Justus_Sustermans_-_Portrait_of_Galileo_Galilei%2C_1636.jpg/189px-Justus_Sustermans_-_Portrait_of_Galileo_Galilei%2C_1636.jpg"
+},{  
+    "name": "Isaac Newton", "pic": "https://upload.wikimedia.org/wikipedia/commons/8/83/Sir_Isaac_Newton_%281643-1727%29.jpg"
+},{  
+    "name": "Leonhard Euler", "pic": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Leonhard_Euler.jpg/186px-Leonhard_Euler.jpg"
+},{  
+    "name": "Friedrich Gauss", "pic": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/Carl_Friedrich_Gauss.jpg/186px-Carl_Friedrich_Gauss.jpg"
+},{
+    "name": "Bernhard Riemann", "pic": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Georg_Friedrich_Bernhard_Riemann.jpeg/220px-Georg_Friedrich_Bernhard_Riemann.jpeg"
+}]
+</pre>
+
+        <!-- custom template declaration -->
+        <template id="tmpl2">
+            <div class="display-flex flex-nowrap">
+                <pacem-picture src="{{ ^item.value.pic }}" class="picture-cover picture-center picture-middle pacem-margin margin-right-1"
+                               css-class="{{ { 'picture-grayscale': ^item.disabled } }}"
+                               style="width: 64px; height: 64px;"></pacem-picture>
+                <pacem-span content="{{ $pacem.highlight(^item.viewValue, #fav2.hint) }}"></pacem-span>
+            </div>
+        </template>
+
+        <div class="pacem-margin margin-bottom-3">
+
+            <!-- pacem-suggest -->
+            <pacem-suggest id="fav2"
+                           datasource="{{ JSON.parse(#json2.textContent) }}"
+                           itemtemplate="{{ #tmpl2 }}"
+                           allow-typing="false"
+                           text-property="name"
+                           disabled-property="disabled"
+                           compare-by="name"
+                           placeholder="Pick you fav superhero...">
+            </pacem-suggest>
+        </div>
+        <div class="pacem-margin margin-bottom-3">
+            <!-- sample output -->
+            picked: <b><pacem-text text="{{ #fav2.viewValue }}"></pacem-text></b>
+        </div>
+        <div class="display-flex flex-middle">
+            <!-- readonly toggler -->
+            <p class="pacem-margin margin-right-1">readonly:</p> 
+            <pacem-checkbox class="checkbox-switch" true-value="true" false-value="false" value="{{ #fav2.readonly, twoway }}"></pacem-checkbox>
+        </div>
+
+    </template>
+</pacemjs-snippet>
+
+
+<pre pacem hidden id="content4">
+
+## Metadata
+The `PacemSuggestElement` can be injected into an autogenerating form via proper metadata.  
+Assign the relevant property a `suggest` ui hint:
+</pre>
+
+<pacemjs-snippet>
+    <template>
+
+        <template id="template4">
+
+            <div class="pacem-card card-full">
+                <pacem-img adapt="contain" class="card-img" src="{{ 'https://flagcdn.com/192x144/us-'+ ^item.value +'.png' }}"></pacem-img>
+                <div class="card-heading">
+                    <pacem-text class="pacem-badge badge-circle bg-invert pacem-pad pad-1" text="{{ ^item.value }}"></pacem-text>
+                </div>
+                <div class="card-body">
+                    <!-- '^item.data.name' is equivalent to '^item.viewValue' here-->
+                    <pacem-text text="{{ ^item.viewValue }}"></pacem-text>
+                </div>
+            </div>
+
+
+        </template>
+        <pre id="metadata4" hidden pacem>
+[
+{"prop": "state", "type": "string", "display": { "name": "Fav State", "ui": "suggest" },
+"extra": { "itemtemplate": "#template4", 
+"source": [
+{   "key":  "ak", "name": "Alaska"         },
+{   "key":  "al", "name": "Alabama"        },
+{   "key":  "ar", "name": "Arkansas"       },
+{   "key":  "az", "name": "Arizona"        },
+{   "key":  "ca", "name": "California"     },
+{   "key":  "co", "name": "Colorado"       },
+{   "key":  "ct", "name": "Connecticut"    },
+{   "key":  "de", "name": "Delaware"       },
+{   "key":  "fl", "name": "Florida"        },
+{   "key":  "ga", "name": "Georgia"        },
+{   "key":  "hi", "name": "Hawaii"         },
+{   "key":  "ia", "name": "Iowa"           },
+{   "key":  "id", "name": "Idaho"          },
+{   "key":  "il", "name": "Illinois"       },
+{   "key":  "in", "name": "Indiana"        },
+{   "key":  "ks", "name": "Kansas"         },
+{   "key":  "ky", "name": "Kentucky"       },
+{   "key":  "la", "name": "Louisiana"      },
+{   "key":  "ma", "name": "Massachusetts"  },
+{   "key":  "md", "name": "Maryland"       },
+{   "key":  "me", "name": "Maine"          },
+{   "key":  "mi", "name": "Michigan"       },
+{   "key":  "mn", "name": "Minnesota"      },
+{   "key":  "mo", "name": "Missouri"       },
+{   "key":  "ms", "name": "Mississippi"    },
+{   "key":  "mt", "name": "Montana"        },
+{   "key":  "nc", "name": "North Carolina" },
+{   "key":  "nd", "name": "North Dakota"   },
+{   "key":  "ne", "name": "Nebraska"       },
+{   "key":  "nh", "name": "New Hampshire"  },
+{   "key":  "nj", "name": "New Jersey"     },
+{   "key":  "nm", "name": "New Mexico"     },
+{   "key":  "nv", "name": "Nevada"         },
+{   "key":  "ny", "name": "New York"       },
+{   "key":  "oh", "name": "Ohio"           },
+{   "key":  "ok", "name": "Oklahoma"       },
+{   "key":  "or", "name": "Oregon"         },
+{   "key":  "pa", "name": "Pennsylvania"   },
+{   "key":  "ri", "name": "Rhode Island"   },
+{   "key":  "sc", "name": "South Carolina" },
+{   "key":  "sd", "name": "South Dakota"   },
+{   "key":  "tn", "name": "Tennessee"      },
+{   "key":  "tx", "name": "Texas"          },
+{   "key":  "ut", "name": "Utah"           },
+{   "key":  "va", "name": "Virginia"       },
+{   "key":  "vt", "name": "Vermont"        },
+{   "key":  "wa", "name": "Washington"     },
+{   "key":  "wi", "name": "Wisconsin"      },
+{   "key":  "wv", "name": "West Virginia"  },
+{   "key":  "wy", "name": "Wyoming"        }
+], "textProperty": "name", "valueProperty": "key", "filterFields": "key,name" }
+}
+]
+</pre>
+        <pacem-data id="entity4" model="{ state: 'ar' }"></pacem-data>
+        <pacem-form id="modal4" autogenerate="true" entity="{{ #entity4.model, twoway }}" metadata="{{ JSON.parse(#metadata4.textContent) }}"></pacem-form>
+
+        <div class="pacem-margin margin-top-3">
+            value: <code><pacem-text text="{{ JSON.stringify(#entity4.model) }}"></pacem-text></code>
+        </div>
+    </template>
+</pacemjs-snippet>
+
+
+<pacem-suggest id="proto" hidden></pacem-suggest>
 <pacemjs-descriptor target="#proto"></pacemjs-descriptor>

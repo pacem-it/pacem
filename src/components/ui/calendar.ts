@@ -51,7 +51,7 @@ namespace Pacem.Components.UI {
     };
 
     @CustomElement({
-        tagName: P +'-calendar-event'
+        tagName: P + '-calendar-event'
     })
     export class PacemCalendarEventElement extends PacemItemElement {
 
@@ -229,7 +229,7 @@ namespace Pacem.Components.UI {
             const ds = this.month;
             let _d0 = ds && ds.length && ds[0] && ds[0].length && ds[0][0];
             if (_d0 && _d0.getMonth() == day.getMonth() && _d0.getFullYear() == day.getFullYear()
-                && ds.find(wk => !Utils.isNull( wk.find(dy => dy.valueOf() == day.valueOf())))) {
+                && ds.find(wk => !Utils.isNull(wk.find(dy => dy.valueOf() == day.valueOf())))) {
                 // return the "convenient" datasource
                 return ds;
             }
@@ -359,46 +359,46 @@ namespace Pacem.Components.UI {
             if (day == 0) {
                 grid += `<div class="agenda-left all-day"></div>`;
             }
-            grid += `<${ P }-panel class="agenda-slot all-day day-${(day + 1)}" css-class="{{ {'viewday': :host.isViewDay(:host.week[${day}], :host.viewDate), 'today': :host.isToday(:host.week[${day}], :host.now)} }}"></${ P }-panel>`;
+            grid += `<${P}-panel class="agenda-slot all-day day-${(day + 1)}" css-class="{{ {'viewday': :host.isViewDay(:host.week[${day}], :host.viewDate), 'today': :host.isToday(:host.week[${day}], :host.now)} }}"></${P}-panel>`;
         }
         for (let day = 0; day < 7; day++) {
             for (let hour of DAY_HOURS) {
                 let whole = hour % 1 == 0;
                 let css = `hour-${whole ? 'whole' : 'half'}`;
                 if (day == 0 && whole) {
-                    grid += `<${ P }-text class="agenda-left ${css} hour-${hour * 2 + 1}"" text="{{ :host.getHourLabel(${DUMMY_DATE + hour * MSECS_PER_HOUR}) }}"></${ P }-text>`;
+                    grid += `<${P}-text class="agenda-left ${css} hour-${hour * 2 + 1}"" text="{{ :host.getHourLabel(${DUMMY_DATE + hour * MSECS_PER_HOUR}) }}"></${P}-text>`;
                 }
-                grid += `<${ P }-panel on-click=":host.time = Pacem.Utils.Dates.parse(:host.week[${day}].valueOf() + ${(hour * MSECS_PER_HOUR)})" disabled="{{ :host.isTimeSlotDisabled(:host.disabledRanges, :host.week[${day}], ${hour}) }}" class="agenda-slot ${css} day-${(day + 1)} hour-${hour * 2 + 1}" css-class="{{ {'viewday': :host.isViewDay(:host.week[${day}], :host.viewDate), 'today': :host.isToday(:host.week[${day}], :host.now)} }}"></${ P }-panel>`;
+                grid += `<${P}-panel on-click=":host.time = Pacem.Utils.Dates.parse(:host.week[${day}].valueOf() + ${(hour * MSECS_PER_HOUR)})" disabled="{{ :host.isTimeSlotDisabled(:host.disabledRanges, :host.week[${day}], ${hour}) }}" class="agenda-slot ${css} day-${(day + 1)} hour-${hour * 2 + 1}" css-class="{{ {'viewday': :host.isViewDay(:host.week[${day}], :host.viewDate), 'today': :host.isToday(:host.week[${day}], :host.now)} }}"></${P}-panel>`;
             }
         }
         return grid;
     }
 
     @CustomElement({
-        tagName: P +'-agenda', shadow: Defaults.USE_SHADOW_ROOT,
-        template: `<${ P }-repeater class="${PCSS}-agenda agenda-grid" datasource="{{ :host.datasource }}">${buildAgendaGrid()}<${ P }-clock hidden></${ P }-clock>
+        tagName: P + '-agenda', shadow: Defaults.USE_SHADOW_ROOT,
+        template: `<${P}-repeater class="${PCSS}-agenda agenda-grid" datasource="{{ :host.datasource }}">${buildAgendaGrid()}<${P}-clock hidden></${P}-clock>
     <template>
-        <${ P }-repeater class="agenda-day" datasource="{{ ^item }}">
+        <${P}-repeater class="agenda-day" datasource="{{ ^item }}">
             <template>
-                <${ P }-panel class="agenda-event-wrapper" 
+                <${P}-panel class="agenda-event-wrapper" 
 css-class="{{ ['hour-start-'+ (^item.hour + 1), 'hour-end-'+ (^item.hour + ^item.span +1), 'day-start-'+ (!^item.continuing.start), 'day-end-'+ (!^item.continuing.end)] }}">
-                    <${ P }-panel class="agenda-event" css="{{ {'top': ^item.offset.start, 'bottom': ^item.offset.end} }}" tab-order="{{ (^^index + 1) * 1000 + (^item.hour + 1) * 100 + ^index }}"
+                    <${P}-panel class="agenda-event" css="{{ {'top': ^item.offset.start, 'bottom': ^item.offset.end} }}" tab-order="{{ (^^index + 1) * 1000 + (^item.hour + 1) * 100 + ^index }}"
                         on-focus=":host.oneventselect($this, ^item.event)" on-blur=":host.oneventunselect($this, ^item.event)">
-                        <${ P }-span class="event-caption" text="{{ ^item.caption }}"></${ P }-span>
-                    </${ P }-panel>
-                </${ P }-panel>
+                        <${P}-span class="event-caption" text="{{ ^item.caption }}"></${P}-span>
+                    </${P}-panel>
+                </${P}-panel>
             </template>
-        </${ P }-repeater>
+        </${P}-repeater>
     </template>
-    <${ P }-repeater class="agenda-allday" datasource="{{ :host.allDayDatasource }}">
+    <${P}-repeater class="agenda-allday" datasource="{{ :host.allDayDatasource }}">
         <template>
-            <${ P }-panel class="agenda-event" tab-order="{{ (^index + 1) * 500 + (^item.day + 1) * 50 + ^index }}" css-class="{{ ['day-start-'+ (^item.day + 1), 'day-end-'+ (^item.day + ^item.span + 1)] }}"
+            <${P}-panel class="agenda-event" tab-order="{{ (^index + 1) * 500 + (^item.day + 1) * 50 + ^index }}" css-class="{{ ['day-start-'+ (^item.day + 1), 'day-end-'+ (^item.day + ^item.span + 1)] }}"
                 on-focus=":host.oneventselect($this, ^item.event)" on-blur=":host.oneventunselect($this, ^item.event)">
-                <${ P }-text class="event-caption" text="{{ ^item.caption }}"></${ P }-text>
-            </${ P }-panel>
+                <${P}-text class="event-caption" text="{{ ^item.caption }}"></${P}-text>
+            </${P}-panel>
         </template>
-    </${ P }-repeater>
-</${ P }-repeater><${ P }-content></${ P }-content>`
+    </${P}-repeater>
+</${P}-repeater><${P}-content></${P}-content>`
     })
     export class PacemAgendaElement extends PacemCalendarWithEventsBaseElement {
 
@@ -475,7 +475,7 @@ css-class="{{ ['hour-start-'+ (^item.hour + 1), 'hour-end-'+ (^item.hour + ^item
             return ds;
         }
 
-        @ViewChild(P +'-clock') private _clock: PacemClockElement;
+        @ViewChild(P + '-clock') private _clock: PacemClockElement;
 
         @Watch({ converter: PropertyConverters.Datetime }) time: Date;
 
@@ -516,28 +516,28 @@ css-class="{{ ['hour-start-'+ (^item.hour + 1), 'hour-end-'+ (^item.hour + ^item
         for (let week = 0; week < 6; week++) {
             for (let day = 0; day < 7; day++) {
                 let css = `class="calendar-day week-${week + 1} day-${day + 1}"`;
-                grid += `<${ P }-panel disabled="{{ :host.isTimeSlotDisabled(:host.disabledRanges, :host.week[${day}]) }}" on-click=":host.date = :host.month[${week}][${day}]" ${css} css-class="{{ {'viewmonth': :host.isViewMonth(:host.month[${week}][${day}]), 'viewday': :host.isViewDay(:host.month[${week}][${day}], :host.viewDate), 'today': :host.isToday(:host.month[${week}][${day}], :host.now)} }}"><${ P }-span culture="{{ :host.culture }}" class="text-ellipsed" text="{{ :host.getDayLabel(:host.month[${week}][${day}]) }}"></${ P }-span></${ P }-panel>`;
+                grid += `<${P}-panel disabled="{{ :host.isTimeSlotDisabled(:host.disabledRanges, :host.week[${day}]) }}" on-click=":host.date = :host.month[${week}][${day}]" ${css} css-class="{{ {'viewmonth': :host.isViewMonth(:host.month[${week}][${day}]), 'viewday': :host.isViewDay(:host.month[${week}][${day}], :host.viewDate), 'today': :host.isToday(:host.month[${week}][${day}], :host.now)} }}"><${P}-span culture="{{ :host.culture }}" class="text-ellipsed" text="{{ :host.getDayLabel(:host.month[${week}][${day}]) }}"></${P}-span></${P}-panel>`;
             }
         }
         return grid;
     }
 
     @CustomElement({
-        tagName: P +'-calendar', shadow: Defaults.USE_SHADOW_ROOT,
-        template: `<${ P }-repeater class="${PCSS}-calendar calendar-grid" datasource="{{ :host.datasource }}">${buildCalendarGrid()}
+        tagName: P + '-calendar', shadow: Defaults.USE_SHADOW_ROOT,
+        template: `<${P}-repeater class="${PCSS}-calendar calendar-grid" datasource="{{ :host.datasource }}">${buildCalendarGrid()}
     <template>
-        <${ P }-repeater class="calendar-week" datasource="{{ ^item }}">
+        <${P}-repeater class="calendar-week" datasource="{{ ^item }}">
             <template>
-                <${ P }-panel class="calendar-event" tab-order="{{ (^^index + 1) * 1000 + (^item.day + 1) * 100 + ^index }}" 
+                <${P}-panel class="calendar-event" tab-order="{{ (^^index + 1) * 1000 + (^item.day + 1) * 100 + ^index }}" 
                     on-focus=":host.oneventselect($this, ^item.event)" on-blur=":host.oneventunselect($this, ^item.event)"
                     css-class="{{ ['day-start-'+ (^item.day + 1), 'day-end-'+ (^item.day + ^item.span + 1)] }}">
-                    <${ P }-span class="event-startdate" culture="{{ :host.culture }}" hide="{{ ^item.continuing.start }}" text="{{ :host.getTimeLabel(^item.event.start) }}"></${ P }-span>
-                    <${ P }-span class="event-caption" text="{{ ^item.caption }}"></${ P }-span>
-                </${ P }-panel>
+                    <${P}-span class="event-startdate" culture="{{ :host.culture }}" hide="{{ ^item.continuing.start }}" text="{{ :host.getTimeLabel(^item.event.start) }}"></${P}-span>
+                    <${P}-span class="event-caption" text="{{ ^item.caption }}"></${P}-span>
+                </${P}-panel>
             </template>
-        </${ P }-repeater>
+        </${P}-repeater>
     </template>
-</${ P }-repeater><${ P }-content></${ P }-content>`
+</${P}-repeater><${P}-content></${P}-content>`
     })
     export class PacemCalendarElement extends PacemCalendarWithEventsBaseElement {
 
@@ -570,7 +570,7 @@ css-class="{{ ['hour-start-'+ (^item.hour + 1), 'hour-end-'+ (^item.hour + ^item
 
     // #region CLOCK (to be worked on: many possibilities ahead)
 
-    @CustomElement({ tagName: P +'-clock' })
+    @CustomElement({ tagName: P + '-clock' })
     export class PacemClockElement extends PacemElement {
 
         @Watch({ converter: PropertyConverters.Datetime }) now: Date;
@@ -584,26 +584,26 @@ css-class="{{ ['hour-start-'+ (^item.hour + 1), 'hour-end-'+ (^item.hour + ^item
     function buildCalendarHeader() {
         let header = '';
         for (let day = 0; day < 7; day++) {
-            header += `<${ P }-span culture="{{ :host.culture }}" css-class="{{ {'viewday': :host.isViewDay(:host.week[${day}], :host.viewDate)} }}" class="schedule-heading day-${day + 1} text-ellipsed" text="{{ :host.getHeaderLabel(:host.week[${day}], :host.zoom) }}"></${ P }-span>`;
+            header += `<${P}-span culture="{{ :host.culture }}" css-class="{{ {'viewday': :host.isViewDay(:host.week[${day}], :host.viewDate)} }}" class="schedule-heading day-${day + 1} text-ellipsed" text="{{ :host.getHeaderLabel(:host.week[${day}], :host.zoom) }}"></${P}-span>`;
         }
         const id = "dock_" + Utils.uniqueCode();
         return `<div class="schedule-header schedule-grid"><div class="heading-left"></div>${header}</div>`;
     }
 
     @CustomElement({
-        tagName: P +'-schedule', shadow: Defaults.USE_SHADOW_ROOT,
-        template: `<${ P }-panel class="${PCSS}-schedule" css-class="{{ ['schedule-'+ (:host.zoom || '${CalendarZoom.Month}')] }}">
-    <${ P }-timer interval="10000" on-tick=":host.now = Pacem.Utils.parseDate(Date.now())"></${ P }-timer>
+        tagName: P + '-schedule', shadow: Defaults.USE_SHADOW_ROOT,
+        template: `<${P}-panel class="${PCSS}-schedule" css-class="{{ ['schedule-'+ (:host.zoom || '${CalendarZoom.Month}')] }}">
+    <${P}-timer interval="10000" on-tick=":host.now = Pacem.Utils.parseDate(Date.now())"></${P}-timer>
     ${buildCalendarHeader()}
-    <${ P }-agenda disabled-ranges="{{ :host.disabledRanges }}" on-eventselect=":host.handle($event)" on-eventunselect=":host.handle($event)" now="{{ :host.now }}" culture="{{ :host.culture }}" view-date="{{ :host.viewDate }}" zoom="{{ :host.zoom }}" week-start="{{ :host.weekStart }}" items="{{ :host.items }}"></${ P }-agenda>
-    <${ P }-calendar disabled-ranges="{{ :host.disabledRanges }}" on-eventselect=":host.handle($event)" on-eventunselect=":host.handle($event)" now="{{ :host.now }}" culture="{{ :host.culture }}" view-date="{{ :host.viewDate }}" zoom="{{ :host.zoom }}" week-start="{{ :host.weekStart }}" items="{{ :host.items }}"></${ P }-calendar>
-    <${ P }-content></${ P }-content>
-</${ P }-panel>`
+    <${P}-agenda disabled-ranges="{{ :host.disabledRanges }}" on-eventselect=":host.handle($event)" on-eventunselect=":host.handle($event)" now="{{ :host.now }}" culture="{{ :host.culture }}" view-date="{{ :host.viewDate }}" zoom="{{ :host.zoom }}" week-start="{{ :host.weekStart }}" items="{{ :host.items }}"></${P}-agenda>
+    <${P}-calendar disabled-ranges="{{ :host.disabledRanges }}" on-eventselect=":host.handle($event)" on-eventunselect=":host.handle($event)" now="{{ :host.now }}" culture="{{ :host.culture }}" view-date="{{ :host.viewDate }}" zoom="{{ :host.zoom }}" week-start="{{ :host.weekStart }}" items="{{ :host.items }}"></${P}-calendar>
+    <${P}-content></${P}-content>
+</${P}-panel>`
     })
     export class PacemScheduleElement extends PacemCalendarBaseElement {
 
-        @ViewChild(P +'-calendar') private _calendar: PacemCalendarElement;
-        @ViewChild(P +'-agenda') private _agenda: PacemAgendaElement;
+        @ViewChild(P + '-calendar') private _calendar: PacemCalendarElement;
+        @ViewChild(P + '-agenda') private _agenda: PacemAgendaElement;
 
         viewActivatedCallback() {
             super.viewActivatedCallback();
@@ -673,15 +673,10 @@ css-class="{{ ['hour-start-'+ (^item.hour + 1), 'hour-end-'+ (^item.hour + ^item
         protected abstract computeDisabledRanges(): DateRange[];
     }
 
-    @CustomElement({ tagName: P +'-calendar-daysofweek-rule' })
+    @CustomElement({ tagName: P + '-calendar-daysofweek-rule' })
     export class PacemCalendarDayOfWeekRuleElement extends PacemCalendarRuleBaseElement {
 
-        @Watch({
-            emit: false, converter: {
-                convert: attr => (attr || '').split(',').map(i => i.trim()),
-                convertBack: prop => (<string[]>prop || []).join(',')
-            }
-        }) days: string[];
+        @Watch({ emit: false, converter: PropertyConverters.StringArray }) days: string[];
 
         viewActivatedCallback() {
             super.viewActivatedCallback();
@@ -709,7 +704,7 @@ css-class="{{ ['hour-start-'+ (^item.hour + 1), 'hour-end-'+ (^item.hour + ^item
                 for (let day of week) {
                     if (this._daysOfWeek.indexOf(day.getDay()) == -1) {
                         let from = Utils.Dates.dateOnly(day),
-                            to = Utils.Dates.dateOnly( new Date(from.valueOf() + MSECS_PER_DAY + /* get rid of daylight saving switches */ MSECS_PER_HOUR));
+                            to = Utils.Dates.dateOnly(new Date(from.valueOf() + MSECS_PER_DAY + /* get rid of daylight saving switches */ MSECS_PER_HOUR));
                         retval.push({ from: from, to: to });
                     }
                 }

@@ -286,7 +286,6 @@ namespace Pacem.Components.Drawing {
 
         @Watch({ emit: false, converter: PropertyConverters.String }) protected data: string;
         @Watch({ emit: false, converter: PropertyConverters.String }) stroke: string;
-        @Watch({ emit: false, converter: PropertyConverters.Number }) lineWidth: number;
         @Watch({ emit: false, converter: PropertyConverters.String }) fill: string;
         @Watch({
             emit: false, converter: {
@@ -294,6 +293,7 @@ namespace Pacem.Components.Drawing {
                 convertBack: (prop) => prop?.join(',')
             }
         }) dashArray?: number[];
+        @Watch({ emit: false, converter: PropertyConverters.Number }) lineWidth: number;
         @Watch({ emit: false, converter: PropertyConverters.String }) lineJoin?: CanvasLineJoin;
         @Watch({ emit: false, converter: PropertyConverters.String }) lineCap?: CanvasLineCap;
 

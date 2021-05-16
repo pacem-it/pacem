@@ -1,0 +1,286 @@
+﻿@import "../shared";
+
+/*#region COLUMNS*/
+
+.ColsStart(@prefix, @start, @span) when (@span > 0) {
+
+    &.@{prefix}-@{span} {
+        grid-column: @start / span @span;
+    }
+
+    .ColsStart(@prefix, @start, @span - 1);
+}
+
+.Cols (@prefix, @count, @index) when (@index > 0 ) {
+
+    &.@{prefix}-@{index} {
+        grid-column: span @index;
+    }
+
+    &.@{prefix}-start-@{index} {
+        grid-column-start: @index;
+        .ColsStart(@prefix, @index, @count - @index + 1);
+    }
+    // next iteration
+    .Cols(@prefix, @count, @index - 1);
+}
+
+.ColsStartMid(@prefix, @mid, @start, @span) when (@span > 0) {
+
+    &.@{prefix}-@{mid}-@{span} {
+        grid-column: @start / span @span;
+    }
+
+    .ColsStartMid(@prefix, @mid, @start, @span - 1);
+}
+
+.ColsMid (@prefix, @mid, @count, @index) when (@index > 0 ) {
+
+    &.@{prefix}-@{mid}-@{index} {
+        grid-column: span @index;
+    }
+
+    &.@{prefix}-@{mid}-start-@{index} {
+        grid-column-start: @index;
+        .ColsStartMid(@prefix, @mid, @index, @count - @index + 1);
+    }
+    // next iteration
+    .ColsMid(@prefix, @mid, @count, @index - 1);
+}
+
+.Cols (@prefix, @count) {
+    .Cols(@prefix, @count, @count);
+}
+
+.ColsMid (@prefix, @mid, @count) {
+    .ColsMid(@prefix, @mid, @count, @count);
+}
+
+/*#endregion*/
+
+/*#region ROWS*/
+
+.RowsStart(@prefix, @start, @span) when (@span > 0) {
+
+    &.@{prefix}-@{span} {
+        grid-row: @start / span @span;
+    }
+
+    .RowsStart(@prefix, @start, @span - 1);
+}
+
+
+.Rows (@prefix, @count, @index) when (@index > 0 ) {
+
+    &.@{prefix}-@{index} {
+        grid-row: span @index;
+    }
+
+    &.@{prefix}-start-@{index} {
+        grid-row-start: @index;
+        .RowsStart(@prefix, @index, @count - @index + 1);
+    }
+    // next iteration
+    .Rows(@prefix, @count, @index - 1);
+}
+
+.RowsStartMid(@prefix, @mid, @start, @span) when (@span > 0) {
+
+    &.@{prefix}-@{mid}-@{span} {
+        grid-row: @start / span @span;
+    }
+
+    .RowsStartMid(@prefix, @mid, @start, @span - 1);
+}
+
+.RowsMid (@prefix, @mid, @count, @index) when (@index > 0 ) {
+
+    &.@{prefix}-@{mid}-@{index} {
+        grid-row: span @index;
+    }
+
+    &.@{prefix}-@{mid}-start-@{index} {
+        grid-row-start: @index;
+        .RowsStartMid(@prefix, @mid, @index, @count - @index + 1);
+    }
+    // next iteration
+    .RowsMid(@prefix, @mid, @count, @index - 1);
+}
+
+.Rows (@prefix, @count) {
+    .Rows(@prefix, @count, @count);
+}
+
+.RowsMid (@prefix, @mid, @count) {
+    .RowsMid(@prefix, @mid, @count, @count);
+}
+
+/*#endregion*/
+
+.@{PCSS}-grid {
+    display: grid;
+    grid-gap: @grid_spacing;
+    margin-bottom: @grid_spacing;
+
+    &.grid-nospace {
+        margin-bottom: 0;
+    }
+
+    &.grid-no-rowgap,
+    &.grid-novgap {
+        grid-row-gap: 0;
+    }
+
+    &.grid-no-colgap,
+    &.grid-nohgap {
+        grid-column-gap: 0;
+    }
+
+    &.grid-nogap {
+        grid-gap: 0;
+    }
+
+    &.grid-center {
+        justify-items: center;
+    }
+
+    &.grid-middle {
+        align-items: center;
+    }
+
+    &.grid-tiny-colgap {
+        grid-column-gap: @grid_spacing / 3;
+    }
+
+    &.grid-tiny-rowgap {
+        grid-row-gap: @grid_spacing / 3;
+    }
+
+    &.grid-small-colgap {
+        grid-column-gap: 2 * @grid_spacing / 3;
+    }
+
+    &.grid-small-rowgap {
+        grid-row-gap: 2 * @grid_spacing / 3;
+    }
+
+    &.grid-big-colgap {
+        grid-column-gap: 4 * @grid_spacing / 3;
+    }
+
+    &.grid-big-rowgap {
+        grid-row-gap: 4 * @grid_spacing / 3;
+    }
+
+    &.grid-bigger-colgap {
+        grid-column-gap: 5 * @grid_spacing / 3;
+    }
+
+    &.grid-bigger-rowgap {
+        grid-row-gap: 5 * @grid_spacing / 3;
+    }
+
+    &.grid-huge-colgap {
+        grid-column-gap: 2 * @grid_spacing;
+    }
+
+    &.grid-huge-rowgap {
+        grid-row-gap: 2 * @grid_spacing;
+    }
+
+    //margin: -@grid_spacing -@grid_spacing 0 -@grid_spacing;
+    //background-color: @color_primary;
+    //grid-auto-flow: row;
+    box-sizing: border-box;
+    grid-template-columns: repeat(12, 1fr);
+    //grid-template-rows: auto 150px;
+    > .@{PCSS}-cell {
+        grid-column: span 12;
+
+        &.cell-center {
+            align-self: center;
+            justify-self: center;
+        }
+        //background-color: @color_background;
+        transition: all .5s;
+        box-sizing: border-box;
+        .Cols(cols, 12);
+        .Rows(rows, 12);
+
+        &.@{PCSS}-wrapper {
+            margin: 0;
+        }
+    }
+}
+
+@media (max-width: @threshold_sm - 1) {
+
+    .@{PCSS}-grid .@{PCSS}-cell {
+        .ColsMid(cols, xs, 12);
+        .RowsMid(rows, xs, 12);
+    }
+}
+
+@media (min-width: @threshold_sm) {
+
+    .@{PCSS}-grid .@{PCSS}-cell {
+        .ColsMid(cols, sm, 12);
+        .RowsMid(rows, sm, 12);
+    }
+}
+
+@media (min-width: @threshold_md) {
+
+    .@{PCSS}-grid .@{PCSS}-cell {
+        .ColsMid(cols, md, 12);
+        .RowsMid(rows, md, 12);
+    }
+}
+
+@media (min-width: @threshold_lg) {
+
+    .@{PCSS}-grid .@{PCSS}-cell {
+        .ColsMid(cols, lg, 12);
+        .RowsMid(rows, lg, 12);
+    }
+}
+
+@media (min-width: @threshold_xl) {
+
+    .@{PCSS}-grid .@{PCSS}-cell {
+        .ColsMid(cols, xl, 12);
+        .RowsMid(rows, xl, 12);
+    }
+}
+
+@media (min-width: @threshold_hd) {
+
+    .@{PCSS}-grid .@{PCSS}-cell {
+        .ColsMid(cols, hd, 12);
+        .RowsMid(rows, hd, 12);
+    }
+}
+
+@media (min-width: @threshold_2k) {
+
+    .@{PCSS}-grid .@{PCSS}-cell {
+        .ColsMid(cols, 2k, 12);
+        .RowsMid(rows, 2k, 12);
+    }
+}
+
+@media (min-width: @threshold_4k) {
+
+    .@{PCSS}-grid .@{PCSS}-cell {
+        .ColsMid(cols, 4k, 12);
+        .RowsMid(rows, 4k, 12);
+    }
+}
+
+@media (orientation: portrait) {
+
+    .@{PCSS}-grid .@{PCSS}-cell {
+        .ColsMid(cols, v, 12);
+        .RowsMid(rows, v, 12);
+    }
+}

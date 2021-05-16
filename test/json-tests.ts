@@ -3,6 +3,26 @@ namespace Pacem.Tests {
 
     export const jsonTests = [{
 
+        name: 'Unsupported JSON serialization objects', test: function () {
+
+            it('RegExp handling', function () {
+                const regex = /^(hello world|goodbye)$/gi;
+                var obj: any = { r: regex };
+
+
+                let json: string = Utils.Json.stringify(obj);
+                let revived = Utils.Json.parse(json);
+
+                expect(revived.r).not.toBeNull();
+                expect(revived.r instanceof RegExp).toEqual(true);
+                expect(revived.r.source).toEqual('^(hello world|goodbye)$');
+                expect(revived.r.flags).toEqual('gi');
+            });
+
+        }
+    },
+
+    {
         name: 'Circular JSON', test: function () {
 
             it('Stringify and parse back', function () {
@@ -18,7 +38,7 @@ namespace Pacem.Tests {
                 var div = document.createElement('div');
                 div.id = 'my-id';
                 div.hidden = true;
-                
+
                 obj.dom = document.body.appendChild(div);
 
                 let json: string = Utils.Json.stringify(obj);
@@ -40,7 +60,6 @@ namespace Pacem.Tests {
             });
 
         }
-    }
-    ];
+    }];
 
 }

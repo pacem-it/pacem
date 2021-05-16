@@ -1,0 +1,155 @@
+﻿@import "../../../shared";
+@import "../shared";
+@import "../../ui/shared";
+
+@{P}-contenteditable {
+    .FormFieldItemWrapperCore();
+    display: grid;
+    grid-template-rows: auto auto;
+    grid-template-areas: 'top' 'bottom';
+    position: relative;
+
+    div[contenteditable=true] {
+        // max-height: 7.5 * @grid_spacing;
+        overflow: auto;
+        .FormFieldItem();
+        .FormFieldItemMultiline();
+        min-height: @field_height;
+        padding: @grid_spacing / 3;
+
+        ul, ol {
+            margin: 1em 2em;
+        }
+
+        ul {
+            list-style: disc;
+        }
+
+        ol {
+            list-style: decimal;
+        }
+    }
+
+    &.@{PCSS}-readonly {
+
+        .@{PCSS}-contenteditable {
+            border: none;
+            margin-bottom: @border_field_size;
+
+            & when (@border_field_underline = false) {
+                margin-top: @border_field_size;
+            }
+        }
+
+        div[pacem][readonly] {
+            font-size: 1.1em;
+            min-height: @field_height;
+            box-sizing: border-box;
+            padding: @grid_spacing / 3;
+        }
+    }
+
+    .@{PCSS}-viewfinder {
+        grid-area: top;
+    }
+}
+
+.field-stretch @{P}-contenteditable,
+@{P}-contenteditable.field-stretch {
+
+    .@{PCSS}-contenteditable {
+        .FormFieldStretch();
+    }
+}
+
+/* #region print sizes */
+
+.contenteditable-pagesize @{P}-contenteditable,
+@{P}-contenteditable.contenteditable-pagesize {
+
+    @_pad_vert: 1.95cm;
+    @_line_h: .6cm;
+    @_font_sz: .4cm;
+
+    div[contenteditable=true],
+    div[pacem][readonly] {
+        box-sizing: border-box;
+        padding: @_pad_vert 1cm;
+        line-height: @_line_h;
+        font-size: @_font_sz;
+        margin: @grid_spacing auto;
+        box-sizing: border-box;
+
+        p {
+            padding: 0;
+        }
+
+        blockquote {
+            padding-top: @_line_h/2;
+            padding-bottom: $padding-top;
+        }
+
+        p, blockquote {
+            margin: 0 0 @_line_h/2 0;
+
+            &:last-child {
+                margin-bottom: 0;
+            }
+        }
+
+        h1 {
+            line-height: 1.5 * @_line_h;
+            font-size: $line-height * @_font_sz / @_line_h;
+            font-weight: 700;
+            margin: 12pt 0 2pt 0;
+        }
+
+        h2 {
+            line-height: 1.25 * @_line_h;
+            font-size: $line-height * @_font_sz / @_line_h;
+            font-weight: 700;
+            margin: 12pt 0 2pt 0;
+        }
+
+        & when (@dark_theme = true) {
+            box-shadow: 0 0 @grid_spacing rgba(0,0,0,.5);
+            background-color: @color_input_back;
+        }
+
+        & when (@dark_theme = false) {
+            border: 1px solid @color_border;
+            border-top: 1px solid #fff;
+            box-shadow: 0 0 @grid_spacing rgba(0,0,0,.1);
+        }
+    }
+
+    &.pagesize-a4 {
+        div[contenteditable=true],
+        div[pacem][readonly] {
+            width: 21cm;
+
+            /*&when (@dark_theme = true) {
+                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' preserveAspectRatio='xMinYMin slice' viewBox='0 0 210 297'%3E%3Cline x1='0' y1='0' x2='210' y2='0' stroke-width='1' stroke-dasharray='1 1' stroke='rgba%28255,255,255,0.1%29' /%3E%3C/svg%3E");
+            }
+
+            &when (@dark_theme = false) {
+                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' preserveAspectRatio='xMinYMin slice' viewBox='0 0 210 297'%3E%3Cline x1='0' y1='0' x2='210' y2='0' stroke-width='1' stroke-dasharray='1 1' stroke='rgba%280,0,0,0.1%29' /%3E%3C/svg%3E");
+            }
+
+            background-size: 21cm 29.7cm - 2 * @_pad_vert;
+            background-repeat: repeat;
+            background-position-y: @_pad_vert;*/
+        }
+    }
+
+    &.pagesize-a5 {
+        div[contenteditable=true],
+        div[pacem][readonly] {
+            width: 148mm;
+        }
+    }
+}
+
+/* #endregion */
+
+@import "contenteditable/index";

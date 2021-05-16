@@ -1,0 +1,202 @@
+﻿@import "../shared";
+@import "../../ui/shared";
+
+.pos-relative {
+    position: relative;
+}
+
+.pos-absolute {
+    position: absolute;
+
+    &.absolute-top {
+        top: 0;
+    }
+
+    &.absolute-left {
+        left: 0;
+    }
+
+    &.absolute-bottom {
+        bottom: 0;
+    }
+
+    &.absolute-right {
+        right: 0;
+    }
+}
+
+.pos-static {
+    position: static;
+}
+
+.pos-fixed {
+    position: fixed;
+    z-index: @hamburger-z-index - 100;
+
+    &.fixed-top {
+        top: 0;
+    }
+
+    &.fixed-left {
+        left: 0;
+    }
+
+    &.fixed-bottom {
+        bottom: 0;
+    }
+
+    &.fixed-right {
+        right: 0;
+    }
+}
+
+.pos-sticky {
+    position: sticky;
+    z-index: @header_z_index - 1;
+
+    &.sticky-top {
+        top: 0;
+    }
+
+    &.sticky-bottom {
+        bottom: 0;
+    }
+}
+
+
+// sticky overrides based on layout
+// layout-driven sticky position override
+.@{PCSS}-body {
+
+    .StickyBottom(@base) {
+        bottom: @base;
+
+        &.bottom-1 {
+            bottom: @base + @grid_spacing/3;
+        }
+
+        &.bottom-2 {
+            bottom: @base + @grid_spacing/2;
+        }
+
+        &.bottom-3 {
+            bottom: @base + @grid_spacing;
+        }
+
+        &.bottom-4 {
+            bottom: @base + @grid_spacing * 1.3333;
+        }
+
+        &.bottom-5 {
+            bottom: @base + @grid_spacing * 1.5;
+        }
+
+        &.bottom-6 {
+            bottom: @base + @grid_spacing * 2;
+        }
+    }
+
+    // bottom
+
+    &[footbar] {
+
+        .pos-sticky.sticky-bottom {
+            .StickyBottom( @layout_toolbar_height);
+        }
+    }
+
+    &[footer] {
+        .pos-sticky.sticky-bottom {
+            .StickyBottom( @layout_footer_height);
+        }
+    }
+
+    &[bigfooter] {
+        .pos-sticky.sticky-bottom {
+            .StickyBottom( @layout_bigfooter_height);
+        }
+    }
+
+    &[footer][footbar] {
+        .pos-sticky.sticky-bottom {
+            .StickyBottom( @layout_footer_height + @layout_toolbar_height);
+        }
+    }
+
+    &[bigfooter][footbar] {
+        .pos-sticky.sticky-bottom {
+            .StickyBottom( @layout_bigfooter_height + @layout_toolbar_height);
+        }
+    }
+
+    .pos-sticky.sticky-bottom.bottom-0 {
+        bottom: 0;
+    }
+
+    .StickyTop(@base) {
+        top: @base;
+
+        &.top-1 {
+            top: @base + @grid_spacing/3;
+        }
+
+        &.top-2 {
+            top: @base + @grid_spacing/2;
+        }
+
+        &.top-3 {
+            top: @base + @grid_spacing;
+        }
+
+        &.top-4 {
+            top: @base + @grid_spacing * 1.3333;
+        }
+
+        &.top-5 {
+            top: @base + @grid_spacing * 1.5;
+        }
+
+        &.top-6 {
+            top: @base + @grid_spacing * 2;
+        }
+    }
+
+    // top
+
+    &[headbar] {
+
+        .pos-sticky.sticky-top {
+            .StickyTop( @layout_toolbar_height);
+        }
+    }
+
+    &[header] {
+        .pos-sticky.sticky-top {
+            .StickyTop( @layout_header_height);
+        }
+    }
+
+    &[header][headbar] {
+        .pos-sticky.sticky-top {
+            .StickyTop( @layout_header_height + @layout_toolbar_height);
+        }
+    }
+
+    .pos-sticky.sticky-top.top-0 {
+        top: 0;
+    }
+}
+
+// kept names from known bootstrap classes
+.caret,
+.pull-right {
+    float: right;
+}
+
+.pull-left {
+    float: left;
+}
+
+.clearfix {
+    clear: both;
+}

@@ -29,18 +29,6 @@ namespace Pacem {
             });
         }
 
-        static importjs(src: string, integrity: string = null, crossorigin: boolean = false) {
-            var attrs =
-                { 'type': 'text\/javascript', 'src': src };
-            if (!Utils.isNullOrEmpty(integrity))
-                Utils.extend(attrs, { integrity: integrity });
-            if (crossorigin)
-                Utils.extend(attrs, { 'crossorigin': '' });
-            return CustomElementUtils.import(src,
-                'script', attrs,
-                (document.head || document.getElementsByTagName("head")[0]));
-        }
-
         static getWatchedProperties(target: Type<any>, includeInherited?: boolean): { name: string, config: WatchConfig }[];
         static getWatchedProperties(element: HTMLElement, includeInherited?: boolean): { name: string, config: WatchConfig }[];
         static getWatchedProperties(target: Type<any> | HTMLElement, includeInherited = true): { name: string, config: WatchConfig }[] {
@@ -60,39 +48,60 @@ namespace Pacem {
             return this.getWatchedProperties(target, true).find(p => p.name === name);
         }
 
+        static importjs(src: string, integrity: string = null, crossorigin: boolean = false) {
+            var attrs =
+                { 'type': 'text\/javascript', 'src': src };
+            if (!Utils.isNullOrEmpty(integrity))
+                Utils.extend(attrs, { integrity: integrity });
+            if (crossorigin)
+                Utils.extend(attrs, { 'crossorigin': '' });
+            return CustomElementUtils.import(src,
+                'script', attrs,
+                (document.head || document.getElementsByTagName("head")[0]));
+        }
+
         static importcss(src: string, integrity: string = null, crossorigin: boolean = false) {
             var attrs =
                 { 'rel': 'stylesheet', 'href': src };
             if (!Utils.isNullOrEmpty(integrity))
                 Utils.extend(attrs, { integrity: integrity });
             if (crossorigin)
-                Utils.extend(attrs, { 'crossorigin': '' });
+                Utils.extend(attrs, { 'crossorigin': 'anonymous' });
             return CustomElementUtils.import(src,
                 'link', attrs,
                 (document.head || document.getElementsByTagName("head")[0]));
         }
 
-        static import(key: string, tagName: string, attrs: { [name: string]: any }, appendTo: Node = document.body): PromiseLike<HTMLElement> {
-            var deferred = DeferPromise.defer<HTMLElement>();
+        static import(key: string, tagName: string, attrs: { [name: string]: any }, appendTo: Node = document.body): Promise<HTMLElement> {
             const _p = Utils.core;
-            var _imports = _p['imports'] = _p['imports'] || {},
-                script: HTMLElement;
-            if (script = _imports[key]) {
-                deferred.resolve(script);
-            } else {
-                script = document.createElement(tagName);
-                script.onerror = e => {
-                    deferred.reject(e);
-                };
-                script.onload = () => {
-                    deferred.resolve(_imports[key] = script);
-                };
-                appendTo.appendChild(script);
-                for (var attr in (attrs || {})) {
-                    script.setAttribute(attr, attrs[attr]);
+            var _imports: { [key: string]: Promise<HTMLElement> } = _p['imports'] = _p['imports'] || {}
+
+            return _imports[key] = _imports[key] || new Promise((resolve, reject) => {
+
+                // try to find the equivalent element in the DOM
+                var selector = tagName;
+                for (let attr in attrs || {}) {
+                    selector += `[${attr}="${attrs[attr]}"]`;
                 }
-            }
-            return deferred.promise;
+
+                var script: HTMLElement = document.querySelector(selector);
+                if (!Utils.isNull(script)) {
+                    // best guess: since element was already there, it is hopefully fully loaded
+                    resolve(script);
+                } else {
+                    script = document.createElement(tagName);
+                    script.onerror = e => {
+                        reject(e);
+                    };
+                    script.onload = () => {
+                        resolve(script);
+                    };
+                    appendTo.appendChild(script);
+                    for (var attr in (attrs || {})) {
+                        script.setAttribute(attr, attrs[attr]);
+                    }
+                }
+            });
         }
 
         static setAttachedPropertyValue(target: any, name: string, value: any) {
@@ -222,7 +231,7 @@ namespace Pacem {
         static findAncestor(element: Element, predicate: (Node) => boolean): any {
             let el: Node = element;
             let retval: any;
-            while (el && (el = el.parentNode) != null) {
+            while (el && (el = el.parentNode || (<ShadowRoot>el.getRootNode())?.host) != null) {
                 if (el['host'] instanceof HTMLElement)
                     el = el['host'];
                 if (predicate.apply(el, [el])) {
@@ -241,15 +250,24 @@ namespace Pacem {
             return CustomElementUtils.findAncestor(element, el => el instanceof ctor);
         }
 
-        static findDescendants(element: Element, predicate: (Node) => boolean): Node[] {
+        static findDescendants(element: Element, predicate: (Node) => boolean, firstOnly = false): Node[] {
             const walker = document.createTreeWalker(element, NodeFilter.SHOW_ELEMENT);
             var retval: Node[] = [];
             while (walker.nextNode()) {
                 let n = walker.currentNode;
-                if (predicate(n) === true)
+                if (predicate(n) === true) {
                     retval.push(n);
+                    if (firstOnly) {
+                        return retval;
+                    }
+                }
             }
             return retval;
+        }
+
+        static findFirstDescendant(element: Element, predicate: (Node) => boolean): Node {
+            const any = CustomElementUtils.findDescendants(element, predicate, true);
+            return Utils.isNullOrEmpty(any) ? void 0 : any[0];
         }
 
         static findAll<T extends Element>(selector: string = '[pacem]', filter: (e: Element) => boolean = (e) => true): T[] {
@@ -317,19 +335,28 @@ namespace Pacem {
         }
 
         static assignHostContext(host: any, template: HTMLTemplateElement) {
+
+            // navigate through the DOM hierarchy
             const walker = document.createTreeWalker(template.content, NodeFilter.SHOW_ELEMENT + /* traverse templates' content */NodeFilter.SHOW_DOCUMENT_FRAGMENT);
             while (walker.nextNode()) {
                 var node = walker.currentNode;
                 /*if (node instanceof HTMLTemplateElement)
                     CustomElementUtils.assignHostContext(host, node);
-                else*/ if (Utils.isNull(CustomElementUtils.getAttachedPropertyValue(node, INSTANCE_HOST_VAR)))
+                else*/ if (Utils.isNull(CustomElementUtils.getAttachedPropertyValue(node, INSTANCE_HOST_VAR))) {
                     CustomElementUtils.setAttachedPropertyValue(node, INSTANCE_HOST_VAR, host);
+                }
             }
         }
 
         static findHostContext(element: HTMLElement): HTMLElement {
             let el: HTMLElement = element;
             let retval: any;
+
+            // not connected to the DOM? then exit and return undefined
+            if (!el.isConnected) {
+                return retval;
+            }
+
             while (el != null) {
                 retval = CustomElementUtils.getAttachedPropertyValue(el, INSTANCE_HOST_VAR);
                 if (retval instanceof HTMLElement)
@@ -362,31 +389,34 @@ namespace Pacem {
             return bindingPattern.test(attr);
         }
 
-        static parseBindingAttribute(attr: string, element: HTMLElement): Expression {
+        static extractBindingAttributeExpression(attr: string): string {
             if (CustomElementUtils.isBindingAttribute(attr)) {
-                // loose syntax {{ ... }}
-                let expression = attr.substr(2, attr.length - 4);
-                const arr = /,\s*(twoway|once)\s*$/.exec(expression),
-                    mode: string = arr && arr.length > 1 && arr[1];
-                if (!Utils.isNullOrEmpty(mode)) {
-                    expression = expression.substr(0, expression.lastIndexOf(','));
-                }
-                var expr = Expression.parse(expression, element);
-                (expr && expr.dependencies).forEach(d => {
-                    switch (mode) {
-                        case 'twoway':
-                            d.mode = (d.twowayAllowed && expr.dependencies.length == 1) ? 'twoway' : undefined;
-                            break;
-                        case 'once':
-                            d.mode = mode;
-                            break;
-                    }
-                });
-                return expr;
+                return attr.substr(2, attr.length - 4);
             } else {
                 throw `Invalid attribute: incorrect binding syntax.`;
-                //return new Function(`return ${attr};`).apply(element);
             }
+        }
+
+        static parseBindingAttribute(attr: string, element: HTMLElement): Expression {
+            // loose syntax {{ ... }}
+            let expression = CustomElementUtils.extractBindingAttributeExpression(attr);
+            const arr = /,\s*(twoway|once)\s*$/.exec(expression),
+                mode: string = arr && arr.length > 1 && arr[1];
+            if (!Utils.isNullOrEmpty(mode)) {
+                expression = expression.substr(0, expression.lastIndexOf(','));
+            }
+            var expr = Expression.parse(expression, element);
+            (expr && expr.dependencies).forEach(d => {
+                switch (mode) {
+                    case 'twoway':
+                        d.mode = (d.twowayAllowed && expr.dependencies.length == 1) ? 'twoway' : undefined;
+                        break;
+                    case 'once':
+                        d.mode = mode;
+                        break;
+                }
+            });
+            return expr;
         }
 
         static ensureMember(o: any, name: string, attributes: PropertyDescriptor): PropertyDescriptor {

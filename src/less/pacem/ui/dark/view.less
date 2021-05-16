@@ -1,0 +1,16 @@
+﻿@import "../shared";
+
+@{P}-view {
+    display: block;
+}
+
+.@{PCSS}-animations @{P}-view.@{PCSS}-animatable,
+.@{PCSS}-animations @{P}-view.@{PCSS}-anim {
+    animation: none !important;
+    transition: transform @easing_in_out_sine .2s, opacity .15s;
+
+    &.view-fetching {
+        transform: translateY(@grid_spacing) translateZ(0);
+        opacity: 0;
+    }
+}

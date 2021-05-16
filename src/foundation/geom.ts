@@ -7,13 +7,22 @@
     // 1.7763568394002505e-15 -20.4551920341394 40 40
     const FLOAT_PATTERN = /[-+]?[\d]+(\.[\d]+(e-[\d]+)?)?/g;
 
+    export function parseAsNumericalArray(input: string): number[] {
+        const arr: number[] = [];
+        let reg = input.match(FLOAT_PATTERN);
+        if (reg && reg.length > 0) {
+            reg.forEach(i => arr.push(parseFloat(i)));
+        }
+        return arr;
+    }
+
     export class Size {
-        static parse(pt: string): Size {
-            let reg = pt.match(FLOAT_PATTERN);
-            if (reg && reg.length === 2) {
-                return { width: parseFloat(reg[0]), height: parseFloat(reg[1]) };
+        static parse(sz: string): Size {
+            let arr = parseAsNumericalArray(sz);
+            if (arr && arr.length === 4) {
+                return { width: arr[0], height: arr[1] };
             }
-            throw new Error(`Cannot parse "${pt}" as a valid Size.`);
+            throw new Error(`Cannot parse "${sz}" as a valid Size.`);
         }
 
         static isSize(obj: any): obj is Size {
@@ -25,17 +34,17 @@
 
     export class Point {
         static parse(pt: string): Point {
-            let reg = pt.match(FLOAT_PATTERN);
-            if (reg && reg.length === 2) {
-                return { x: parseFloat(reg[0]), y: parseFloat(reg[1]) };
+            let arr = parseAsNumericalArray(pt);
+            if (arr && arr.length === 2) {
+                return { x: arr[0], y: arr[1] };
             }
             throw new Error(`Cannot parse "${pt}" as a valid Point.`);
         }
 
         static isPoint(obj: any): obj is Point {
             return typeof obj === 'object'
-                && 'width' in obj && typeof obj['width'] === 'number'
-                && 'height' in obj && typeof obj['height'] === 'number';
+                && 'x' in obj && typeof obj['x'] === 'number'
+                && 'y' in obj && typeof obj['y'] === 'number';
         }
 
         /**
@@ -74,9 +83,9 @@
     export class Rect {
 
         static parse(rect: string): Rect {
-            let reg = rect.match(FLOAT_PATTERN);
-            if (reg && reg.length === 4) {
-                return { x: parseFloat(reg[0]), y: parseFloat(reg[1]), width: parseFloat(reg[2]), height: parseFloat(reg[3]) };
+            let arr = parseAsNumericalArray(rect);
+            if (arr && arr.length === 4) {
+                return { x: arr[0], y: arr[1], width: arr[2], height: arr[3] };
             }
             throw new Error(`Cannot parse "${rect}" as a valid Rect.`);
         }

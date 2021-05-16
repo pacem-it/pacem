@@ -20,17 +20,70 @@ Example:
 This whole web app exploits this routing system. Feel free to lurk into the source code. Here's a hint:
 
 ```html
+&lt;!-- router (manages current path and navigation history) -->
+&lt;pacem-router template="/{package}/{view}" path="/intro/welcome" id="router">&lt;/pacem-router>
 
-&lt;pacem-router template="/{package}/{view}" path="/intro/welcome" 
-    id="router">&lt;/pacem-router>
-&lt;pacem-view id="view" 
-    url="{{ '/views/'+ #router.state.package + '/'+ #router.state.view +'.html' }}">&lt;/pacem-view>
+&lt;!-- view (renders the requested paths) -->
+&lt;pacem-view id="view" url="{{ '/views/'+ #router.state.package + '/'+ #router.state.view +'.html' }}">&lt;/pacem-view>
+
+&lt;!-- anchor (triggers navigation) -->
 &lt;pacem-a href="/basic/router" router="#router">
 Go to router page
 &lt;/pacem-a>
 ```
 </pre>
 
+<pacem-markdown value="{{ #content1.textContent }}" root class="md-tech"></pacem-markdown>
 
-<pacem-router id="proto"></pacem-router>
+<pre pacem hidden id="content1">
+
+## Preventing Navigation
+
+`PacemRouterElement` force the `window` global to dispatch a couple of events:
+
+- `navigate`: it confirms the **happened** navigation and fires after the navigation itself.
+- `navigating`: it informs of the **happening** navigation, it fires **before** te actual navigation and **can be prevented**.
+
+> To properly prevent a navigation act both in a full-reload scenario (hit F5 or change browser url on the navigation bar) or during a partial navigation (router-based),
+> you can exploit the _ad-hoc_ **`PacemBeforeunloadElement`** custom element.
+
+Here's a sample how to:
+
+</pre>
+
+<pacemjs-snippet>
+    <template>
+
+        <div class="pacem-grid grid-nospace grid-no-rowgap grid-no-colgap">
+            <div class="pacem-field pacem-cell">
+                <label class="pacem-label">State (required):</label>
+                <div class="pacem-input-container">
+                    <pacem-textarea id="confirm1" value="I'm about to inexplicably leaving this page..."></pacem-textarea>
+                </div>
+            </div>
+            <div class="pacem-field pacem-cell">
+                <label class="pacem-label">Request confirmation:</label>
+                <div class="pacem-input-container">
+                    <pacem-checkbox id="enabled1" true-value="true" false-value="false" class="checkbox-switch"></pacem-checkbox>
+                </div>
+            </div>
+            <div class="pacem-cell">
+                <div class="pacem-panel">
+                    <div class="panel-body">
+                        <pacem-button class="button button-primary" on-click="location.reload()" icon-glyph="refresh">Reload</pacem-button>
+                        <pacem-button class="button" on-click="history.back()" icon-glyph="arrow_left">Back</pacem-button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <pacem-beforeunload active="{{ #enabled1.value }}" message="{{ #confirm1.value }}"></pacem-beforeunload>
+
+    </template>
+</pacemjs-snippet>
+
+
+<pacem-router id="proto" disabled="true"></pacem-router>
 <pacemjs-descriptor target="#proto"></pacemjs-descriptor>
+<pacem-beforeunload id="proto1" disabled="true"></pacem-beforeunload>
+<pacemjs-descriptor target="#proto1"></pacemjs-descriptor>

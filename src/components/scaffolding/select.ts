@@ -13,10 +13,6 @@ namespace Pacem.Components.Scaffolding {
     })
     export class PacemSelectElement extends PacemDataSourceElement {
 
-        constructor() {
-            super();
-        }
-
         @ViewChild('select') private _select: HTMLSelectElement;
         @ViewChild(P + '-repeater') private _repeater: PacemRepeaterElement;
         @ViewChild(`span.${PCSS}-readonly`) private _span: HTMLSpanElement;
@@ -72,7 +68,7 @@ namespace Pacem.Components.Scaffolding {
         protected buildAdaptedDatasource(ds = this.datasource): DataSource {
             let adapted = super.buildAdaptedDatasource(ds);
             if (adapted && this.emptyOption) {
-                adapted.splice(0, 0, { viewValue: this.placeholder || '', value: '' });
+                adapted.splice(0, 0, { viewValue: this.placeholder || '', value: '', data: null });
             }
             return adapted;
         }

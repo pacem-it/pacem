@@ -1,12 +1,41 @@
 ﻿
 
-<pacem-markdown value="{{ #content0.textContent }}" root class="md-tech"></pacem-markdown>
+<pacem-markdown value="{{ #contenta.textContent }}" root class="md-tech"></pacem-markdown>
 
-<pre pacem hidden id="content0">
+<pre pacem hidden id="contenta">
 
 > Forms are pivotal in **Pacem JS**. 
 Since nobody loves implementing forms, **Pacem JS** aims to include functionalities for as may use case as possible. More features are yet to come.  
 We'll skip standard static laydown of forms and fields, since you can grasp the basics by lurking into the code of the following - hopefully more interesting - examples.
+
+## Form glue
+Given an entity to be edited with a form, just setup the binding between entity and form via specific attribute.  
+The **named** `PacemModelElement` instances inside the form will figure out their respective property bindings:
+
+> This **default behavior** can be disabled by adding the attribute `autobind="off"` to the pacem input field.
+</pre>
+
+<pacemjs-snippet>
+    <template>
+
+        <pacem-data model="{ name:'Cristian', surname: 'Merighi' }" id="entitya"></pacem-data>
+        <pacem-form entity="{{ #entitya.model, twoway }}">
+
+            <pacem-input-text name="name"></pacem-input-text>
+            <pacem-input-text name="surname"></pacem-input-text>
+
+        </pacem-form>
+
+        <p class="pacem-margin margin-top-2">
+            <code><pacem-text text="{{ JSON.stringify(#entitya.model) }}"></pacem-text></code>
+        </p>
+    </template>
+</pacemjs-snippet>
+
+<hr />
+<pacem-markdown value="{{ #content0.textContent }}" root class="md-tech"></pacem-markdown>
+
+<pre pacem hidden id="content0">
 
 ## Form nesting
 `&lt;pacem-form>` elements can be nested so that **validity** and **dirtyness** may propagate upwards up to the containing form.  
@@ -59,6 +88,7 @@ We'll skip standard static laydown of forms and fields, since you can grasp the 
     </template>
 </pacemjs-snippet>
 
+<hr />
 <pacem-markdown value="{{ #content1.textContent }}" root class="md-tech"></pacem-markdown>
 
 <pre pacem hidden id="content1">
@@ -79,14 +109,13 @@ type ValidatorMetadata = { type: string, errorMessage: string, params?: any };
 
 type PropertyMetadata = {
     prop: string,
-    type: 'object' | 'array' | string,
+    type: 'object' | 'array' | string | PropertyMetadataFieldFactory,
     display?: DisplayMetadata,
     extra?: any,
     isReadOnly?: boolean,
     dataType?: string,
-    isComplexType?: boolean,
-    isNullable?: boolean,
     validators?: ValidatorMetadata[],
+    commands?: CommandMetadata[],
     props?: PropertyMetadata[]
 };
 type TypeMetadata = {
@@ -217,8 +246,141 @@ Here's the _mise en place_:
     </template>
 </pacemjs-snippet>
 
-<pacem-markdown value="{{ #content2.textContent }}" root class="md-tech"></pacem-markdown>
+<pacem-markdown value="{{ #content5.textContent }}" root class="md-tech"></pacem-markdown>
+<pre pacem hidden id="content5">
+## Metadata
 
+Here's a more detailed explanation about the form-generating metadata:
+
+### `prop`
+The very name of the editing property.
+
+### `display.name`
+The readable name of the editing property, displayed as the label on the editing field.  
+Falls back to the raw `prop` name when not provided.
+
+### `type`
+The base type of the editing property. It ultimately decides the editing field that has to be rendered.
+
+> It may be overridden by `dataType` and/or `display.ui`,
+> unless it is provided as a **factory function**.
+
+Managed values:
+- _factory function_:
+- `boolean`: renders a checkbox;
+- `byte`: renders a numeric field whose value is constrained between 0 and 255.
+- `int16`, `short`, `int32`, `int`, `integer`, `int64`, `long`: renders a numeric field with step _1_.
+- `single`, `float`, `double`, `decimal`, `number`: renders a numeric field with step _any_.
+- `array`, `object`: renders a child form using the provided `props` metadata.
+- anything else defaults to an inline string editing field.
+
+### `dataType`
+The enhanced type of the editing property.
+> It overrides `type`.
+
+Managed values:
+- `upload`: renders a binary editing field.
+- `html`: renders an html rich text editor.
+- `enumeration`: renders a radio-list having `extra.enum` as a datasource, `extra.enum` should provide an array of elements of type `{ caption: string, value: any }`.
+- `password`: renders a password box.
+- `emailaddress`: renders an email box.
+- `color`: renders a color picker.
+- `datetime`: renders a datetime picker (minute precision).
+- `date`: renders a date picker.
+- `url`: renders an URL editor.
+- `phonenumber`: renders an phone number editor.
+- `multilinetext`: renders a multi-line textarea.
+- `markdown`: renders a markdown editor.
+- `latlng`: renders a geo-coordinates picker.
+- `percent`, `currency`: renders a numeric field with relevant formatting (in its readonly fashion).
+
+### `display.ui`:
+An additional UI hint for the editing property.
+> It overrides both `type` and `dataType`.
+
+- `oneToMany` (case-sensitive): renders a select field having either a `extra.sourceUrl` to fetch data from or a straight `extra.source` as a datasource array.  
+`extra.textProperty` and `extra.valueProperty` should be provided for complex items in order to properly render labels and bind values.  
+`extra.disabledProperty` might help when option disabling is needed.
+- `manyToMany` (case-sensitive): renders a checkbox-list. Same considerations about datasource and property references as for `oneToMany`.
+- `suggest`: renders a suggest field that eases the pick of a value by allowinf dynamic filtering.
+- `tags`: renders a tags field.
+</pre>
+
+<pacemjs-snippet>
+    <template>
+
+        <pre id="snippet5" hidden pacem>
+{
+                    "display": { "cssClass": ["pacem-grid", "grid-nospace", "grid-no-rowgap", "form-minimal", "form-xs-nolabels", "pacem-pad", "pad-left-1"] },
+                    "props": [
+                        {
+                            "prop": "type", "dataType": "enumeration", "type": "string",
+                            "display": { "cssClass": ["pacem-cell", "field-outline"], "name": "Switch messaging mode" },
+                            "extra": { "enum": [{ "value": 1, "caption": "e-mail" }, { "value": 2, "caption": "texting" }, { "value": 3, "caption": "mail" }] },
+                            "validators": [
+                                { "type": "required", "errorMessage": "required field" }
+                            ]
+                        },
+                        {
+                            "prop": "body", "dataType": "html", "type": "string",
+                            "display": { "cssClass": ["pacem-cell", "field-outline"], "name": "Message Body" },
+                            "extra": { "dependsOn": [{ "prop": "type", "value": 1, "hide": true }] },
+                            "validators": [
+                                { "type": "required", "errorMessage": "required field" }
+                            ]
+                        },
+                        {
+                            "prop": "content", "type": "string", "dataType": "multilinetext",
+                            "display": { "cssClass": ["pacem-cell", "field-outline"], "name": "SMS Message" },
+                            "extra": { "dependsOn": [{ "prop": "type", "value": 2, "hide": true }] },
+                            "validators": [
+                                { "type": "required", "errorMessage": "required field" },
+                                { "type": "length", "errorMessage": "Message too long", "params": { "max": 140 } }
+                            ]
+                        }
+                    ]
+                }
+        </pre>
+
+        <pacem-data id="metadata5" model='{
+                    "display" : { "cssClass" : ["pacem-grid", "grid-nospace" , "grid-no-rowgap" , "form-minimal" , "form-xs-nolabels" , "pacem-pad" , "pad-left-1" ] },
+                    "props" : [
+                    {
+                    "prop" : "mode" , "dataType" : "enumeration" , "type" : "string" ,
+                    "display" : { "cssClass" : ["pacem-cell", "field-outline" ], "name" : "Switch messaging mode" },
+                    "extra" : { "enum" : [{ "value" : 1, "caption" : "e-mail" }, { "value" : 2, "caption" : "texting" }, { "value" : 3, "caption" : "mail" }] },
+                    "validators" : [
+                    { "type" : "required" , "errorMessage" : "required field" }
+                    ]
+                    },
+                    {
+                    "prop" : "body" , "dataType" : "html" , "type" : "string" ,
+                    "display" : { "cssClass" : ["pacem-cell", "field-outline" ], "name" : "Message Body" },
+                    "extra" : { "dependsOn" : (host, hostRef, entityRef, formFieldEntityRef) => { return { disabledAttr: `{{ ${entityRef}.mode !== 1 && ${entityRef}.mode !== 3 }}`, hideAttr: `{{ ${formFieldEntityRef}.mode !== 1 && ${formFieldEntityRef}.mode !== 3 }}`}; } },
+                    "validators": [
+                    { "type": "required", "errorMessage": "required field" }
+                    ]
+                    },
+                    {
+                    "prop": "content", "type": "string", "dataType": "multilinetext",
+                    "display": { "cssClass": ["pacem-cell", "field-outline"], "name": "SMS Message" },
+                    "extra": { "dependsOn": [{ "prop": "mode", "value": 2, "hide": true }] },
+                    "validators": [
+                    { "type": "required", "errorMessage": "required field" },
+                    { "type": "length", "errorMessage": "Message too long", "params": { "max": 140 } }
+                    ]
+                    }
+                    ]
+                    }'>
+        </pacem-data>
+        <pacem-form entity="{}" metadata="{{ #metadata5.model }}" autogenerate="true"></pacem-form>
+
+
+    </template>
+</pacemjs-snippet>
+
+
+<pacem-markdown value="{{ #content2.textContent }}" root class="md-tech"></pacem-markdown>
 <pre pacem hidden id="content2">
 ## Behavior
 
@@ -261,7 +423,7 @@ By setting the `.field-stretch` css class on a specific field, yo can break this
 <pacemjs-snippet>
     <template>
 
-        <pre pacem hidden id="metajson3">
+<pre pacem hidden id="metajson3">
 {
         "display": { "cssClass": ["pacem-grid", "grid-nospace", "grid-no-rowgap", "form-minimal", "form-xs-nolabels", "pacem-pad", "pad-left-1"], "name": "Sign In" },
         "props": [
@@ -330,15 +492,16 @@ In the following autogenerated form, a _summa_ of rendering possibilities are ra
             {
                 "prop": "confirmPassword", "dataType": "password", "type": "string",
                 "display": { "cssClass": ["pacem-cell", "cols-lg-6", "field-outline"], "name": "Password", "watermark": "confirm password...", "description": "Rewrite the `password` here  \n(To be **sure** you typed it correctly)" },
-                "extra": { "tooltip": "markdown" },
+                "extra": { "tooltip": { "type": "markdown", "position": "top", "align": "start" } },
                 "validators": [
                     { "type": "required", "errorMessage": "required field" },
                     { "type": "compare", "errorMessage": "password mismatch", "params": { "to": "password" } }
                 ]
             },
             {
-                "prop": "birthdate", "type": "date",
-                "display": { "cssClass": ["pacem-cell", "cols-lg-6", "cols-hd-4", "field-full"] }
+                "prop": "birthdate", "type": "datetime",
+                "display": { "cssClass": ["pacem-cell", "cols-lg-6", "cols-hd-4", "field-full"] },
+                "extra": { "format": { "weekday": "short", "year": "numeric", "month": "long", "day": "numeric", "minute": "2-digit", "hour": "2-digit"} }
             },
             {
                 "prop": "graduation", "type": "date",
