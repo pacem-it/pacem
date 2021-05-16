@@ -18,13 +18,28 @@
         </div>
 
         <pacem-shell-proxy>
-            <pacem-lightbox id="lightbox0">
+            <pacem-lightbox id="lightbox0" class="lightbox-lg-medium lightbox-xl-slim">
                 <div class="pacem-panel panel-accent">
                     <h4 class="panel-heading">Lightbox</h4>
-                    <p class="panel-body">
-                        Here's your focused content.<br />
-                        Dismiss the lightbox either by clicking outside the content area, by clicking the <code>X</code> icon in the upper right corner of the layout or by pressing <b>ESC</b>.
-                    </p>
+                    <div class="panel-body">
+                        <p>
+                            Here's your focused content.<br />
+                            Dismiss the lightbox either by clicking outside the content area, by clicking the <code>X</code> icon in the upper right corner or by pressing <b>ESC</b>.
+                        </p>
+                        <hr />
+                        <pacem-button class="button" on-click="#collapse0.collapse = !#collapse0.collapse">toggle scrollable content</pacem-button>
+                        <pacem-collapse id="collapse0" collapse="true">
+                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus vel lorem maximus, blandit massa vel, pellentesque mi. Integer fringilla commodo pellentesque. Cras tristique nibh eu consequat tincidunt. Duis lacinia libero id dolor congue, eget interdum massa bibendum. Nam imperdiet odio ipsum, at sollicitudin nibh commodo vel. Proin tincidunt convallis risus non tempus. Mauris non venenatis sem, vitae venenatis libero. In non lacus quis ligula dignissim dapibus sit amet at sem. In hac habitasse platea dictumst. Proin vel dui nibh. Nunc interdum sagittis massa.
+
+Vestibulum quis sem tortor. In mattis ornare elit, iaculis hendrerit urna tempus sit amet. In eu viverra eros. Nunc vel fringilla libero, et efficitur mauris. Aliquam eget posuere nibh, in pellentesque erat. Nam nec euismod dolor, et aliquam nulla. Sed augue purus, malesuada non purus vitae, venenatis viverra diam. Aliquam at lacus ex. Praesent bibendum bibendum nunc sit amet dignissim. Aenean pretium nisl sit amet interdum blandit. Morbi ut ex porttitor, fermentum nulla ut, tincidunt purus. Etiam ornare a libero eget luctus. In fermentum sapien et turpis varius, sit amet facilisis ipsum tincidunt. Sed lobortis nisl ut luctus mattis. Mauris faucibus non leo at convallis. Praesent suscipit velit in orci sodales tempor.
+
+Mauris condimentum risus erat. Sed lobortis massa nisl. Ut lobortis dapibus odio, ut pharetra justo tempor ac. Cras lectus mauris, euismod a dignissim sed, scelerisque in tellus. Donec sed ipsum et mi tristique ultricies a faucibus diam. Duis pulvinar fermentum enim sed euismod. Integer fringilla vel mi in porta. Vivamus vitae velit at dolor condimentum vulputate at sed leo. Morbi commodo semper nisi, eget malesuada felis efficitur eget. Duis convallis, ante eu sodales dictum, ligula sem aliquam mi, eu sodales sapien ante non odio. Ut sed molestie ex. Pellentesque sit amet nibh lorem. Vestibulum non eros a ligula pulvinar vehicula nec ac libero. Suspendisse ac vestibulum orci.
+
+Mauris leo urna, elementum eget condimentum tempor, scelerisque eu erat. Duis ac augue in neque ultrices imperdiet. Aenean sodales tortor quis purus scelerisque iaculis. Quisque eget dictum erat, non interdum ante. Duis vestibulum accumsan turpis, vel molestie metus pulvinar non. Aliquam varius ante augue, id tincidunt nisi hendrerit et. Integer sit amet leo nisl. Aliquam eu est non erat aliquam mollis non a turpis. Cras condimentum diam aliquet tortor gravida, sit amet varius est tincidunt. Ut tincidunt convallis dolor sit amet placerat. Cras dignissim at neque molestie tincidunt. Integer molestie sapien gravida orci aliquam lacinia. Duis nunc nisi, sagittis at lacus ultricies, bibendum accumsan ligula. Vestibulum a tempor sem, vitae ullamcorper libero. Duis laoreet, nulla quis dignissim ultrices, neque ligula dictum nibh, sit amet semper sem nulla et massa.
+
+In quis accumsan odio, et scelerisque arcu. Maecenas auctor facilisis lacus quis convallis. Sed mattis magna bibendum porta volutpat. Integer ac nisl suscipit, dignissim lectus finibus, pretium urna. Donec non vehicula quam. Praesent id tortor urna. Duis suscipit iaculis nulla sit amet dictum. Fusce finibus libero vitae leo faucibus consequat. Nullam porta arcu in risus euismod maximus. Fusce euismod lorem in nulla ornare posuere. Nam ultricies molestie erat, vitae laoreet neque fermentum ac. Nullam bibendum nibh at commodo porta. Vivamus vel pretium leo, nec venenatis turpis. Maecenas posuere, elit sed laoreet pellentesque, ipsum quam pellentesque risus, sit amet posuere diam nisi ornare sapien. Ut ut tortor lacus.</p>
+                        </pacem-collapse>
+                    </div>
                 </div>
             </pacem-lightbox>
         </pacem-shell-proxy>

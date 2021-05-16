@@ -1,217 +1,276 @@
 ﻿/// <reference path="../../../dist/js/pacem-core.d.ts" />
 
-/* TODO: remove from UI bundle -> dedicated API */
-
 namespace Pacem {
 
-    declare type ReplaceFn = (string: string, ...args: any[]) => string;
-    declare type Replacer = { regex: RegExp, fn: (string: string, RegExp: RegExp) => string };
-    declare type Replacer2 = { regex: RegExp, fn: string | ReplaceFn };
-    const code_block_regex = /`{3}([\w#-]*)\r?\n([\s\S]*?)\n`{3}/g;
+    const match = (input: string, pattern: RegExp, fn: (arr: RegExpExecArray) => Pacem.Compile.Token[]): Pacem.Compile.Token[] => {
+        const arr = pattern.exec(input);
+        if (arr && arr.length) {
+            return fn(arr);
+        }
+        return null;
+    }
 
-    const R = RegularExpressions;
-    const REGEX = R.Regex;
-    function void_replacer(): Replacer2 { return { regex: R.EMPTY_MATCHER, fn: (m) => m } };
-
-    const regexes: Replacer[] = [
-        // (* = totally custom markdown)
-        // headings
-        { regex: /^(#+)\s(.*)\s*$/gm, fn: (inp: string, r: RegExp) => inp.replace(r, function (m, m0, m1) { return `<h${m0.length}>${m1}</h${m0.length}>`; }) },
-        // images
-        { regex: /!\[([^\]]+)\]\(([^\)]+)\)/g, fn: (inp: string, r: RegExp) => inp.replace(r, `<img alt="$1" src="$2" />`) },
-        // #region embed links
-        // *tweet-embed
+    const MARKUP_RULES: Pacem.Compile.Rule[] = [
         {
-            regex: /\[tweet\]\(([^\)]+)\)/g, fn: (inp: string, r: RegExp) => inp.replace(r, `<!-- twitter embed $1 -->\n<${ P }-tweetembed tweetid="$1"></${ P }-tweetembed>`)
-        },
-        // *youtube-embed
-        {
-            regex: /\[yt([\d]+x[\d]+)?\]\(([^\)]+)\)/g, fn: (inp: string, r: RegExp) => inp.replace(r, function (m, m0, m1) {
-                m0 = m0 || '560x315';
-                const size = m0.split('x'),
-                    w = size[0], h = size[1];
-                return `<!-- youtube embed ${m1} ${m0} -->
-<iframe width="${w}" height="${h}" src="https://www.youtube.com/embed/${m1}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+            // comment
+            exec: (input) => match(input, /^((<|&lt;)!--(?:(?!(--(>|&gt;)))[\s\S])*(--(?:>|&gt;)|$))/, arr => {
+                const raw = arr[0], text = raw;
+                return [{
+                    type: 'code-comment', raw, text, index: arr.index
+                }];
             })
         },
-        // #endregion
-        // links
-        { regex: /\[([^\]]+)\]\(([^\)]+)\)/g, fn: (inp: string, r: RegExp) => inp.replace(r, `<a href="$2">$1</a>`) },
-        // bold/italics
-        { regex: /(^|[^\w])(\*\*?|__?)(.*?)\2([^\w]|$)/gm, fn: (inp: string, r: RegExp) => inp.replace(r, function (m, s0, m0, m1, s1) { const tag = m0.length == 1 ? 'i' : 'b'; return `${s0}<${tag}>${m1}</${tag}>${s1}` }) },
-        // strikethrough
-        { regex: /\~\~(.*?)\~\~/g, fn: (inp: string, r: RegExp) => inp.replace(r, `<del>$1</del>`) },
-        // quotes
-        { regex: /\:\"(.*?)\"\:/g, fn: (inp: string, r: RegExp) => inp.replace(r, `<q>$1</q>`) },
-        // code inlines
-        { regex: /`([^`]*)`/g, fn: (inp: string, r: RegExp) => inp.replace(r, `<code>$1</code>`) },
-        // (un)ordered lists
-        { regex: /\n(-|\d+\.)\s+(.*)/g, fn: (inp: string, r: RegExp) => inp.replace(r, function (m, m0, m1) { const tag = m0 === '-' ? 'ul' : 'ol'; return `\n<${tag}>\n\t<li>${m1}</li>\n</${tag}>` }) },
-        // fix for extra <ul>s
-        { regex: /\n<\/(u|o)l>\n<\1l>/g, fn: (inp: string, r: RegExp) => inp.replace(r, '') },
-        // blockquotes
         {
-            regex: /(\n(&gt;|>)\s.*)+/g, fn: (inp: string, r: RegExp) => inp.replace(r, function (m, m0, m1) {
-                var splitted = m.replace(/^(&gt;|>)\s(.*)$/gm, function (g, g0, g1) {
-                    return g1;
+            // opening/self-closing tag
+            exec: (input, lexer) => match(input, /^(<|&lt;)([\w-]+)(?:\s+[\w-]+(?:=(?:'[^']*'|"[^"]*"))*)*(\s*\/?(?:&gt;|>))/, arr => {
+
+                const openingTag = arr[1],
+                    tagName = arr[2],
+                    closingTag = arr[3];
+
+                const closingTagIndex = arr[0].length - closingTag.length,
+                    attributesIndex = openingTag.length + tagName.length,
+                    attributesString = input.substring(attributesIndex, closingTagIndex);
+
+                const attributes = lexer.tokenize(attributesString, [{
+                    exec: (input) => match(input, /^(\s+[\w-]+)(=('[^']*'|"[^"]*"))?/, arr => {
+                        const raw = arr[1];
+                        const output = [{
+                            type: 'code-attribute', raw, text: raw, index: arr[0].indexOf(raw)
+                        }];
+                        if (arr.length > 2) {
+                            output.push({
+                                type: 'code-string', raw: arr[2], text: arr[2], index: arr.index + arr[0].length - arr[2].length
+                            })
+                        }
+                        return output;
+                    })
+                }]);
+
+                const retval = [{
+                    type: 'code-tag', raw: openingTag, text: openingTag, index: 0
+                }, {
+                    type: 'code-tagname', raw: tagName, text: tagName, index: openingTag.length
+                }];
+                // attributes
+                Array.prototype.push.apply(retval, attributes);
+                retval.push({
+                    type: 'code-tag', raw: closingTag, text: closingTag, index: closingTagIndex
                 });
-                return `\n<blockquote>${splitted}\n</blockquote>`;
+                return retval;
             })
         },
-        // horizontal rules
-        { regex: /\n-{5,}/g, fn: (inp: string, r: RegExp) => inp.replace(r, function (m, m0, m1) { return `\n<hr />`; }) }/*,
-        // paragraphs
-        { regex: /\s{2}/g, fn: (inp: string, r: RegExp) => inp.replace(r, '<br />') }*/
+        {
+            // closing tag
+            exec: (input) => match(input, /^((?:<|&lt;)\/)([\w-]+)(\s*(?:&gt;|>))/, arr => {
+
+                const openingTag = arr[1],
+                    tagName = arr[2],
+                    closingTag = arr[3];
+
+                return [{
+                    type: 'code-tag', raw: openingTag, text: openingTag, index: 0
+                }, {
+                    type: 'code-tagname', raw: tagName, text: tagName, index: openingTag.length
+                }, {
+                    type: 'code-tag', raw: closingTag, text: closingTag, index: arr.index + arr[0].length - closingTag.length
+                }]
+            })
+        },
+        {
+            // text
+            exec: (input) => match(input, /^(<|&lt;)?((?!<|&lt;).)+/, arr => {
+                const raw = arr[0], text = raw;
+                return [{
+                    type: 'text', raw, text
+                }];
+            })
+        }
     ];
+
+    const C_LIKE_RULES: Pacem.Compile.Rule[] = [{
+
+        // comments
+        exec: (input, _) => match(input, /^\/\/.*/, arr => {
+            const raw = arr[0], text = raw;
+            return [{
+                type: 'code-comment', raw, text
+            }];
+        })
+    }, {
+        exec: (input, _) => match(input, /^\/\*(?:(?!(\*\/))[\s\S])*(?:\*\/|$)/, arr => {
+            const raw = arr[0], text = raw;
+            return [{
+                type: 'code-comment', raw, text
+            }];
+        })
+    }, {
+        // string literal
+        exec: (input, _) => match(input, /^('(\\'|[^'])*[^\\]?'|@?\$?"(\\"|[^"])*[^\\]?")/, arr => {
+            const raw = arr[0], text = raw;
+            return [{
+                type: 'code-string', raw, text
+            }];
+        })
+    }, {
+        // keywords
+        exec: (input, _) => match(input, /^\b(abstract|as|base|bool|break|byte|case|catch|char|checked|class|const|continue|decimal|default|delegate|do|double|else|enum|event|explicit|extern|false|finally|fixed|float|for|foreach|goto|if|implicit|in|int|interface|internal|is|lock|long|namespace|new|null|object|operator|out|out|override|params|private|protected|public|readonly|ref|return|sbyte|sealed|short|sizeof|stackalloc|static|string|struct|switch|this|throw|true|try|typeof|uint|ulong|unchecked|unsafe|ushort|using|static|virtual|void|volatile|while|add|alias|ascending|async|await|descending|dynamic|from|get|global|group|into|join|let|nameof|orderby|partial|remove|select|set|value|var|when|where|yield)\b/, arr => {
+            const raw = arr[0], text = raw;
+            return [{
+                type: 'code-keyword', raw, text
+            }]
+        })
+    }, {
+        // number 
+        exec: (input, _) => match(input, /^\b((0x[0-9a-fA-F]|[\d])*\.?[\d]+)\b/, arr => {
+            const raw = arr[0], text = raw;
+            return [{
+                type: 'code-number', raw, text
+            }]
+        })
+    }, {
+        // variables, operators, parentheses
+        exec: (input, _) => match(input, /^(@?\w+|:|\?\??|\?=?|\|\|?|&&?|&=?|;|,|=|\*=?|--|-=?|\+\+|\+=?|\/=?|\^|\(|\[|\)|\]|\{|\})/, arr => {
+            const raw = arr[0], text = raw;
+            return [{
+                type: 'text', raw, text
+            }]
+        }),
+        }, {
+            // spaces
+            exec: (input, _) => match(input, /^\s+/, arr => {
+                const raw = arr[0], text = raw;
+                return [{
+                    type: 'space', raw, text
+                }]
+            }),
+
+        }];
+
+    const SCRIPT_RULES: Pacem.Compile.Rule[] = [
+        C_LIKE_RULES[0], C_LIKE_RULES[1], {
+            // string literal
+            exec: (input, _) => match(input, /^('(\\'|[^'])*[^\\]?'|"(\\"|[^"])*[^\\]?"|`(\\`|[^`])*[^\\]?`)/, arr => {
+                const raw = arr[0], text = raw;
+                return [{
+                    type: 'code-string', raw, text
+                }];
+            })
+        }, {
+            // keywords
+            exec: (input, _) => match(input, /^\b(abstract|any|arguments|async|await|boolean|break|byte|case|catch|char|class|const|continue|debugger|declare|default|delete|do|double|else|enum|eval|export|extends|false|final|finally|float|for|function|get|goto|if|implements|import|in|instanceof|int|interface|let|long|native|new|null|number|package|private|protected|public|return|short|static|string|super|switch|synchronized|this|throw|throws|transient|true|try|type|typeof|var|void|volatile|while|with|yield)\b/, arr => {
+                const raw = arr[0], text = raw;
+                return [{
+                    type: 'code-keyword', raw, text
+                }]
+            })
+        },
+        C_LIKE_RULES[4],
+        C_LIKE_RULES[5],
+        C_LIKE_RULES[6]
+    ];
+
+    const TWITTER_RULE: { rule: Pacem.Compile.Rule, type: 'inline' } = {
+        rule: {
+            exec: (input) => {
+                const arr = /\{tweet\}\(([^\)]+)\)/.exec(input);
+                if (arr && arr.length > 1) {
+                    return [{
+                        type: 'tweet', raw: arr[0], text: arr[1], index: arr.index
+                    }]
+                }
+                return null;
+            }
+        },
+        type: 'inline'
+    };
+
+    const YOUTUBE_RULE: { rule: Pacem.Compile.Rule, type: 'inline' } = {
+        rule: {
+            exec: (input) => {
+                const arr = /\{yt([\d]+x[\d]+)?\}\(([^\)]+)\)/.exec(input);
+                if (arr && arr.length > 2) {
+                    const m0 = arr[1] || '560x315';
+                    const size = m0.split('x'),
+                        w = size[0], h = size[1];
+                    return [{
+                        type: 'youtube', raw: arr[0], text: arr[2], index: arr.index, width: w, height: h
+                    }]
+                }
+                return null;
+            }
+        },
+        type: 'inline'
+    };
+
+    const RULES_TO_HTML = (token: Pacem.Compile.Token): string => {
+        switch (token.type) {
+            case 'youtube':
+                return `<!-- youtube embed -->
+<iframe width="${token['width']}" height="${token['height']}" src="https://www.youtube.com/embed/${token.text}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+            case 'tweet':
+                return `<!-- twitter embed -->
+<${P}-tweetembed tweetid="${token.text}"></${P}-tweetembed>`;
+
+            // code
+            case 'code-string':
+            case 'code-keyword':
+            case 'code-number':
+            case 'code-comment':
+            case 'code-tag':
+            case 'code-tagname':
+            case 'code-attribute':
+                return `<span class="${token.type}">${token.text}</span>`;
+        }
+    };
 
     export class MarkdownService {
 
-        private _inparagraph = false;
+        constructor() {
 
-        // TODO: error prone and NOT safe. Process content line by line using encoding, regexes /m and scope variables. Try to keep it clean as well
-        toHtml(md: string = '') {
+            const grammar: Pacem.Compile.Markdown.ExtraRule[] = [
+                TWITTER_RULE,
+                YOUTUBE_RULE
+            ];
 
-            const _this = this,
-                escapedMd = md.replace(/</g, '&lt;').replace(/>/g, '&gt;'),
-                trunks = REGEX.split(escapedMd, code_block_regex);
-            var retval = [];
-            for (var t of trunks) {
-                if (t.match) {
-
-                    retval.push(t.value.replace(code_block_regex, function (m, m0, m1) {
-                        const lang = (m0 || 'unknown').replace('#', '-sharp').toLowerCase(),
-                            code = _this._parseCode(m1, lang);
-                        return `\n<code class="${PCSS}-code-block ${lang}">${code}</code>`;
-                    }));
-
-                } else {
-
-                    let out = t.value;
-                    for (var i of regexes) {
-                        out = i.fn(out, i.regex);
-                    }
-                    var step = _this._paragraphy(out) + (_this._inparagraph ? '</p>' : '');
-                    retval.push(_this._thenSafe(_this._thenTrim(step)));
-                }
-            }
-            return retval.join('');
-        }
-
-        private _parseCode(code: string, lang: string) {
-            var keywords = void_replacer(),
-                numbers = void_replacer(),
-                strings = void_replacer(),
-                comments = void_replacer(),
-                tags = void_replacer(),
-                attrs = void_replacer();
-
-            lang = lang.toLowerCase();
-            switch (lang) {
-                case 'c#':
-                case 'c-sharp':
-                case 'js':
-                case 'javascript':
-                case 'ts':
-                case 'typescript':
-                    if (lang.startsWith('c')) {
-                        keywords.regex = /\b(abstract|as|base|bool|break|byte|case|catch|char|checked|class|const|continue|decimal|default|delegate|do|double|else|enum|event|explicit|extern|false|finally|fixed|float|for|foreach|goto|if|implicit|in|int|interface|internal|is|lock|long|namespace|new|null|object|operator|out|out|override|params|private|protected|public|readonly|ref|return|sbyte|sealed|short|sizeof|stackalloc|static|string|struct|switch|this|throw|true|try|typeof|uint|ulong|unchecked|unsafe|ushort|using|static|virtual|void|volatile|while|add|alias|ascending|async|await|descending|dynamic|from|get|global|group|into|join|let|nameof|orderby|partial|remove|select|set|value|var|when|where|yield)\b/g;
-                        strings.regex = /'(\\'|[^'])*[^\\]?'|@?\$?"(\\"|[^"])*[^\\]?"/g;
-                    } else {
-                        keywords.regex = /\b(abstract|arguments|async|await|boolean|break|byte|case|catch|char|class|const|continue|debugger|default|delete|do|double|else|enum|eval|export|extends|false|final|finally|float|for|function|goto|if|implements|import|in|instanceof|int|interface|let|long|native|new|null|package|private|protected|public|return|short|static|super|switch|synchronized|this|throw|throws|transient|true|try|typeof|var|void|volatile|while|with|yield)\b/g;
-                        strings.regex = /'(\\'|[^'])*[^\\]?'|"(\\"|[^"])*[^\\]?"|`(\\`|[^`])*[^\\]?`/g;
-                    }
-                    keywords.fn = '<span class="'+ PCSS +'-keyword">$1</span>';
-                    strings.fn = (m) => `<span class="${PCSS}-string">${m}</span>`;
-                    numbers.regex = /\b((0x[0-9a-fA-F]|[\d])*\.?[\d]+)\b/g;
-                    numbers.fn = '<span class="'+ PCSS +'-number">$1</span>';
-                    comments.regex = /(\/\/.*|\/\*(?:(?!(\*\/))[\s\S])*\*\/)/g;
-                    comments.fn = `<span class="${PCSS}-comment">$1</span>`;
-                    break;
-                case 'xml':
-                case 'html':
-                    tags.regex = /(&lt;\/?)([\w-]+)|(\/?&gt;)/g;
-                    tags.fn = (m, m1, m2, m3) => {
-                        if (Utils.isNullOrEmpty(m3))
-                            return `<span class="${PCSS}-tag">${m1}</span><span class="${PCSS}-tag-name">${m2}</span>`;
-                        return `<span class="${PCSS}-tag">${m3}</span>`;
-                    }
-                    strings.regex = /(=')(\\'|[^'])*[^\\]?(')|(=")(\\"|[^"])*[^\\]?(")/g;
-                    strings.fn = (m) => `<span class="${PCSS}-string">${m}</span>`;
-                    // isn't this ugly?:
-                    attrs.regex = /(\s[\w-]+)$/g;
-                    attrs.fn = `<span class="${PCSS}-attribute">$1</span>`;
-                    comments.regex = /((<|&lt;)!--(?:(?!(--(>|&gt;)))[\s\S])*--(>|&gt;))/g;
-                    comments.fn = `<span class="${PCSS}-comment">$1</span>`;
+            for (let lang of ['c-sharp', 'c', 'c#', 'csharp', 'c++', 'cpp']) {
+                const c_like_rules = C_LIKE_RULES.map(rule => { return { rule, lang, type: 'code' } });
+                Array.prototype.push.apply(grammar, c_like_rules);
             }
 
-            var split = REGEX.split(code, comments.regex);
-            var retval = [];
-            for (var t of split) {
-                if (t.match)
-                    retval.push(t.value.replace(comments.regex, <any>comments.fn));
-                else {
-                    let split2 = REGEX.split(t.value, strings.regex);
-                    let retval2 = [];
-                    for (var t2 of split2) {
-                        if (t2.match) {
-                            retval2.push(t2.value
-                                .replace(strings.regex, <any>strings.fn));
-                        } else {
-                            retval2.push(t2.value
-                                .replace(tags.regex, <any>tags.fn)
-                                .replace(keywords.regex, <any>keywords.fn)
-                                .replace(attrs.regex, <any>attrs.fn)
-                                .replace(numbers.regex, <any>numbers.fn)
-                            );
-                        }
-                    }
-                    retval.push(retval2.join(''));
-                }
+            for (let lang of ['ts', 'js', 'typescript', 'javascript']) {
+                const script_rules = SCRIPT_RULES.map(rule => { return { rule, lang, type: 'code' } });
+                Array.prototype.push.apply(grammar, script_rules);
             }
 
-            return retval.join('');
+            for (let lang of ['xml', 'html']) {
+                const markup_rules = MARKUP_RULES.map(rule => { return { rule, lang, type: 'code' } });
+                Array.prototype.push.apply(grammar, markup_rules);
+            }
+
+            this.#grammar = grammar;
         }
 
-        private _paragraphy(semi: string) {
-            this._inparagraph = false;
+        #grammar: Pacem.Compile.Markdown.ExtraRule[];
+        #md = new Pacem.Compile.Markdown.Parser();
 
-            var incode = false,
-                _this = this;
-            return semi.replace(/^([^\n]*)$/gm, function (m, m0, index, whole) {
-
-                if ((/^<code\s+([^>]+)>$/.test(m) && !incode) || (incode && /^<\/code>$/.test(m)))
-                    incode = !incode;
-                if (incode || /^\s*<\/?(ul|ol|li|h|p|bl|code)/i.test(m)) {
-                    if (_this._inparagraph === false)
-                        return m;
-                    _this._inparagraph = false;
-                    return '</p>\n' + m;
-                }
-                //
-                var ret = m0.replace(/\s{2}/g, '<br />');
-                if (!_this._inparagraph) {
-                    if (m0.length > 0) {
-                        ret = '<p>' + ret;
-                        _this._inparagraph = true;
-                    }
-                } else if (m0 === undefined || m0.length === 0) {
-                    _this._inparagraph = false;
-                    ret += '</p>';
-                }
-                return ret;
-            });
+        private _escape(md: string): string {
+            // no html allowed
+            return (md ?? '').replace(/</g, '&lt;');
         }
 
-        private _thenTrim(step: string) {
-            return step.replace(/<p>(((?!<\/p>)(.|[\r\n]))*)<\/p>/g, function (m, m0, m1) {
-                return `<p>${m0.trim()}</p>`;
-            });
+        toHtml(md: string) {
+
+            return this.#md.toHtml(this._escape(md),
+                this.#grammar,
+                RULES_TO_HTML);
 
         }
 
-        private _thenSafe(step: string): string {
-            //return step.replace(/<\/?([\w]+-[\w]+|script)(?:[^>=]|='[^']*'|="[^"]*"|=[^'"][^\s>]*)*>/g, '');
-            return step.replace(/<\/?script(?:[^>=]|='[^']*'|="[^"]*"|=[^'"][^\s>]*)*>/g, '');
+        tokenize(md: string) {
+            return this.#md.tokenize(this._escape(md),
+                this.#grammar
+            );
         }
 
     }

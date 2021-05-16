@@ -45,7 +45,7 @@ Default spawning position is assumed to be `top right`.
         <pacem-data id="show2"></pacem-data>
         <pacem-data id="show3"></pacem-data>
         <pacem-shell-proxy>
-            <pacem-panel class="pacem-toaster" css-class="{{ (#pos1.value && #pos1.value).split(' ').map(p => 'toaster-'+p) }}">
+            <pacem-panel class="pacem-toaster" css-class="{{ (#pos1.value && #pos1.value).split(' ').map(p => 'toaster-'+p).concat(#autosz1.value ? ['toaster-autosize'] : []) }}">
                 <pacem-toast timeout="{{ #dur1.value }}" show="{{ #show1.model, twoway }}" class="toast-primary">Popped 1!</pacem-toast>
                 <pacem-toast timeout="{{ #dur1.value }}" show="{{ #show2.model, twoway }}" class="toast-accent">Popped 2!</pacem-toast>
                 <pacem-toast timeout="{{ #dur1.value }}" show="{{ #show3.model, twoway }}" class="toast-success">Popped 3!</pacem-toast>
@@ -54,10 +54,16 @@ Default spawning position is assumed to be `top right`.
         <div class="pacem-margin margin-bottom-3 form-field">
             <pacem-select id="pos1" value="top right" disabled="{{ #show1.model || #show2.model || #show3.model }}">
                 <pacem-data-item value="top left"></pacem-data-item>
+                <pacem-data-item value="top center"></pacem-data-item>
                 <pacem-data-item value="top right"></pacem-data-item>
                 <pacem-data-item value="bottom right"></pacem-data-item>
+                <pacem-data-item value="bottom center"></pacem-data-item>
                 <pacem-data-item value="bottom left"></pacem-data-item>
             </pacem-select>
+        </div>
+        <div class="pacem-margin margin-bottom-3 form-field">
+            <label class="pacem-label">autosize:</label>
+            <pacem-checkbox id="autosz1" true-value="true" false-value="false" class="checkbox-naked" caption="toast size based on content"></pacem-checkbox>
         </div>
         <div class="pacem-margin margin-bottom-3 form-field">
             <label class="pacem-label">timeout:</label>

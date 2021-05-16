@@ -13,8 +13,19 @@ namespace Pacem.Components.UI {
 
         propertyChangedCallback(name: string, old: any, val: any, first?: boolean) {
             super.propertyChangedCallback(name, old, val, first);
-            if (name === 'value')
-                this.innerHTML = this._md.toHtml(val);
+            if (name === 'value') {
+                this.innerHTML = this.html();
+            }
+        }
+
+        // IDEA: allow extensible parsing (grammar components?...)
+
+        tokens(md = this.value): any[] {
+            return this._md.tokenize(md);
+        }
+
+        html(md = this.value): string {
+            return this._md.toHtml(md);
         }
     }
 

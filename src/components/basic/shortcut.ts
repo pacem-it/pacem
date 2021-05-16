@@ -59,7 +59,7 @@ namespace Pacem.Components {
         @Watch({ emit: false, converter: PropertyConverters.Element }) target: EventTarget;
 
         viewActivatedCallback() {
-            super.connectedCallback();
+            super.viewActivatedCallback();
             this._addHandler();
         }
 

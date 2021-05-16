@@ -1,15 +1,20 @@
 ﻿/// <reference path="decorators.ts" />
 namespace Pacem {
 
+    function escapeRegExp(string) {
+        return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }
+
     class Transforms {
 
         @Transformer()
-        static highlight(src: any, query: any, css: string = PCSS + '-highlight') {
+        static highlight(src: string, query: string, css: string = PCSS + '-highlight') {
             if (!query || !src) return src;
             let output = src.substr(0);
-            var trunks = query.substr(0).split(' ');
+            const trunks = query.substr(0).split(' ');
             for (var j = 0; j < trunks.length; j++) {
-                var regex = new RegExp('(?![^<>]*>)' + trunks[j], 'gi');
+                const trunk = escapeRegExp(trunks[j]);
+                const regex = new RegExp('(?![^<>]*>)' + trunk, 'gi');
                 output = output.replace(regex, function (piece, index: number, whole: string) {
                     var startTagNdx, endTagIndex;
                     if ((startTagNdx = whole.indexOf('<', index)) != (endTagIndex = whole.indexOf('</', index)) || startTagNdx == -1)

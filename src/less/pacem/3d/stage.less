@@ -1,0 +1,28 @@
+﻿@import "../theme-dark";
+
+@{P}-3d {
+    // stretchy flexbox
+    display: flex;
+    align-items: stretch;
+    align-content: stretch;
+    overflow: hidden;
+
+    > * {
+        flex: 1 0 auto;
+    }
+
+
+    > :not(.@{PCSS}-3d) {
+        .Inert();
+        display: none !important;
+    }
+
+    .@{PCSS}-3d {
+        position: relative;
+
+        > canvas {
+            display: block;
+            position: absolute;
+        }
+    }
+}

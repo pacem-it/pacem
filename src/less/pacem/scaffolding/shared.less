@@ -8,7 +8,6 @@
 @field_focus_forecolor: @color_field_fore_focus;
 
 @field_left: @grid_spacing * 5 / 6;
-@field_height: @grid_spacing * 1.25;
 @input_padding_horiz: @grid_spacing / 3;
 
 @field_readonly_top: .2 * (@field_height / 1.5);
@@ -135,21 +134,7 @@
     min-height: @f_height + @brds;
 }
 
-.FormFieldItemWrapper() {
-    //
-    font-size: 1em;
-    position: relative;
-    display: block;
-    /*&when (@field_outline_width > 0) {
-        margin: @field_outline_width;
-    }*/
-    @media (min-width: @threshold_lg) {
-
-        &:not(.field-stretch) {
-            min-width: @field_min_width;
-            display: inline-block;
-        }
-    }
+.FormFieldItemWrapperCore(){
 
     .@{PCSS}-viewfinder,
     .@{PCSS}-input {
@@ -209,6 +194,25 @@
     *[hidden] {
         display: none !important;
     }
+}
+
+.FormFieldItemWrapper() {
+    //
+    font-size: 1em;
+    position: relative;
+    display: block;
+    /*&when (@field_outline_width > 0) {
+        margin: @field_outline_width;
+    }*/
+    @media (min-width: @threshold_lg) {
+
+        &:not(.field-stretch) {
+            min-width: @field_min_width;
+            display: inline-block;
+        }
+    }
+
+    .FormFieldItemWrapperCore();
 }
 
 .FormFieldIcon(@icon) {

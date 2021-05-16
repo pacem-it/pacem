@@ -1,0 +1,74 @@
+﻿@import "../../shared";
+
+div[contenteditable=true] {
+
+    picture,
+    img {
+        max-width: 100%;
+    }
+
+    picture /*:focus-within*/ {
+        display: inline-block;
+
+        > img {
+            display: block;
+
+            &::selection {
+                background-color: transparent;
+            }
+        }
+
+        > .@{PCSS}-rescale {
+
+            @_clr: @color_primary;
+            @_brd: 2px;
+
+            opacity: .5;
+
+            &:hover {
+                opacity: 1;
+            }
+
+            &.rescale-bottomleft,
+            &.rescale-topleft,
+            &.rescale-bottomright,
+            &.rescale-topright {
+                opacity: 1;
+                background-color: @_clr;
+                border: @_brd solid @_clr;
+            }
+
+            &.rescale-bottomleft {
+                transform: translate(-@_brd, @_brd);
+            }
+
+            &.rescale-topleft {
+                transform: translate(-@_brd, -@_brd);
+            }
+
+            &.rescale-bottomright {
+                transform: translate(@_brd, @_brd);
+            }
+
+            &.rescale-topright {
+                transform: translate(@_brd, -@_brd);
+            }
+
+            &.rescale-right {
+                .GradientHorizontal(0, 50%, 50%, 100%, transparent, transparent, @_clr, @_clr);
+            }
+
+            &.rescale-left {
+                .GradientHorizontal(0, 50%, 50%, 100%, @_clr, @_clr, transparent, transparent);
+            }
+
+            &.rescale-bottom {
+                .GradientVertical(0, 50%, 50%, 100%, transparent, transparent, @_clr, @_clr);
+            }
+
+            &.rescale-top {
+                .GradientVertical(0, 50%, 50%, 100%, @_clr, @_clr, transparent, transparent);
+            }
+        }
+    }
+}

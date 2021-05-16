@@ -114,13 +114,16 @@ namespace Pacem.Components.Plus {
 
         open(state);
         open(state, keepStateOnCommit: boolean);
-        open(state, keepStateOnCommit?: boolean) {
+        open(state, keepStateOnCommit: boolean, setAsPristine: boolean);
+        open(state, keepStateOnCommit?: boolean, setAsPristine = true) {
             if (Utils.isNull(state)) {
                 throw `The state of a ${PacemModalFormElement} cannot be null.`;
             }
             this.#keepStateOnCommit = keepStateOnCommit;
             var retval = super.open(state);
-            this._form.setPristine();
+            if (setAsPristine) {
+                this._form.setPristine();
+            }
             return retval;
         }
 

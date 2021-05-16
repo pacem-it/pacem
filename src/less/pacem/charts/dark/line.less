@@ -1,0 +1,37 @@
+﻿@import "shared";
+
+.@{PCSS}-chart-area {
+
+    .@{PCSS}-line-chart {
+
+        .chart-series {
+
+            linearGradient {
+                stop {
+                    stop-opacity: .5;
+                }
+            }
+
+            &.series-bold {
+                path {
+                    stroke-width: 0.4%;
+                }
+            }
+
+            &.series-light {
+
+                linearGradient {
+                    stop {
+                        stop-opacity: .3;
+                    }
+                }
+
+                path {
+                    stroke-opacity: .5;
+                }
+            }
+
+            .SeriesFade(0);
+        }
+    }
+}

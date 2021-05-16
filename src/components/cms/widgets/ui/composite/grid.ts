@@ -7,7 +7,10 @@
         svg.setAttribute('height', '100%');
         svg.setAttribute('width', '100%');
         svg.setAttribute('preserveAspectRatio', 'none');
-        svg.innerHTML = `<rect class="grid-cell" height="100%" width="100%"></rect>`;
+        svg.setAttribute('class', 'grid-cell-wrapper');
+        //svg.style.padding = '2px';
+        //svg.style.boxSizing = 'border-box';
+        svg.innerHTML = `<rect class="grid-cell" width="100%" height="100%"></rect>`;
         return svg;
     }
 
@@ -224,7 +227,7 @@
 
                     evt.preventDefault();
                     // check pos
-                    const pos = evt.detail.currentPosition,
+                    const pos = { x: evt.clientX, y: evt.clientY },
                         handle = evt.detail.handle;
                     const dropTarget = <HTMLElement | SVGElement>document.elementsFromPoint(pos.x, pos.y).find(e => this._dragDrop.dropTargets.indexOf(e) >= 0);
                     if (dropTarget) {

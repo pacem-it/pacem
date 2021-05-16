@@ -59,7 +59,8 @@ namespace Pacem.Components.UI {
             if (!Utils.isNull(this._container)) {
                 switch (name) {
                     case 'active':
-                        if (val === true) {
+                    case 'disabled':
+                        if (this.active === true && !this.disabled) {
                             Utils.addClass(this._container, 'active');
                         } else {
                             Utils.removeClass(this._container, 'active');

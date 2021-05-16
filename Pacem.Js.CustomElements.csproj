@@ -8,22 +8,28 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <Version>0.10.0</Version>
+    <Version>0.11.3</Version>
     <Company>Pacem</Company>
     <Authors>Cristian Merighi</Authors>
-    <Copyright>Copyright © Pacem 2020</Copyright>
+    <Copyright>Copyright © Pacem 2021</Copyright>
     <PackageIconUrl>https://pacem.azureedge.net/marketing/logojs.svg</PackageIconUrl>
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="src\less\node_modules\**" />
     <Compile Remove="Uploads\**" />
     <Compile Remove="wwwroot\assets\favicon\**" />
+    <Content Remove="src\less\node_modules\**" />
     <Content Remove="Uploads\**" />
     <Content Remove="wwwroot\assets\favicon\**" />
+    <EmbeddedResource Remove="src\less\node_modules\**" />
     <EmbeddedResource Remove="Uploads\**" />
     <EmbeddedResource Remove="wwwroot\assets\favicon\**" />
+    <None Remove="src\less\node_modules\**" />
     <None Remove="Uploads\**" />
     <None Remove="wwwroot\assets\favicon\**" />
+    <TypeScriptCompile Remove="node_modules\**" />
+    <TypeScriptCompile Remove="src\less\node_modules\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -49,7 +55,6 @@
     <None Remove="src\components\basic\hub-proxy.ts" />
     <None Remove="src\components\basic\layout-proxy.ts" />
     <None Remove="src\components\basic\online-status.ts" />
-    <None Remove="src\components\basic\resize-observer.d.ts" />
     <None Remove="src\components\basic\style-proxy.ts" />
     <None Remove="src\components\basic\template-proxy.ts" />
     <None Remove="src\components\2d\stage.ts" />
@@ -263,17 +268,17 @@
     <Content Include="demo\less\docs_themeroller.less">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
-    <Content Include="src\less\pacem\layout\visibility.less" />
-    <Content Include="src\less\pacem\layout\grids.less" />
-    <Content Include="src\less\pacem\layout\grid-system.less" />
-    <Content Include="src\less\pacem\layout\index.less" />
+    <Content Include="src\less\pacem\layout\dark\visibility.less" />
+    <Content Include="src\less\pacem\layout\dark\grids.less" />
+    <Content Include="src\less\pacem\layout\dark\grid-system.less" />
+    <Content Include="src\less\pacem\layout\dark\index.less" />
     <Content Include="src\polyfills\documentfragment.edge.js">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="4.0.2">
+    <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="4.2.3">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
@@ -310,7 +315,6 @@
     <TypeScriptCompile Include="src\components\2d\image.ts" />
     <TypeScriptCompile Include="src\components\2d\text.ts" />
     <TypeScriptCompile Include="src\components\3d\detector.ts" />
-    <TypeScriptCompile Include="src\components\3d\three.ts" />
     <TypeScriptCompile Include="src\components\3d\types.ts" />
     <TypeScriptCompile Include="src\components\basic\adapter.ts" />
     <TypeScriptCompile Include="src\components\basic\annihilator.ts" />
@@ -325,11 +329,9 @@
     <TypeScriptCompile Include="src\components\basic\items-container.ts" />
     <TypeScriptCompile Include="src\components\basic\iterative.ts" />
     <TypeScriptCompile Include="src\components\basic\online-status.ts" />
-    <TypeScriptCompile Include="src\components\basic\overlay.ts" />
     <TypeScriptCompile Include="src\components\basic\panel.ts" />
     <TypeScriptCompile Include="src\components\basic\position.ts" />
     <TypeScriptCompile Include="src\components\basic\repeater.ts" />
-    <TypeScriptCompile Include="src\components\basic\resize-observer.d.ts" />
     <TypeScriptCompile Include="src\components\basic\resize.ts" />
     <TypeScriptCompile Include="src\components\basic\scroll-aware.ts" />
     <TypeScriptCompile Include="src\components\basic\span.ts" />

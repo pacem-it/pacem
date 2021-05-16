@@ -1,4 +1,4 @@
-﻿namespace Pacem.Components.ThreeD {
+﻿namespace Pacem.Components.Drawing3D {
 
     export class Pacem3DDetector {
 

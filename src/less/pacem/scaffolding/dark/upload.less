@@ -1,0 +1,251 @@
+﻿@import "../../../shared";
+@import "../shared";
+@import "../../ui/shared";
+
+@{P}-upload {
+    display: inline-block;
+
+    > .@{PCSS}-upload.@{PCSS}-viewfinder {
+
+        @_sz: @grid_cell;
+
+        // overflow: hidden;
+        height: @_sz;
+        width: @_sz;
+        display: grid;
+        align-items: center;
+        justify-content: stretch;
+        max-width: @field_min_width_wide;
+
+        @_brd: 1px;
+        @_grd_sz: @_sz - (2 * @_brd);
+        grid-template-columns: @_grd_sz auto @_grd_sz - 14px;
+        grid-template-rows: @_grd_sz;
+        border: @_brd dashed @color_border;
+        border-radius: @_sz / 2;
+        box-sizing: border-box;
+
+        > * {
+            grid-row: 1;
+            grid-column: 2;
+        }
+
+        > .clear-button,
+        > .upload-progress,
+        > .upload-button {
+            // overlapped content
+            grid-column: 1;
+            display: flex;
+            justify-content: center;
+        }
+
+        > .upload-data {
+            white-space: pre;
+        }
+
+        > .upload-button > @{P}-button,
+        > .clear-button {
+            margin: 0;
+
+            &.circular,
+            &.button-circular {
+                // force tp 48px...
+                width: min(2 * @grid_spacing, @_sz - 28px);
+                height: $width;
+            }
+        }
+
+        > .upload-progress {
+            // transform: scale(.9);
+            @{P}-tuner {
+                .Tuner(@_grd_sz - 2 * @_brd);
+            }
+        }
+
+        > .clear-button {
+            grid-column: 3;
+        }
+
+        &.upload-chosen {
+            width: auto;
+            border-color: @color_success;
+            border-style: solid;
+
+            &.upload-error {
+                border-color: @color_error;
+            }
+        }
+
+        &.upload-readonly {
+            border-width: 0;
+            grid-template-columns: auto auto;
+            grid-gap: @grid_spacing * 2 / 3;
+
+            > .clear-button {
+                .Inert();
+            }
+        }
+    }
+}
+
+.@{PCSS}-animations {
+
+    @{P}-upload {
+        > .@{PCSS}-upload.@{PCSS}-viewfinder {
+            > .clear-button,
+            > .upload-button {
+                .Animatable(pop-anim, .55s, @easing_out_back);
+            }
+        }
+    }
+}
+
+// inside form field
+.@{PCSS}-field {
+
+    > .@{PCSS}-input-container > :not(@{P}-childform) .@{PCSS}-viewfinder.upload-readonly {
+        border-radius: @border_input_radius;
+
+        & when (@border_field_underline = false) {
+            padding: 0 @grid_spacing * 2/3;
+            border-width: @border_field_size;
+        }
+
+        & when (@border_field_underline = true) {
+            border-top: 0;
+            border-left: 0;
+            border-right: 0;
+            border-bottom-width: @border_field_size;
+            border-bottom-style: solid;
+        }
+    }
+
+    &:not(.@{PCSS}-has-value) {
+        > .@{PCSS}-input-container > :not(@{P}-childform) .@{PCSS}-viewfinder.upload-readonly {
+            border-color: transparent;
+        }
+    }
+}
+/*
+@keyframes upload-data-std{
+    0%{
+        opacity: 0;
+        transform: translateX(-@grid_spacing);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}*/
+
+.upload-std @{P}-upload,
+@{P}-upload.upload-std {
+    .FormFieldItemWrapper();
+    max-width: @field_min_width_wide;
+    min-width: @field_min_width;
+
+    > .@{PCSS}-upload.@{PCSS}-viewfinder {
+
+        @_sz: @field_height;
+
+        // overflow: hidden;
+        height: @_sz;
+        width: auto;
+
+        @_brd: 1px;
+        @_grd_sz: @_sz - (2 * @_brd);
+        @_gap: @grid_spacing/3;
+        grid-template-columns: @_grd_sz 1fr auto;
+        grid-column-gap: @_gap;
+        grid-template-rows: @_grd_sz;
+        .FormFieldItem();
+        margin: 0;
+        padding: 0;
+
+        > .upload-data {
+            white-space: nowrap;
+            display: block;
+            // width: @field_min_width - @_grd_sz - @_gap;
+            .Ellipsed();
+
+            &.@{PCSS}-anim {
+                animation-name: list-item-left;
+                animation-timing-function: @easing_out_sine;
+                transform-origin: left center;
+            }
+        }
+
+        > .upload-progress {
+            // transform: scale(.9);
+            @{P}-tuner {
+                .Tuner(@_grd_sz - 2 * @_brd);
+            }
+        }
+
+        > .upload-button > @{P}-button,
+        > .clear-button {
+            margin: 0;
+
+            &.circular,
+            &.button-circular {
+                // force tp 24px...
+                width: @grid_spacing;
+                height: $width;
+                border-radius: @border_input_radius / 2;
+
+                &.button-success {
+                    color: @color_success;
+                    background-color: transparent;
+                }
+
+                &.button-primary {
+                    color: @color_primary;
+                    background-color: transparent;
+                }
+
+                &.button-error {
+                    color: @color_error;
+                    background-color: transparent;
+                }
+
+
+                &::before {
+                    font-size: 2* @grid_spacing/3;
+                    margin-left: -@grid_spacing/3;
+                    margin-top: $margin-left;
+                }
+            }
+        }
+
+        > .clear-button {
+            // decrease font size
+        }
+
+        &.upload-readonly {
+            background: none;
+            grid-template-columns: @_grd_sz 1fr;
+            grid-column-gap: @_gap;
+            grid-template-rows: @_grd_sz;
+            padding: 0;
+            min-height: 0;
+            border-width: 0;
+        }
+    }
+}
+
+.upload-std > {
+    .@{PCSS}-field.@{PCSS}-readonly {
+
+        &.@{PCSS}-valid,
+        &.@{PCSS}-invalid,
+        &.@{PCSS}-has-value {
+
+            > .@{PCSS}-input-container.@{PCSS}-fieldgroup {
+                > .fieldgroup-prepend,
+                > .fieldgroup-append {
+                    padding: 0;
+                }
+            }
+        }
+    }
+}

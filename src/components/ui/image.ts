@@ -4,7 +4,11 @@ namespace Pacem.Components.UI {
     @CustomElement({
         tagName: P + '-img'
     })
-    export class PacemImageElement extends PacemElement implements OnPropertyChanged {
+    export class PacemImageElement extends PacemElement {
+
+        constructor() {
+            super('img');
+        }
 
         @Watch({ emit: false, converter: PropertyConverters.String }) adapt: 'cover' | 'contain' | 'auto';
         @Watch({ emit: false, converter: PropertyConverters.String }) src: string;
@@ -41,8 +45,9 @@ namespace Pacem.Components.UI {
 
         private _setSource() {
             var _me = this, src;
-            if (_me.disabled)
+            if (_me.disabled) {
                 return;
+            }
             //
             _me.style.backgroundImage = '';
             if (!Utils.isNullOrEmpty(src = _me.src)) {
@@ -51,8 +56,9 @@ namespace Pacem.Components.UI {
                     let weight: number, entries: any[], entry: any;
                     if (window.performance
                         && (entries = performance.getEntriesByName(img.src))
-                        && (entry = entries[0]))
+                        && (entry = entries[0])) {
                         weight = entry.decodedBodySize;
+                    }
                     _me.size = {
                         width: img.width,
                         height: img.height,
@@ -68,5 +74,4 @@ namespace Pacem.Components.UI {
             }
         }
     }
-
 }

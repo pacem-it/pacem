@@ -6,7 +6,6 @@
 
 namespace Pacem {
 
-    const JSON_DATE_PATTERN = /^\/Date\([\d]+\)\/$/i;
     const PACEM_CORE_DEFAULT = 'pacem';
     const DEFAULT_DOWNLOAD_FILENAME = 'download';
 
@@ -47,17 +46,7 @@ namespace Pacem {
         }
 
         static parseDate(input: string | Date | number): Date {
-            let d: any;
-            if (typeof input === 'string') {
-                if (JSON_DATE_PATTERN.test(input))
-                    d = parseInt(input.substring(6));
-                else
-                    d = Date.parse(input);
-                return new Date(d);
-            } else if (typeof input === 'number') {
-                return new Date(input);
-            } else
-                return input as Date;
+            return Dates.parse(input);
         }
 
         static copyToClipboard(input: string) {
@@ -83,43 +72,19 @@ namespace Pacem {
             parse: Json.deserialize
         }
 
-        // dates-dedicated
+        // dates-dedicated (moved to foundations, kept for backwards compat)
         static Dates = {
             parse: Utils.parseDate,
-            isLeapYear: function (year: number): boolean {
-                return (((year % 4 === 0) && (year % 100 !== 0)) || (year % 400 === 0));
-            },
-            daysInMonth: function (year: number, month: number): number {
-                return [31, (Utils.Dates.isLeapYear(year) ? 29 : 28), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][month];
-            },
+            isLeapYear: Dates.isLeapYear,
+            daysInMonth: Dates.daysInMonth,
             /**
              * Gets whether a date is an `Invalid Date` or not.
              * @param date
              */
-            isDate: function (date: Date): boolean {
-                return !isNaN(date && date.valueOf());
-            },
-            dateOnly: function (datetime: Date): Date {
-                return new Date(datetime.getFullYear(), datetime.getMonth(), datetime.getDate());
-            },
-            addMonths: function (input: Date, value: number): Date {
-                let n = input.getDate(),
-                    i = new Date(input),
-                    month = i.getMonth() + value,
-                    years = 0;
-                while (month < 0) {
-                    month += 12;
-                    years--;
-                }
-                i.setDate(1);
-                i.setMonth(month % 12);
-                i.setFullYear(i.getFullYear() + years + Math.floor(month / 12));
-                i.setDate(Math.min(n, Utils.Dates.daysInMonth(i.getFullYear(), i.getMonth())));
-                return i;
-            },
-            addDays: function (input: Date, value: number): Date {
-                return new Date(input.valueOf() + value * 86400000)
-            }
+            isDate: Dates.isDate,
+            dateOnly: Dates.dateOnly,
+            addMonths: Dates.addMonths,
+            addDays: Dates.addDays
         }
 
         // css-color-dedicted
@@ -164,6 +129,24 @@ namespace Pacem {
             },
             setVariable(name: string, value: string): void {
                 getComputedStyle(document.documentElement).setProperty(name, value);
+            },
+            /**
+             * Naive O(n^2) implementation for an actual css class presence (definition) in the current DOM.
+             * @param name CSS class name
+             */
+            isClassDefined(name: string): boolean {
+                const pattern = new RegExp('\.' + name + '($|[\s\.,])');
+                for (let j = 0; j < document.styleSheets.length; j++) {
+                    const sheet: any = document.styleSheets.item(j),
+                        rules = sheet.rules;
+                    for (let i = 0; i < rules.length; i++) {
+                        const rule: any = sheet.cssRules.item(i);
+                        if (pattern.test(rule.selectorText)) {
+                            return true;
+                        }
+                    }
+                }
+                return false;
             }
         }
 
@@ -195,26 +178,38 @@ namespace Pacem {
             });
         }
 
-        // thanks to @cuixiping: http://stackoverflow.com/questions/23150333
-        static blobToDataURL(blob: Blob): Promise<string | ArrayBuffer> {
+        static blobToDataURL(blob: Blob): Promise<string> {
             return new Promise((resolve, _) => {
-                var a = new FileReader();
-                a.onload = (e) => { resolve(e.target.result); }
+                const a = new FileReader();
+                a.onload = (e) => { resolve(e.target.result as string); }
                 a.readAsDataURL(blob);
             });
         }
 
         static dataURLToBlob(dataurl: string) {
             var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
-                bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+                bstr = atob(arr[1]), n = bstr.length,
+                u8arr = new Uint8Array(n);
             while (n--) {
                 u8arr[n] = bstr.charCodeAt(n);
             }
             return new Blob([u8arr], { type: mime });
         }
 
+        static blobToText(blob: Blob, encoding?: string): Promise<string> {
+            return new Promise((resolve, reject) => {
+                blob.arrayBuffer().then(b => {
+                    const decoder = new TextDecoder(encoding);
+                    const output = decoder.decode(b);
+                    resolve(output);
+                });
+            });
+        }
+
         static textToBlob(content: string, type = 'text/plain'): Blob {
-            return new Blob([content], { type: type });
+            const encoder = new TextEncoder();
+            const byteArray = encoder.encode(content);
+            return new Blob([byteArray], { type: type });
         }
 
         /**
@@ -548,7 +543,7 @@ namespace Pacem {
         }
 
         static isVisible(el: HTMLElement | SVGElement) {
-            return getComputedStyle(el).visibility !== 'hidden' && (el.clientWidth > 0 || el.clientWidth > 0);
+            return getComputedStyle(el).visibility !== 'hidden' && (el.clientWidth > 0 || el.clientHeight > 0);
         }
 
         static addClass(el: HTMLElement | SVGElement, className: string) {
@@ -696,30 +691,20 @@ namespace Pacem {
         // #region other
 
         static isEmpty(obj) {
-            if (Utils.Dates.isDate(obj))
-                return false;
-            if (Utils.isArray(obj)) {
-                return obj.length === 0;
-            }
-            for (var _ in obj)
-                return false;
-            try {
-                return JSON.stringify({}) === Utils.Json.stringify(obj);
-            } catch (e) {
-                return false;
-            }
+            return NullChecker.isEmpty(obj) && !(obj instanceof Node);
         }
 
-        static isNull(val: any): val is null | undefined {
-            return val === null || val === undefined;
+        static isNull(obj: any): obj is null | undefined {
+            return NullChecker.isNull(obj);
         }
 
+        // legacy
         static isArray(val: any): val is any[] {
             return Array.isArray(val);
         }
 
         static isNullOrEmpty(val: any) {
-            return Utils.isNull(val) || val === '' || (Utils.isArray(val) && val.length == 0) || (typeof val === 'object' && Utils.isEmpty(val));
+            return Utils.isNull(val) || Utils.isEmpty(val);
         }
 
         /**
@@ -817,36 +802,6 @@ namespace Pacem {
 
         //#endregion
 
-        /**
-         * Returns a formatted HTML string coherent with the provided input string (might be inline-svg, font-awesome class, image url (.png, .jpg) or material-icon ligature.
-         * @param icon
-         */
-        static renderHtmlIcon(icon: string): string {
-            const SVG = /^\s*<svg\s/;
-            const FA = /^fa[brs]?\s+fa-/;
-            const URL = /^(https?:\/\/|\/\/)?.+\.(png|jpe?g)$/;
-
-            // svg?
-            if (SVG.test(icon)) {
-                return icon;
-            }
-
-            // font-awesome?
-            if (FA.test(icon)) {
-                return `<i class="${icon}"></i>`;
-            }
-
-            // image url?
-            if (URL.test(icon)) {
-                return `<img src="${icon}" />`;
-            }
-
-            // assume material icon as default
-            const parts = icon.trim().split(' ');
-            const ligature = parts[0];
-            const css = parts.length > 1 ? ' ' + parts.slice(1).join(' ') : '';
-            return `<i class="${PCSS}-icon${css}">${ligature}</i>`;
-        }
     }
 
 }

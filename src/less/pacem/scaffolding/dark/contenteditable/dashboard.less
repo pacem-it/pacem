@@ -1,0 +1,253 @@
+﻿@import "../../shared";
+
+@{P}-contenteditable {
+
+    div[dashboard] {
+        padding: @grid_spacing/3 0 0 0;
+        grid-area: bottom;
+    }
+}
+
+// dashboard on top
+.dashboard-top @{P}-contenteditable,
+@{P}-contenteditable.dashboard-top {
+
+    .@{PCSS}-viewfinder {
+        grid-area: bottom;
+    }
+
+    div[dashboard] {
+        grid-area: top;
+    }
+}
+
+/* #region dashboard content flow*/
+
+@{P}-contenteditable div[dashboard],
+@{P}-contenteditable div[dashboard] .@{PCSS}-toolbar,
+@{P}-contenteditable div[dashboard] .@{PCSS}-contenteditable-toolbar {
+    display: flex;
+    flex-flow: row;
+    align-content: start;
+    align-items: start;
+    justify-content: start;
+}
+
+@{P}-contenteditable div[dashboard] {
+    > .@{PCSS}-toolbar,
+    > .@{PCSS}-contenteditable-toolbar {
+        flex-wrap: nowrap;
+        margin-bottom: @grid_spacing/3;
+        padding: 0;
+
+        .@{PCSS}-contenteditable-command {
+            // reset input field appearence in the toolbar
+            > @{P}-suggest {
+                padding: 0;
+
+                .@{PCSS}-input,
+                .@{PCSS}-viewfinder {
+                    background: transparent;
+                    border: 0;
+                    color: inherit;
+                }
+            }
+
+            > @{P}-button,
+            > .@{PCSS}-button {
+                border-radius: 0;
+                display: block;
+            }
+
+            &.toolbar-first when (@border_radius > 0) {
+                > @{P}-button,
+                > .@{PCSS}-button {
+                    border-top-left-radius: @border_radius;
+                    border-bottom-left-radius: @border_radius;
+                }
+            }
+
+            &:first-child when (@border_radius > 0) {
+                > @{P}-button,
+                > .@{PCSS}-button {
+                    border-top-left-radius: @border_radius;
+                    border-bottom-left-radius: @border_radius;
+                }
+            }
+
+            &.toolbar-last when (@border_radius > 0) {
+                > @{P}-button,
+                > .@{PCSS}-button {
+                    border-top-right-radius: @border_radius;
+                    border-bottom-right-radius: @border_radius;
+                }
+            }
+
+            &:last-child when (@border_radius > 0) {
+                > @{P}-button,
+                > .@{PCSS}-button {
+                    border-top-right-radius: @border_radius;
+                    border-bottom-right-radius: @border_radius;
+                }
+            }
+
+            &:not(:last-child):not(.toolbar-last) {
+                > @{P}-button,
+                > .@{PCSS}-button {
+                    border-right: none;
+                }
+            }
+
+            > @{P}-button.button,
+            > .@{PCSS}-button.button {
+                margin: 0;
+                box-shadow: none;
+                padding: 0 @grid_spacing/2;
+            }
+        }
+
+        & when (@shadows = true) {
+            .ButtonShadows();
+        }
+    }
+
+    > .@{PCSS}-separator,
+    > .@{PCSS}-contenteditable-separator {
+        display: block;
+        width: @grid_spacing/3;
+    }
+}
+
+/* #endregion */
+
+/* #region sticky dasboard */
+
+.dashboard-sticky @{P}-contenteditable,
+@{P}-contenteditable.dashboard-sticky {
+
+    div[dashboard] {
+        position: sticky;
+        bottom: 0;
+        top: auto;
+        background: @color_field_back;
+
+        & when(@blur = true) {
+            .Blur(@grid_spacing/4, @color_background);
+        }
+    }
+}
+
+// dashboard at the bottom
+.dashboard-sticky:not(.dashboard-top) @{P}-contenteditable:not(.dashboard-top),
+:not(.dashboard-top) @{P}-contenteditable.dashboard-sticky:not(.dashboard-top) {
+
+    .@{PCSS}-viewfinder {
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+
+    div[dashboard] {
+        box-shadow: 0 -1px 0px rgba(0,0,0,.25);
+    }
+}
+
+// dashboard on top
+.dashboard-top.dashboard-sticky @{P}-contenteditable,
+@{P}-contenteditable.dashboard-top.dashboard-sticky {
+
+    .@{PCSS}-viewfinder {
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+    }
+
+    div[dashboard] {
+        grid-area: top;
+        bottom: auto;
+        top: 0;
+        box-shadow: 0 1px 0px rgba(0,0,0,.25);
+    }
+}
+
+// layout-driven sticky position override
+.@{PCSS}-body {
+    &[footbar] {
+
+        @{P}-contenteditable {
+            div[dashboard] {
+                top: auto;
+                bottom: @layout_toolbar_height;
+            }
+        }
+    }
+
+    &[footer] {
+        @{P}-contenteditable {
+            div[dashboard] {
+                top: auto;
+                bottom: @layout_footer_height;
+            }
+        }
+    }
+
+    &[bigfooter] {
+        @{P}-contenteditable {
+            div[dashboard] {
+                top: auto;
+                bottom: @layout_bigfooter_height;
+            }
+        }
+    }
+
+    &[footer][footbar] {
+        @{P}-contenteditable {
+            div[dashboard] {
+                top: auto;
+                bottom: @layout_footer_height + @layout_toolbar_height;
+            }
+        }
+    }
+
+    &[bigfooter][footbar] {
+        @{P}-contenteditable {
+            div[dashboard] {
+                top: auto;
+                bottom: @layout_bigfooter_height + @layout_toolbar_height;
+            }
+        }
+    }
+}
+// layout-driven sticky position override (top)
+.@{PCSS}-body {
+    &[headbar] {
+
+        .dashboard-top @{P}-contenteditable,
+        @{P}-contenteditable.dashboard-top {
+            div[dashboard] {
+                top: @layout_toolbar_height;
+                bottom: auto;
+            }
+        }
+    }
+
+    &[header] {
+        .dashboard-top @{P}-contenteditable,
+        @{P}-contenteditable.dashboard-top {
+            div[dashboard] {
+                top: @layout_header_height;
+                bottom: auto;
+            }
+        }
+    }
+
+    &[header][headbar] {
+        .dashboard-top @{P}-contenteditable,
+        @{P}-contenteditable.dashboard-top {
+            div[dashboard] {
+                top: @layout_header_height + @layout_toolbar_height;
+                bottom: auto;
+            }
+        }
+    }
+}
+/* #endregion */
+

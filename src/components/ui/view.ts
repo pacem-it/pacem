@@ -72,8 +72,13 @@ namespace Pacem.Components.UI {
             });
         }
 
+        #aborter: AbortController;
         private _manageUrl(url = this.url) {
-            fetch(url, { credentials: 'same-origin' }).then(r => {
+            if (this.#aborter) {
+                this.#aborter.abort();
+            }
+            const { signal } = this.#aborter = new AbortController();
+            fetch(url, { credentials: 'same-origin', signal }).then(r => {
                 if ((r.status === 301 || r.status === 302) && this.followRedirects) {
                     this._manageUrl(r.headers.get("Location"));
                 } else if (r.ok || this.renderErrors) {
@@ -81,12 +86,15 @@ namespace Pacem.Components.UI {
                 }
                 // fallback to empty content.
                 else this._manageResult('');
-            })
+            }, _ => {
+                // do nothing on fail
+            });
         }
 
         private _manageResult(result: string) {
             // this way, `this._container.innerHTML = ''` instruction will eventually let the page "scroll up"...
             this.innerHTML = '';
+            this.scrollTo(0, 0);
             cancelAnimationFrame(this._renderHandle);
             this._renderHandle = requestAnimationFrame(() => {
                 this.innerHTML = result;

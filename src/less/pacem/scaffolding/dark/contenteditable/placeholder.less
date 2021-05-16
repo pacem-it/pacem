@@ -1,0 +1,24 @@
+﻿@import "../../shared";
+
+div[contenteditable=true] {
+
+    @_clr: @color_primary;
+    @_brd: 3px;
+
+    ins {
+        text-decoration: inherit;
+
+        &::selection {
+            background-color: transparent;
+        }
+
+        &:hover {
+            outline: @_brd solid fade(@_clr, 50);
+        }
+
+        &:active, &:focus, &.placeholder-selected {
+            outline: @_brd solid @_clr;
+        }
+    }
+}
+

@@ -1,0 +1,36 @@
+﻿<pacem-markdown value="{{ #content0.textContent }}" class="md-tech" root></pacem-markdown>
+
+<pre pacem hidden id="content0">
+## CMS Playground
+
+Play with the configured widget and design your own page!
+</pre>
+
+<div class="pacem-buttonset buttons">
+    <div class="buttonset-left">
+        <pacem-checkbox class="checkbox-switch" true-value="true" false-value="false" id="editing0" value="{{ true }}"></pacem-checkbox>
+    </div>
+</div>
+
+<pacem-widget-grid editing="{{ #editing0.value }}" editable="true">
+
+</pacem-widget-grid>
+
+
+<pacem-shell-proxy>
+
+    <pacem-window-area>
+        <pacem-window floating="false" caption="widgets">
+
+            <div class="pacem-list list-unstyled full-height">
+                <pacem-widget-picker>
+
+                    <pacem-widget-text></pacem-widget-text>
+                </pacem-widget-picker>
+
+            </div>
+        </pacem-window>
+    </pacem-window-area>
+
+
+</pacem-shell-proxy>

@@ -57,10 +57,12 @@ namespace Pacem.Components.Scaffolding {
             </li>
         </template>
         <li class="tag-new">
-            <${P}-suggest logger="{{ :host.logger }}" placeholder="{{ :host.placeholder }}" allow-new="{{ :host.allowNew }}" class="${PCSS}-tags" on-change=":host._tagAdd($this.value)" hint="{{ :host.hint, twoway }}"></${P}-suggest>
+            <${P}-suggest logger="{{ :host.logger }}" placeholder="{{ :host.placeholder }}" allow-new="{{ :host.allowNew }}" class="${PCSS}-tags" on-change=":host._tagAdd($this.value)" hint="{{ :host.hint, twoway }}">
+                <${P}-content></${P}-content>
+            </${P}-suggest>
         </li>
     </ul>
-</${ P}-repeater>`
+</${P}-repeater>`
     })
     export class PacemTagsElement extends PacemDataSourceElement {
 
@@ -88,6 +90,7 @@ namespace Pacem.Components.Scaffolding {
 
         private _tagAdd(v: any) {
             this.changeHandler(new TagAddEvent(v));
+            // after the - just in case - assignment => reset the suggest component
         }
 
         protected handleDatasourceMismatch() {
@@ -130,6 +133,7 @@ namespace Pacem.Components.Scaffolding {
                         const value = (<TagAddEvent>evt).detail.value,
                             // manipulate a copy of the array (to preserve the originalValue)
                             valadd = <any[]>Utils.clone(this.value);
+
                         if (// no empty items
                             !Utils.isNullOrEmpty(value)
                             // no duplicated items
@@ -137,10 +141,14 @@ namespace Pacem.Components.Scaffolding {
                         ) {
                             let newvalue = (valadd || []).concat([value]);
                             resolve(this.value = newvalue);
+                            this._justAddedIndex = this.value.length - 1;
+                            setTimeout(() => {
+                                this._suggest.focus();
+                            }, 250);
+                            // this will allow to accept the hint change...
+                            this._suggest.blur();
                             this._suggest.hint = '';
                             this._suggest.reset();
-                            this._justAddedIndex = this.value.length - 1;
-                            setTimeout(() => this._suggest.focus(), 250);
                         }
                         break;
                     default:

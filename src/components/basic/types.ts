@@ -187,8 +187,10 @@ namespace Pacem.Components {
                 case "hide":
                     if (val) {
                         this.setAttribute('hidden', '');
+                        this.aria.attributes.set('hidden', 'true');
                     } else {
                         this.removeAttribute('hidden');
+                        this.aria.attributes.remove('hidden');
                     }
                     break;
                 case 'tooltip':

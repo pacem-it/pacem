@@ -238,6 +238,25 @@ logger="{{ #_RFzKYbi.logger }}" entity="{{ #_RFzKYbi.entity, twoway }}" metadata
                 obj.innerHTML = html;
                 expect(document.getElementById('frm__RFzKYbi')).not.toBeNull();
             });
+
+            it('Null/emptyness check', function () {
+
+                expect(Utils.isNull([])).toEqual(false, 'Empty array turned out to be evaluated null');
+                expect(Utils.isEmpty([])).toEqual(true, 'Empty array turned out to be not evaluated as such');
+                expect(Utils.isNullOrEmpty([])).toEqual(true, 'Empty array turned out to be not evaluated as such (or null)');
+
+                const empty = []; Object.defineProperty(empty, 'foo', { value: 'bar' });
+                expect(Utils.isEmpty(empty)).toEqual(true, 'Empty array - even tho enriched - turned out to be not evaluated as such');
+                expect(Utils.isEmpty({})).toEqual(true, 'Empty object turned out to be not evaluated as such');
+                expect(Utils.isEmpty(new Date())).toEqual(false, 'Date turned out to be evaluated as empty object');
+                expect(Utils.isEmpty(/\.(pdf|docx)?/i)).toEqual(false, 'RegExp turned out to be evaluated as empty object');
+
+                const rec = {}; rec['prop'] = rec;
+                expect(Utils.isEmpty(rec)).toEqual(false, 'Recursive object turned out to be evaluated as empty object');
+
+                const tmpl = document.createElement('template');
+                expect(Utils.isNullOrEmpty(tmpl)).toEqual(false, 'DOM element turned out to be empty');
+            });
         }
     },
 

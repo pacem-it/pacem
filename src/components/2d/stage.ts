@@ -30,7 +30,7 @@ namespace Pacem.Components.Drawing {
         zoomModifiers: [EventKeyModifier.AltKey]
     };
 
-    @CustomElement({ tagName: P + '-' + TAG_MIDDLE_NAME, shadow: Defaults.USE_SHADOW_ROOT, template: `<${P}-resize></${P}-resize><div class="${PCSS}-2d"></div><pacem-content></pacem-content>` })
+    @CustomElement({ tagName: P + '-' + TAG_MIDDLE_NAME, shadow: Defaults.USE_SHADOW_ROOT, template: `<${P}-resize></${P}-resize><div class="${PCSS}-2d"></div><${P}-content></${P}-content>` })
     export class Pacem2DElement extends PacemItemsContainerElement<DrawableElement> implements Stage {
 
         get stage(): HTMLElement {
@@ -56,7 +56,7 @@ namespace Pacem.Components.Drawing {
         @ViewChild(P + '-resize') private _resize: Pacem.Components.PacemResizeElement;
 
         draw(item?: Pacem.Drawing.Drawable);
-        draw(item: Pacem.Drawing.Group, redrawContent: boolean);
+        draw(item: Pacem.Drawing.Group, deepRedraw: boolean);
         draw(item?: Pacem.Drawing.Drawable, redraw = false) {
             const adapter = this.adapter;
             if (!this.disabled && !Utils.isNull(adapter)) {

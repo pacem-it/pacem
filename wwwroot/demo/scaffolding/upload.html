@@ -11,7 +11,7 @@
 
         <div class="pacem-panel">
             <div class="panel-body">
-                <pacem-form id="frm0">
+                <pacem-form id="frm0" entity="{}">
                     <pacem-upload name="upload" on-download="#toast0.show = true" readonly="{{ #frm0.readonly }}" id="file0" max-size="1048576"></pacem-upload>
                 </pacem-form>
             </div>
@@ -45,16 +45,22 @@ It is important to say that the provided endpoint on the server-side is expected
 resulting value is the `string` yielded by the endpoint when the upload process comes to completion.
 </pre>
 
+<!--
+        "extra": { "uploadUrl": "/pacem.js/upload" },
+    -->
+<!--,
+    { "prop": "label", "display": { "name": "label" } }
+-->
 <pacemjs-snippet>
     <template>
 
         <pre pacem hidden id="pre1">
 {
-"display": { "cssClass": ["form-minimale"] },
+"display": { "cssClass": ["form-minimal"] },
 "props": [
     {
-        "prop": "file", "display": { "name": "File (upload)" }, "type": "file", "dataType": "upload",
-        "extra": { "uploadUrl": "/pacem.js/upload" },
+        "prop": "file", "display": { "name": "File (upload)", "cssClass": ["upload-std"] }, "type": "file", "dataType": "upload",
+        "commands": [{ "icon": "preview", "name": "preview", "dependsOnValue": true, "tooltip": "preview" }],
         "validators": [
             { "type": "binary", "errorMessage": "Invalid file: must be a pdf, doc or an image not exceeding 1MB", "params":
                 {
@@ -72,7 +78,10 @@ resulting value is the `string` yielded by the endpoint when the upload process 
                 <pacem-checkbox class="checkbox-switch pacem-margin margin-2" true-value="true" false-value="false" value="{{ #frm1.readonly, twoway }}"></pacem-checkbox>
             </div>
             <div class="panel-body">
-                <pacem-form id="frm1" on-download="#toast1.show = true" autogenerate="true" metadata="{{ #metadata1.model }}" entity="{}"></pacem-form>
+                <pacem-form id="frm1"
+                            on-download="#toast1.show = true"
+                            on-itempreview="$pacem.poptoast(#toaster1, 'warning', 'Dummy message for <code>' + $event.detail.name + '</code>', {autohide: true})"
+                            autogenerate="true" metadata="{{ #metadata1.model }}" entity="{}"></pacem-form>
             </div>
             <div class="panel-footer">
                 <code><pacem-text text="{{ #frm1.entity.file.name || #frm1.entity.file || '<filename>' }}"></pacem-text></code>
@@ -82,6 +91,8 @@ resulting value is the `string` yielded by the endpoint when the upload process 
         <pacem-shell-proxy>
             <div class="pacem-toaster toaster-bottom toaster-right">
                 <pacem-toast id="toast1" class="toast-accent"><div class="text-ellipsed"><i class="pacem-icon">file_download</i> <pacem-text class="text-pre" text="{{ 'Downloading\n'+ (#frm1.entity.file.name || #frm1.entity.file) +'...' }}"></pacem-text></div></pacem-toast>
+            </div>
+            <div class="pacem-toaster toaster-bottom toaster-right toaster-autosize" id="toaster1">
             </div>
         </pacem-shell-proxy>
 

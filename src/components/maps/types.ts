@@ -78,6 +78,12 @@ namespace Pacem.Components.Maps {
         abstract initialize(map: PacemMapElement): PromiseLike<HTMLElement>;
 
         /**
+         * Disposes the resources attached to the map.
+         * @param map {PacemMapElement} The map
+         */
+        abstract destroy(map: PacemMapElement): void;
+
+        /**
          * When implemented in a derived class, draws a map element.
          * @param item {MapRelevantElement} item to be drawn
          */
@@ -88,6 +94,18 @@ namespace Pacem.Components.Maps {
          * @param item {MapRelevantElement} item to be removed
          */
         abstract removeItem(item: MapRelevantElement);
+
+        /**
+         * When implemented in a derived class, shows the infowindow relevant to a map element (if any).
+         * @param item {MapRelevantElement} item whose infowindow must be displayed
+         */
+        abstract popupInfoWindow(item: MapRelevantElement);
+
+        /**
+         * When implemented in a derived class, hides the infowindow relevant to a map element (if any).
+         * @param item {MapRelevantElement} item whose infowindow must be hidden
+         */
+        abstract popoutInfoWindow(item: MapRelevantElement);
 
         /** Gets the native map instance */
         abstract get map(): any;
@@ -101,7 +119,15 @@ namespace Pacem.Components.Maps {
         abstract setView(center: LatLng, zoom?: number);
 
         /** When implemented in a derived class, sets the viewport of the map so that it can fit all its content. */
-        abstract fitBounds();
+        abstract fitBounds(onlyIfAutofit?: boolean);
+
+        protected updateMapElement(ctrl: PacemMapElement, center: LatLng, zoom: number) {
+            const lat = center.lat, lng = center.lng;
+            ctrl.zoom = zoom;
+            if (lat != ctrl.center?.lat || lng != ctrl.center?.lng) {
+                ctrl.center = { lat, lng };
+            }
+        }
     }
 
     export declare type MapEventArgs = { position?: LatLng };
@@ -149,8 +175,8 @@ namespace Pacem.Components.Maps {
     @CustomElement({ tagName: MapConsts.MAP_SELECTOR })
     export class PacemMapElement extends PacemEventTarget {
 
-        @Watch({ emit: false, converter: PropertyConverters.Number }) zoom: number = 12;
-        @Watch({ emit: false, converter: PropertyConverters.Json }) center: LatLng = MapConsts.DEFAULT_COORDS;
+        @Watch({ emit: true, converter: PropertyConverters.Number }) zoom: number = 12;
+        @Watch({ emit: true, converter: PropertyConverters.Json }) center: LatLng = MapConsts.DEFAULT_COORDS;
         @Watch({ emit: false, converter: PropertyConverters.Boolean }) scale: boolean = true;
         @Watch({ emit: false, converter: PropertyConverters.Boolean }) mousewheel: boolean = true;
         /**
@@ -236,6 +262,9 @@ namespace Pacem.Components.Maps {
                 this._erase(<MapRelevantElement>child, old);
                 this._draw(<MapRelevantElement>child);
             }
+
+            // dispose old, if any.
+            old?.destroy(this);
         };
 
         viewActivatedCallback() {

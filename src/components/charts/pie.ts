@@ -1,9 +1,10 @@
-﻿/// <reference path="../../../dist/js/pacem-core.d.ts" />
+﻿/// <reference path="../../../dist/js/pacem-foundation.d.ts" />
+/// <reference path="../../../dist/js/pacem-core.d.ts" />
 /// <reference path="types.ts" />
 namespace Pacem.Components.Charts {
 
     @CustomElement({ tagName: P + '-pie-slice' })
-    export class PacemPieSliceElement extends PacemItemElement {
+    export class PacemPieSliceElement extends PacemItemElement implements ChartDataItem {
 
         protected findContainer() {
             return CustomElementUtils.findAncestorOfType(this, PacemPieChartElement);
@@ -56,7 +57,7 @@ namespace Pacem.Components.Charts {
         _disposeUi() {
             if (!Utils.isNull(this._ui)) {
                 MANAGED_EVENTS.forEach(type => {
-                    this._ui.addEventListener(type, this._broadcastHandler);
+                    this._ui.removeEventListener(type, this._broadcastHandler);
                 });
             }
         }
@@ -105,6 +106,7 @@ namespace Pacem.Components.Charts {
         /** Set a value between 0 and 1, for doughnut appearance. */
         @Watch({ converter: PropertyConverters.Number }) cutout: number = .0;
         @Watch({ converter: PropertyConverters.Element }) target: HTMLElement;
+        @Watch({ converter: PropertyConverters.Boolean }) maskBasedRendering: boolean;
 
         get area(): SVGSVGElement {
             return this._svg;
@@ -136,34 +138,45 @@ namespace Pacem.Components.Charts {
                 svg.classList.add(PCSS + '-pie-chart');
 
                 let defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
-                let mask = document.createElementNS('http://www.w3.org/2000/svg', 'mask');
-                mask.id = 'pie_mask_' + this._key;
-                let rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-                rect.setAttribute('x', '0');
-                rect.setAttribute('y', '0');
-                rect.setAttribute('width', '100');
-                rect.setAttribute('height', '100');
-                rect.setAttribute('fill', '#fff');
-                let circle = this._mask = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-                circle.setAttribute('cx', '50');
-                circle.setAttribute('cy', '50');
-
                 let g = this._g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-                g.setAttribute('mask', `url(#${mask.id})`);
 
-                div.appendChild(svg);
-
-                mask.appendChild(rect);
-                mask.appendChild(circle);
-                defs.appendChild(mask);
                 svg.appendChild(defs);
                 svg.appendChild(g);
 
+                div.appendChild(svg);
                 this._div &&
                     this.parentElement.insertBefore(div, this);
             }
-            const cutout = 50.0 * this._safeCutout;
-            this._mask.setAttribute('r', `${cutout}`);
+            if (this.maskBasedRendering) {
+                if (Utils.isNull(this._mask)) {
+                    let mask = document.createElementNS('http://www.w3.org/2000/svg', 'mask');
+                    mask.id = 'pie_mask_' + this._key;
+                    let rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+                    rect.setAttribute('x', '0');
+                    rect.setAttribute('y', '0');
+                    rect.setAttribute('width', '100');
+                    rect.setAttribute('height', '100');
+                    rect.setAttribute('fill', '#fff');
+                    let circle = this._mask = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                    circle.setAttribute('cx', '50');
+                    circle.setAttribute('cy', '50');
+
+                    const defs = this._svg.firstElementChild;
+
+                    mask.appendChild(rect);
+                    mask.appendChild(circle);
+                    defs.appendChild(mask);
+                    this._g.setAttribute('mask', `url(#${mask.id})`);
+                }
+                const cutout = 50.0 * this._safeCutout;
+                this._mask.setAttribute('r', `${cutout}`);
+            } else {
+                if (!Utils.isNull(this._mask)) {
+                    this._svg.firstElementChild.innerHTML = '';
+                    this._mask = null;
+                    this._g.removeAttribute('mask');
+                }
+            }
             return this._g;
         }
 
@@ -178,14 +191,20 @@ namespace Pacem.Components.Charts {
             const x = (slice.value >= whole) ? /* handling single slice */ 49.9 : 50 * (1 + Math.sin(angle));
             const y = 50 * (1 - Math.cos(angle));
 
-
-            const d = `M50,50 V0 A50,50 0 ${largeFlag} 1 ${x} ${y} L50,50 Z`;
-            path.setAttribute('d', d);
-            path.style.fill = slice.color;//.setAttribute('fill', slice.color || (path.getAttribute('fill') || '#000'));
-            path.setAttribute('transform', `rotate(${rot} 50 50)`);
-
             // set geometry data
-            var c = this._safeCutout;
+            const c = this._safeCutout,
+                r = c * 50.0;
+
+            path.style.fill = slice.color;//.setAttribute('fill', slice.color || (path.getAttribute('fill') || '#000'));
+            //path.setAttribute('transform', `rotate(${rot} 50 50)`);
+            path.style.transform = `rotate(${rot}deg)`;
+            path.style.transformOrigin = '50% 50%';
+
+            const d = this.maskBasedRendering ?
+                `M50,50 V0 A50,50 0 ${largeFlag} 1 ${x} ${y} L50,50 Z` :
+                `M50,0 A50,50 0 ${largeFlag} 1 ${x} ${y} l${(50 - x) * (1.0 - c)},${(50 - y) * (1.0 - c)} A${r},${r} 0 ${largeFlag} 0 50,${(50 - r)} Z`;
+            path.setAttribute('d', d);
+
             slice.normalizedPolarCoords = { radius: c + Math.SQRT1_2 * (1.0 - c), angle: /* deg to rad */ Math.PI * rot / 180.0 + angle / 2 };
         }
 

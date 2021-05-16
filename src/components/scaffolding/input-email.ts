@@ -10,10 +10,6 @@ namespace Pacem.Components.Scaffolding {
     })
     export class PacemEmailInputElement extends PacemTextualInputElement {
 
-        constructor() {
-            super();
-        }
-
         @ViewChild('input[type=email]') input: HTMLInputElement;
         @ViewChild(P + '-a') anchor: UI.PacemAnchorElement;
 

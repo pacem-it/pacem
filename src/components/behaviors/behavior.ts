@@ -4,7 +4,7 @@ namespace Pacem.Behaviors{
 
     export abstract class PacemBehavior extends Pacem.Components.PacemEventTarget {
 
-        private _container: Element[] = [];
+        #items: Element[] = [];
 
         //protected get container() {
         //    return this._container;
@@ -14,7 +14,7 @@ namespace Pacem.Behaviors{
         protected abstract undecorate(element: Element);
 
         register(element: Element): void {
-            var container = this._container;
+            var container = this.#items;
             if (container.indexOf(element) === -1) {
                 container.push(element);
                 this.decorate(element);
@@ -22,7 +22,7 @@ namespace Pacem.Behaviors{
         }
 
         unregister(element: Element): void {
-            var container = this._container,
+            var container = this.#items,
                 ndx: number;
             if ((ndx = container.indexOf(element)) !== -1) {
                 this.undecorate(element);

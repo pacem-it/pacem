@@ -1,0 +1,50 @@
+﻿@import "../shared";
+
+@{P}-binder{
+    .Inert();
+}
+
+svg.@{PCSS}-binder {
+
+    path {
+        stroke: @color_default;
+        opacity: 0.25;
+        stroke-width: 2px;
+    }
+
+    &.binder-thin path {
+        opacity: 0.1;
+        stroke-width: 1px;
+    }
+
+    &.binder-thick path {
+        opacity: 0.75;
+        stroke-width: 2px;
+    }
+
+    &.binder-thicker path {
+        opacity: 0.75;
+        stroke-width: 3px;
+    }
+
+    &.binder-primary path {
+        stroke: @color_primary;
+    }
+
+    &.binder-success path {
+        stroke: @color_success;
+    }
+
+    &.binder-danger path {
+        stroke: @color_danger;
+    }
+
+    &.binder-warning path {
+        stroke: @color_warning;
+    }
+
+    &.binder-accent path {
+        stroke: @color_accent;
+    }
+}
+

@@ -1,7 +1,12 @@
 ﻿@import "../layout/shared";
 @import "../theme-dark.less";
+@import "../../shared";
 
 @lightbox_padding: 1em;
+
+.ButtonShadows() {
+    box-shadow: 0 2px @grid_spacing / 3 rgba(0,0,0,0.5);
+}
 
 .HorizontalItemSet(@type) {
     display: grid;
@@ -71,7 +76,33 @@
         border-bottom-right-radius: @border_radius;
     }
 
-    &:not(:last-child):not(.buttonset-last) {
+    &:not(:last-child):not(.@{type}set-last) {
         border-right: none;
     }
 }
+
+/* #region TUNER */
+
+.GradientTuner(@clr) {
+    .GradientRadialContain(50%, 85%, 87%, 88%, 88%, 90%, 91%, 96%, 98%, 100%, fade(@clr, 0), fade(@clr, 20), fade(@clr, 50), fade(@clr, 0), fade(@clr, 0), fade(@clr, 10), fade(@clr, 10), fade(@clr, 0), fade(@clr, 25), fade(@clr, 0));
+}
+
+.Tuner(@size) {
+    @_thickness: round(@size * 0.09256);
+    @_outer_radius: @size;
+
+    width: @_outer_radius;
+    height: @_outer_radius;
+
+    canvas.@{PCSS}-tuner {
+        stroke-width: @_thickness;
+    }
+
+    .@{PCSS}-content {
+        width: @_outer_radius;
+        height: @_outer_radius;
+        font-size: round(@size/3.2);
+    }
+}
+
+/* #endregion */

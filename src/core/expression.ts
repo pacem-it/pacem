@@ -209,7 +209,11 @@ namespace Pacem {
 
                             let melem0 = melem.substr(2, melem.length - 2);
                             let host = args[cmpRef] = args[cmpRef] || CustomElementUtils.findHostContext(element);
-                            el = host[melem0];
+                            if (!Utils.isNull(host)) {
+                                el = host[melem0];
+                            } else {
+                                el = null;
+                            }
                             retval = `${CONTEXT_PREFIX}.${cmpRef}.${melem0}`;
 
                         } else if (melem.startsWith('#')) {
@@ -223,11 +227,13 @@ namespace Pacem {
                         // merge dependencies
                         if (prop && el && prop in el
                             // && it is not a direct method call (which means that the 'prop' isn't in fact a 'func')
-                             && typeof el[prop] !== 'function' //!isMethodCall 
+                            && typeof el[prop] !== 'function' //!isMethodCall 
                             // && does not already exist as a dependency
-                            && dependencies.find(d => d.element === el && d.property == prop) == null)
+                            && dependencies.find(d => d.element === el && d.property == prop) == null) {
+
                             dependencies.push({ element: el, property: prop, path: path, twowayAllowed: false });
 
+                        }
 
                         // return value
                         return mstart + retval;
@@ -264,7 +270,7 @@ namespace Pacem {
 
             if (dependencies.length == 1
                 // := && trimmed expression contains only letters, figures, underscores, dots, and '$'...
-                && /[^\w\.\$]+/.test(expr.trim()) !== true) { 
+                && /[^\w\.\$]+/.test(expr.trim()) !== true) {
                 // ...then 'twoway' binding might be applied/accepted
                 dependencies[0].twowayAllowed = true;
             }

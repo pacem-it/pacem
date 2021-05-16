@@ -7,21 +7,39 @@ namespace Pacem {
         }
     }
 
+    export class RouterNavigatingEvent extends Pacem.CustomTypedEvent<string>{
+        constructor(path: string) {
+            super('navigating', path, { cancelable: true, bubbles: false });
+        }
+    }
+
 }
 
 namespace Pacem.Components {
-    
+
     const CHECK_PATTERN = /^([\w\.]:)?\/\/[^\/]+/;
     const URL_PATTERN = /^((https?:)?\/\/[^\/]+)?([^\?#]+)(\?[^#]*)?(#[^#]*)?$/;
 
     @CustomElement({ tagName: P + '-router' })
     export class PacemRouterElement extends PacemEventTarget {
 
-        @Watch({ converter: PropertyConverters.String }) template: string; // something like /{controller}/{action}/{id?}
+        @Watch({ emit: false, converter: PropertyConverters.String }) template: string; // something like /{controller}/{action}/{id?}
         @Watch({ converter: PropertyConverters.Eval }) state: any;
-        @Watch({ converter: PropertyConverters.String }) path: string;
+        @Watch({ emit: false, converter: PropertyConverters.String }) path: string;
 
-        navigate(path: string, title?: string) {
+        #cancelingNavigation: boolean;
+
+        navigate(path: string, title?: string): void {
+
+            if (this.disabled) {
+                return;
+            }
+
+            if (path != this.path) {
+                this.path = path;
+                return;
+            }
+
             const l = document.location;
             if (CHECK_PATTERN.test(path)) {
                 if (!path.startsWith(l.protocol + '//' + l.host)) {
@@ -29,26 +47,56 @@ namespace Pacem.Components {
                 }
             }
 
-            const segments = this._segmentateUrl(path),
-                state = this.state = this._parseState(segments.path + segments.query + segments.hash, segments.path, segments.query, segments.hash);
+            if (!this.#cancelingNavigation) {
+                // coming from path...
+                const from = this.state && this.state.$path || void 0;
 
-            var poppingState = (l.pathname + l.search + l.hash) === segments.path + segments.query + segments.hash;
+                // processing new segments and state
+                const segments = this._segmentateUrl(path),
+                    state = this._parseState(segments.path + segments.query + segments.hash, segments.path, segments.query, segments.hash);
 
-            if (poppingState) {
-                window.history.replaceState(state, title);
-            } else {
-                window.history.pushState(state, title, path);
+                // popping state? aka history.back()/.forward()/.go(...)?
+                // means that the URL is already in the target fashion
+                const poppingState = (l.pathname + l.search + l.hash) === segments.path + segments.query + segments.hash;
+
+                const evt = new RouterNavigatingEvent(path);
+                window.dispatchEvent(evt);
+                if (this.#cancelingNavigation = evt.defaultPrevented) {
+
+                    // this will cut the history stack, no better option tho...
+                    if (poppingState) {
+                        // re-push current state
+                        window.history.pushState(this.state, title, from);
+                    }
+                    this.path = from;
+
+                    // exiting
+                    return;
+                }
+
+                // this one actually does trigger the navigation in the outer world
+                this.state = state;
+
+                if (poppingState) {
+                    window.history.scrollRestoration = 'manual';
+                    window.history.replaceState(state, title);
+                } else {
+                    window.history.pushState(state, title, path);
+                }
+                if (!Utils.isNullOrEmpty(title)) {
+                    document.title = title;
+                }
+
+                window.dispatchEvent(new RouterNavigateEvent(path));
             }
-            if (!Utils.isNullOrEmpty(title)) {
-                document.title = title;
-            }
+
+            this.#cancelingNavigation = false;
         }
 
         propertyChangedCallback(name: string, old: any, val: any, first?: boolean) {
             super.propertyChangedCallback(name, old, val, first);
             if (name === 'path') {
                 this.navigate(val);
-                window.dispatchEvent(new RouterNavigateEvent(val));
             }
         }
 
@@ -63,7 +111,7 @@ namespace Pacem.Components {
         }
 
         private _onPopState = (evt: PopStateEvent) => {
-            if (!Utils.isNull(evt.state)) {
+            if (!Utils.isNull(evt.state) && !this.#cancelingNavigation) {
                 this.path = evt.state.$path;
             }
         };

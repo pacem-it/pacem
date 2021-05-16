@@ -1,5 +1,5 @@
 {
-  "version": "0.10.0",
+  "version": "0.12.0-luxor",
   "name": "pacem-less",
   "homepage": "https://js.pacem.it",
   "repository": {
@@ -27,6 +27,6 @@
   "license": "MIT",
   "description": "Pacem JS theme generator. LESS-based.",
   "devDependencies": {
-    "less": "3.11.1"
+    "less": "3.12.2"
   }
 }

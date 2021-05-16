@@ -31,10 +31,10 @@ html .@{PCSS}-preloader {
 
 // variable values that get overridden
 @fonts: "fonts-none"; // <- wasn't able to come up with something that works by exploiting mixin guards
-@theme: "theme-dark";
+@theme: "dark";
 
 // theme
-@import "@{theme}";
+@import "theme-@{theme}";
 
 // bug in Less.js: https://github.com/less/less.js/issues/3388
 // cannot pass variables like 'html[theme=dark]' due to the '=' sign in it
@@ -54,11 +54,11 @@ html .@{PCSS}-preloader {
         }
     }
     // layout system: -body, header, footer, toolbars...
-    @import "layout/layout";
+    @import "layout/@{theme}/layout";
     // loader
-    @import "ui/loader";
+    @import "ui/@{theme}/loader";
     // menu
-    @import "ui/menu";
+    @import "ui/@{theme}/menu";
 }
 
 @{shell} when (@shell_only = false), (@full_theme = true) {
@@ -137,12 +137,15 @@ html .@{PCSS}-preloader {
     }
 
     .bg-danger {
-        background-color: @color_danger;
-        color: @color_danger_inv;
+        .Bg( @color_danger, @color_danger_inv);
     }
 
     .bg-invert {
         .Bg( @color_default, @color_background);
+    }
+
+    .bg-disabled {
+        .Bg( @color_disabled, @color_disabled_inv);
     }
     /*#endregion*/
     @import "text-overrides";
@@ -150,6 +153,41 @@ html .@{PCSS}-preloader {
 
 // do not render variables in shell-only mode in order to ease themeable scenarios
 :root when (@shell_only = false), (@full_theme = true) {
+    --pacem-color-background: @color_background;
+    --pacem-color-root: @color_root_background;
+    --pacem-color-default: @color_default;
+    --pacem-color-accent: @color_accent;
+    --pacem-color-accent-inverse: @color_accent_inv;
+    --pacem-color-primary: @color_primary;
+    --pacem-color-primary-inverse: @color_primary_inv;
+    --pacem-color-danger: @color_danger;
+    --pacem-color-danger-inverse: @color_danger_inv;
+    --pacem-color-error: @color_error;
+    --pacem-color-error-inverse: @color_error_inv;
+    --pacem-color-highlight: @color_highlight;
+    --pacem-color-highlight-inverse: @color_highlight_fore;
+    --pacem-color-warning: @color_warning;
+    --pacem-color-warning-inverse: @color_warning_inv;
+    --pacem-color-success: @color_success;
+    --pacem-color-success-inverse: @color_success_inv;
+    --pacem-color-disabled: @color_disabled;
+    // palette
+    --pacem-color-green: @palette_green;
+    --pacem-color-yellow: @palette_yellow;
+    --pacem-color-brown: @palette_brown;
+    --pacem-color-red: @palette_red;
+    --pacem-color-pink: @palette_pink;
+    --pacem-color-blue: @palette_blue;
+    --pacem-color-orange: @palette_orange;
+    --pacem-color-purple: @palette_purple;
+    --pacem-color-teal: @palette_teal;
+    //
+    --pacem-grid-cell: @grid_cell;
+    --pacem-grid-spacing: @grid_spacing;
+    @double_grid_spacing: 2 * @grid_spacing;
+    --pacem-grid-double-spacing: @double_grid_spacing;
+
+    /* #region deprecated */
     --color-background: @color_background;
     --color-root: @color_root_background;
     --color-default: @color_default;
@@ -181,8 +219,8 @@ html .@{PCSS}-preloader {
     //
     --grid-cell: @grid_cell;
     --grid-spacing: @grid_spacing;
-    @double_grid_spacing: 2 * @grid_spacing;
     --grid-double-spacing: @double_grid_spacing;
+    /* #endregion deprecated */
 }
 
 // extra

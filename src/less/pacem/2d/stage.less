@@ -14,16 +14,18 @@
 @{P}-2d {
     .StretchChildren();
 
-    .@{P}-resize{
+    > :not(.@{PCSS}-2d){
         display: none !important;
     }
 
     .@{PCSS}-2d {
-        .StretchChildren();
+        //.StretchChildren();
+        position: relative;
         
         > canvas,
         > svg {
             display: block;
+            position: absolute;
         }
     }
 }

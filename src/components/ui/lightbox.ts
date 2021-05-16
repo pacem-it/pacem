@@ -6,16 +6,16 @@ namespace Pacem.Components.UI {
         shadow: Defaults.USE_SHADOW_ROOT,
         template: `<${P}-panel class="${PCSS}-lightbox-wrapper" css-class="{{ {'${PCSS}-shown': :host.show } }}" hidden>
         <div class="${PCSS}-lightbox ${PCSS}-relative" style="transform: translateY(50vh)">
-            <div class="${PCSS}-scrollable"><${P}-content></${P}-content></div>
+            <div class="${PCSS}-scrollable"><${P}-content></${P}-content><${P}-button hide="{{ :host.modal }}" class="button-square square-smaller bg-default pos-fixed fixed-right fixed-top ${PCSS}-margin margin-1" icon-glyph="close" on-click=":host._close($event)"></${P}-button></div>
         </div><${P}-resize watch-position="true" logger="{{ :host.logger }}" on-resize=":host._resize($event)" disabled="{{ !:host.show }}" target="{{ ::container }}"></${P}-resize>
-    <${P}-button hide="{{ :host.modal }}" class="${PCSS}-close" on-click=":host._close($event)">X</${P}-button>
 </${ P}-panel>`
     })
     export class PacemLightboxElement extends PacemEventTarget {
 
         private _resizeHandler = _ => {
-            if (this.show)
+            if (this.show) {
                 this._resize(_);
+            }
         }
 
         private _keyupHandler = (evt: KeyboardEvent) => {

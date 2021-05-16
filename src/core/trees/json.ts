@@ -65,14 +65,20 @@ namespace Pacem {
                 const elPattern = /^\$<#(.+)>$/,
                     fnPattern = /^\$<fn:([^\x05]+)>$/, // <- Firefox workaround for missing 's' flag implementation
                     // fnPattern = /^\$<fn:(.+)>$/s,
+                    regexPattern = /^\$<regex:(.+)>$/,
                     fnRefPattern = /^\$<fn#(.+)>$/;
                 let arr: RegExpExecArray;
                 if (key === REF_ID) {
                     hasRefs = true;
                 } else if (typeof value === 'string') {
-
+                    // regex?
+                    if ((arr = regexPattern.exec(value)) && arr.length > 1) {
+                        const regex = arr[1],
+                            lastPipe = regex.lastIndexOf('|');
+                        return new RegExp(regex.substr(0, lastPipe), regex.substr(lastPipe + 1));
+                    }
                     // element?
-                    if ((arr = elPattern.exec(value)) && arr.length > 1) {
+                    else if ((arr = elPattern.exec(value)) && arr.length > 1) {
                         return document.getElementById(arr[1]);
                     } else
                         // function (flat)
@@ -101,6 +107,9 @@ namespace Pacem {
                     return;
                 }
                 return `$<#${obj.id}>`;
+            }
+            else if (obj instanceof RegExp) {
+                return `$<regex:${obj.source}|${obj.flags}>`;
             }
             else if (typeof obj === 'object' && obj != null && !(obj instanceof Date)) {
                 if (Array.isArray(obj)) {

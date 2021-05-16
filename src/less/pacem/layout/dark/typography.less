@@ -1,0 +1,160 @@
+﻿@import "../shared";
+
+body {
+    font-family: @font_std;
+    color: @color_default;
+}
+
+h1, h2, h3 {
+    margin: @grid_spacing/3 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 400;
+    font-family: @font_main;
+    line-height: 1.1;
+
+    &.@{PCSS}-title {
+        color: @color_title;
+        background-color: @color_title_inv;
+    }
+
+    &.@{PCSS}-title when (@uppercase_titles = true) {
+        text-transform: uppercase;
+    }
+}
+
+h1 {
+    .FontMainSize(2);
+}
+
+h2 {
+    .FontMainSize(1.75);
+}
+
+h3 {
+    .FontMainSize(1.5);
+}
+
+h4 {
+    .FontMainSize(1.3333);
+}
+
+h5 {
+    .FontMainSize(1.25);
+}
+
+h6 {
+    .FontMainSize(1.1);
+}
+
+p {
+    margin-bottom: .5rem;
+}
+
+small {
+    opacity: .8;
+    font-size: 0.86667em;
+}
+
+code,
+samp,
+kbd {
+    .FontTech();
+    padding: 0 @grid_spacing/6;
+}
+
+samp,
+code {
+    color: @color_code;
+    background: @color_code_back;
+}
+
+kbd {
+    color: @color_background;
+    .FontTech(.86667);
+    //font-weight: bold;
+    background: fade(@color_default, 90);
+    border-radius: @grid_spacing/12;
+}
+
+mark, .@{PCSS}-highlight {
+    background-color: @color_primary;
+    color: @color_light;
+}
+
+blockquote {
+    border: 0;
+    padding: 1em 1em 1em 2em;
+    position: static;
+    text-align: inherit;
+    margin: 1em 0;
+    font-style: italic;
+    color: inherit;
+    border-left: @grid_spacing/6 solid @color_border;
+}
+
+hr {
+    margin: @grid_spacing/2 0;
+    height: 0;
+    border: 0;
+    border-top: 1px solid fade(@color_default, 10);
+
+    &.spacer {
+        margin-bottom: @grid_spacing;
+    }
+}
+
+.border-dashed {
+    border-style: dashed;
+}
+
+.border-dotted {
+    border-style: dotted;
+}
+
+.border-solid {
+    border-style: solid;
+}
+
+ol, ul {
+    &.@{PCSS}-list {
+        margin-bottom: 0;
+
+        > li {
+            min-height: 1.1em;
+
+            &.list-item {
+                padding: @grid_spacing/3 @grid_spacing/2;
+                //font-size: 1.1em;
+                list-style-type: none;
+                margin-left: -@grid_spacing * 1.25;
+
+                &:focus,
+                &:hover {
+                    background-color: @color_suggest_focus_back;
+                    color: @color_suggest_focus_fore;
+                }
+            }
+        }
+
+        &.list-inline,
+        &.list-unstyled {
+            padding-left: 0;
+            list-style-type: none;
+        }
+
+        &.list-inline > li {
+            display: inline-block;
+            margin-left: .5em;
+
+            &:first-child {
+                margin-left: 0;
+            }
+        }
+    }
+}
+
+a, a:hover, a:visited {
+    color: @color_link;
+}

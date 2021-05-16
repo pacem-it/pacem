@@ -27,7 +27,7 @@ namespace Pacem.Components.UI {
         @Watch({ emit: false, converter: PropertyConverters.String }) query: string;
 
         /** @readonly */
-        @Watch({ converter: PropertyConverters.Boolean }) isMatch: boolean;
+        @Watch({ reflectBack: true, converter: PropertyConverters.Boolean }) isMatch: boolean;
 
         #mql: MediaQueryList;
 

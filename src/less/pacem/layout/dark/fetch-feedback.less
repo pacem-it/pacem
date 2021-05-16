@@ -1,0 +1,128 @@
+﻿@import "../shared";
+
+@fetch_feedback_size: 100px;
+
+@keyframes -fetching-anim {
+    0% {
+        background-position-x: 0;
+    }
+
+    100% {
+        background-position-x: @fetch_feedback_size;
+    }
+}
+
+.fetch-feedback {
+
+    .FetchFeedback(@clr) {
+        & when (@gradients = true) {
+            .GradientHorizontal(0%, 50%, 50%, 100%, @clr, fade(@clr, 0), fade(@clr, 0), @clr);
+        }
+
+        & when (@gradients = false) {
+            .GradientHorizontal(0%, 50%, 50%, 100%, @clr, @clr, fade(@clr, 0), fade(@clr, 0));
+        }
+
+        background-repeat: repeat-x;
+        background-size: @fetch_feedback_size;
+    }
+
+    display: block;
+    transform: translateX(-100%);
+    transition: transform @easing_in_sine .2s .2s;
+    height: 1px;
+
+    &.feedback-thick {
+        height: 2px;
+    }
+
+    &.feedback-thicker {
+        height: 4px;
+    }
+
+    &.feedback-auto {
+        height: auto;
+    }
+
+    .FetchFeedback(@color_default);
+
+    &.feedback-default {
+    }
+
+    &.feedback-accent {
+        .FetchFeedback(@color_accent);
+    }
+
+    &.feedback-primary {
+        .FetchFeedback(@color_primary);
+    }
+
+    &.feedback-success {
+        .FetchFeedback(@color_success);
+    }
+
+    &.feedback-warning {
+        .FetchFeedback(@color_warning);
+    }
+
+    &.feedback-danger {
+        .FetchFeedback(@color_danger);
+    }
+
+    &.feedback-error {
+        .FetchFeedback(@color_error);
+    }
+
+    &.feedback-disabled {
+        .FetchFeedback(@color_disabled);
+    }
+
+    &.feedback-invert {
+        .FetchFeedback(@color_background);
+    }
+
+    &.feedback-small {
+        background-size: @fetch_feedback_size * .5;
+    }
+
+    &.fetching {
+        transform: translateX(0);
+        animation: -fetching-anim linear .0725s both infinite;
+
+        &.feedback-small {
+            animation-duration: .145s;
+        }
+
+        &.anim-slow {
+            animation-duration: .125s;
+
+            &.feedback-small {
+                // double the duration since half is the size (and the offset of the background-position-x in the animation remains the same)
+                animation-duration: .25s;
+            }
+        }
+    }
+}
+
+// default positioning inside known elements
+.@{PCSS}-header,
+header[pacem] {
+
+    .fetch-feedback {
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        right: 0;
+    }
+}
+
+.@{PCSS}-footer,
+footer[pacem] {
+
+    .fetch-feedback {
+        position: absolute;
+        left: 0;
+        top: 0;
+        right: 0;
+    }
+}

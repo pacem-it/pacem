@@ -163,6 +163,11 @@
         "title": "<pacem-dialog>"
       },
       {
+        "label": "Icon",
+        "view": "icon",
+        "title": "<pacem-icon>"
+      },
+      {
         "label": "Image",
         "view": "image",
         "title": "<pacem-img>"
@@ -196,6 +201,11 @@
         "label": "Menu",
         "view": "menu",
         "title": "<pacem-menu>"
+      },
+      {
+        "label": "Picture",
+        "view": "picture",
+        "title": "<pacem-picture>"
       },
       {
         "label": "Progressbar",
@@ -253,6 +263,10 @@
         "view": "generic"
       },
       {
+        "label": "Column",
+        "view": "column"
+      },
+      {
         "label": "Pie",
         "view": "pie"
       }
@@ -290,6 +304,11 @@
         "label": "Multiline Text",
         "view": "textarea",
         "title": "<pacem-textarea>"
+      },
+      {
+        "label": "HTML Content",
+        "view": "contenteditable",
+        "title": "<pacem-contenteditable>"
       },
       {
         "label": "Select",
@@ -355,6 +374,17 @@
         "label": "Stage",
         "view": "stage",
         "title": "<pacem-2d>"
+      }
+    ]
+  },
+  {
+    "package": "3d",
+    "label": "3D Drawing",
+    "items": [
+      {
+        "label": "Stage",
+        "view": "stage",
+        "title": "<pacem-3d>"
       }
     ]
   },

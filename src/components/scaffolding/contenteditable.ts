@@ -1,91 +1,127 @@
 ﻿/// <reference path="../../../dist/js/pacem-core.d.ts" />
 /// <reference path="../../../dist/js/pacem-ui.d.ts" />
+/// <reference path="contenteditable/utils.ts" />
 /// <reference path="char-counter.ts" />
 namespace Pacem.Components.Scaffolding {
 
-    export const KNOWN_COMMANDS = ['bold', 'italic', 'underline', 'hyperlink', 'orderedList', 'unorderedList'];
-    const knownCommands = { BOLD: KNOWN_COMMANDS[0], ITALIC: KNOWN_COMMANDS[1], UNDERLINE: KNOWN_COMMANDS[2], LINK: KNOWN_COMMANDS[3], ORDEREDLIST: KNOWN_COMMANDS[4], UNORDEREDLIST: KNOWN_COMMANDS[5] };
+    const EXECUTECOMMAND_NAME = 'execute';
+    const EMPTY_CONTENT = '<p><br></p>';
 
-    export class PacemExecCommand {
-
-        private getSurroundingNode(selection, tagName) {
-            var node = selection.anchorNode;
-            while (node && node.nodeName.toUpperCase() !== tagName.toUpperCase()) {
-                node = node.parentNode;
-            }
-            return node;
-        }
-
-        exec(command: string, arg?: string, target?) {
-            ///<param name="command" type="String" />
-            ///<param name="arg" type="String" optional="true" />
-            ///<param name="target" type="String" optional="true" />
-            var promise = new Promise((resolve, reject) => {
-                switch (command) {
-                    case knownCommands.LINK:
-                        var selection = document.getSelection();
-                        var anchorNode = this.getSurroundingNode(selection, 'A');
-
-                        //console.log('selection: ' + selection);
-                        var current = "http://";
-                        var regex = /<a.*href=\"([^\"]*)/;
-                        if (anchorNode && regex.test(anchorNode.outerHTML))
-                            current = regex.exec(anchorNode.outerHTML)[1];
-                        //console.log('link: ' + current);
-                        if (arg === 'current')
-                            return current == 'http://' ? '' : current;
-                        var link = arg || (arg === void 0 && window.prompt('link (empty to unlink):', current));
-                        if (!link)
-                            document.execCommand('unlink');
-                        else {
-                            document.execCommand('createLink', false, link);
-                            anchorNode = this.getSurroundingNode(selection, 'A');
-                            if (anchorNode) anchorNode.setAttribute('target', target || '_blank');
-                        }
-                        resolve();
-                        break;
-                    case knownCommands.ORDEREDLIST:
-                        document.execCommand('insertOrderedList');
-                        resolve();
-                        break;
-                    case knownCommands.UNORDEREDLIST:
-                        document.execCommand('insertUnorderedList');
-                        resolve();
-                        break;
-                    default:
-                        document.execCommand(command);
-                        resolve();
-                        break;
-                }
-            });
-            return promise;
-        }
+    export interface ContenteditableCommand {
+        exec(...args: any[]): Promise<unknown>;
     }
 
-    class ContentEditableChangeEvent extends CustomTypedEvent<{ html: string }> {
+    class ContenteditableChangeEvent extends CustomTypedEvent<{ html: string }> {
         constructor(html: string) {
             super('contenteditablechange', { html: html });
         }
     }
 
+    export abstract class PacemContenteditableCommandElement extends PacemItemElement<PacemContenteditableElement> implements ContenteditableCommand {
+
+        abstract exec(...args: any[]): Promise<any>;
+        abstract isRelevant(range: Range): boolean;
+        /**
+         * Cleans up all its relevant markup in order to obtain the most pure output.
+         * @param contentElement
+         */
+        abstract cleanUp(contentElement: HTMLElement): void;
+
+        protected execCommand(...args: any[]) {
+            const me = this;
+            if (me.disabled) {
+                return;
+            }
+            me.exec.apply(me, args).then(
+                _ => {
+                    me.dispatchEvent(new Event(EXECUTECOMMAND_NAME));
+                },
+                e => {
+                    console.error(e);
+                });
+        }
+
+        connectedCallback() {
+            super.connectedCallback();
+            Utils.addClass(this, PCSS + '-contenteditable-command');
+        }
+
+        viewActivatedCallback() {
+            super.viewActivatedCallback();
+            const cnt = this.container;
+            if (!Utils.isNull(cnt)) {
+                this.contentElement = cnt.contentElement;
+                cnt.addEventListener(PropertyChangeEventName, this._containerPropChangeHandler, false);
+            }
+        }
+
+        disconnectedCallback() {
+            const cnt = this.container;
+            if (!Utils.isNull(cnt)) {
+                cnt.removeEventListener(PropertyChangeEventName, this._containerPropChangeHandler, false);
+            }
+            super.disconnectedCallback();
+        }
+
+        @Watch() protected range: Range;
+        @Watch() protected contentElement: HTMLDivElement;
+
+        private _containerPropChangeHandler = (evt: PropertyChangeEvent) => {
+            const p = evt.detail;
+            this.containerPropertyChangedCallback(p.propertyName, p.oldValue, p.currentValue, p.firstChange);
+        }
+
+        protected containerPropertyChangedCallback(name: string, old, val, first?: boolean) {
+            if (name === 'range') {
+                this.range = val;
+            }
+        }
+    }
+
+    export interface ContenteditableFileCommand extends ContenteditableCommand {
+
+        pasteCallback(file: File): PromiseLike<any>;
+
+    }
+
+    function isFileCommand(obj: any): obj is ContenteditableFileCommand {
+        return obj instanceof PacemContenteditableCommandElement && 'pasteCallback' in obj && typeof obj['pasteCallback'] === 'function';
+    }
+
+    function isElement(node: Node): node is Element {
+        return node?.nodeType == Node.ELEMENT_NODE;
+    }
+
     @CustomElement({
         tagName: P + '-contenteditable', shadow: Defaults.USE_SHADOW_ROOT,
         template: `<div class="${PCSS}-contenteditable ${PCSS}-viewfinder">
-    <div contenteditable pacem></div>
-</div>${ CHAR_COUNTER_CHILD}
-<${ P }-repeater>
-<div class="${PCSS}-commands">
-<template>
-    <${ P }-button class="button ${PCSS}-command" css-class="{{ ['${PCSS}-'+ ^item.toLowerCase()] }}" on-click=":host._commands.exec(^item).then(() => :host.changeHandler($event))"></${ P }-button>
-</template>
-</div>
-</${ P }-repeater>`
+    <div contenteditable="true" role="presenter" pacem></div>
+</div>${CHAR_COUNTER_CHILD}
+<div dashboard>
+    <${P}-content></${P}-content>
+</div>`
     })
-    export class PacemContenteditableElement extends PacemBaseElement implements OnPropertyChanged, OnViewActivated, OnDisconnected {
+    export class PacemContenteditableElement extends PacemItemsContainerBaseElement<PacemContenteditableCommandElement> {
 
-        constructor(private _commands = new PacemExecCommand()) {
-            super();
-            this._workspace = document.createElement('div');
+        constructor() {
+            super('rich text editor');
+            //this._workspace = document.createElement('div');
+        }
+
+        #history: Pacem.HistoryService<string>;
+        get history() {
+            return this.#history;
+        }
+
+        reset() {
+            super.reset();
+            this.#history.reset();
+            this._fireHistoryChange();
+        }
+
+        private _fireHistoryChange() {
+            const h = this.#history;
+            this.dispatchEvent(new PropertyChangeEvent({ propertyName: 'history', oldValue: h, currentValue: h }));
         }
 
         protected convertValueAttributeToProperty(attr: string) {
@@ -93,18 +129,34 @@ namespace Pacem.Components.Scaffolding {
         }
 
         @ViewChild("div[pacem]") private _container: HTMLDivElement;
-        @ViewChild(P + "-repeater") private _repeater: PacemRepeaterElement;
-        @Watch({ converter: PropertyConverters.Number }) minlength: number;
-        @Watch({ converter: PropertyConverters.Number }) maxlength: number;
+        @ViewChild("div[dashboard]") private _dashboard: HTMLElement;
 
-        private _workspace: HTMLDivElement;
+        @Watch() range: Range;
 
         protected toggleReadonlyView(readonly: boolean) {
-            this._repeater.hidden = readonly;
-            if (readonly)
+            this._dashboard.hidden = readonly;
+            if (readonly) {
                 this._container.removeAttribute('contenteditable');
-            else
-                this._container.setAttribute('contenteditable', '');
+            } else {
+                this._container.setAttribute('contenteditable', 'true');
+                document.execCommand("defaultParagraphSeparator", false, "p");
+            }
+        }
+
+        register(item: PacemContenteditableCommandElement) {
+            if (super.register(item)) {
+                item.addEventListener(EXECUTECOMMAND_NAME, this._checkChangedHandler, false);
+                return true;
+            }
+            return false;
+        }
+
+        unregister(item: PacemContenteditableCommandElement) {
+            if (super.unregister(item)) {
+                item.removeEventListener(EXECUTECOMMAND_NAME, this._checkChangedHandler, false);
+                return true;
+            }
+            return false;
         }
 
         /** @override */
@@ -116,86 +168,213 @@ namespace Pacem.Components.Scaffolding {
             return [this._container];
         }
 
+        get contentElement() {
+            return this._container;
+        }
+
         protected onChange(evt?: Event) {
-            var deferred = DeferPromise.defer<string>();
-            if (CustomEventUtils.isInstanceOf(evt, ContentEditableChangeEvent)) {
-                const html = this.value = (<ContentEditableChangeEvent>evt).detail.html;
-                deferred.resolve(html);
-            } else
-                deferred.resolve(this.value);
-            return <PromiseLike<string>>deferred.promise;
+            return new Promise<string>((resolve, reject) => {
+                if (CustomEventUtils.isInstanceOf(evt, ContenteditableChangeEvent)) {
+                    const html = this.value = (<ContenteditableChangeEvent>evt).detail.html;
+                    resolve(html);
+
+                    // find a less-instrusive way to call this...
+                    this._selectionChangeHandler(evt);
+
+                } else
+                    resolve(this.value);
+            });
         }
 
-        private _cleanup(html) {
-            const cnt = this._workspace;
-            cnt.innerHTML = html;
-            let n: Node, a = [], walker = document.createTreeWalker(cnt, NodeFilter.SHOW_ELEMENT, null, false);
-            while (n = walker.nextNode()) {
-                if (n instanceof Element)
-                    n.removeAttribute('style');
+        private _fixRangeMarkup() {
+            const range = this.range,
+                fnDownwards = (node: Node) => {
+                    node.childNodes.forEach(i => fnDownwards(i));
+                    if (isElement(node) && node.tagName === 'SPAN') {
+                        Element.prototype.replaceWith.apply(node, Array.from(node.childNodes));
+                    } else if (node instanceof HTMLElement) {
+                        node.removeAttribute('style');
+                    }
+                },
+                fn = (node: Node) => {
+                    let element = node;
+
+                    if (!isElement(element)) {
+                        element = node.parentElement;
+                    }
+
+                    fnDownwards(element);
+                };
+            if (!Utils.isNull(range)) {
+                fn(range.commonAncestorContainer);
             }
-            return cnt.innerHTML;
         }
 
-        private _checkChangedHandler = (evt) => {
-            var html = this._cleanup(this._container.innerHTML);
-            if (html == '<br>')
-                html = '';
-            if (html != this.value) {
-                this.changeHandler(new ContentEditableChangeEvent(html));
-            }
-        }
+        private _ensureInteractiveMarkup() {
+            const workspace = this._container,
+                nodes = workspace.childNodes,
+                childCount = nodes.length;
 
-        private _keydownHandler = (evt) => {
-            const execCommand = this._commands,
-                commands = knownCommands;
+            if (childCount == 0 || workspace.innerHTML === EMPTY_CONTENT) {
+                workspace.innerHTML = EMPTY_CONTENT;
+            } else {
+                let node: Node,
+                    range: Range;
 
-            if (evt.ctrlKey) {
-                //console.log(evt.keyCode + ': ' + String.fromCharCode(evt.keyCode));
-                let flag = false;
-                switch (evt.keyCode) {
-                    case 49:
-                        // `1`
-                        flag = true;
-                        //
-                        execCommand.exec(commands.ORDEREDLIST);
-                        break;
-                    case 189:
-                        // `dash`
-                        flag = true;
-                        //
-                        execCommand.exec(commands.UNORDEREDLIST);
-                        break;
-                    case 72:
-                        // `h`yperlink
-                        flag = true;
-                        //
-                        execCommand.exec(commands.LINK).then(() => this.onChange());
-                        break;
+                const closeRange = (n: Node) => {
+                    range.setEndAfter(n);
+                    const p = document.createElement('p');
+                    range.surroundContents(p);
                 }
-                if (flag)
-                    Pacem.avoidHandler(evt);
+
+                for (let j = 0; j < childCount; j++) {
+                    node = nodes.item(j);
+                    if (!(node instanceof Element)) {
+                        if (Utils.isNull(range)) {
+                            range = document.createRange();
+                            range.setStartBefore(node);
+                        }
+                    } else if (range) {
+                        closeRange(node.previousSibling);
+                        range = null;
+                    }
+                }
+
+                // open range?
+                if (!Utils.isNull(range)) {
+                    closeRange(node);
+                }
+            }
+        }
+
+        private _focusHandler = (evt) => {
+            this._ensureInteractiveMarkup();
+        };
+
+        private _blurHandler = (evt) => {
+            // clean up the output
+
+            const container = this._container;
+            for (let command of this.items) {
+                command.cleanUp(container);
+            }
+
+            this._checkChangedHandler(evt);
+        };
+
+        private _pasteHandler = (evt: ClipboardEvent) => {
+
+            // I'll manage it myself!
+            evt.preventDefault();
+
+            const range = this.range,
+                files = evt.clipboardData.files;
+            if (!Utils.isNull(range) && files.length === 0) {
+
+                const text = evt.clipboardData.getData('text/plain');
+                const plainText = text.replace(/</gi, '&lt;').replace(/\n/gi, '<br />');
+                const frag = range.createContextualFragment(plainText);
+                range.deleteContents();
+                range.insertNode(frag);
+
+                this._checkChangedHandler(evt);
+
+            } else {
+
+                for (let j = 0; j < files.length; j++) {
+                    const f = files.item(j);
+                    for (let cmd of this.items) {
+                        if (isFileCommand(cmd)) {
+                            cmd.pasteCallback(f).then(_ => this._checkChangedHandler(evt), _ => { });
+                        }
+                    }
+                }
+
+                // this._checkAndSynchronizeHandler(evt);
+            }
+        };
+
+        private _shortcutHandler = (evt: KeyboardEvent) => {
+
+            // prevent any default shortcut combo apart from 'copy', 'cut' and 'paste' (mainly due to the clipboard access limitations)
+            if (evt.ctrlKey && ['C', 'V', 'X'].indexOf(evt.key?.toUpperCase()) === -1) {
+                // Let it manage it only if the relevant command is available
+                evt.preventDefault();
+            }
+
+        };
+
+        private _inputHandler = (evt: InputEvent) => {
+            this._fixRangeMarkup();
+            this._checkChangedHandler(evt);
+        }
+
+        private _checkChangedHandler = (evt: Event) => {
+
+            const
+                container = this._container,
+                inputHtml = container.innerHTML;
+
+            var html = inputHtml;
+            if (Utils.isNullOrEmpty(inputHtml)
+                || inputHtml === '<br>'
+                || inputHtml === EMPTY_CONTENT) {
+                container.innerHTML = EMPTY_CONTENT;
+                html = '';
+            }
+            if (html != this.value) {
+                this.changeHandler(new ContenteditableChangeEvent(html));
+                if (this.value != this.#history.current) {
+                    this._updateHistory();
+                } 
+            }
+            // fire history change in any case
+            this._fireHistoryChange();
+        }
+
+        @Debounce(500)
+        private _updateHistory() {
+            this.#history.push(this.value);
+            this._fireHistoryChange();
+        }
+
+        private _selectionChangeHandler = (evt) => {
+            const selection = document.getSelection();
+            if (selection && selection.anchorNode && this._container.contains(selection.anchorNode)) {
+                const range = selection.getRangeAt(0);
+                this.range = range.cloneRange();
+            } else {
+                this.range = null;
             }
         }
 
         protected acceptValue(val) {
-            if (!Utils.isNull(this._container) && /*the following `if` statement prevents from flashing the content and writing backwards!*/ val != this._container.innerHTML)
+            if (!Utils.isNull(this._container) && /*the following `if` statement prevents from flashing the content and writing backwards!*/ val != this._container.innerHTML) {
                 this._container.innerHTML = val;
+            }
         }
 
         viewActivatedCallback() {
             super.viewActivatedCallback();
-            this._repeater.datasource = Pacem.Components.Scaffolding.KNOWN_COMMANDS;
-            this._container.addEventListener('blur', this._checkChangedHandler, false);
-            this._container.addEventListener('input', this._checkChangedHandler, false);
-            this._container.addEventListener('keydown', this._keydownHandler, false);
+            const container = this._container;
+            this.#history = new Pacem.HistoryService(this.value);
+            container.addEventListener('blur', this._blurHandler, false);
+            container.addEventListener('keydown', this._shortcutHandler, false);
+            container.addEventListener('focus', this._focusHandler, false);
+            container.addEventListener('input', this._inputHandler, false);
+            container.addEventListener('paste', this._pasteHandler, false);
+            document.addEventListener('selectionchange', this._selectionChangeHandler, false);
         }
 
         disconnectedCallback() {
-            if (!Utils.isNull(this._container)) {
-                this._container.removeEventListener('blur', this._checkChangedHandler, false);
-                this._container.removeEventListener('input', this._checkChangedHandler, false);
-                this._container.removeEventListener('keydown', this._keydownHandler, false);
+            document.removeEventListener('selectionchange', this._selectionChangeHandler, false);
+            const container = this._container;
+            if (!Utils.isNull(container)) {
+                container.removeEventListener('keydown', this._shortcutHandler, false);
+                container.removeEventListener('blur', this._blurHandler, false);
+                container.removeEventListener('focus', this._focusHandler, false);
+                container.removeEventListener('input', this._inputHandler, false);
+                container.removeEventListener('paste', this._pasteHandler, false);
             }
             super.disconnectedCallback();
         }
@@ -204,5 +383,6 @@ namespace Pacem.Components.Scaffolding {
             return val;
         }
     }
+
 
 }

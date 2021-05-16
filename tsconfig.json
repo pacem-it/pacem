@@ -1,19 +1,8 @@
 {
+  "extends": "./tsbaseconfig.json",
   "compilerOptions": {
-    "noImplicitAny": false,
-    "noEmitOnError": true,
-    "removeComments": false,
-    "moduleResolution": "node",
-    "sourceMap": false,
-    "target": "es6",
-    "module": "amd",
-    "outFile": "dist/js/pacem-core.js",
-    "experimentalDecorators": true,
-    "declaration": true,
-    "lib": [ "es2015", "dom" ],
-    "types": [ "@aspnet/signalr" ]
+    "outFile": "dist/js/pacem-core.js"
   },
-  "compileOnSave": false,
   "include": [ "src/core", "src/components/behaviors", "src/components/basic" ],
   "exclude": [
     "node_modules",

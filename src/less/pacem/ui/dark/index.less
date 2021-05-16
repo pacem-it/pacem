@@ -1,0 +1,78 @@
+﻿/*#region HIDDEN*/
+
+.@{PCSS}-hidden {
+    transition: all .3s cubic-bezier(0.6, -0.28, 0.735, 0.045);
+    //display: none !important;
+    opacity: 0;
+    transform: scale(0,0);
+
+    &.slide {
+        transition: all .3s cubic-bezier(0.95, 0.05, 0.795, 0.035);
+        transform: none;
+        overflow: hidden;
+        height: 0;
+
+        &.horizontal {
+            height: auto;
+            width: 0;
+        }
+    }
+}
+
+.@{PCSS}-shown {
+    transition: all .3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    //display: normal;
+    opacity: 1;
+    transform: scale(1,1);
+
+    &.slide {
+        transition: all .3s cubic-bezier(0.19, 1, 0.22, 1);
+        transform: none;
+        overflow: hidden;
+    }
+}
+
+/*#endregion*/
+
+// non-UI components
+@{P}-media-query,
+@{P}-vibrate,
+@{P}-audio {
+    .Inert();
+}
+
+@import "body";
+@import "header-footer";
+@import "collapse";
+@import "calendar";
+@import "balloon";
+@import "toast";
+@import "infinite-scroller";
+@import "anchor";
+@import "button";
+@import "pager";
+@import "icon";
+@import "image";
+@import "picture";
+@import "progressbar";
+@import "tuner";
+@import "dialog";
+@import "lightbox";
+
+// to be imported separately by the shell css
+// @import "menu";
+@import "snapshot";
+@import "binder";
+@import "markdown";
+@import "social";
+@import "marquee";
+@import "tabs";
+@import "toc";
+@import "led";
+
+// to be imported separately by the shell css
+// @import "loader";
+@import "view";
+@import "slideshow";
+@import "timeline";
+@import "window";

@@ -1,0 +1,49 @@
+﻿@import "../shared";
+
+@{P}-marquee {
+    font-size: 1.05em; // 1.05rem * @font_rem_factor;
+    color: @color_marquee_fore;
+    background-color: @color_marquee_back;
+    display: block;
+    overflow: hidden;
+    min-height: @grid_spacing;
+    line-height: @grid_spacing;
+    position: relative;
+
+    .@{PCSS}-marquee,
+    .@{PCSS}-marquee-overlap {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+    }
+
+    .@{PCSS}-marquee-overlap {
+        min-width: 100%;
+        pointer-events: none;
+        z-index: 1;
+    }
+
+    .@{PCSS}-marquee {
+        white-space: nowrap;
+        z-index: 0;
+        //animation: full-offset-rtl-anim 10s linear infinite;
+    }
+
+
+    &:hover {
+        .@{PCSS}-marquee {
+            animation-play-state: paused;
+        }
+    }
+}
+
+@{P}-marquee when (@gradients = true) {
+    .GradientVertical(@color_marquee_back, @color_marquee_back2);
+}
+
+@{P}-marquee when (@shadows = true) {
+    .@{PCSS}-marquee-overlap {
+        box-shadow: inset @grid_spacing/2 0 @grid_spacing/2 rgba(0,0,0,0.5), inset -@grid_spacing/2 0 @grid_spacing/2 rgba(0,0,0,0.5);
+    }
+}

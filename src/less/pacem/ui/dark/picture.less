@@ -1,0 +1,110 @@
+﻿@import "../shared";
+
+@{P}-picture-source,
+@{P}-picture > picture > source {
+    .Inert();
+}
+
+@{P}-picture {
+    display: inline-block;
+
+    > picture,
+    > picture > img {
+        width: inherit;
+        height: inherit;
+        max-width: inherit;
+        min-width: inherit;
+        max-height: inherit;
+        min-height: inherit;
+    }
+    // fitting
+    &.picture-auto {
+        > picture > img {
+            object-fit: none;
+        }
+    }
+
+    &.picture-fill {
+        > picture > img {
+            object-fit: fill;
+        }
+    }
+
+    &.picture-contain {
+        > picture > img {
+            object-fit: contain;
+        }
+    }
+
+    &.picture-cover {
+        > picture > img {
+            object-fit: cover;
+        }
+    }
+    // positioning
+    &.picture-right {
+        &.picture-top {
+            > picture > img {
+                object-position: right top;
+            }
+        }
+
+        &.picture-middle {
+            > picture > img {
+                object-position: right center;
+            }
+        }
+
+        &.picture-bottom {
+            > picture > img {
+                object-position: right bottom;
+            }
+        }
+    }
+
+    &.picture-left {
+        &.picture-top {
+            > picture > img {
+                object-position: left top;
+            }
+        }
+
+        &.picture-middle {
+            > picture > img {
+                object-position: left center;
+            }
+        }
+
+        &.picture-bottom {
+            > picture > img {
+                object-position: left bottom;
+            }
+        }
+    }
+
+    &.picture-center {
+        &.picture-top {
+            > picture > img {
+                object-position: center top;
+            }
+        }
+
+        &.picture-middle {
+            > picture > img {
+                object-position: center center;
+            }
+        }
+
+        &.picture-bottom {
+            > picture > img {
+                object-position: center bottom;
+            }
+        }
+    }
+
+    &.picture-grayscale {
+        > picture > img {
+            .Grayscale();
+        }
+    }
+}

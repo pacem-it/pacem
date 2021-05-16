@@ -6,8 +6,8 @@ namespace Pacem.Components.Maps {
 
     const consts = {
         TIMEOUT: 1000,
-        API_JS: 'https://atlas.microsoft.com/sdk/javascript/mapcontrol/2/atlas.min.js',
-        API_CSS: 'https://atlas.microsoft.com/sdk/javascript/mapcontrol/2/atlas.min.css'
+        API_JS:     'https://atlas.microsoft.com/sdk/javascript/mapcontrol/2/atlas.min.js',
+        API_CSS:    'https://atlas.microsoft.com/sdk/javascript/mapcontrol/2/atlas.min.css'
     };
 
     class AtlasMapUtils {
@@ -61,7 +61,7 @@ namespace Pacem.Components.Maps {
                 marker = new atlas.HtmlMarker();
                 const map = ctrl.map.map;
                 map.markers.add(marker, position);
-                map.events.add('click', marker, (e) => ctrl._openInfoWindow(item, e));
+                map.events.add('click', marker, (e) => ctrl.openInfoWindow(item, e));
                 map.events.add('drag', marker, () => ctrl.map.fitBounds(true));
                 map.events.add('dragend', marker, (e) => ctrl._onDragEnd(item, e));
                 ctrl.markers.set(item, marker);
@@ -97,9 +97,21 @@ namespace Pacem.Components.Maps {
             marker.setOptions(options);
         }
 
-        private _openInfoWindow(item: PacemMapMarkerElement, evt?: atlas.TargetedEvent) {
+        closeInfoWindow(item: PacemMapMarkerElement, evt?: atlas.TargetedEvent) {
             var ctrl = this,
-                marker = <atlas.HtmlMarker>evt.target || ctrl.markers.get(item),
+                marker = <atlas.HtmlMarker>evt?.target || ctrl.markers.get(item),
+                popup = marker.getOptions().popup;
+
+            if (!popup || !popup.isOpen()) {
+                return;
+            }
+
+            popup.close();
+        }
+
+        openInfoWindow(item: PacemMapMarkerElement, evt?: atlas.TargetedEvent) {
+            var ctrl = this,
+                marker = <atlas.HtmlMarker>evt?.target || ctrl.markers.get(item),
                 content = item.caption,
                 popup = marker.getOptions().popup;
             if (!popup) {
@@ -126,8 +138,22 @@ namespace Pacem.Components.Maps {
 
     }
 
+    const MAP_EVENTS = ['moveend', 'dragend', 'zoomend', 'rotateend'];
+
     @CustomElement({ tagName: P + '-map-adapter-azure' })
     export class PacemAzureMapAdapterElement extends PacemMapAdapterElement {
+
+        popupInfoWindow(item: MapRelevantElement) {
+            if (item instanceof PacemMapMarkerElement) {
+                this._markersAdapter.openInfoWindow(item);
+            }
+        }
+
+        popoutInfoWindow(item: MapRelevantElement) {
+            if (item instanceof PacemMapMarkerElement) {
+                this._markersAdapter.closeInfoWindow(item);
+            }
+        }
 
         constructor() {
             super();
@@ -137,12 +163,13 @@ namespace Pacem.Components.Maps {
         setView(zoom: number);
         setView(center: LatLng, zoom?: number);
         setView(center: any, zoom?: any) {
-            const map = this._map;
+            const map = this._map,
+                camera = map.getCamera();
             if (!Utils.isNull(map)) {
                 if (typeof center === 'number') {
-                    map.setCamera({ zoom: center });
+                    map.setCamera({ zoom: center, center: camera.center });
                 } else {
-                    map.setCamera({ position: AtlasMapUtils.getPosition(center), zoom: zoom });
+                    map.setCamera({ position: AtlasMapUtils.getPosition(center), zoom: camera.zoom });
                 }
             }
         }
@@ -157,11 +184,15 @@ namespace Pacem.Components.Maps {
             return this._map;
         }
 
-        private _isMapInitialized() {
-            return !Utils.isNull(this._map);
-        }
-
         // #region ABSTRACT IMPLEMENTATION
+
+        destroy(_: PacemMapElement) {
+            const map = this._map;
+            MAP_EVENTS.forEach(evt => {
+                map.events.remove(evt, this._mapUpdateHandler);
+            });
+            map.dispose();
+        }
 
         async initialize(container: PacemMapElement): Promise<HTMLElement> {
 
@@ -228,10 +259,11 @@ namespace Pacem.Components.Maps {
                 });
             }
 
-            map.events.add('moveend', () => this._idleFiller());
+            MAP_EVENTS.forEach(evt => {
+                map.events.add(<any>evt, this._mapUpdateHandler);
+            });
             map.events.addOnce('ready', () => {
                 container.dispatchEvent(new MapEvent("maploaded"));
-                this._idleFiller()
             });
 
             return mapElement;
@@ -267,9 +299,23 @@ namespace Pacem.Components.Maps {
 
         //#endregion
 
+        private _mapUpdateHandler = (evt) => {
+            this._updateMap();
+        }
+
         @Debounce(500)
-        private _idleFiller() {
-            // dunno what to do here
+        private _updateMap() {
+            const map = this._map,
+                ctrl = this._container;
+            if (!Utils.isNull(map) && !Utils.isNull(ctrl)) {
+                const camera = map.getCamera(),
+                    center = camera.center,
+                    zoom = camera.zoom;
+                if (camera.zoom === 1) {
+                    console.warn('Azure Maps control lacks in reflecting the actual map zoom onto the camera property. Cannot reflect info back to PacemMapElement.')
+                } else
+                    this.updateMapElement(ctrl, AtlasMapUtils.getLatLng(center), zoom);
+            }
         }
 
         private _shapes = new Map<any, atlas.Shape>();

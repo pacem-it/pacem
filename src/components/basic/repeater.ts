@@ -79,6 +79,7 @@ namespace Pacem.Components {
             } else {
                 _item = items[index];
                 this._setupItem(_item, index, item);
+                _item.redrawEventually(this._itemTemplate, frag);
             }
             this.dispatchEvent(new RepeaterItemCreateEvent(_item));
         }
@@ -104,13 +105,19 @@ namespace Pacem.Components {
             this._databind();
         }
 
-        @Debounce(true)
+        // @Debounce(true)
         private _databind() {
+            // not connected to the DOM? exit
+            if (!this.isConnected) {
+                return;
+            }
+
             // no template? fail.
             let tmpl = this._itemTemplate,
                 holder = this._childTemplatePlaceholder;
-            if (tmpl == null)
+            if (tmpl == null) {
                 throw `Missing template element in ${PacemRepeaterElement.name}.`;
+            }
             // fill up
             let items = this._childItems,
                 index = 0;
@@ -142,24 +149,41 @@ namespace Pacem.Components {
 
             // custom 'item<cmd>' event fires next
             this.dispatchEvent(new CustomItemCommandEvent(/* 'originalEvent' */ evt));
+        }
 
+        private _refreshItemTemplateHandler = (evt: Event) => {
+            const proxy = <PacemTemplateProxyElement>evt.target;
+            this._itemTemplate = proxy.target;
+            this._databind();
+        };
+
+        private _buildupItemTemplate(): HTMLTemplateElement {
+
+            let tmpl = CustomElementUtils.findFirstDescendant(this, n => n instanceof HTMLTemplateElement || n instanceof PacemTemplateProxyElement);
+            if (tmpl instanceof PacemTemplateProxyElement) {
+                tmpl.addEventListener('templatechange', this._refreshItemTemplateHandler, false);
+                this._childTemplatePlaceholder = tmpl;
+                return this._itemTemplate = tmpl.target;
+            } else {
+                return this._itemTemplate = this._childTemplatePlaceholder = tmpl as HTMLTemplateElement;
+            }
         }
 
         viewActivatedCallback() {
             super.viewActivatedCallback();
             this.addEventListener(CommandEventName, this._onCommand, false);
 
-            let proxy = <PacemTemplateProxyElement>this.querySelector(P + '-template-proxy');
-            if (!Utils.isNull(proxy)) {
-                this._childTemplatePlaceholder = proxy;
-                this._itemTemplate = proxy.target;
-            } else {
-                this._itemTemplate = this._childTemplatePlaceholder = this.querySelector('template');
+            if (this._buildupItemTemplate()) {
+                this._databind();
             }
-            this._databind();
         }
 
         disconnectedCallback() {
+            const oldPlaceholder = this._childTemplatePlaceholder;
+            if (!Utils.isNull(oldPlaceholder) && oldPlaceholder instanceof PacemTemplateProxyElement) {
+                oldPlaceholder.removeEventListener('templatechange', this._refreshItemTemplateHandler, false);
+            }
+
             this.removeEventListener(CommandEventName, this._onCommand, false);
             this.datasource = [];
             super.disconnectedCallback();
@@ -167,8 +191,14 @@ namespace Pacem.Components {
 
         propertyChangedCallback(name: string, old: any, val: any, first: boolean) {
             super.propertyChangedCallback(name, old, val, first);
-            if (name === 'datasource' && this._itemTemplate != null)
-                this._databind();
+            switch (name) {
+                case 'datasource':
+                    if (!Utils.isNull(this._itemTemplate)) {
+                        this._databind();
+                    }
+                    break;
+
+            }
         }
 
     }
@@ -222,17 +252,32 @@ namespace Pacem.Components {
 
         /** @internal */
         append(): void {
-            let tmplRef = this._template,
+            const tmplRef = this._template,
                 tmplParent = this._fragment;
-
             this._alterEgos.push(tmplParent.appendChild(this.placeholder));
             const clonedTmpl = <HTMLTemplateElement>tmplRef.cloneNode(true);
             var host: any;
-            if (!Utils.isNull(host = GET_VAL(this._repeater, INSTANCE_HOST_VAR)))
+            if (!Utils.isNull(host = GET_VAL(this._repeater, INSTANCE_HOST_VAR))) {
                 CustomElementUtils.assignHostContext(host, clonedTmpl);
+            }
             var dom = clonedTmpl.content./*children*/childNodes;
             Array.prototype.push.apply(this._alterEgos, dom);
             tmplParent.appendChild(clonedTmpl.content);
+        }
+
+        /** @internal */
+        redrawEventually(tmpl: HTMLTemplateElement, frag: DocumentFragment) {
+            if (tmpl === this._template) {
+                return;
+            }
+            this._fragment = frag;
+            this._template = tmpl;
+            const tmplParent = this._holder.parentElement,
+                dom = this._alterEgos;
+            while (dom.length > 0) {
+                tmplParent.removeChild(dom.pop());
+            }
+            this.append();
         }
 
         get dom(): Node[] {

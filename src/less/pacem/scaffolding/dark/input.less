@@ -1,0 +1,67 @@
+﻿@import "../shared";
+
+@{P}-input-text,
+@{P}-input-password,
+@{P}-input-tel,
+@{P}-input-url,
+@{P}-input-email,
+@{P}-input-search,
+@{P}-suggest,
+@{P}-checkbox,
+@{P}-radio,
+@{P}-textarea,
+@{P}-textarea-markdown,
+@{P}-input-number {
+    .FormFieldItemWrapper();
+
+    .@{PCSS}-input {
+        .FormFieldItem();
+        .FormFieldItemInline();
+    }
+
+    &::before {
+        color: @color_input_icon;
+    }
+
+    &.@{PCSS}-focus::before {
+        color: @field_forecolor;
+    }
+}
+
+
+@{P}-input-text,
+@{P}-input-password,
+@{P}-input-tel,
+@{P}-input-url,
+@{P}-input-email,
+@{P}-input-search,
+@{P}-suggest,
+@{P}-textarea,
+@{P}-textarea-markdown,
+@{P}-input-number {
+
+    &.input-toggle:not(.@{PCSS}-focus) > .@{PCSS}-input {
+        border-color: transparent;
+        background-color: transparent;
+        padding: 0;
+    }
+}
+
+.@{PCSS}-body.@{PCSS}-animations {
+
+    @{P}-input-text,
+    @{P}-input-password,
+    @{P}-input-tel,
+    @{P}-input-url,
+    @{P}-input-email,
+    @{P}-input-search,
+    @{P}-suggest,
+    @{P}-textarea,
+    @{P}-textarea-markdown,
+    @{P}-input-number {
+
+        &.input-toggle > .@{PCSS}-input {
+            transition: padding .2s @easing_in_out_sine, background-color .25s linear, border-color .25s linear;
+        }
+    }
+}

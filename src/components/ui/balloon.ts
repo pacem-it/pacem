@@ -73,7 +73,8 @@ namespace Pacem.Components.UI {
         'align'?: BalloonAlignment
     };
 
-    const allStyles = PCSS + '-balloon balloon-right balloon-left balloon-bottom balloon-top balloon-start balloon-center balloon-end balloon-out balloon-in balloon-on';
+    const positioningStyles = 'balloon-right balloon-left balloon-bottom balloon-top balloon-start balloon-center balloon-end';
+    const allStyles = PCSS + '-balloon '+ positioningStyles +' balloon-out balloon-in balloon-on';
 
     @CustomElement({
         tagName: P + '-balloon',
@@ -124,6 +125,7 @@ namespace Pacem.Components.UI {
                 this._synchronizeOptions();
             } else if (name === 'disabled') {
                 //this.container.style.visibility = val ? 'hidden' : 'visible';
+                if (val) { this.popout(); }
             }
 
             if (this.target instanceof Element && name !== 'disabled') {
@@ -361,6 +363,7 @@ namespace Pacem.Components.UI {
                     break;
             }
 
+            Utils.removeClass(popup, positioningStyles);   
             Utils.addClass(popup, 'balloon-' + chosenPosition);
             Utils.addClass(popup, 'balloon-' + chosenAlignment);
 
@@ -436,12 +439,11 @@ namespace Pacem.Components.UI {
          */
         popup() {
             const popup = this,
-                options = popup.options || {},
                 isVisible = Utils.isVisible(popup);
 
             this._adjustWatchers(true);
 
-            if (isVisible) {
+            if (isVisible || this.disabled) {
                 return;
             }
             // attach closured behavior to popup
@@ -499,7 +501,7 @@ namespace Pacem.Components.UI {
          * Shows the balloon, if hidden. Otherwise hides it.
          */
         toggle() {
-            if (!Utils.isVisible(this)) { this.popup(); }
+            if (!Utils.isVisible(this) && !this.disabled) { this.popup(); }
             else { this.popout(); }
         }
 
@@ -548,8 +550,9 @@ namespace Pacem.Components.UI {
             this.popout();
             // regenerate opts popup
             var opts = this._options;
-            if (opts.behavior == BalloonBehavior.Inert)
+            if (opts.behavior == BalloonBehavior.Inert) {
                 return;
+            }
             switch (opts.trigger) {
                 case BalloonTrigger.Hover:
                     el.addEventListener('mouseenter', this._hoverDelegate, false);

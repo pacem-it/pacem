@@ -1,17 +1,6 @@
 {
+  "extends": "../../../tsbaseconfig.json",
   "compilerOptions": {
-    "noImplicitAny": false,
-    "noEmitOnError": true,
-    "removeComments": false,
-    "sourceMap": false,
-    "target": "es6",
-    "module": "amd",
-    "outFile": "../../../dist/js/pacem-2d.js",
-    "experimentalDecorators": true,
-    "declaration": true,
-    "lib": [ "es2015", "dom" ],
-    "types": [ "@aspnet/signalr" ]
-  },
-  "compileOnSave": false
-  
+    "outFile": "../../../dist/js/pacem-2d.js"
+  }
 }

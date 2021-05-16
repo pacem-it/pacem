@@ -38,7 +38,7 @@ namespace Pacem.Components.Plus {
 
     @CustomElement({
         tagName: P + '-context-menu', shadow: Defaults.USE_SHADOW_ROOT,
-        template: `<${P}-button class="button-flat ${PCSS}-margin margin-0"></${P}-button>
+        template: `<${P}-button class="button-flat ${PCSS}-margin margin-0"><${P}-icon icon="{{ :host.icon || 'more_horiz' }}"></${P}-icon></${P}-button>
 <${P}-content></${P}-content>
 <${P}-shell-proxy>
         <${P}-balloon target="{{ :host._btn }}" class="${PCSS}-contextmenu" options="{{ { trigger: 'click', position: 'x', align: 'auto' } }}">
@@ -101,19 +101,7 @@ namespace Pacem.Components.Plus {
 
         viewActivatedCallback() {
             super.viewActivatedCallback();
-            this._renderButton();
             this._balloon.addEventListener(CommandEventName, this._dispatchCommand, false);
-        }
-
-        propertyChangedCallback(name: string, old, val, first?: boolean) {
-            super.propertyChangedCallback(name, old, val, first);
-            if (name === 'icon' && this._btn) {
-                this._renderButton(val);
-            }
-        }
-
-        private _renderButton(val = this.icon) {
-            this._btn.innerHTML = val ? Utils.renderHtmlIcon(val) : `<i class="${PCSS}-icon">more_horiz</i>`;
         }
 
         disconnectedCallback() {

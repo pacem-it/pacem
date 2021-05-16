@@ -48,7 +48,12 @@
     position: relative;
 
     &.widget-editing {
-        border: 2px dashed @color_border;
+        border: 1px dashed @color_border;
+        margin: 2px;
+
+        &:hover {
+            border: 1px solid @color_primary;
+        }
     }
 
     &.@{PCSS}-dragging.drag-placeholder,
